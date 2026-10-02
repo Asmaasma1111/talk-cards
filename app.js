@@ -86,7 +86,8 @@ function defaults(p = prof) {
     cards: {},                             // id -> {box, due, again:[dates], aTs, clean, intro, up, hints}
     stars: { bank: 0, today: 0, day: '' },
     prizes: [],
-    settings: { newPerDay: 4, perSession: 12, target: 50, prize: 'new coloring set', voice: '', speed: 'standard', sfx: true }
+    settings: { newPerDay: 12, perSession: 12, target: 50, prize: 'new coloring set', voice: '', speed: 'standard', sfx: true },
+    pace: 2                                // 2 = two sets a day (October 2026)
   };
 }
 let st;
@@ -101,6 +102,10 @@ function merge(s, p = prof) {
     o.stars = { ...d.stars, ...(s.stars || {}) };
     o.passed = Array.isArray(s.passed) ? s.passed : [];
     o.prizes = Array.isArray(s.prizes) ? s.prizes : [];
+    if (!s.pace) {                         // profiles from the one-set-a-day version: 4 new cards becomes 12
+      if (o.settings.newPerDay === 4) o.settings.newPerDay = 12;
+      o.pace = 2;
+    }
   }
   return o;
 }
@@ -170,7 +175,7 @@ function applyGood(id) {
   if (againToday) { c.box = 1; c.due = addDays(t, 1); }
   else if (c.up !== t) { c.box = Math.min(7, c.box + 1); c.due = addDays(t, INTERVAL[c.box]); c.up = t; }
   if (CARD[id].kind === 'ans') c.clean = !S.hint.has(id);
-  if (!isMama()) { addStar(); checkPass(CARD[id].set); }
+  if (!isMama()) { addStar(); checkPass(CARD[id].set, S.celeb); }
   save();
 }
 function applyAgain(id) {
@@ -202,15 +207,23 @@ function weekStats() {
   const firsts = st.history.filter(h => h.first && h.day >= from);
   return { reviews: firsts.length, good: firsts.filter(h => h.good).length };
 }
-// A set is passed when every answer card is in box 2+ and its last Good was without the hint.
-function checkPass(setId) {
+// A set is passed when every answer card has been answered Good, and its last Good was without the hint.
+// (Two sets a day: the next set is ready for the next session; reviews still follow the spacing.)
+function checkPass(setId, celeb) {
   if (st.passed.includes(setId) || setId > st.open) return;
-  const ok = SET[setId].ans.every(id => { const c = peek(id); return c.box >= 2 && c.clean === true; });
+  const ok = SET[setId].ans.every(id => { const c = peek(id); return c.box >= 1 && c.clean === true; });
   if (!ok) return;
   st.passed.push(setId);
   if (setId !== st.open) return;
-  if (setId < lastSetId()) { st.open = setId + 1; S.celeb.push({ type: 'unlock', set: st.open }); }
-  else S.celeb.push({ type: 'final' });
+  if (setId < lastSetId()) { st.open = setId + 1; celeb.push({ type: 'unlock', set: st.open }); }
+  else celeb.push({ type: 'final' });
+}
+// On Start: any open set that already meets the rule (for example from an earlier session) opens the next one.
+function sweepPasses() {
+  const celeb = [];
+  SETS.forEach(s => { if (s.id <= st.open && !st.passed.includes(s.id)) checkPass(s.id, celeb); });
+  if (celeb.length) save();
+  return celeb;
 }
 
 /* ---------- recorded voice (Gemini TTS clips from scripts/voice.py) ---------- */
@@ -562,9 +575,14 @@ function newSession(mode, ids) {
 function startNormal() {
   SFX.init(); primeSpeech(); unlockVoice();
   if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
-  const ids = buildQueue();
-  if (!ids.length) return showDone();
-  newSession('normal', ids);
+  const begin = () => {
+    const ids = buildQueue();
+    if (!ids.length) return showDone();
+    newSession('normal', ids);
+  };
+  const celeb = isMama() ? [] : sweepPasses();
+  const next = () => { if (!celeb.length) return begin(); showCelebration(celeb.shift(), next); };
+  next();
 }
 function primeSpeech() {           // iOS needs speech started from a tap once
   if (!hasSpeech || primeSpeech.done) return;
@@ -941,7 +959,7 @@ const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;
 function stepper(key, val) {
   return `<div class="step"><button class="p-btn" data-step="${key}" data-d="-1" aria-label="Less">−</button><output>${val}</output><button class="p-btn" data-step="${key}" data-d="1" aria-label="More">+</button></div>`;
 }
-const STEPS = { newPerDay: [1, 10, 1], perSession: [4, 30, 1], target: [5, 500, 5] };
+const STEPS = { newPerDay: [1, 20, 1], perSession: [4, 30, 1], target: [5, 500, 5] };
 const MAMA_STEPS = { newPerDay: [1, 40, 1], perSession: [5, 100, 5] };
 function voiceNote() {
   const d = deckVoice();

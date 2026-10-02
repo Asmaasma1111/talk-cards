@@ -1,6 +1,6 @@
 /* Offline cache for Maria's Talk Cards.
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
-const VERSION = 'talk-cards-v2';
+const VERSION = 'talk-cards-v3';
 const FILES = [
   './',
   'index.html',
