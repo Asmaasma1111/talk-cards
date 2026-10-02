@@ -853,7 +853,7 @@ function rate(good) {
 }
 
 function flyStar() {
-  const from = $('#goodBtn .star').getBoundingClientRect(), to = $('#starCount .star').getBoundingClientRect();
+  const from = $('#goodBtn .ic-tick').getBoundingClientRect(), to = $('#starCount .star').getBoundingClientRect();
   const done = () => { $('#starNum').textContent = starsToday(); const sc = $('#starCount'); sc.classList.remove('bump'); void sc.offsetWidth; sc.classList.add('bump'); };
   SFX.star(STAR_FLIGHT / 1000);
   if (reduced()) { setTimeout(done, STAR_FLIGHT); return; }

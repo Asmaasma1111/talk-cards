@@ -72,8 +72,12 @@ svg { display: block; }
 }
 .btn:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--ink); }
 .btn svg { width: 36px; height: 36px; flex: none; }
-.btn-good { background: var(--gum); }
+/* Maria's marks, as at school: a white tick on green for Good!, a red cross on white for Again */
+.btn-good { background: #2EAD5B; color: #FFFFFF; }
 .btn-again { color: var(--ink); }
+.btn .ic-tick, .btn .ic-cross { width: 42px; height: 42px; }
+.btn-again .ic-cross { color: #E53935; }
+.btn .ic-loop { display: none; }
 .btn-soft { background: var(--white); font-size: 30px; min-width: 300px; }
 .btn-link { background: none; border: none; font-size: 24px; font-weight: 700; padding: 14px 24px; text-decoration: underline; text-underline-offset: 6px; color: var(--ink); }
 
@@ -358,6 +362,7 @@ button.badge:active { transform: scale(.9); }
   .btn svg { width: 28px; height: 28px; }
   .rate { gap: 12px; }
   .rate .btn { padding: 0 10px; font-size: 26px; }
+  .btn .ic-tick, .btn .ic-cross { width: 34px; height: 34px; }
   .actions { min-height: 92px; }
   .btn-start { min-height: 104px; font-size: 46px; }
   .brand { font-size: 22px; }
@@ -489,6 +494,8 @@ body[data-profile="mama"] .btn:active { transform: translateY(1px); box-shadow: 
 body[data-profile="mama"] .btn svg { width: 22px; height: 22px; opacity: .55; }
 body[data-profile="mama"] .btn-good { color: #FFFFFF; background: var(--gum); border-color: var(--gum); box-shadow: 0 1px 2px rgba(27, 36, 51, .10), 0 8px 22px rgba(45, 91, 211, .28); }
 body[data-profile="mama"] .btn-good svg { display: none; }
+body[data-profile="mama"] .btn .ic-cross { display: none; }
+body[data-profile="mama"] .btn .ic-loop { display: block; }
 
 /* the sentence */
 .txt.sent { font-family: 'Literata', Georgia, serif; font-weight: 400; line-height: 1.42; letter-spacing: -.005em; }

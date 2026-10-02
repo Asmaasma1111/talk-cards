@@ -2,7 +2,7 @@
   "version": 2,
   "sets": [
     { "id": 1, "stage": 1, "title": "Hello", "cards": [
-      { "q": "Hello!", "a": "Hi! / Hello!", "hint": "مرحبًا", "ask": "سلّمي على ماما" },
+      { "q": "Hello!", "a": "Hi! / Hello!", "hint": "مرحبًا", "ask": "ألقي التحية على ماما" },
       { "q": "What's your name?", "a": "My name is Maria. / I'm Maria.", "hint": "ما اسمكِ؟", "ask": "اسألي ماما عن اسمها" },
       { "q": "How are you?", "a": "I'm fine, thank you. And you?", "hint": "كيف حالكِ؟", "ask": "اسألي ماما عن حالها" },
       { "q": "Goodbye!", "a": "Bye! See you later!", "hint": "مع السلامة", "ask": "ودّعي ماما" }
