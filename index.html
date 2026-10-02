@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Talk Cards</title>
+<meta name="theme-color" content="#F6F8FF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Talk Cards">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="preload" href="fonts/andika-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/literata.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.8l2.75 5.6 6.15.9-4.45 4.35 1.05 6.1L12 16.85 6.5 19.75l1.05-6.1L3.1 9.3l6.15-.9z"/></symbol>
+  <symbol id="i-loop" viewBox="0 0 24 24"><path d="M19.5 12.5a7.5 7.5 0 1 1-2.2-5.8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M18.6 3.2v4.4h-4.4" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-speaker" viewBox="0 0 24 24"><path d="M3.5 9.2h3.8L12.4 5v14l-5.1-4.2H3.5z" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M15.6 9a4.2 4.2 0 0 1 0 6M18.4 6.4a8 8 0 0 1 0 11.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-turn" viewBox="0 0 24 24"><path d="M4.2 9.6C5.9 7.4 8.7 6.2 12 6.2c4.7 0 8.5 2.6 8.5 5.8s-3.8 5.8-8.5 5.8c-1.6 0-3.1-.3-4.4-.8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M9.6 14.4l-2.6 2.6 3.3 1.8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="currentColor"/><path d="M8.2 10.5V8a3.8 3.8 0 0 1 7.6 0v2.5" fill="none" stroke="currentColor" stroke-width="2.4"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3.5" y="8" width="17" height="4.5" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5.5 12.5V20h13v-7.5M12 8v12M12 8c-1.8-3.6-5.6-3.4-5.2-1 .3 1.4 2.6 1 5.2 1zm0 0c1.8-3.6 5.6-3.4 5.2-1-.3 1.4-2.6 1-5.2 1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+</svg>
+
+<!-- Home -->
+<section id="home" class="screen" hidden>
+  <button id="profileChip" class="chip" aria-label="Switch profile">Maria</button>
+  <button id="gear" class="gear" aria-label="Parent area: press and hold">
+    <svg class="ring" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="24"/></svg>
+    <svg class="cog" aria-hidden="true"><use href="#i-gear"/></svg>
+  </button>
+  <h1 class="brand" id="brand">Maria's Talk Cards</h1>
+  <div class="counts mama-only">
+    <div><b id="mDue">0</b><span>Due today</span></div>
+    <div><b id="mNew">0</b><span>New today</span></div>
+  </div>
+  <button id="startBtn" class="btn-start">Start</button>
+  <div class="week mama-only" id="mWeek"></div>
+  <div class="today maria-only"><svg class="star" aria-hidden="true"><use href="#i-star"/></svg><span><b id="todayStars">0</b> today</span></div>
+  <div class="prize maria-only">
+    <div class="bar"><div class="fill" id="prizeFill"></div></div>
+    <div class="prize-text"><b id="prizeCount">0 / 50</b> stars to: <span id="prizeName"></span></div>
+  </div>
+  <div class="badges maria-only" id="badges"></div>
+  <div class="current-set maria-only" id="currentSet"></div>
+</section>
+
+<!-- Session -->
+<section id="session" class="screen" hidden>
+  <div class="topbar">
+    <button id="quitBtn" class="quit" aria-label="Home"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+    <div class="progress"><div class="fill" id="progFill"></div></div>
+    <div class="star-count" id="starCount"><svg class="star" aria-hidden="true"><use href="#i-star"/></svg><span id="starNum">0</span></div>
+  </div>
+  <div class="stage">
+    <div class="card-wrap" id="cardWrap">
+      <div class="card-shadow" id="cardShadow"></div>
+      <div class="card-lift" id="cardLift">
+        <div class="card" id="card" role="button" aria-label="Flip the card">
+          <div class="face front" id="front"></div>
+          <div class="face back" id="back"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="actions">
+    <button id="flipBtn" class="btn btn-flip"><svg aria-hidden="true"><use href="#i-turn"/></svg>Flip</button>
+    <div class="rate" id="rateRow" hidden>
+      <button id="againBtn" class="btn btn-again"><svg aria-hidden="true"><use href="#i-loop"/></svg>Again</button>
+      <button id="goodBtn" class="btn btn-good"><svg class="star" aria-hidden="true"><use href="#i-star"/></svg>Good!</button>
+    </div>
+  </div>
+</section>
+
+<!-- Done -->
+<section id="done" class="screen" hidden>
+  <h1 class="done-title">All done for today!</h1>
+  <div class="done-stars maria-only"><svg class="star" aria-hidden="true"><use href="#i-star"/></svg><b id="doneStars">0</b></div>
+  <button id="practiceBtn" class="btn btn-soft">Tricky ones</button>
+  <button id="homeBtn" class="btn-link">Home</button>
+</section>
+
+<!-- Celebration -->
+<section id="celebrate" class="overlay" hidden>
+  <canvas id="confetti" aria-hidden="true"></canvas>
+  <div class="cel-box">
+    <div class="cel-badge" id="celBadge"></div>
+    <div class="cel-kicker" id="celKicker"></div>
+    <h2 class="cel-title" id="celTitle"></h2>
+    <button id="celBtn" class="btn btn-good">Let's go!</button>
+  </div>
+</section>
+
+<!-- Profile picker (first launch, and from the profile chip) -->
+<section id="picker" class="screen" hidden>
+  <div class="tiles">
+    <button class="tile tile-maria" data-profile="maria">Maria</button>
+    <button class="tile tile-mama" data-profile="mama">Mama</button>
+  </div>
+</section>
+
+<!-- Parent area -->
+<section id="parent" class="screen" hidden></section>
+
+<div id="toast" class="toast" hidden></div>
+<div id="devbar" class="devbar" hidden></div>
+
+<script src="app.js"></script>
+</body>
+</html>

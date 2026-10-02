@@ -1,0 +1,159 @@
+{
+  "version": 2,
+  "sets": [
+    { "id": 1, "stage": 1, "title": "Hello", "cards": [
+      { "q": "Hello!", "a": "Hi! / Hello!", "hint": "مرحبًا", "ask": "سلّمي على ماما" },
+      { "q": "What's your name?", "a": "My name is Maria. / I'm Maria.", "hint": "ما اسمكِ؟", "ask": "اسألي ماما عن اسمها" },
+      { "q": "How are you?", "a": "I'm fine, thank you. And you?", "hint": "كيف حالكِ؟", "ask": "اسألي ماما عن حالها" },
+      { "q": "Goodbye!", "a": "Bye! See you later!", "hint": "مع السلامة", "ask": "ودّعي ماما" }
+    ]},
+    { "id": 2, "stage": 1, "title": "About me", "cards": [
+      { "q": "How old are you?", "a": "I'm eight.", "hint": "كم عمركِ؟", "ask": "اسألي عن العمر" },
+      { "q": "Where are you from?", "a": "I'm from Algeria.", "hint": "من أين أنتِ؟", "ask": "اسألي: من أين أنتِ؟" },
+      { "q": "Where do you live?", "a": "I live in Saudi Arabia.", "hint": "أين تسكنين؟", "ask": "اسألي: أين تسكنين؟" },
+      { "q": "Can you spell your name?", "a": "M-A-R-I-A.", "hint": "تهجّي اسمكِ", "ask": "اطلبي من ماما أن تتهجّى اسمها" }
+    ]},
+    { "id": 3, "stage": 1, "title": "My family", "cards": [
+      { "q": "Who's this?", "a": "This is my mom.", "hint": "من هذه؟", "ask": "اسألي: من هذه؟" },
+      { "q": "What's her name?", "a": "Her name is ___.", "hint": "ما اسمها؟", "ask": "اسألي عن اسمها" },
+      { "q": "What's your dad's name?", "a": "His name is ___.", "hint": "ما اسم أبيكِ؟", "ask": "اسألي عن اسم الأب" },
+      { "q": "Do you have a sister?", "a": "Yes, I do. Her name is Zaineb.", "hint": "هل لديكِ أخت؟", "ask": "اسألي: هل لديكِ أخت؟" }
+    ]},
+    { "id": 4, "stage": 1, "title": "I like", "cards": [
+      { "q": "What's your favorite color?", "a": "My favorite color is pink.", "hint": "ما لونكِ المفضّل؟", "ask": "اسألي عن اللون المفضّل" },
+      { "q": "Do you like drawing?", "a": "Yes, I do! I love drawing.", "hint": "هل تحبّين الرسم؟", "ask": "اسألي: هل تحبّين الرسم؟" },
+      { "q": "Do you like cats?", "a": "Yes, I do. / No, I don't.", "hint": "هل تحبّين القطط؟", "ask": "اسألي: هل تحبّين القطط؟" },
+      { "q": "What do you like?", "a": "I like ___.", "hint": "ماذا تحبّين؟", "ask": "اسألي: ماذا تحبّين؟" }
+    ]},
+    { "id": 5, "stage": 1, "title": "Feelings", "cards": [
+      { "q": "How do you feel?", "a": "I'm happy. / I'm tired.", "hint": "بماذا تشعرين؟", "ask": "اسألي عن الشعور" },
+      { "q": "Are you hungry?", "a": "Yes, I am. / No, I'm not.", "hint": "هل أنتِ جائعة؟", "ask": "اسألي: هل أنتِ جائعة؟" },
+      { "q": "Are you OK?", "a": "Yes, I'm OK. / No, I don't feel well.", "hint": "هل أنتِ بخير؟", "ask": "اسألي: هل أنتِ بخير؟" },
+      { "q": "Why?", "a": "Because I'm ___.", "hint": "لماذا؟", "ask": "اسألي: لماذا؟" }
+    ]},
+    { "id": 6, "stage": 1, "title": "I want", "cards": [
+      { "q": "Do you want some water?", "a": "Yes, please. / No, thank you.", "hint": "هل تريدين ماءً؟", "ask": "اعرضي الماء على ماما" },
+      { "q": "What do you want?", "a": "I want ___, please.", "hint": "ماذا تريدين؟", "ask": "اسألي: ماذا تريدين؟" },
+      { "q": "Can I help you?", "a": "Yes, please.", "hint": "هل أساعدكِ؟", "ask": "اعرضي المساعدة على ماما" },
+      { "q": "Here you are.", "a": "Thank you!", "hint": "تفضّلي", "ask": "أعطي ماما شيئًا" }
+    ]},
+    { "id": 7, "stage": 1, "title": "Help me talk", "cards": [
+      { "q": "Do you understand?", "a": "No, I don't. Can you say it again, please?", "hint": "هل فهمتِ؟", "ask": "اسألي: هل فهمتِ؟" },
+      { "q": "Can you speak English?", "a": "Yes, a little!", "hint": "هل تتكلّمين الإنجليزية؟", "ask": "اسألي: هل تتكلّمين الإنجليزية؟" },
+      { "q": "What's this in English?", "a": "I don't know. What is it?", "hint": "ما هذا بالإنجليزية؟", "ask": "اسألي عن اسم شيء بالإنجليزية" },
+      { "q": "Is that right?", "a": "I think so. / I'm not sure.", "hint": "هل هذا صحيح؟", "ask": "اسألي: هل هذا صحيح؟" }
+    ]},
+    { "id": 8, "stage": 1, "title": "Playtime", "cards": [
+      { "q": "Do you want to play?", "a": "Yes! Let's play!", "hint": "هل تريدين أن تلعبي؟", "ask": "ادعي ماما للّعب" },
+      { "q": "Whose turn is it?", "a": "It's my turn! / It's your turn.", "hint": "دور من؟", "ask": "اسألي: دور من؟" },
+      { "q": "Who won?", "a": "I won! / You won!", "hint": "من فاز؟", "ask": "اسألي: من فاز؟" },
+      { "q": "Ready?", "a": "Ready, set, go!", "hint": "مستعدّة؟", "ask": "اسألي: مستعدّة؟" }
+    ]},
+    { "id": 9, "stage": 2, "title": "Things", "cards": [
+      { "q": "What's this?", "a": "It's a pencil.", "hint": "", "ask": "this?" },
+      { "q": "What color is it?", "a": "It's yellow.", "hint": "", "ask": "color?" },
+      { "q": "Is it big or small?", "a": "It's small.", "hint": "", "ask": "big or small?" },
+      { "q": "Whose is it?", "a": "It's mine.", "hint": "لمن هذا؟", "ask": "whose?" }
+    ]},
+    { "id": 10, "stage": 2, "title": "Where is it?", "cards": [
+      { "q": "Where's your bag?", "a": "It's on the chair.", "hint": "أين حقيبتكِ؟", "ask": "bag?" },
+      { "q": "Is it in the box?", "a": "Yes, it is. / No, it isn't.", "hint": "هل هو في الصندوق؟", "ask": "in the box?" },
+      { "q": "Where's Zaineb?", "a": "She's in the kitchen.", "hint": "", "ask": "Zaineb?" },
+      { "q": "Where are my keys?", "a": "They're under the table.", "hint": "تحت = under", "ask": "keys?" }
+    ]},
+    { "id": 11, "stage": 2, "title": "Numbers and time", "cards": [
+      { "q": "How many pencils do you have?", "a": "I have three pencils.", "hint": "كم قلمًا لديكِ؟", "ask": "how many?" },
+      { "q": "What time is it?", "a": "It's seven o'clock.", "hint": "كم الساعة؟", "ask": "time?" },
+      { "q": "When do you go to school?", "a": "At six o'clock.", "hint": "", "ask": "school? when?" },
+      { "q": "How old is Zaineb?", "a": "She's three.", "hint": "", "ask": "Zaineb? old?" }
+    ]},
+    { "id": 12, "stage": 2, "title": "My day", "cards": [
+      { "q": "What time do you wake up?", "a": "I wake up at five.", "hint": "متى تستيقظين؟", "ask": "wake up?" },
+      { "q": "What do you eat for breakfast?", "a": "I eat ___.", "hint": "الفطور = breakfast", "ask": "breakfast?" },
+      { "q": "How do you go to school?", "a": "I go by car.", "hint": "", "ask": "how? school?" },
+      { "q": "What do you do after school?", "a": "I go to the gym.", "hint": "بعد المدرسة", "ask": "after school?" }
+    ]},
+    { "id": 13, "stage": 2, "title": "School", "cards": [
+      { "q": "What's your favorite subject?", "a": "My favorite subject is Arabic.", "hint": "المادّة المفضّلة", "ask": "subject?" },
+      { "q": "Who's your teacher?", "a": "My teacher is Ms. ___.", "hint": "", "ask": "teacher?" },
+      { "q": "What do you do in class?", "a": "I read and write.", "hint": "", "ask": "class?" },
+      { "q": "Do you like your school?", "a": "Yes, I do.", "hint": "", "ask": "like school?" }
+    ]},
+    { "id": 14, "stage": 2, "title": "I can", "cards": [
+      { "q": "Can you swim?", "a": "Yes, I can. / No, I can't.", "hint": "هل تستطيعين السباحة؟", "ask": "swim?" },
+      { "q": "What can you do?", "a": "I can draw and jump.", "hint": "", "ask": "can do?" },
+      { "q": "Can you draw a cat?", "a": "Yes, I can!", "hint": "", "ask": "draw a cat?" },
+      { "q": "Can I play with you?", "a": "Yes, you can!", "hint": "هل ألعب معكِ؟", "ask": "play with you?" }
+    ]},
+    { "id": 15, "stage": 2, "title": "Right now", "cards": [
+      { "q": "What are you doing?", "a": "I'm drawing.", "hint": "ماذا تفعلين الآن؟", "ask": "doing?" },
+      { "q": "What's Zaineb doing?", "a": "She's sleeping.", "hint": "", "ask": "Zaineb doing?" },
+      { "q": "Are you listening?", "a": "Yes, I am.", "hint": "", "ask": "listening?" },
+      { "q": "What are we doing today?", "a": "We're going to ___.", "hint": "", "ask": "today?" }
+    ]},
+    { "id": 16, "stage": 2, "title": "Food", "cards": [
+      { "q": "What's your favorite food?", "a": "My favorite food is ___.", "hint": "", "ask": "food?" },
+      { "q": "Do you like vegetables?", "a": "Yes, I do. / Not really.", "hint": "الخضار = vegetables", "ask": "vegetables?" },
+      { "q": "What do you want for lunch?", "a": "I want ___, please.", "hint": "الغداء = lunch", "ask": "lunch?" },
+      { "q": "Is it good?", "a": "Yes, it's yummy!", "hint": "", "ask": "good?" }
+    ]},
+    { "id": 17, "stage": 3, "title": "Clothes and style", "cards": [
+      { "q": "What are you wearing?", "a": "I'm wearing a pink dress.", "hint": "", "ask": "Ask Mom what she is wearing." },
+      { "q": "Do you like my shoes?", "a": "Yes, they're beautiful!", "hint": "", "ask": "Ask Mom if she likes your shoes." },
+      { "q": "Which one do you want?", "a": "This one, please.", "hint": "", "ask": "Ask Mom which one she wants." },
+      { "q": "What color is your bag?", "a": "It's green.", "hint": "", "ask": "Ask Mom the color of her bag." }
+    ]},
+    { "id": 18, "stage": 3, "title": "People", "cards": [
+      { "q": "What does she look like?", "a": "She has long black hair.", "hint": "", "ask": "Ask Mom what your teacher looks like." },
+      { "q": "Is he tall or short?", "a": "He's tall.", "hint": "", "ask": "Ask Mom if Dad is tall or short." },
+      { "q": "Who's your best friend?", "a": "My best friend is ___.", "hint": "", "ask": "Ask Mom who her best friend is." },
+      { "q": "Is she nice?", "a": "Yes, she's very nice.", "hint": "", "ask": "Ask Mom if your teacher is nice." }
+    ]},
+    { "id": 19, "stage": 3, "title": "My home", "cards": [
+      { "q": "Do you live in a house or an apartment?", "a": "I live in a house.", "hint": "", "ask": "Ask Mom: a house or an apartment?" },
+      { "q": "How many rooms are there?", "a": "There are five rooms.", "hint": "", "ask": "Ask Mom how many rooms there are." },
+      { "q": "Is there a garden?", "a": "Yes, there is. / No, there isn't.", "hint": "", "ask": "Ask Mom if there is a garden." },
+      { "q": "What's in your room?", "a": "There's a bed and a desk.", "hint": "", "ask": "Ask Mom what's in her room." }
+    ]},
+    { "id": 20, "stage": 3, "title": "Animals", "cards": [
+      { "q": "What's your favorite animal?", "a": "My favorite animal is a ___.", "hint": "", "ask": "Ask Mom her favorite animal." },
+      { "q": "Why?", "a": "Because it's cute.", "hint": "", "ask": "Ask Mom why she likes it." },
+      { "q": "Can it fly?", "a": "No, it can't.", "hint": "", "ask": "Ask Mom if a cat can fly." },
+      { "q": "Do you have a pet?", "a": "No, I don't. / Yes, I have a ___.", "hint": "", "ask": "Ask Mom if she has a pet." }
+    ]},
+    { "id": 21, "stage": 3, "title": "Out and about", "cards": [
+      { "q": "What's the weather like?", "a": "It's hot and sunny.", "hint": "", "ask": "Ask Mom about the weather." },
+      { "q": "Where are we going?", "a": "We're going to the park.", "hint": "", "ask": "Ask Mom where you are going." },
+      { "q": "Is it far?", "a": "No, it's near.", "hint": "", "ask": "Ask Mom if it is far." },
+      { "q": "Do you like the park?", "a": "Yes, I love it!", "hint": "", "ask": "Ask Mom if she likes the park." }
+    ]},
+    { "id": 22, "stage": 3, "title": "Yesterday", "cards": [
+      { "q": "What did you do yesterday?", "a": "I played with my sister.", "hint": "", "ask": "Ask Mom what she did yesterday." },
+      { "q": "Where did you go?", "a": "I went to the park.", "hint": "", "ask": "Ask Mom where she went." },
+      { "q": "Did you like it?", "a": "Yes, I did! / No, I didn't.", "hint": "", "ask": "Ask Mom if she liked it." },
+      { "q": "What did you eat?", "a": "I ate ___.", "hint": "", "ask": "Ask Mom what she ate." }
+    ]},
+    { "id": 23, "stage": 3, "title": "Today at school", "cards": [
+      { "q": "How was school today?", "a": "It was fun! / It was OK.", "hint": "", "ask": "Ask your friend how school was today." },
+      { "q": "What did you learn?", "a": "I learned ___.", "hint": "", "ask": "Ask your friend what she learned." },
+      { "q": "What did you draw?", "a": "I drew a ___.", "hint": "", "ask": "Ask your friend what she drew." },
+      { "q": "Was it hard?", "a": "No, it was easy!", "hint": "", "ask": "Ask your friend if it was hard." }
+    ]},
+    { "id": 24, "stage": 3, "title": "Plans and dreams", "cards": [
+      { "q": "What are you going to do tomorrow?", "a": "I'm going to ___.", "hint": "", "ask": "Ask Mom what she is going to do tomorrow." },
+      { "q": "What do you want to be?", "a": "I want to be an artist.", "hint": "", "ask": "Ask Zaineb what she wants to be." },
+      { "q": "When is your birthday?", "a": "It's in ___.", "hint": "", "ask": "Ask Mom when her birthday is." },
+      { "q": "What do you want for your birthday?", "a": "I want ___.", "hint": "", "ask": "Ask Mom what she wants for her birthday." }
+    ]},
+    { "id": 25, "stage": 3, "title": "Final challenge: part 1", "cards": [
+      { "q": "Tell me about you.", "a": "My name is Maria. I'm eight.", "hint": "", "ask": null },
+      { "q": "Tell me about your family.", "a": "I have a mom, a dad, and a sister.", "hint": "", "ask": null },
+      { "q": "Tell me about your day.", "a": "I wake up at five. I go to school by car.", "hint": "", "ask": null }
+    ]},
+    { "id": 26, "stage": 3, "title": "Final challenge: part 2", "replaces": 25, "cards": [
+      { "q": "Tell me about you.", "a": "My name is Maria. I'm eight. I live in Saudi Arabia. I love drawing.", "hint": "", "ask": null },
+      { "q": "Tell me about your family.", "a": "I have a mom, a dad, and a sister. My sister's name is Zaineb. She's three.", "hint": "", "ask": null },
+      { "q": "Tell me about your day.", "a": "I wake up at five. I go to school by car. After school, I go to the gym.", "hint": "", "ask": null }
+    ]}
+  ]
+}

@@ -1,0 +1,17 @@
+# secrets
+.env
+
+# local tooling
+.venv/
+__pycache__/
+.DS_Store
+.claude/
+
+# voice recording work files (raw takes, samples, alignment); only audio/ is published
+voice-work/
+
+# temporary test helper
+_dev_mock.js
+
+# planning notes stay local
+SPEC.md

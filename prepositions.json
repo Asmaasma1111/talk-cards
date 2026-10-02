@@ -1,0 +1,328 @@
+{
+  "version": 1,
+  "deck": "Prepositions",
+  "voice": "en-US",
+  "sets": [
+    {
+      "id": 1,
+      "title": "Set 1: from the diagnostic",
+      "cards": [
+        {
+          "id": "p1-01",
+          "text": "We arrived {{c1::in}} Riyadh late last night.",
+          "rule": "<b>arrive in</b> + a city or country (an area); <b>arrive at</b> + a building or point. Never <i>arrive to</i>.",
+          "tags": [
+            "spatial",
+            "arrive"
+          ]
+        },
+        {
+          "id": "p1-02",
+          "text": "What time does your flight arrive {{c1::in}} London?",
+          "rule": "<b>arrive in</b> + a city or country (an area); <b>arrive at</b> + a building or point. Never <i>arrive to</i>.",
+          "tags": [
+            "spatial",
+            "arrive"
+          ]
+        },
+        {
+          "id": "p1-03",
+          "text": "What time did you arrive {{c1::at}} the hotel?",
+          "rule": "<b>arrive in</b> + a city or country (an area); <b>arrive at</b> + a building or point. Never <i>arrive to</i>.",
+          "tags": [
+            "spatial",
+            "arrive"
+          ]
+        },
+        {
+          "id": "p1-04",
+          "text": "We arrived {{c1::at}} the station just as the train was leaving.",
+          "rule": "<b>arrive in</b> + a city or country (an area); <b>arrive at</b> + a building or point. Never <i>arrive to</i>.",
+          "tags": [
+            "spatial",
+            "arrive"
+          ]
+        },
+        {
+          "id": "p1-05",
+          "text": "We didn't arrive {{c1::Ø}} home until midnight.",
+          "rule": "Ø = no preposition before <b>home, here, there</b>: <i>arrive home, get home, go home</i>.",
+          "tags": [
+            "zero",
+            "arrive"
+          ]
+        },
+        {
+          "id": "p1-06",
+          "text": "I'll meet you {{c1::at}} the airport.",
+          "rule": "<b>at</b> = a point or meeting place. <i>in the airport</i> only if you mean inside the building.",
+          "tags": [
+            "spatial"
+          ]
+        },
+        {
+          "id": "p1-07",
+          "text": "Let's meet {{c1::at}} the entrance.",
+          "rule": "<b>at</b> = a point or meeting place. <i>in the airport</i> only if you mean inside the building.",
+          "tags": [
+            "spatial"
+          ]
+        },
+        {
+          "id": "p1-08",
+          "text": "Our flat is {{c1::on}} the third floor.",
+          "rule": "<b>on</b> = a surface or level you stand on, so floors take <b>on</b>.",
+          "tags": [
+            "spatial"
+          ]
+        },
+        {
+          "id": "p1-09",
+          "text": "The toilets are {{c1::on}} the ground floor.",
+          "rule": "<b>on</b> = a surface or level you stand on, so floors take <b>on</b>.",
+          "tags": [
+            "spatial"
+          ]
+        },
+        {
+          "id": "p1-10",
+          "text": "She got {{c1::on}} the wrong bus.",
+          "rule": "<b>on / off</b> buses, trains, planes and ships (you can stand up and walk about). <b>in / into / out of</b> cars and taxis.",
+          "tags": [
+            "spatial",
+            "vehicles"
+          ]
+        },
+        {
+          "id": "p1-11",
+          "text": "We got {{c1::off}} the train at the wrong station.",
+          "rule": "<b>on / off</b> buses, trains, planes and ships (you can stand up and walk about). <b>in / into / out of</b> cars and taxis.",
+          "tags": [
+            "spatial",
+            "vehicles"
+          ]
+        },
+        {
+          "id": "p1-12",
+          "text": "She jumped {{c1::out of}} the taxi and ran.",
+          "rule": "<b>on / off</b> buses, trains, planes and ships (you can stand up and walk about). <b>in / into / out of</b> cars and taxis.",
+          "tags": [
+            "spatial",
+            "vehicles"
+          ]
+        },
+        {
+          "id": "p1-13",
+          "text": "Can you send it {{c1::by}} Thursday? That's the latest I can take it.",
+          "rule": "<b>by</b> = no later than (a deadline). <b>until</b> = continuing up to that time. <i>on Thursday</i> = on that day only.",
+          "tags": [
+            "time"
+          ]
+        },
+        {
+          "id": "p1-14",
+          "text": "Please let me know {{c1::by}} the end of the week.",
+          "rule": "<b>by</b> = no later than (a deadline). <b>until</b> = continuing up to that time. <i>on Thursday</i> = on that day only.",
+          "tags": [
+            "time"
+          ]
+        },
+        {
+          "id": "p1-15",
+          "text": "I need to be home {{c1::by}} six.",
+          "rule": "<b>by</b> = no later than (a deadline). <b>until</b> = continuing up to that time. <i>on Thursday</i> = on that day only.",
+          "tags": [
+            "time"
+          ]
+        },
+        {
+          "id": "p1-16",
+          "text": "The shop is open {{c1::until}} nine tonight.",
+          "rule": "<b>by</b> = no later than (a deadline). <b>until</b> = continuing up to that time. <i>on Thursday</i> = on that day only.",
+          "tags": [
+            "time",
+            "contrast"
+          ]
+        },
+        {
+          "id": "p1-17",
+          "text": "What did you do {{c1::at}} the weekend?",
+          "rule": "British <b>at the weekend</b>; American <i>on the weekend</i>; <i>over the weekend</i> works in both. Never <i>in</i>.",
+          "tags": [
+            "time"
+          ]
+        },
+        {
+          "id": "p1-18",
+          "text": "I'm seeing them {{c1::at}} the weekend.",
+          "rule": "British <b>at the weekend</b>; American <i>on the weekend</i>; <i>over the weekend</i> works in both. Never <i>in</i>.",
+          "tags": [
+            "time"
+          ]
+        },
+        {
+          "id": "p1-19",
+          "text": "{{c1::In}} the end, we decided to stay at home.",
+          "rule": "<b>in the end</b> = finally, after some time. <b>at the end of</b> + something = at its final point. <i>At the end of the day</i> = when everything is considered.",
+          "tags": [
+            "time"
+          ]
+        },
+        {
+          "id": "p1-20",
+          "text": "I cried {{c1::at}} the end of the film.",
+          "rule": "<b>in the end</b> = finally, after some time. <b>at the end of</b> + something = at its final point. <i>At the end of the day</i> = when everything is considered.",
+          "tags": [
+            "time"
+          ]
+        },
+        {
+          "id": "p1-21",
+          "text": "{{c1::At}} the end of the day, it's your decision.",
+          "rule": "<b>in the end</b> = finally, after some time. <b>at the end of</b> + something = at its final point. <i>At the end of the day</i> = when everything is considered.",
+          "tags": [
+            "time"
+          ]
+        },
+        {
+          "id": "p1-22",
+          "text": "He accused me {{c1::of}} lying.",
+          "rule": "<b>accuse</b> someone <b>of</b> (doing) something. Compare <b>blame</b> someone <b>for</b> something.",
+          "tags": [
+            "dependent"
+          ]
+        },
+        {
+          "id": "p1-23",
+          "text": "They accused him {{c1::of}} stealing the money.",
+          "rule": "<b>accuse</b> someone <b>of</b> (doing) something. Compare <b>blame</b> someone <b>for</b> something.",
+          "tags": [
+            "dependent"
+          ]
+        },
+        {
+          "id": "p1-24",
+          "text": "She blamed me {{c1::for}} the mistake.",
+          "rule": "<b>accuse</b> someone <b>of</b> (doing) something. Compare <b>blame</b> someone <b>for</b> something.",
+          "tags": [
+            "dependent",
+            "contrast"
+          ]
+        },
+        {
+          "id": "p1-25",
+          "text": "Her attitude {{c1::to}} her job has really changed.",
+          "rule": "<b>attitude to</b> or <b>towards</b>: both are fine in British English.",
+          "tags": [
+            "dependent"
+          ]
+        },
+        {
+          "id": "p1-26",
+          "text": "Everyone noticed his attitude {{c1::towards}} the new manager.",
+          "rule": "<b>attitude to</b> or <b>towards</b>: both are fine in British English.",
+          "tags": [
+            "dependent"
+          ]
+        },
+        {
+          "id": "p1-27",
+          "text": "She entered {{c1::Ø}} the room without knocking.",
+          "rule": "Ø = no preposition. <b>enter, attend, reach, discuss, contact, phone, approach</b> take a direct object. (<i>enter into</i> = begin, as in <i>enter into an agreement</i>.)",
+          "tags": [
+            "zero"
+          ]
+        },
+        {
+          "id": "p1-28",
+          "text": "Please don't enter {{c1::Ø}} the building after ten.",
+          "rule": "Ø = no preposition. <b>enter, attend, reach, discuss, contact, phone, approach</b> take a direct object. (<i>enter into</i> = begin, as in <i>enter into an agreement</i>.)",
+          "tags": [
+            "zero"
+          ]
+        },
+        {
+          "id": "p1-29",
+          "text": "Did you attend {{c1::Ø}} the meeting yesterday?",
+          "rule": "Ø = no preposition. <b>enter, attend, reach, discuss, contact, phone, approach</b> take a direct object. (<i>enter into</i> = begin, as in <i>enter into an agreement</i>.)",
+          "tags": [
+            "zero",
+            "slow"
+          ]
+        },
+        {
+          "id": "p1-30",
+          "text": "Over two hundred people attended {{c1::Ø}} the conference.",
+          "rule": "Ø = no preposition. <b>enter, attend, reach, discuss, contact, phone, approach</b> take a direct object. (<i>enter into</i> = begin, as in <i>enter into an agreement</i>.)",
+          "tags": [
+            "zero",
+            "slow"
+          ]
+        },
+        {
+          "id": "p1-31",
+          "text": "We reached {{c1::Ø}} the top just before sunset.",
+          "rule": "Ø = no preposition. <b>enter, attend, reach, discuss, contact, phone, approach</b> take a direct object. (<i>enter into</i> = begin, as in <i>enter into an agreement</i>.)",
+          "tags": [
+            "zero",
+            "slow"
+          ]
+        },
+        {
+          "id": "p1-32",
+          "text": "What time will we reach {{c1::Ø}} the coast?",
+          "rule": "Ø = no preposition. <b>enter, attend, reach, discuss, contact, phone, approach</b> take a direct object. (<i>enter into</i> = begin, as in <i>enter into an agreement</i>.)",
+          "tags": [
+            "zero",
+            "slow"
+          ]
+        },
+        {
+          "id": "p1-33",
+          "text": "I'll see you {{c1::on}} Monday morning, then.",
+          "rule": "<b>on</b> + a day, even with morning, evening or night (<i>on Monday morning</i>). <b>in the morning</b> on its own; <b>at night</b>.",
+          "tags": [
+            "time",
+            "slow"
+          ]
+        },
+        {
+          "id": "p1-34",
+          "text": "Shall we meet {{c1::on}} Friday evening?",
+          "rule": "<b>on</b> + a day, even with morning, evening or night (<i>on Monday morning</i>). <b>in the morning</b> on its own; <b>at night</b>.",
+          "tags": [
+            "time",
+            "slow"
+          ]
+        },
+        {
+          "id": "p1-35",
+          "text": "I work best {{c1::in}} the morning.",
+          "rule": "<b>on</b> + a day, even with morning, evening or night (<i>on Monday morning</i>). <b>in the morning</b> on its own; <b>at night</b>.",
+          "tags": [
+            "time",
+            "contrast"
+          ]
+        },
+        {
+          "id": "p1-36",
+          "text": "There's no easy solution {{c1::to}} this problem.",
+          "rule": "<b>solution / answer / key to</b> something.",
+          "tags": [
+            "dependent",
+            "slow"
+          ]
+        },
+        {
+          "id": "p1-37",
+          "text": "What's the answer {{c1::to}} question five?",
+          "rule": "<b>solution / answer / key to</b> something.",
+          "tags": [
+            "dependent",
+            "slow"
+          ]
+        }
+      ]
+    }
+  ]
+}
