@@ -510,7 +510,10 @@ function speechDelay(min = 0) { return Math.max(min, Math.max(0, SFX.busyUntil -
 
 /* ---------- screens ---------- */
 const SCREENS = ['home', 'session', 'done', 'parent', 'picker'];
-function show(name) { SCREENS.forEach(s => { $('#' + s).hidden = s !== name; }); }
+function show(name) {
+  SCREENS.forEach(s => { $('#' + s).hidden = s !== name; });
+  if ((name === 'home' || name === 'done') && reloadForUpdate.pending) setTimeout(reloadForUpdate, 300);
+}
 function toast(msg) {
   const t = $('#toast'); t.textContent = msg; t.hidden = false;
   clearTimeout(toast.t); toast.t = setTimeout(() => { t.hidden = true; }, 2600);
@@ -1186,6 +1189,12 @@ function wire() {
   }
 }
 
+function reloadForUpdate() {
+  if (!reloadForUpdate.pending) return;
+  if (S || !$('#parent').hidden || !$('#celebrate').hidden) return;   // wait until she is back on Home or Done
+  location.reload();
+}
+
 async function boot() {
   wire();
   try {
@@ -1211,7 +1220,16 @@ async function boot() {
   }
   if (PROFILE_KEY[last]) renderHome(); else showPicker();   // first launch: choose a profile
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+    // Updates: when a new version takes over, reload on its own, but never in the middle of a session.
+    const hadController = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!hadController || reloadForUpdate.pending) return;
+      reloadForUpdate.pending = true;
+      reloadForUpdate();
+    });
+    navigator.serviceWorker.register('sw.js').then(reg => {
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) reg.update().catch(() => {}); });
+    }).catch(() => {});
   }
 }
 boot();
