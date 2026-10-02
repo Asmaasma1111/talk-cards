@@ -6,6 +6,9 @@
 const $ = (s, r = document) => r.querySelector(s);
 const PARAMS = new URLSearchParams(location.search);
 const DEV = PARAMS.get('dev') === '1';
+// One code base, two apps: Talk Cards (Maria) and Prepositions (Mama's deck). <html data-app="prepositions"> picks.
+const APP = document.documentElement.dataset.app === 'prepositions' ? 'prepositions' : 'talk-cards';
+const PROFILES = APP === 'prepositions' ? ['mama'] : ['maria'];   // profiles this app shows
 const OLD_KEY = 'mariaTalkCards.v1';                    // single-profile version, moved into Maria's profile
 const PROFILE_KEY = { maria: 'tc:maria', mama: 'tc:mama' };
 const LAST_KEY = 'tc:last';
@@ -563,11 +566,16 @@ function renderHome() {
 }
 
 /* ---------- profiles ---------- */
-function showPicker() { Speech.stop(); S = null; document.body.dataset.profile = lsGet(LAST_KEY) || 'maria'; show('picker'); }
+function showPicker() {
+  if (PROFILES.length < 2) return;
+  Speech.stop(); S = null; document.body.dataset.profile = lsGet(LAST_KEY) || PROFILES[0];
+  document.querySelectorAll('#picker [data-profile]').forEach(t => { t.hidden = !PROFILES.includes(t.dataset.profile); });
+  show('picker');
+}
 function openProfile(p) {
   Speech.stop(); S = null;
   if (p !== prof) { load(p); unlockVoice.done = false; }
-  lsSet(LAST_KEY, p);
+  if (APP === 'talk-cards') lsSet(LAST_KEY, p);
   SFX.level();
   renderHome();
 }
@@ -1013,14 +1021,14 @@ const commonRows = s => `
     </div>`;
 const backupRows = () => `
     <div class="p-group">
-      <div class="p-row"><span>Both profiles<span class="sub">Maria and Mama in one file</span></span></div>
+      <div class="p-row"><span>Your progress<span class="sub">${APP === 'prepositions' ? 'Saved in one file you can keep or move to another device' : 'Saves every profile on this device in one file'}</span></span></div>
       <div class="p-row"><div class="btns">
         <button class="p-btn" data-act="backup">Back up progress</button>
         <button class="p-btn" data-act="restore">Restore from a backup file</button>
       </div></div>
     </div>
     <div class="p-group">
-      <div class="p-row"><button class="p-btn danger" data-act="reset">Reset ${isMama() ? "Mama's" : "Maria's"} profile</button></div>
+      <div class="p-row"><button class="p-btn danger" data-act="reset">${APP === 'prepositions' ? 'Reset my progress' : `Reset ${isMama() ? "Mama's" : "Maria's"} profile`}</button></div>
     </div>
     <input id="pFile" type="file" accept=".json,application/json" hidden>`;
 function renderMamaSettings() {
@@ -1111,10 +1119,10 @@ function onParentClick(e) {
     case 'restore': $('#pFile').click(); break;
     case 'reset':
     {
-      const who = isMama() ? "Mama's" : "Maria's";
-      if (confirm(`Reset ${who} profile? All of ${who} progress will be deleted. The other profile is not touched.`) &&
-          confirm('Are you sure? This cannot be undone.')) {
-        st = defaults(); save(); renderParent(); toast(`${who} profile has been reset.`);
+      const ask = APP === 'prepositions' ? 'Reset your progress? Every card goes back to new.'
+        : `Reset ${isMama() ? "Mama's" : "Maria's"} profile? All of its progress will be deleted. Other profiles are not touched.`;
+      if (confirm(ask) && confirm('Are you sure? This cannot be undone.')) {
+        st = defaults(); save(); renderParent(); toast('Progress has been reset.');
       }
     }
       break;
@@ -1124,9 +1132,12 @@ function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navig
 function backup() {
   save();
   const profiles = {};
-  Object.keys(PROFILE_KEY).forEach(p => { profiles[p] = p === prof ? st : readProfile(p); });
+  Object.keys(PROFILE_KEY).forEach(p => {
+    if (p === prof) profiles[p] = st;
+    else if ((APP === 'talk-cards' || PROFILES.includes(p)) && lsGet(PROFILE_KEY[p])) profiles[p] = readProfile(p);
+  });
   const data = JSON.stringify({ app: 'maria-talk-cards', v: 2, saved: new Date().toISOString(), profiles });
-  const name = `talk-cards-backup-${today()}.json`;
+  const name = `${APP}-backup-${today()}.json`;
   let file = null;
   try { file = new File([data], name, { type: 'application/json' }); } catch (e) {}
   if (file && isIOS() && navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -1144,12 +1155,13 @@ async function restore(file) {
     const obj = JSON.parse(await file.text());
     if (!obj || obj.app !== 'maria-talk-cards') throw new Error('bad');
     const profiles = obj.profiles || (obj.state ? { maria: obj.state } : null);   // v1 files held Maria only
-    const ok = profiles && Object.keys(profiles).filter(p => PROFILE_KEY[p] && profiles[p] && typeof profiles[p].cards === 'object');
+    const ok = profiles && Object.keys(profiles).filter(p => PROFILES.includes(p) && profiles[p] && typeof profiles[p].cards === 'object');
     if (!ok || !ok.length) throw new Error('bad');
-    if (!confirm(`Replace the progress on this device with this backup (${ok.map(p => p === 'mama' ? 'Mama' : 'Maria').join(' and ')})?`)) return;
+    if (!confirm(APP === 'prepositions' ? 'Replace your progress on this device with this backup?'
+      : `Replace the progress on this device with this backup (${ok.map(p => p === 'mama' ? 'Mama' : 'Maria').join(' and ')})?`)) return;
     ok.forEach(p => lsSet(PROFILE_KEY[p], JSON.stringify(merge(profiles[p], p))));
     load(prof); renderParent(); toast('Progress restored.');
-  } catch (e) { toast('That file is not a Talk Cards backup.'); }
+  } catch (e) { toast(APP === 'prepositions' ? 'That file has no Prepositions progress.' : 'That file is not a Talk Cards backup.'); }
 }
 
 /* ---------- developer mode (?dev=1) ---------- */
@@ -1181,7 +1193,8 @@ function wire() {
   $('#profileChip').addEventListener('click', showPicker);
   $('#badges').addEventListener('click', e => { const b = e.target.closest('[data-set]'); if (b) startSetPractice(Number(b.dataset.set)); });
   $('#picker').addEventListener('click', e => { const t = e.target.closest('[data-profile]'); if (t) openProfile(t.dataset.profile); });
-  holdToOpen($('#gear'), 2000, openParent);
+  if (APP === 'prepositions') $('#gear').addEventListener('click', openParent);
+  else holdToOpen($('#gear'), 2000, openParent);
   $('#parent').addEventListener('click', onParentClick);
   $('#parent').addEventListener('change', e => {
     if (e.target.id === 'pFile' && e.target.files[0]) { restore(e.target.files[0]); e.target.value = ''; }
@@ -1209,28 +1222,29 @@ function reloadForUpdate() {
 
 async function boot() {
   wire();
+  document.body.classList.toggle('single', PROFILES.length < 2);
   try {
-    const res = await fetch('sets.json');
-    buildCatalog(await res.json());
+    if (PROFILES.includes('maria')) buildCatalog(await (await fetch('sets.json')).json());
+    if (PROFILES.includes('mama')) buildPrepCatalog(await (await fetch('prepositions.json')).json());
   } catch (e) {
     document.body.innerHTML = '<p style="font:24px var(--en);padding:40px;text-align:center">The cards could not load. Please connect to the internet once and try again.</p>';
     return;
   }
-  try { buildPrepCatalog(await (await fetch('prepositions.json')).json()); } catch (e) { /* Mama's deck missing: her profile shows no cards */ }
   try {
     const r = await fetch('audio/voice.json');
     if (r.ok) VOICE = await r.json();
   } catch (e) { VOICE = null; }
   if (VOICE) fetch('audio/_unlock.m4a').then(r => r.blob()).then(b => { unlockUrl = URL.createObjectURL(b); }).catch(() => {});
-  migrateOldVersion();
+  if (APP === 'talk-cards') migrateOldVersion();
   const last = lsGet(LAST_KEY);
-  load(PROFILE_KEY[last] ? last : 'maria');
+  const known = PROFILES.length === 1 || PROFILES.includes(last);
+  load(PROFILES.includes(last) ? last : PROFILES[0]);
   if (DEV) {
     renderDev();
     window.TC = { get st() { return st; }, get S() { return S; }, CARD, SET, SETS, today, buildQueue, newOrder, dueIds, eligible, trickyIds, funIds, flip, rate, save, Speech, SFX, setPracticeIds, get VOICE() { return VOICE; }, renderText, voiceEl, get prof() { return prof; }, openProfile, showPicker, PCARDS, weekStats, readProfile,
       showCard(id) { if (!S) newSession('fun', [id]); else { S.queue = S.queue.filter(x => x !== id); S.cur = id; S.flipped = S.seenBack = S.flipping = S.busy = false; if (CARD[id].kind === 'gap') renderGapCard(CARD[id]); else renderCard(CARD[id]); } } };
   }
-  if (PROFILE_KEY[last]) renderHome(); else showPicker();   // first launch: choose a profile
+  if (known) renderHome(); else showPicker();   // first launch with several profiles: choose one
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     // Updates: when a new version takes over, reload on its own, but never in the middle of a session.
     const hadController = !!navigator.serviceWorker.controller;
@@ -1239,7 +1253,7 @@ async function boot() {
       reloadForUpdate.pending = true;
       reloadForUpdate();
     });
-    navigator.serviceWorker.register('sw.js').then(reg => {
+    navigator.serviceWorker.register(APP === 'prepositions' ? 'sw.js?app=prepositions' : 'sw.js').then(reg => {
       document.addEventListener('visibilitychange', () => { if (!document.hidden) reg.update().catch(() => {}); });
     }).catch(() => {});
   }

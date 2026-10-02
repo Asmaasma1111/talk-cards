@@ -1,7 +1,21 @@
 /* Offline cache for Maria's Talk Cards.
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
-const VERSION = 'talk-cards-v6';
-const FILES = [
+// The same file serves both apps: Talk Cards registers sw.js, Prepositions registers sw.js?app=prepositions.
+const APP = new URL(location.href).searchParams.get('app') === 'prepositions' ? 'prepositions' : 'talk-cards';
+const VERSION = APP + '-v7';
+const FILES = APP === 'prepositions' ? [
+  './',
+  'index.html',
+  'style.css',
+  'app.js',
+  'prepositions.json',
+  'manifest.json',
+  'icon-192.png',
+  'icon-512.png',
+  'fonts/literata.woff2',
+  'fonts/atkinson-400.woff2',
+  'fonts/atkinson-700.woff2'
+] : [
   './',
   'index.html',
   'style.css',
@@ -39,7 +53,8 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== VERSION).map(k => caches.delete(k))))
+      // several apps share this web address (Talk Cards, Prepositions, the games), so only this app's old caches go
+      .then(keys => Promise.all(keys.filter(k => k.startsWith(APP + '-') && k !== VERSION).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });

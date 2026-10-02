@@ -1,9 +1,8 @@
 # Talk Cards
 
-Flashcards with spaced repetition and a recorded voice, made for the iPad. There are two profiles:
+Flashcards with spaced repetition and a recorded voice, made for the iPad, for Maria's spoken English (`sets.json`): 26 sets that unlock one by one, with stars and prizes.
 
-- **Maria**: spoken English question-and-answer cards (`sets.json`), 26 sets that unlock one by one, with stars and prizes.
-- **Mama**: English prepositions in conversation (`prepositions.json`), say the whole sentence, then check.
+Mama's prepositions deck has its own shareable app, **Prepositions**: https://asmaasma1111.github.io/prepositions/. It is built from this same folder with `python3 scripts/export_prepositions.py` (then commit and push `~/Downloads/06_Projects_and_Code/prepositions-app`).
 
 **Link:** https://asmaasma1111.github.io/talk-cards/
 
@@ -17,14 +16,12 @@ Always use the Home Screen icon. The icon and a Safari tab keep separate progres
 
 ## Everyday use
 
-- On the first launch, choose **Maria** or **Mama**. The name chip at the top left switches profiles.
-- The gear at the top right opens the parent area (Mama's is called Settings). **Press and hold it for 2 seconds.**
-- In the parent area, **Back up progress** saves both profiles in one file. Do this now and then. **Restore** brings both back.
-- **Reset** clears only the profile that is open.
+- The gear at the top right opens the parent area. **Press and hold it for 2 seconds.**
+- In the parent area, **Back up progress** saves the progress in one file. Do this now and then. **Restore** brings it back.
 
 ## Changing the cards
 
-- Maria's cards are in `sets.json`. Mama's are in `prepositions.json`. Add new sets at the end, and keep each of Mama's card `id`s unchanged, because her progress is stored by `id`.
+- Maria's cards are in `sets.json`; add new sets at the end. Mama's are in `prepositions.json` (keep each card `id` unchanged, because progress is stored by `id`), then run the export script for the Prepositions app.
 - After changing any text, record the new lines (below), then raise `VERSION` in `sw.js` (for example `talk-cards-v2`) so the iPad picks up the change.
 
 ## Recording the voice
