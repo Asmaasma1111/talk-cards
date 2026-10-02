@@ -222,13 +222,35 @@ NUM = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', '
        'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty']
 
 
+TENS = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety']
+
+
+def num_words(n):
+    if n < len(NUM):
+        return NUM[n]
+    if n < 100:
+        return TENS[n // 10] + ('' if n % 10 == 0 else NUM[n % 10])
+    if n < 1000:
+        return NUM[n // 100] + 'hundred' + ('' if n % 100 == 0 else num_words(n % 100))
+    return str(n)
+
+
 def norm(t):
-    """Letters only, so punctuation and spacing never count; numbers as words; OK = okay."""
+    """Letters only, so punctuation and spacing never count; numbers and times as words; OK = okay."""
     t = t.lower().replace('___', '')
-    t = re.sub(r'\b(\d{1,2})\b', lambda m: NUM[int(m.group(1))] if int(m.group(1)) < len(NUM) else m.group(1), t)
+    t = re.sub(r'\b(\d{1,2}):00\b', r"\1 o'clock", t)            # 7:00 = seven o'clock
+    t = re.sub(r'\b\d{1,3}\b', lambda m: num_words(int(m.group(0))), t)
     t = re.sub(r"\bok\b", 'okay', t)
     t = re.sub(r'\bza[iy]n[ae]b\b', 'zaineb', t)         # the transcriber spells the name either way
+    t = re.sub(r'\bmiss\b', 'ms', t)                       # "Ms." is heard as "Miss"
     return re.sub(r'[^a-z0-9]', '', t)
+
+
+def same(want, heard):
+    """The clip says the line: letters match, reading "10:00" as either "ten" or "ten o'clock"."""
+    plain = re.sub(r'\b(\d{1,2}):00\b', r'\1', heard)
+    no_oclock = lambda t: norm(t).replace('oclock', '')
+    return norm(want) in (norm(heard), norm(plain)) or no_oclock(want) == no_oclock(plain)
 
 
 # ---------- Gemini ----------
@@ -436,7 +458,7 @@ def cmd_record(a):
     finish(0, 'recorded', recorded=done, remaining_lines=left)
 
 
-def split_batch(bid, plan, by_id, clips, ear=None):
+def split_batch(bid, plan, by_id, clips, ear=None, force_transcript=False):
     b = plan['batches'][bid]
     lines = [by_id[i] for i in b['lines'] if i in by_id]
     x = read_wav(os.path.join(BATCH_DIR, f'{bid}.wav'))
@@ -451,7 +473,15 @@ def split_batch(bid, plan, by_id, clips, ear=None):
         if n == 1 or (len(allg) >= n - 1 and (len(allg) == n - 1 or
                       (allg[n - 2][1] - allg[n - 2][0]) >= 1.25 * (allg[n - 1][1] - allg[n - 1][0]))):
             gaps = allg[:n - 1]
-    if len(gaps) >= n - 1:
+    if len(gaps) > n - 1:
+        # more long pauses than cuts: a pause inside a line could be taken for a line break, so only use the
+        # longest ones when they stand clearly apart from the rest
+        srt = sorted(gaps, key=lambda g: g[0] - g[1])
+        if (srt[n - 2][1] - srt[n - 2][0]) < 1.25 * (srt[n - 1][1] - srt[n - 1][0]):
+            gaps = []
+    if force_transcript:
+        gaps = []
+    if n == 1 or len(gaps) >= n - 1:
         cuts = sorted(sorted(gaps, key=lambda g: g[0] - g[1])[:n - 1])
         bounds = [0] + [c for g in cuts for c in g] + [len(env)]
         spans = [(bounds[2 * k], bounds[2 * k + 1]) for k in range(n)]
@@ -526,7 +556,7 @@ def cmd_split(a):
     plan = load(PLAN, {'batches': {}}); clips = load(CLIPS, {})
     todo = a.batches or [k for k, v in plan['batches'].items() if not v.get('split')]
     for bid in todo:
-        split_batch(bid, plan, by_id, clips)
+        split_batch(bid, plan, by_id, clips, force_transcript=a.by_transcript)
         dump(PLAN, plan); dump(CLIPS, clips)
 
 
@@ -550,11 +580,42 @@ def repair(l, clips, plan, ear):
         with tempfile.TemporaryDirectory() as d:
             p = os.path.join(d, 'try.wav'); write_wav(p, seg)
             heard = ear.hear(p); time.sleep(3)
-        if norm(heard) == norm(l['text']):
+        if same(l['text'], heard):
             write_wav(os.path.join(CLIP_DIR, f"{l['id']}.wav"), seg)
             c['from'], c['to'] = round(a_, 2), round(b_, 2)
             return heard
     return None
+
+
+def fix_boundary(la, lb, clips, plan, ear):
+    """Two neighbouring lines where words of one ended up in the other's clip: try the pauses between them,
+    nearest to where the first line should end, and keep the cut once both sides transcribe exactly."""
+    ca, cb = clips.get(la['id']), clips.get(lb['id'])
+    if not ca or not cb or ca.get('batch') != cb.get('batch'):
+        return False
+    x = read_wav(os.path.join(BATCH_DIR, f"{ca['batch']}.wav"))
+    x = x / (np.abs(x).max() or 1) * 0.89
+    a0, b1 = ca['from'], cb['to']
+    env = envelope(x[int(a0 * SR):int(b1 * SR)])
+    q = env < silence_threshold(env)
+    gaps = [((s + e) / 2 * 0.01 + a0) for s, e in runs(q) if s > 0 and e < len(q) and (e - s) >= 15]
+    syl = lambda l: sum(syllables(t) for _, t in l['tokens'] if t) or 1
+    guess = a0 + (b1 - a0) * syl(la) / (syl(la) + syl(lb))
+    for cut in sorted(gaps, key=lambda g: abs(g - guess))[:4]:
+        sa, sb = squeeze(trim(x[int(a0 * SR):int(cut * SR)])), squeeze(trim(x[int(cut * SR):int(b1 * SR)]))
+        with tempfile.TemporaryDirectory() as d:
+            pa, pb = os.path.join(d, 'a.wav'), os.path.join(d, 'b.wav')
+            write_wav(pa, sa); write_wav(pb, sb)
+            ha = ear.hear(pa); time.sleep(3)
+            if not same(la['text'], ha):
+                continue
+            hb = ear.hear(pb); time.sleep(3)
+        if same(lb['text'], hb):
+            write_wav(os.path.join(CLIP_DIR, f"{la['id']}.wav"), sa)
+            write_wav(os.path.join(CLIP_DIR, f"{lb['id']}.wav"), sb)
+            ca['to'], cb['from'] = round(cut, 2), round(cut, 2)
+            return True
+    return False
 
 
 def cmd_verify(a):
@@ -575,7 +636,7 @@ def cmd_verify(a):
             time.sleep(a.pace)
         heard = cache[key]
         sim = SequenceMatcher(None, norm(l['text']), norm(heard)).ratio()
-        ok = norm(l['text']) == norm(heard)          # the whole line, every word
+        ok = same(l['text'], heard)                  # the whole line, every word
         if not ok:
             low.append(l['id'])
         if not ok or a.all:
@@ -591,6 +652,20 @@ def cmd_verify(a):
             if heard is not None:
                 fixed.append(i); dump(CLIPS, clips)
                 print(f'REPAIRED {i}: now {heard!r}')
+        low = [i for i in low if i not in fixed]
+        # neighbours that are both wrong: move the cut between them
+        for k in range(len(low) - 1):
+            ia, ib = low[k], low[k + 1]
+            if ia in fixed or ib in fixed:
+                continue
+            batch = clips.get(ia, {}).get('batch')
+            order = plan['batches'].get(batch, {}).get('lines', []) if batch else []
+            if ia in order and ib in order and abs(order.index(ib) - order.index(ia)) == 1:
+                first, second = (ia, ib) if order.index(ia) < order.index(ib) else (ib, ia)   # in the order they were spoken
+                ear = ear or Ear()
+                if fix_boundary(by_id[first], by_id[second], clips, plan, ear):
+                    fixed += [ia, ib]; dump(CLIPS, clips)
+                    print(f'REPAIRED {ia} + {ib}: moved the cut between them')
         low = [i for i in low if i not in fixed]
         if fixed:
             print(f'{len(fixed)} repaired by widening the cut; {len(lines) - len(low)}/{len(lines)} clips now match.')
@@ -835,7 +910,7 @@ def main():
     p = sub.add_parser('lines'); p.add_argument('--size', type=int, default=BATCH_SIZE); p.add_argument('--show', action='store_true')
     p = sub.add_parser('record'); p.add_argument('--size', type=int, default=BATCH_SIZE); p.add_argument('--max', type=int)
     p.add_argument('--lines'); p.add_argument('--engine', choices=['gemini', 'say'], default='gemini')
-    p = sub.add_parser('split'); p.add_argument('batches', nargs='*')
+    p = sub.add_parser('split'); p.add_argument('batches', nargs='*'); p.add_argument('--by-transcript', action='store_true')
     p = sub.add_parser('verify'); p.add_argument('--redo', action='store_true'); p.add_argument('--all', action='store_true')
     p.add_argument('--only'); p.add_argument('--pace', type=float, default=4.5); p.add_argument('--no-repair', action='store_true')
     p = sub.add_parser('align'); p.add_argument('--show')
