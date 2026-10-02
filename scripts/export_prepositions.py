@@ -10,7 +10,8 @@ DST = os.path.expanduser(sys.argv[1] if len(sys.argv) > 1 else '~/Downloads/06_P
 os.makedirs(os.path.join(DST, 'fonts'), exist_ok=True)
 
 for f in ['app.js', 'style.css', 'sw.js', 'prepositions.json', '.nojekyll',
-          'fonts/literata.woff2', 'fonts/atkinson-400.woff2', 'fonts/atkinson-700.woff2']:
+          'fonts/literata.woff2', 'fonts/atkinson-400.woff2', 'fonts/atkinson-700.woff2',
+          'fonts/atkinson-400-italic.woff2', 'fonts/atkinson-700-italic.woff2']:
     shutil.copy2(os.path.join(SRC, f), os.path.join(DST, f))
 
 # page: same markup, switched to the Prepositions app and Mama's look from the first paint

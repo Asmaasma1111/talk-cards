@@ -6,6 +6,8 @@
 @font-face { font-family: 'Literata'; src: url(fonts/literata.woff2) format('woff2'); font-weight: 400 700; font-style: normal; font-display: swap; }
 @font-face { font-family: 'Atkinson Hyperlegible'; src: url(fonts/atkinson-400.woff2) format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: 'Atkinson Hyperlegible'; src: url(fonts/atkinson-700.woff2) format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Atkinson Hyperlegible'; src: url(fonts/atkinson-400-italic.woff2) format('woff2'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Atkinson Hyperlegible'; src: url(fonts/atkinson-700-italic.woff2) format('woff2'); font-weight: 700; font-style: italic; font-display: swap; }
 
 :root {
   --sun: #FFD84D;
@@ -492,10 +494,9 @@ body[data-profile="mama"] .btn {
 }
 body[data-profile="mama"] .btn:active { transform: translateY(1px); box-shadow: 0 1px 2px rgba(27, 36, 51, .06); }
 body[data-profile="mama"] .btn svg { width: 22px; height: 22px; opacity: .55; }
-body[data-profile="mama"] .btn-good { color: #FFFFFF; background: var(--gum); border-color: var(--gum); box-shadow: 0 1px 2px rgba(27, 36, 51, .10), 0 8px 22px rgba(45, 91, 211, .28); }
-body[data-profile="mama"] .btn-good svg { display: none; }
-body[data-profile="mama"] .btn .ic-cross { display: none; }
-body[data-profile="mama"] .btn .ic-loop { display: block; }
+/* right and wrong, as on a marked page: a white tick on green, a red cross on white */
+body[data-profile="mama"] .btn .ic-tick, body[data-profile="mama"] .btn .ic-cross { width: 26px; height: 26px; opacity: 1; }
+body[data-profile="mama"] .btn-good { color: #FFFFFF; background: #2F9E5E; border-color: #2F9E5E; box-shadow: 0 1px 2px rgba(27, 36, 51, .10), 0 8px 22px rgba(47, 158, 94, .28); }
 
 /* the sentence */
 .txt.sent { font-family: 'Literata', Georgia, serif; font-weight: 400; line-height: 1.42; letter-spacing: -.005em; }
@@ -511,9 +512,11 @@ body[data-profile="mama"] .btn .ic-loop { display: block; }
   color: #7A8496; background: #E8EDF4;
   white-space: nowrap;
 }
-.rule { position: relative; margin-top: 26px; padding-top: 22px; max-width: 32em; font-family: var(--en); font-size: 19px; line-height: 1.55; color: var(--soft, #4A566B); text-align: center; }
-.rule::before { content: ''; position: absolute; top: 0; left: 50%; width: 44px; height: 1px; background: rgba(27, 36, 51, .2); transform: translateX(-50%); }
-.rule b, .rule i { color: var(--ink); }
+/* the correction and guidance, in red italics like a teacher's pen; examples inside it turn upright */
+.rule { position: relative; margin-top: 26px; padding-top: 22px; max-width: 32em; font-family: var(--en); font-size: 19px; font-style: italic; line-height: 1.55; color: #C62828; text-align: center; }
+.rule::before { content: ''; position: absolute; top: 0; left: 50%; width: 44px; height: 1px; background: rgba(198, 40, 40, .35); transform: translateX(-50%); }
+.rule b { color: #B71C1C; }
+.rule i { font-style: normal; color: #B71C1C; }
 
 /* done */
 body[data-profile="mama"] #done { gap: 18px; }
