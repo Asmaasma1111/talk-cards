@@ -40,8 +40,8 @@ RESULT = os.path.join(WORK, 'tts-result.json')
 
 MODEL = 'gemini-3.8-flash-tts'
 DECKS = {   # American voice for both; the style travels in its own field, so it is never read aloud
-    'maria': {'voice': 'Despina', 'style': 'warm, clear and friendly, speaking slowly for a young English learner', 'say_rate': 165},
-    'mama': {'voice': 'Despina', 'style': 'clear, natural and friendly, at an easy conversational pace', 'say_rate': 185},
+    'maria': {'voice': 'Kore', 'style': 'warm, clear and friendly, speaking slowly for a young English learner', 'say_rate': 165},
+    'mama': {'voice': 'Kore', 'style': 'clear, natural and friendly, at an easy conversational pace', 'say_rate': 185},
 }
 CHECK_MODELS = ['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite', 'gemini-flash-lite-latest']
 SR = 24000
@@ -334,6 +334,15 @@ class Ear:
         return '?'
 
 
+def is_current(line_id, deck, clips, plan):
+    """A clip counts only if it was recorded with Gemini in the voice the deck uses now."""
+    c = clips.get(line_id)
+    if not c or c.get('engine') != 'gemini':
+        return False
+    b = plan['batches'].get(c.get('batch'), {})
+    return b.get('voice') == DECKS[deck]['voice']
+
+
 # ---------- result reporting ----------
 def finish(code, note, **extra):
     res = {'code': code, 'note': note, **extra}
@@ -345,11 +354,11 @@ def finish(code, note, **extra):
 # ---------- commands ----------
 def cmd_lines(a):
     lines = inventory()
-    clips = load(CLIPS, {})
-    todo = [l for l in lines if clips.get(l['id'], {}).get('engine') != 'gemini']
+    clips, plan = load(CLIPS, {}), load(PLAN, {'batches': {}})
+    todo = [l for l in lines if not is_current(l['id'], l['deck'], clips, plan)]
     for deck in DECKS:
         dl = [l for l in lines if l['deck'] == deck]; dt = [l for l in todo if l['deck'] == deck]
-        print(f'{deck}: {len(dl)} lines, {sum(len(l["tokens"]) for l in dl)} words; {len(dl) - len(dt)} recorded with Gemini; '
+        print(f'{deck} ({DECKS[deck]["voice"]}): {len(dl)} lines, {sum(len(l["tokens"]) for l in dl)} words; {len(dl) - len(dt)} recorded; '
               f'{len(dt)} to record = {-(-len(dt) // a.size)} request(s) of up to {a.size} lines')
     if a.show:
         for l in lines:
@@ -362,6 +371,9 @@ def cmd_record(a):
     plan = load(PLAN, {'batches': {}})
     plan['batches'] = {k: v for k, v in plan['batches'].items() if v.get('recorded')}   # drop failed attempts
     clips = load(CLIPS, {})
+
+    def same(b):   # a batch in this engine and, for Gemini, in the voice its deck uses now
+        return b.get('engine') == a.engine and (a.engine != 'gemini' or b.get('voice') == DECKS[b.get('deck', 'maria')]['voice'])
     if a.lines:
         want = a.lines.split(',')
         bad = [i for i in want if i not in by_id]
@@ -369,9 +381,9 @@ def cmd_record(a):
             finish(1, 'unknown line ids: ' + ','.join(bad))
         todo = [by_id[i] for i in want]
     else:
-        # placeholder clips (engine 'say') do not count when recording the real voice
-        covered = {i for i, c in clips.items() if c.get('engine') == a.engine} | \
-                  {i for b in plan['batches'].values() if not b.get('split') and b.get('engine') == a.engine for i in b['lines']}
+        # placeholder clips and clips in an earlier voice do not count
+        covered = {i for i, c in clips.items() if c.get('engine') == a.engine and same(plan['batches'].get(c.get('batch'), {}))} | \
+                  {i for b in plan['batches'].values() if not b.get('split') and same(b) for i in b['lines']}
         todo = [l for l in lines if l['id'] not in covered]
     if not todo:
         finish(0, 'nothing to record', recorded=[], remaining=0)
@@ -414,8 +426,8 @@ def cmd_record(a):
         print(f'{bid}: {deck}, {len(chunk)} lines, {plan["batches"][bid]["seconds"]} s ({a.engine})')
         if a.engine == 'gemini' and chunk is not chunks[-1]:
             time.sleep(8)   # stay under the per-minute limit
-    done_ids = {i for i, c in clips.items() if c.get('engine') == a.engine} | \
-               {i for b in plan['batches'].values() if b.get('engine') == a.engine for i in b['lines']}
+    done_ids = {i for i, c in clips.items() if c.get('engine') == a.engine and same(plan['batches'].get(c.get('batch'), {}))} | \
+               {i for b in plan['batches'].values() if same(b) for i in b['lines']}
     left = len([l for l in lines if l['id'] not in done_ids])
     finish(0, 'recorded', recorded=done, remaining_lines=left)
 
@@ -542,8 +554,9 @@ def repair(l, clips, plan, ear):
 
 
 def cmd_verify(a):
-    real = {i for i, c in load(CLIPS, {}).items() if c.get('engine') == 'gemini'}     # placeholders are not checked
-    lines = [l for l in inventory() if l['id'] in real and os.path.exists(os.path.join(CLIP_DIR, f"{l['id']}.wav"))]
+    clips_, plan_ = load(CLIPS, {}), load(PLAN, {'batches': {}})      # placeholders and old voices are not checked
+    lines = [l for l in inventory() if is_current(l['id'], l['deck'], clips_, plan_)
+             and os.path.exists(os.path.join(CLIP_DIR, f"{l['id']}.wav"))]
     if a.only:
         lines = [l for l in lines if l['id'] in set(a.only.split(','))]
     cache = load(VERIFY, {})
@@ -774,7 +787,7 @@ def cmd_build(a):
     for l in lines:
         wav = os.path.join(CLIP_DIR, f"{l['id']}.wav")
         if l['id'] not in clips or not os.path.exists(wav) or \
-                (clips[l['id']].get('engine') != 'gemini' and not a.with_placeholders):
+                (not is_current(l['id'], l['deck'], clips, plan) and not a.with_placeholders):
             missing.append(l['id']); continue
         if l['id'] not in align:
             raise SystemExit('run "voice.py align" first')

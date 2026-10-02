@@ -29,7 +29,7 @@ Always use the Home Screen icon. The icon and a Safari tab keep separate progres
 
 ## Recording the voice
 
-Every spoken line is a clip recorded with Gemini TTS: the American voice **Despina** on `gemini-3.8-flash-tts`. The script is `scripts/voice.py`, and the key goes in `.env` as `GEMINI_API_KEY` (never committed). The free tier allows 10 recordings a day per model, so lines are recorded in batches of about 41.
+Every spoken line is a clip recorded with Gemini TTS: the American voice **Kore** on `gemini-3.8-flash-tts`. The script is `scripts/voice.py`, and the key goes in `.env` as `GEMINI_API_KEY` (never committed). The free tier allows 10 recordings a day per model, so lines are recorded in batches of about 41.
 
 ```bash
 PY=~/Downloads/06_Projects_and_Code/maria-tenses/.venv/bin/python
