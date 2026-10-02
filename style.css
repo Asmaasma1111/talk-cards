@@ -107,6 +107,8 @@ svg { display: block; }
   border-radius: 50%;
   font-size: 19px; font-weight: 700;
 }
+button.badge { padding: 0; font: inherit; font-size: 19px; font-weight: 700; color: var(--ink); cursor: pointer; transition: transform .08s ease; }
+button.badge:active { transform: scale(.9); }
 .badge.done { background: var(--mint); }
 .badge.current { background: var(--sun); box-shadow: 0 0 0 5px rgba(255, 111, 168, .55), 0 0 16px 6px rgba(255, 111, 168, .45); animation: glow 2.4s ease-in-out infinite; }
 .badge.locked { background: var(--lilac); border-color: rgba(43, 35, 64, .3); color: rgba(43, 35, 64, .5); }
@@ -362,6 +364,7 @@ svg { display: block; }
   .today { font-size: 24px; }
   .prize-text, .current-set { font-size: 18px; }
   .badge { width: 36px; height: 36px; font-size: 15px; border-width: 2.5px; }
+  button.badge { font-size: 15px; }
   .badges { gap: 7px; max-width: calc(9 * 36px + 8 * 7px); }
   .face { padding: 12px 14px; }
   .label { font-size: 18px; }

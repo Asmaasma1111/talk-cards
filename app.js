@@ -537,10 +537,12 @@ function renderHome() {
   $('#prizeName').textContent = prize;
   const box = $('#badges'); box.textContent = '';
   SETS.forEach(s => {
-    const b = document.createElement('div');
     const done = st.passed.includes(s.id), open = s.id <= st.open;
+    const canPractice = open && setPracticeIds(s.id).length > 0;     // tap a set she has done to practise it
+    const b = document.createElement(canPractice ? 'button' : 'div');
+    if (canPractice) b.dataset.set = s.id;
     b.className = 'badge ' + (done ? 'done' : open ? 'current' : 'locked');
-    b.setAttribute('aria-label', `Set ${s.id}: ${s.title}${done ? ', done' : open ? '' : ', locked'}`);
+    b.setAttribute('aria-label', `Set ${s.id}: ${s.title}${done ? ', done' : open ? '' : ', locked'}${canPractice ? ', tap to practise' : ''}`);
     if (!done && !open) b.innerHTML = '<svg aria-hidden="true"><use href="#i-lock"/></svg>';
     else b.textContent = s.id;
     box.append(b);
@@ -602,7 +604,12 @@ function nextCard() {
   if (CARD[S.cur].kind === 'gap') renderGapCard(CARD[S.cur]); else renderCard(CARD[S.cur]);
   S.shownAt = performance.now(); S.flipMs = null;
 }
-function endSession() { Speech.stop(); S = null; showDone(); }
+function endSession() {
+  Speech.stop();
+  const fromHome = S && S.mode === 'set';
+  S = null;
+  if (fromHome) renderHome(); else showDone();
+}
 
 function iconBtn(cls, icon, label) {
   const b = document.createElement('button');
@@ -935,6 +942,17 @@ function showDone() {
   else pb.hidden = true;
   show('done');
 }
+// Practising one set from Home: every card of it she has already learned (answer cards, and ask cards once
+// the set is passed). Like the other practice rounds it never changes the schedule and gives no stars.
+function setPracticeIds(setId) {
+  const set = SET[setId];
+  return [...set.ans, ...(st.passed.includes(setId) ? set.ask : [])].filter(id => peek(id).box >= 1);
+}
+function startSetPractice(setId) {
+  SFX.init(); primeSpeech(); unlockVoice();
+  const ids = setPracticeIds(setId);
+  if (ids.length) newSession('set', ids);
+}
 function startPractice() {
   SFX.init(); primeSpeech(); unlockVoice();
   const kind = $('#practiceBtn').dataset.kind;
@@ -1146,6 +1164,7 @@ function wire() {
   $('#practiceBtn').addEventListener('click', startPractice);
   $('#homeBtn').addEventListener('click', renderHome);
   $('#profileChip').addEventListener('click', showPicker);
+  $('#badges').addEventListener('click', e => { const b = e.target.closest('[data-set]'); if (b) startSetPractice(Number(b.dataset.set)); });
   $('#picker').addEventListener('click', e => { const t = e.target.closest('[data-profile]'); if (t) openProfile(t.dataset.profile); });
   holdToOpen($('#gear'), 2000, openParent);
   $('#parent').addEventListener('click', onParentClick);
@@ -1187,7 +1206,7 @@ async function boot() {
   load(PROFILE_KEY[last] ? last : 'maria');
   if (DEV) {
     renderDev();
-    window.TC = { get st() { return st; }, get S() { return S; }, CARD, SET, SETS, today, buildQueue, newOrder, dueIds, eligible, trickyIds, funIds, flip, rate, save, Speech, SFX, get VOICE() { return VOICE; }, renderText, voiceEl, get prof() { return prof; }, openProfile, showPicker, PCARDS, weekStats, readProfile,
+    window.TC = { get st() { return st; }, get S() { return S; }, CARD, SET, SETS, today, buildQueue, newOrder, dueIds, eligible, trickyIds, funIds, flip, rate, save, Speech, SFX, setPracticeIds, get VOICE() { return VOICE; }, renderText, voiceEl, get prof() { return prof; }, openProfile, showPicker, PCARDS, weekStats, readProfile,
       showCard(id) { if (!S) newSession('fun', [id]); else { S.queue = S.queue.filter(x => x !== id); S.cur = id; S.flipped = S.seenBack = S.flipping = S.busy = false; if (CARD[id].kind === 'gap') renderGapCard(CARD[id]); else renderCard(CARD[id]); } } };
   }
   if (PROFILE_KEY[last]) renderHome(); else showPicker();   // first launch: choose a profile
