@@ -47,6 +47,11 @@ function buildCatalog(json) {
         CARD[k.id] = k; set.ask.push(k.id);
       }
     });
+    if (s.talk) {                          // "Talk time!": a short paragraph built from the set's answers
+      const t = { id: `t${s.id}`, kind: 'talk', set: s.id, stage: s.stage, chain: s.talk.chain, prompt: s.talk.prompt,
+                  cues: s.talk.cues || [], a: s.talk.a, order: n++ };
+      CARD[t.id] = t; set.talk = t.id;
+    }
     SETS.push(set); SET[set.id] = set;
   });
 }
@@ -141,10 +146,18 @@ function retiredSets() {
   return r;
 }
 function openSets() { const r = retiredSets(); return SETS.filter(s => s.id <= st.open && !r.has(s.id)); }
+function talkInPlay() {
+  const latest = {};
+  openSets().forEach(s => { if (s.talk && st.passed.includes(s.id)) latest[CARD[s.talk].chain] = s.talk; });
+  return new Set(Object.values(latest));
+}
 function eligible() {
   if (isMama()) return PCARDS.slice();      // all of Mama's sets are open
-  const out = [];
-  openSets().forEach(s => { out.push(...s.ans); if (st.passed.includes(s.id)) out.push(...s.ask); });
+  const out = [], talk = talkInPlay();
+  openSets().forEach(s => {
+    out.push(...s.ans);
+    if (st.passed.includes(s.id)) { out.push(...s.ask); if (talk.has(s.talk)) out.push(s.talk); }
+  });
   return out;
 }
 // New-card order: answer cards of the newest open set first, then waiting ask cards in set order.
@@ -154,10 +167,15 @@ function newOrder() {
   const newest = sets[sets.length - 1];
   const ids = [];
   [newest, ...sets.slice(0, -1)].forEach(s => s.ans.forEach(id => { if (peek(id).box === 0) ids.push(id); }));
-  sets.forEach(s => { if (st.passed.includes(s.id)) s.ask.forEach(id => { if (peek(id).box === 0) ids.push(id); }); });
+  const talk = talkInPlay();
+  sets.forEach(s => {
+    if (!st.passed.includes(s.id)) return;
+    s.ask.forEach(id => { if (peek(id).box === 0) ids.push(id); });
+    if (talk.has(s.talk) && peek(s.talk).box === 0) ids.push(s.talk);
+  });
   return ids;
 }
-function introducedToday() { const t = today(); return Object.values(st.cards).filter(c => c.intro === t).length; }
+function introducedToday() { const t = today(); return Object.entries(st.cards).filter(([id, c]) => c.intro === t && id[0] !== 't').length; }
 function dueIds() {
   const t = today();
   return eligible().filter(id => { const c = peek(id); return c.box >= 1 && c.due && c.due <= t; })
@@ -165,8 +183,10 @@ function dueIds() {
 }
 function buildQueue() {
   const s = st.settings;
-  const fresh = newOrder().slice(0, Math.max(0, s.newPerDay - introducedToday()));
-  return [...dueIds(), ...fresh].slice(0, s.perSession);
+  const order = newOrder();
+  const fresh = order.filter(id => id[0] !== 't').slice(0, Math.max(0, s.newPerDay - introducedToday()));
+  const talk = order.filter(id => id[0] === 't');   // Talk time: built from known sentences, so not counted as new
+  return [...[...dueIds(), ...fresh].slice(0, s.perSession), ...talk];
 }
 function trickyIds() {
   const t = today(), from = addDays(t, -6);
@@ -638,15 +658,30 @@ function openProfile(p) {
 
 /* ---------- session ---------- */
 let S = null;    // current session or practice round
-function newSession(mode, ids) {
+function newSession(mode, ids, warm = []) {
   S = { mode, queue: ids.slice(), all: new Set(ids), good: new Set(), again: new Set(), hint: new Set(), rated: new Set(),
         cur: null, flipped: false, seenBack: false, flipping: false, busy: false, celeb: [], frontPlan: null, backPlan: null,
-        shownAt: 0, flipMs: null };
+        shownAt: 0, flipMs: null, warm: new Set(warm) };
   $('#session').classList.toggle('practice', mode !== 'normal' || isMama());
   $('#starNum').textContent = starsToday();
   show('session');
   progress();
   nextCard();
+}
+// Warm-up (Maria): two learned cards that are not due today, one from the latest set she has learned cards in
+// and one from an older set, so every session starts by remembering. ✓ leaves their schedule alone; ✗ sends
+// the card back to be relearned.
+function warmUpIds(skip) {
+  const t = today();
+  const pool = eligible().filter(id => {
+    const c = peek(id);
+    return CARD[id].kind !== 'talk' && c.box >= 1 && !(c.due && c.due <= t) && !skip.has(id);
+  });
+  if (!pool.length) return [];
+  const latest = Math.max(...pool.map(id => CARD[id].set));
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const recent = pool.filter(id => CARD[id].set === latest), older = pool.filter(id => CARD[id].set < latest);
+  return [pick(recent), ...(older.length ? [pick(older)] : [])];
 }
 function startNormal() {
   SFX.init(); primeSpeech(); unlockVoice();
@@ -654,7 +689,8 @@ function startNormal() {
   const begin = () => {
     const ids = buildQueue();
     if (!ids.length) return showDone();
-    newSession('normal', ids);
+    const warm = isMama() ? [] : warmUpIds(new Set(ids));
+    newSession('normal', [...warm, ...ids], warm);
   };
   const celeb = isMama() ? [] : sweepPasses();
   const next = () => { if (!celeb.length) return begin(); showCelebration(celeb.shift(), next); };
@@ -699,12 +735,13 @@ function renderCard(c) {
 
   // front
   const label = document.createElement('div');
-  label.className = 'label' + (c.kind === 'ask' ? ' ask' : '');
-  label.textContent = c.kind === 'ask' ? 'Your turn to ask!' : 'Answer!';
+  const warm = S.warm && S.warm.has(c.id);
+  label.className = 'label' + (c.kind === 'ask' ? ' ask' : c.kind === 'talk' ? ' talk' : '');
+  label.textContent = c.kind === 'ask' ? 'Your turn to ask!' : c.kind === 'talk' ? 'Talk time!' : warm ? 'Remember?' : 'Answer!';
   const fArea = document.createElement('div'); fArea.className = 'text-area';
   const fTxt = document.createElement('div'); fTxt.className = 'txt'; fArea.append(fTxt);
-  const frontText = c.kind === 'ask' ? c.cue : c.q;
-  const speakFront = c.kind === 'ans' || (c.stage === 3 && !ARABIC.test(c.cue));
+  const frontText = c.kind === 'ask' ? c.cue : c.kind === 'talk' ? c.prompt : c.q;
+  const speakFront = c.kind === 'ans' || c.kind === 'talk' || (c.stage === 3 && !ARABIC.test(c.cue));
   S.frontPlan = renderText(fTxt, frontText, speakFront);
   const fFoot = document.createElement('div'); fFoot.className = 'foot';
   if (S.frontPlan) {
@@ -712,13 +749,32 @@ function renderCard(c) {
     sp.addEventListener('click', e => { e.stopPropagation(); Speech.play(S.frontPlan, 0, fTxt); });
     fFoot.append(sp);
   } else fFoot.append(Object.assign(document.createElement('span'), { className: 'spacer' }));
-  if (c.kind === 'ans' && c.hint) {
+  // Talk time: one numbered cue per sentence, in order. Stage 1 cues are Arabic, stage 2 English keywords;
+  // in stage 3 they stay behind the help button.
+  let cues = null;
+  if (c.kind === 'talk' && c.cues.length) {
+    cues = document.createElement('div'); cues.className = 'cues';
+    c.cues.forEach(([pic, word], i) => {
+      const chip = document.createElement('span'); chip.className = 'cue';
+      const n = Object.assign(document.createElement('b'), { textContent: i + 1 });
+      const w = Object.assign(document.createElement('span'), { textContent: word });
+      if (ARABIC.test(word)) { w.lang = 'ar'; w.dir = 'rtl'; w.className = 'ar'; }
+      chip.append(n, `${pic} `, w);
+      cues.append(chip);
+    });
+    if (c.stage < 3) fArea.append(cues);
+  }
+  if ((c.kind === 'ans' && c.hint) || (cues && c.stage >= 3)) {
     const hb = document.createElement('button');
     hb.className = 'hint-btn'; hb.lang = 'ar'; hb.dir = 'rtl'; hb.textContent = 'مساعدة';
     hb.addEventListener('click', e => {
       e.stopPropagation();
-      const h = document.createElement('div'); h.className = 'hint'; h.lang = 'ar'; h.dir = 'rtl'; h.textContent = c.hint;
-      fArea.append(h); hb.classList.add('used');
+      if (cues) fArea.append(cues);
+      else {
+        const h = document.createElement('div'); h.className = 'hint'; h.lang = 'ar'; h.dir = 'rtl'; h.textContent = c.hint;
+        fArea.append(h);
+      }
+      hb.classList.add('used');
       if (S.mode === 'normal') {
         S.hint.add(c.id);
         const r = rec(c.id); r.hints = (r.hints || 0) + 1; r.hintDay = today(); save();
@@ -737,6 +793,7 @@ function renderCard(c) {
   const bArea = document.createElement('div'); bArea.className = 'text-area';
   const bTxt = document.createElement('div'); bTxt.className = 'txt'; bArea.append(bTxt);
   S.backPlan = renderText(bTxt, c.kind === 'ask' ? c.q : c.a, true);
+  if (c.kind === 'talk') bTxt.classList.add('para');
   const bFoot = document.createElement('div'); bFoot.className = 'foot';
   const sp2 = iconBtn('round speak', 'i-speaker', 'Listen again');
   sp2.addEventListener('click', e => { e.stopPropagation(); Speech.play(S.backPlan, 0, bTxt); });
@@ -893,7 +950,9 @@ function rate(good) {
   S.rated.add(id);
   if (good) {
     SFX.good();
-    const onceMore = S.mode === 'normal' && applyGood(id) === true;
+    const warm = S.mode === 'normal' && S.warm && S.warm.has(id);
+    if (warm) { addStar(); save(); }
+    const onceMore = S.mode === 'normal' && !warm && applyGood(id) === true;
     if (S.mode === 'normal' && !isMama()) flyStar();
     else if (S.mode === 'tricky' && !isMama()) { sparkle(); SFX.star(0.3); }
     if (onceMore) S.queue.push(id);          // Anki's learning step: one more look at the end of this session
@@ -1029,7 +1088,8 @@ function showDone() {
 // the set is passed). Like the other practice rounds it never changes the schedule and gives no stars.
 function setPracticeIds(setId) {
   const set = SET[setId];
-  return [...set.ans, ...(st.passed.includes(setId) ? set.ask : [])].filter(id => peek(id).box >= 1);
+  const talk = set.talk && st.passed.includes(setId) ? [set.talk] : [];
+  return [...set.ans, ...(st.passed.includes(setId) ? set.ask : []), ...talk].filter(id => peek(id).box >= 1);
 }
 function startSetPractice(setId) {
   SFX.init(); primeSpeech(); unlockVoice();

@@ -197,6 +197,10 @@ def inventory():
                 for line in t.split(' / '):
                     if line not in out:
                         out[line] = {'id': clip_id(line), 'deck': 'maria', 'text': line, 'tts': tts_text(line), 'tokens': tokens(line)}
+        if s.get('talk'):                  # Talk time: the prompt and the model paragraph
+            for line in (s['talk']['prompt'], s['talk']['a']):
+                if line not in out:
+                    out[line] = {'id': clip_id(line), 'deck': 'maria', 'text': line, 'tts': tts_text(line), 'tokens': tokens(line)}
     lines = list(out.values())
     pp = os.path.join(ROOT, 'prepositions.json')
     if os.path.exists(pp):
