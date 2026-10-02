@@ -79,7 +79,8 @@ function defaults(p = prof) {
     v: 1, profile: 'mama',
     cards: {},                             // id -> {box, due, again:[dates], aTs, intro, up}
     history: [],                           // {id, day, ts, good, first, flipMs}
-    settings: { newPerDay: 10, perSession: 40, speed: 'normal', sfx: true }
+    settings: { newPerDay: 5, perSession: 20, speed: 'normal', sfx: true },
+    sched: 'sm2'                           // Anki's standard schedule (see sm2Good)
   };
   return {
     profile: 'maria',
@@ -100,7 +101,15 @@ function merge(s, p = prof) {
   const o = { ...d, ...s, profile: p,
     settings: { ...d.settings, ...(s.settings || {}) },
     cards: s.cards && typeof s.cards === 'object' ? s.cards : {} };
-  if (p === 'mama') o.history = Array.isArray(s.history) ? s.history : [];
+  if (p === 'mama') {
+    o.history = Array.isArray(s.history) ? s.history : [];
+    if (s.sched !== 'sm2') {               // from the ladder version: keep each card's place, add Anki's fields
+      Object.values(o.cards).forEach(c => { if (c.box >= 1) { c.ivl = INTERVAL[c.box]; c.ease = 2.5; c.learn = 0; } });
+      if (o.settings.newPerDay === 10) o.settings.newPerDay = 5;
+      if (o.settings.perSession === 40) o.settings.perSession = 20;
+      o.sched = 'sm2';
+    }
+  }
   else {
     o.stars = { ...d.stars, ...(s.stars || {}) };
     o.passed = Array.isArray(s.passed) ? s.passed : [];
@@ -171,9 +180,55 @@ function funIds() {
 }
 
 /* ---------- scheduling ---------- */
+/* Mama: Anki's standard schedule (SM-2) with two buttons.
+   New card: ✓ → seen once more at the end of this session (Anki's learning step), ✓ again → due tomorrow.
+   ✗ while learning → back a few cards later and both steps again. Review ✓ → next gap = gap × ease
+   (ease starts at 2.5, a little random spread so cards don't bunch up); review ✗ → ease −0.2 (not below
+   1.3), relearned in this session, then due tomorrow. A card moves up at most once a day. */
+const SM2 = { startEase: 2.5, minEase: 1.3, lapse: 0.2, maxIvl: 365 };
+const levelOf = ivl => (ivl < 2 ? 1 : Math.min(7, Math.floor(Math.log2(ivl)) + 1));   // keeps the "learned" counts working
+const daysBetween = (a, b) => { const [y1, m1, d1] = a.split('-').map(Number), [y2, m2, d2] = b.split('-').map(Number);
+  return Math.round((new Date(y2, m2 - 1, d2) - new Date(y1, m1 - 1, d1)) / 864e5); };
+function sm2NextIvl(c, t) {
+  const late = c.due ? Math.max(0, daysBetween(c.due, t)) : 0;
+  return Math.min(SM2.maxIvl, Math.max(c.ivl + 1, Math.round((c.ivl + late / 2) * (c.ease || SM2.startEase))));
+}
+function sm2Good(c, t) {                   // true = show it once more in this session
+  if (c.box === 0) { c.box = 1; c.ease = SM2.startEase; c.ivl = 0; c.learn = 1; c.due = t; return true; }
+  if (c.learn > 0) {
+    c.learn -= 1;
+    if (c.learn > 0) { c.due = t; return true; }
+    c.ivl = 1; c.due = addDays(t, 1); c.box = 1; c.relearn = false; c.up = t;
+    return false;
+  }
+  if (c.up === t) return false;
+  let ivl = sm2NextIvl(c, t);
+  if (ivl >= 3) ivl = Math.max(c.ivl + 1, Math.round(ivl * (0.95 + Math.random() * 0.1)));
+  c.ivl = ivl; c.due = addDays(t, ivl); c.box = levelOf(ivl); c.up = t;
+  return false;
+}
+function sm2Again(c, t) {
+  if (c.box === 0) { c.box = 1; c.ease = SM2.startEase; c.ivl = 0; c.learn = 2; }
+  else if (!(c.learn > 0)) {                // a review card lapses: easier to forget, relearn now
+    c.ease = Math.max(SM2.minEase, (c.ease || SM2.startEase) - SM2.lapse);
+    c.lapses = (c.lapses || 0) + 1; c.relearn = true; c.learn = 1; c.ivl = 0;
+  } else c.learn = c.relearn ? 1 : 2;       // missed again while learning: start the steps over
+  c.due = t;
+}
+// What the ✓ and ✗ buttons will do, shown under them (as Anki shows the next interval)
+function sm2Hint(id) {
+  const c = peek(id), t = today();
+  if (c.box === 0 || c.learn > 1) return 'once more today';
+  if (c.learn === 1) return 'tomorrow';
+  if (c.up === t) return 'already done today';
+  const n = sm2NextIvl({ ivl: c.ivl || 1, ease: c.ease, due: c.due }, t);
+  return n === 1 ? 'tomorrow' : `in ${n} days`;
+}
+
 function applyGood(id) {
   const c = rec(id), t = today();
   if (c.box === 0 && !c.intro) c.intro = t;
+  if (isMama()) { const again = sm2Good(c, t); save(); return again; }
   const againToday = S.again.has(id) || (c.again || []).includes(t);
   if (againToday) { c.box = 1; c.due = addDays(t, 1); }
   else if (c.up !== t) { c.box = Math.min(7, c.box + 1); c.due = addDays(t, INTERVAL[c.box]); c.up = t; }
@@ -184,7 +239,8 @@ function applyGood(id) {
 function applyAgain(id) {
   const c = rec(id), t = today();
   if (c.box === 0 && !c.intro) c.intro = t;
-  c.box = 1; c.due = addDays(t, 1);
+  if (isMama()) sm2Again(c, t);
+  else { c.box = 1; c.due = addDays(t, 1); }
   (c.again = c.again || []).push(t);
   c.aTs = nowTs();
   save();
@@ -767,6 +823,8 @@ function renderGapCard(c) {
   const sp = iconBtn('round speak', 'i-speaker', 'Listen again');
   sp.addEventListener('click', e => { e.stopPropagation(); Speech.play(S.backPlan, 0, bTxt); });
   bFoot.append(sp, div('spacer'));
+  $('#goodWhen').textContent = S.mode === 'normal' ? sm2Hint(c.id) : '';
+  $('#againWhen').textContent = S.mode === 'normal' ? 'soon' : '';
   const bLabel = div('label back-label'); bLabel.textContent = 'Answer';
   back.append(bLabel, bArea, bFoot);
 
@@ -835,9 +893,11 @@ function rate(good) {
   S.rated.add(id);
   if (good) {
     SFX.good();
-    if (S.mode === 'normal') { applyGood(id); if (!isMama()) flyStar(); }
+    const onceMore = S.mode === 'normal' && applyGood(id) === true;
+    if (S.mode === 'normal' && !isMama()) flyStar();
     else if (S.mode === 'tricky' && !isMama()) { sparkle(); SFX.star(0.3); }
-    S.good.add(id);
+    if (onceMore) S.queue.push(id);          // Anki's learning step: one more look at the end of this session
+    else S.good.add(id);
   } else {
     SFX.again();
     if (S.mode === 'normal') applyAgain(id);

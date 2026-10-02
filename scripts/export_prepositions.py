@@ -89,5 +89,5 @@ Flashcards for English prepositions in conversation, with spaced repetition.
 Made by Dr. Asma Khattala. The cards are in `prepositions.json`.
 """
 open(os.path.join(DST, 'README.md'), 'w', encoding='utf-8').write(readme)
-open(os.path.join(DST, '.gitignore'), 'w').write('.DS_Store\n')
+open(os.path.join(DST, '.gitignore'), 'w').write('.DS_Store\n_dev_mock.js\n')
 print(f'Prepositions app written to {DST} ({clips} recorded clips)')

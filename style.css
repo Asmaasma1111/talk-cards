@@ -542,3 +542,9 @@ body[data-profile="mama"] .btn-link { font-size: 16px; color: var(--soft); text-
 
 /* one profile only: no profile chip */
 body.single .chip { display: none; }
+
+/* when the card comes back, under ✗ and ✓ (Prepositions only) */
+.btn .lbl { display: inline-flex; flex-direction: column; align-items: flex-start; line-height: 1.1; }
+.btn .when { display: none; }
+body[data-profile="mama"] .btn .when { display: block; margin-top: 3px; font-size: 13px; font-weight: 400; letter-spacing: .02em; opacity: .75; }
+body[data-profile="mama"] .btn .when:empty { display: none; }
