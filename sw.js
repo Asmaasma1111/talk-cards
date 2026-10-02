@@ -1,6 +1,6 @@
 /* Offline cache for Maria's Talk Cards.
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
-const VERSION = 'talk-cards-v5';
+const VERSION = 'talk-cards-v6';
 const FILES = [
   './',
   'index.html',
@@ -52,7 +52,8 @@ self.addEventListener('fetch', e => {
   const put = res => { if (res.ok) { const copy = res.clone(); caches.open(VERSION).then(c => c.put(req, copy)); } return res; };
   // On a local test server, fetch fresh files first so edits show up; fall back to the cache offline.
   if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
-    e.respondWith(fetch(req, { cache: 'no-store' }).then(put).catch(() => caches.match(req, { ignoreSearch: true })));
+    // (a page navigation cannot be re-fetched with options, so it is fetched by its URL)
+    e.respondWith(fetch(req.mode === 'navigate' ? req.url : req, { cache: 'no-store' }).then(put).catch(() => caches.match(req, { ignoreSearch: true })));
     return;
   }
   // Everywhere else: cache first, so the app opens instantly and works with no signal.

@@ -531,6 +531,13 @@ function renderHome() {
     const w = weekStats();
     $('#mWeek').textContent = w.reviews ? `Last 7 days: ${w.reviews} reviews · ${Math.round(w.good / w.reviews * 100)}% right first time`
       : 'Last 7 days: no reviews yet';
+    const t = today(), asDate = ds => { const [y, m, d] = ds.split('-').map(Number); return new Date(y, m - 1, d); };
+    $('#mDate').textContent = asDate(t).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+    const days = Array.from({ length: 7 }, (_, i) => addDays(t, i - 6));
+    const counts = days.map(d => st.history.filter(h => h.first && h.day === d).length);
+    const max = Math.max(1, ...counts);
+    $('#mBars').innerHTML = days.map((d, i) =>
+      `<div class="wk${d === t ? ' today' : ''}"><i style="height:${Math.round(counts[i] / max * 34)}px"></i><span>${asDate(d).toLocaleDateString('en-US', { weekday: 'narrow' })}</span></div>`).join('');
     return show('home');
   }
   $('#todayStars').textContent = starsToday();
@@ -752,7 +759,8 @@ function renderGapCard(c) {
   const sp = iconBtn('round speak', 'i-speaker', 'Listen again');
   sp.addEventListener('click', e => { e.stopPropagation(); Speech.play(S.backPlan, 0, bTxt); });
   bFoot.append(sp, div('spacer'));
-  back.append(bArea, bFoot);
+  const bLabel = div('label back-label'); bLabel.textContent = 'Answer';
+  back.append(bLabel, bArea, bFoot);
 
   if (DEV) {
     const r = peek(c.id), d = div('dev-info');
@@ -939,6 +947,10 @@ function confetti() {
 /* ---------- done + practice rounds ---------- */
 function showDone() {
   $('#doneStars').textContent = starsToday();
+  if (isMama()) {
+    const n = st.history.filter(h => h.first && h.day === today()).length;
+    $('#doneSub').textContent = n ? `${n} card${n === 1 ? '' : 's'} today` : '';
+  }
   const pb = $('#practiceBtn');
   if (trickyIds().length) { pb.textContent = 'Tricky ones'; pb.dataset.kind = 'tricky'; pb.hidden = false; }
   else if (funIds().length) { pb.textContent = 'Play again (just for fun)'; pb.dataset.kind = 'fun'; pb.hidden = false; }

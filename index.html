@@ -36,13 +36,17 @@
     <svg class="ring" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="24"/></svg>
     <svg class="cog" aria-hidden="true"><use href="#i-gear"/></svg>
   </button>
+  <div class="m-date mama-only" id="mDate"></div>
   <h1 class="brand" id="brand">Maria's Talk Cards</h1>
   <div class="counts mama-only">
     <div><b id="mDue">0</b><span>Due today</span></div>
     <div><b id="mNew">0</b><span>New today</span></div>
   </div>
   <button id="startBtn" class="btn-start">Start</button>
-  <div class="week mama-only" id="mWeek"></div>
+  <div class="week mama-only">
+    <div class="bars" id="mBars" aria-hidden="true"></div>
+    <div class="week-text" id="mWeek"></div>
+  </div>
   <div class="today maria-only"><svg class="star" aria-hidden="true"><use href="#i-star"/></svg><span><b id="todayStars">0</b> today</span></div>
   <div class="prize maria-only">
     <div class="bar"><div class="fill" id="prizeFill"></div></div>
@@ -82,6 +86,7 @@
 <!-- Done -->
 <section id="done" class="screen" hidden>
   <h1 class="done-title">All done for today!</h1>
+  <div class="done-sub mama-only" id="doneSub"></div>
   <div class="done-stars maria-only"><svg class="star" aria-hidden="true"><use href="#i-star"/></svg><b id="doneStars">0</b></div>
   <button id="practiceBtn" class="btn btn-soft">Tricky ones</button>
   <button id="homeBtn" class="btn-link">Home</button>
