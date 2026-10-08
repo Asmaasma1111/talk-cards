@@ -754,6 +754,7 @@ function renderCard(c) {
   let cues = null;
   if (c.kind === 'talk' && c.cues.length) {
     cues = document.createElement('div'); cues.className = 'cues';
+    if (c.cues.every(([, word]) => ARABIC.test(word))) cues.dir = 'rtl';   // Arabic cues: the list reads right to left
     c.cues.forEach(([pic, word], i) => {
       const chip = document.createElement('span'); chip.className = 'cue';
       const n = Object.assign(document.createElement('b'), { textContent: i + 1 });
@@ -903,11 +904,17 @@ function fit(face) {
   if (!area || !txt) return;
   area.classList.remove('scroll');
   const wide = area.clientWidth >= 520;
-  let size = isMama() ? (wide ? 44 : 34) : (wide ? 56 : 44);
+  const max = isMama() ? (wide ? 44 : 34) : (wide ? 56 : 44);
   const min = isMama() ? 24 : 32;
-  txt.style.fontSize = size + 'px';
+  const cues = area.querySelector('.cues');
+  if (cues) cues.classList.remove('tight');
   const over = () => area.scrollHeight > area.clientHeight + 1 || area.scrollWidth > area.clientWidth + 1;
-  while (over() && size > min) { size -= 2; txt.style.fontSize = size + 'px'; }
+  const shrink = () => {
+    let size = max; txt.style.fontSize = size + 'px';
+    while (over() && size > min) { size -= 2; txt.style.fontSize = size + 'px'; }
+  };
+  shrink();
+  if (over() && cues) { cues.classList.add('tight'); shrink(); }   // a long cue list: smaller rows before scrolling
   if (over()) area.classList.add('scroll');
 }
 function setActions(side) {

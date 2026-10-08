@@ -13,7 +13,7 @@
       { "q": "How old are you?", "a": "I'm eight.", "hint": "كم عمركِ؟", "ask": "اسألي عن العمر" },
       { "q": "Where are you from?", "a": "I'm from Algeria.", "hint": "من أين أنتِ؟", "ask": "اسألي: من أين أنتِ؟" },
       { "q": "Where do you live?", "a": "I live in Saudi Arabia.", "hint": "أين تسكنين؟", "ask": "اسألي: أين تسكنين؟" },
-      { "q": "Can you spell your name?", "a": "M-A-R-I-A.", "hint": "تهجّي اسمكِ", "ask": "اطلبي من ماما أن تتهجّى اسمها" }
+      { "q": "Can you spell your name, please?", "a": "M-A-R-I-A.", "hint": "تهجّي اسمكِ من فضلك", "ask": "اطلبي من ماما أن تتهجّى اسمها" }
     ], "talk": { "chain": "me", "prompt": "Tell me about you!",
       "cues": [["👋", "سلّمي"], ["📛", "اسمك"], ["🎂", "عمرك"], ["🌍", "من أين أنتِ"], ["🏠", "أين تسكنين"]],
       "a": "Hello! My name is Maria. I'm eight. I'm from Algeria. I live in Saudi Arabia." }},
@@ -52,11 +52,11 @@
     { "id": 7, "stage": 1, "title": "Help me talk", "cards": [
       { "q": "Do you understand?", "a": "No, I don't. Can you say it again, please?", "hint": "هل فهمتِ؟", "ask": "اسألي: هل فهمتِ؟" },
       { "q": "Can you speak English?", "a": "Yes, a little!", "hint": "هل تتكلّمين الإنجليزية؟", "ask": "اسألي: هل تتكلّمين الإنجليزية؟" },
-      { "q": "What's this in English?", "a": "I don't know. What is it?", "hint": "ما هذا بالإنجليزية؟", "ask": "اسألي عن اسم شيء بالإنجليزية" },
+      { "q": "What's this in English, please?", "a": "I don't know. What is it?", "hint": "ما هذا بالإنجليزية من فضلك؟", "ask": "اسألي عن اسم شيء بالإنجليزية" },
       { "q": "Is that right?", "a": "I think so. / I'm not sure.", "hint": "هل هذا صحيح؟", "ask": "اسألي: هل هذا صحيح؟" }
     ], "talk": { "chain": "help", "prompt": "You don't understand? Tell Mom!",
-      "cues": [["❓", "لم أفهم"], ["🔁", "أعيدي من فضلك"], ["🔤", "ما هذا بالإنجليزية؟"]],
-      "a": "I don't understand. Can you say it again, please? What's this in English?" }},
+      "cues": [["❓", "لم أفهم"], ["🔁", "أعيدي من فضلك"], ["🔤", "ما هذا بالإنجليزية من فضلك؟"]],
+      "a": "I don't understand. Can you say it again, please? What's this in English, please?" }},
     { "id": 8, "stage": 1, "title": "Playtime", "cards": [
       { "q": "Do you want to play?", "a": "Yes! Let's play!", "hint": "هل تريدين أن تلعبي؟", "ask": "ادعي ماما للّعب" },
       { "q": "Whose turn is it?", "a": "It's my turn! / It's your turn.", "hint": "دور من؟", "ask": "اسألي: دور من؟" },
@@ -83,7 +83,7 @@
       "a": "This is my pencil. It's yellow. It's small. It's mine. It's in my bag. My bag is on the chair." }},
     { "id": 11, "stage": 2, "title": "Numbers and time", "cards": [
       { "q": "How many pencils do you have?", "a": "I have three pencils.", "hint": "كم قلمًا لديكِ؟", "ask": "how many?" },
-      { "q": "What time is it?", "a": "It's seven o'clock.", "hint": "كم الساعة؟", "ask": "time?" },
+      { "q": "What time is it, please?", "a": "It's seven o'clock.", "hint": "كم الساعة من فضلك؟", "ask": "time?" },
       { "q": "When do you go to school?", "a": "At six o'clock.", "hint": "", "ask": "school? when?" },
       { "q": "How old is Zaineb?", "a": "She's three.", "hint": "", "ask": "Zaineb? old?" }
     ], "talk": { "chain": "numbers", "prompt": "Tell me some numbers!",
@@ -109,7 +109,7 @@
       { "q": "Can you swim?", "a": "Yes, I can! I'm a great swimmer.", "hint": "هل تستطيعين السباحة؟", "ask": "swim?" },
       { "q": "What can you do?", "a": "I can draw and jump.", "hint": "", "ask": "can do?" },
       { "q": "Can you draw a cat?", "a": "Yes, I can!", "hint": "", "ask": "draw a cat?" },
-      { "q": "Can I play with you?", "a": "Yes, you can!", "hint": "هل ألعب معكِ؟", "ask": "play with you?" }
+      { "q": "Can I play with you, please?", "a": "Yes, you can!", "hint": "هل ألعب معكِ من فضلك؟", "ask": "play with you?" }
     ], "talk": { "chain": "can", "prompt": "What can you do?",
       "cues": [["🏊", "swim?"], ["🥇", "great swimmer?"], ["🤸", "draw and jump?"], ["🐱", "draw a cat?"]],
       "a": "I can swim. I'm a great swimmer! I can draw and jump. I can draw a cat!" }},

@@ -44,7 +44,7 @@ DECKS = {   # American voice for both; the style travels in its own field, so it
     'maria': {'voice': 'Kore', 'style': 'warm, clear and friendly, speaking slowly for a young English learner', 'say_rate': 165},
     'mama': {'voice': 'Kore', 'style': 'clear, natural and friendly, at an easy conversational pace', 'say_rate': 185},
 }
-CHECK_MODELS = ['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite', 'gemini-flash-lite-latest']
+CHECK_MODELS = ['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite', 'gemini-flash-lite-latest', 'gemini-3.5-flash']   # last: when the lite ones hit 500 a day
 SR = 24000
 BATCH_SIZE = 41
 LINE_GAP = 1.2      # a silence this long separates two lines in a batch take
