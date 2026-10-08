@@ -10,6 +10,7 @@ prepositions (prepositions.json, full sentences with the gap filled). Each batch
   python scripts/voice.py record [--max N]          TTS: one request per batch of about 41 lines
   python scripts/voice.py record --lines ID,ID      re-record chosen lines in a new batch
   python scripts/voice.py split [BATCH ...]         cut recorded batches into line clips
+  python scripts/voice.py recut BATCH ...           cut transcript-matched batches again, edges moved to the pauses (no API)
   python scripts/voice.py verify [--redo]           transcribe each clip and compare with its text
   python scripts/voice.py align                     word timings for every clip (local, no API)
   python scripts/voice.py build                     encode audio/*.m4a and write audio/voice.json (real clips only)
@@ -317,6 +318,12 @@ class QuotaUsedUp(Exception):
     pass
 
 
+STRICT = ('Transcribe this short English clip verbatim, exactly as spoken. Write only the words you actually hear: '
+          'do not complete, correct or guess a sentence that stops early. If the last word is cut off, write only '
+          'the part you hear followed by [cut]. If letters are spelled out, write each as a single capital letter. '
+          'Reply with the words only, or "-" if silent.')   # checks: the plain prompt heard "What can you" as "What can you do?"
+
+
 class Ear:
     """Transcribes short clips with a text model (separate quota from TTS), rotating models."""
 
@@ -491,19 +498,91 @@ def split_batch(bid, plan, by_id, clips, ear=None, force_transcript=False):
     else:
         spans = match_by_transcript(x, env, q, lines, ear or Ear())
         how = f'only {len(gaps) + 1} pieces for {n} lines: matched by transcript'
-    cache = load(VERIFY, {})
-    for l, (s, e, heard) in zip(lines, spans):
+    cuts = fix_cuts(q, spans) if 'matched' in how else spans
+    for l, (s, e, heard), (cs, ce, _) in zip(lines, spans, cuts):
         if s is None:
             print(f'  MISSING {l["id"]} ({l["text"]})'); clips.pop(l['id'], None); continue
-        seg = squeeze(trim(x[int(s * 0.01 * SR):int(e * 0.01 * SR)]))
-        path = os.path.join(CLIP_DIR, f"{l['id']}.wav")
-        write_wav(path, seg)
-        if heard is not None and heard == norm(l['text']):      # the cut was already checked by transcript
-            cache[f"{l['id']}:{os.path.getmtime(path):.0f}"] = l['text']
+        write_wav(os.path.join(CLIP_DIR, f"{l['id']}.wav"), squeeze(trim(x[int(cs * 0.01 * SR):int(ce * 0.01 * SR)])))
         clips[l['id']] = {'batch': bid, 'engine': b['engine'], 'from': round(s * 0.01, 2), 'to': round(e * 0.01, 2)}
-    dump(VERIFY, cache)
+        if (cs, ce) != (s, e):
+            clips[l['id']]['cut'] = [round(cs * 0.01, 2), round(ce * 0.01, 2)]
     b['split'] = True
     print(f'{bid}: {n} lines, {how}')
+
+
+SNAP_PAUSE = 0.25   # a quiet stretch at least this long is a real pause
+SNAP_MAX = 0.6      # how far a transcript-matched cut may move to reach one
+LINE_BREAK = 0.4    # a pause this long can be the break between two lines
+
+
+def reach_pause(q, i, stop, step, pause):
+    """From frame i, step outwards (+1 or -1) until a real pause starts there; None if `stop` comes first."""
+    while i != stop:
+        if (q[i:i + pause] if step > 0 else q[max(0, i - pause):i]).all():
+            return i
+        i += step
+    return None
+
+
+def fix_cuts(q, spans):
+    """Transcript-matched pieces start and end exactly where the voice fades, so a short sound after a tiny dip
+    (the "do" of "What can you do?", the "t" of "want") falls outside its clip, and the cut between two lines
+    spoken close together can miss the pause ("Yes, I love it!" lost its "t" to the next clip). First move a cut
+    that is not in a pause to the line break next to it (at most 0.3 s of sound in between), then widen every
+    line to the nearest real pause on each side, at most SNAP_MAX and never past the middle of the gap to its
+    neighbour. Spans are (start, end, heard) in 10 ms frames; missing lines stay (None, None, None)."""
+    out = [list(sp) for sp in spans]
+    found = [sp for sp in out if sp[0] is not None]
+    pause, far, brk = int(SNAP_PAUSE * 100), int(SNAP_MAX * 100), int(LINE_BREAK * 100)
+    quiet = runs(q)
+    for a, b in zip(found, found[1:]):
+        if b[0] - a[1] >= pause:
+            continue            # only lines that touch: a wider gap holds unused audio (old takes), never a cut
+        m = (a[1] + b[0]) // 2
+        inside = [(s, e) for s, e in quiet if s <= m < e and e - s >= pause]
+        near = inside or [(s, e) for s, e in quiet if e - s >= brk and e > m - far and s < m + far
+                          and (~q[min(e, m):max(s, m)]).sum() <= 30]
+        near = [(s, e) for s, e in near if a[0] < (s + e) // 2 < b[1]]
+        if near:                # the cut goes in the middle of the pause, so both lines keep a little of it
+            s, e = min(near, key=lambda r: abs((r[0] + r[1]) // 2 - m))
+            a[1] = b[0] = (s + e) // 2
+    for k, sp in enumerate(found):
+        s, e = sp[0], sp[1]
+        lo = max(s - far, (found[k - 1][1] + s) // 2 if k else 0)
+        hi = min(e + far, (e + found[k + 1][0]) // 2 if k + 1 < len(found) else len(q))
+        f = reach_pause(q, e, hi, 1, pause)
+        g = reach_pause(q, s, lo, -1, pause)
+        sp[1] = min(f + 10, hi) if f is not None else e     # 0.1 s into the pause; trim() keeps 0.06 s of it
+        sp[0] = max(g - 10, lo) if g is not None else s
+    return [tuple(sp) for sp in out]
+
+
+def cmd_recut(a):
+    """Cut transcript-matched batches again from their stored spans with fix_cuts (local, no API calls)."""
+    clips = load(CLIPS, {})
+    for bid in a.batches:
+        x = read_wav(os.path.join(BATCH_DIR, f'{bid}.wav'))
+        x = x / (np.abs(x).max() or 1) * 0.89
+        env = envelope(x); q = env < silence_threshold(env)
+        ids = sorted([i for i, c in clips.items() if c.get('batch') == bid], key=lambda i: clips[i]['from'])
+        spans = [(int(round(clips[i]['from'] * 100)), int(round(clips[i]['to'] * 100)), None) for i in ids]
+        moved = written = 0
+        for i, (s, e, _), (cs, ce, _) in zip(ids, spans, fix_cuts(q, spans)):
+            p = os.path.join(CLIP_DIR, f'{i}.wav')
+            cut = [round(cs * 0.01, 2), round(ce * 0.01, 2)]
+            if clips[i].get('cut') == cut and os.path.exists(p):
+                continue                    # same cut as last time: leave the file (and its verify result) alone
+            before = len(read_wav(p)) / SR if os.path.exists(p) else 0
+            seg = squeeze(trim(x[int(cs * 0.01 * SR):int(ce * 0.01 * SR)]))
+            write_wav(p, seg)
+            clips[i]['cut'] = cut; written += 1
+            if ce < e or cs > s:
+                moved += 1
+                print(f'  {i}: cut moved to the pause, {s * 0.01:.2f}-{e * 0.01:.2f} -> {cs * 0.01:.2f}-{ce * 0.01:.2f}')
+            if a.show:
+                print(f'  {i:<36} {before:.2f} s -> {len(seg) / SR:.2f} s')
+        dump(CLIPS, clips)
+        print(f'{bid}: {written} of {len(ids)} clips cut again ({moved} with a cut moved to the pause)')
 
 
 def match_by_transcript(x, env, q, lines, ear):
@@ -579,7 +658,7 @@ def repair(l, clips, plan, ear):
         seg = squeeze(trim(x[int(a_ * SR):int(b_ * SR)]))
         with tempfile.TemporaryDirectory() as d:
             p = os.path.join(d, 'try.wav'); write_wav(p, seg)
-            heard = ear.hear(p); time.sleep(3)
+            heard = ear.hear(p, STRICT); time.sleep(3)
         if same(l['text'], heard):
             write_wav(os.path.join(CLIP_DIR, f"{l['id']}.wav"), seg)
             c['from'], c['to'] = round(a_, 2), round(b_, 2)
@@ -606,10 +685,10 @@ def fix_boundary(la, lb, clips, plan, ear):
         with tempfile.TemporaryDirectory() as d:
             pa, pb = os.path.join(d, 'a.wav'), os.path.join(d, 'b.wav')
             write_wav(pa, sa); write_wav(pb, sb)
-            ha = ear.hear(pa); time.sleep(3)
+            ha = ear.hear(pa, STRICT); time.sleep(3)
             if not same(la['text'], ha):
                 continue
-            hb = ear.hear(pb); time.sleep(3)
+            hb = ear.hear(pb, STRICT); time.sleep(3)
         if same(lb['text'], hb):
             write_wav(os.path.join(CLIP_DIR, f"{la['id']}.wav"), sa)
             write_wav(os.path.join(CLIP_DIR, f"{lb['id']}.wav"), sb)
@@ -631,7 +710,7 @@ def cmd_verify(a):
         key = f"{l['id']}:{os.path.getmtime(p):.0f}"
         if key not in cache or a.redo:
             ear = ear or Ear()
-            cache[key] = ear.hear(p)
+            cache[key] = ear.hear(p, STRICT)
             dump(VERIFY, cache)
             time.sleep(a.pace)
         heard = cache[key]
@@ -913,11 +992,12 @@ def main():
     p = sub.add_parser('split'); p.add_argument('batches', nargs='*'); p.add_argument('--by-transcript', action='store_true')
     p = sub.add_parser('verify'); p.add_argument('--redo', action='store_true'); p.add_argument('--all', action='store_true')
     p.add_argument('--only'); p.add_argument('--pace', type=float, default=4.5); p.add_argument('--no-repair', action='store_true')
+    p = sub.add_parser('recut'); p.add_argument('batches', nargs='+'); p.add_argument('--show', action='store_true')
     p = sub.add_parser('align'); p.add_argument('--show')
     p = sub.add_parser('build'); p.add_argument('--with-placeholders', action='store_true', help='testing only')
     sub.add_parser('status')
     a = ap.parse_args()
-    {'lines': cmd_lines, 'record': cmd_record, 'split': cmd_split, 'verify': cmd_verify,
+    {'lines': cmd_lines, 'record': cmd_record, 'split': cmd_split, 'recut': cmd_recut, 'verify': cmd_verify,
      'align': cmd_align, 'build': cmd_build, 'status': cmd_status}[a.cmd](a)
 
 
