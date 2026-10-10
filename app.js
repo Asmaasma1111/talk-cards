@@ -1,5 +1,6 @@
 /* Maria's Talk Cards
-   Plain JavaScript, no libraries. Two profiles: Maria (sets.json) and Mama (prepositions.json). */
+   Plain JavaScript, no libraries. Two profiles: Maria (sets.json) and Mama (prepositions.json).
+   Maria also has a second deck, جدول الضرب (times tables), in maths.js. */
 (() => {
 'use strict';
 
@@ -12,6 +13,7 @@ const PROFILES = APP === 'prepositions' ? ['mama'] : ['maria'];   // profiles th
 const OLD_KEY = 'mariaTalkCards.v1';                    // single-profile version, moved into Maria's profile
 const PROFILE_KEY = { maria: 'tc:maria', mama: 'tc:mama' };
 const LAST_KEY = 'tc:last';
+const DECK_KEY = 'tc:deck';                              // Maria's last deck: 'talk' (English) or 'math' (times tables)
 const DEV_KEY = 'mariaTalkCards.devOffset';
 const INTERVAL = [0, 1, 2, 4, 8, 16, 32, 64];          // days until next review, by box
 const SPEEDS = { slow: 0.75, standard: 0.85, normal: 0.95 };
@@ -588,10 +590,9 @@ const SFX = {
 function speechDelay(min = 0) { return Math.max(min, Math.max(0, SFX.busyUntil - performance.now()) + 250); }
 
 /* ---------- screens ---------- */
-const SCREENS = ['home', 'session', 'done', 'parent', 'picker'];
-function show(name) {
-  SCREENS.forEach(s => { $('#' + s).hidden = s !== name; });
-  if ((name === 'home' || name === 'done') && reloadForUpdate.pending) setTimeout(reloadForUpdate, 300);
+function show(name) {     // every screen (the times-tables screens too): only the named one is visible
+  document.querySelectorAll('body > .screen').forEach(el => { el.hidden = el.id !== name; });
+  if (['home', 'done', 'mhome', 'mdone'].includes(name) && reloadForUpdate.pending) setTimeout(reloadForUpdate, 300);
 }
 function toast(msg) {
   const t = $('#toast'); t.textContent = msg; t.hidden = false;
@@ -601,6 +602,7 @@ function toast(msg) {
 /* ---------- home ---------- */
 function renderHome() {
   document.body.dataset.profile = prof;
+  if (MATHS) lsSet(DECK_KEY, 'talk');
   $('#profileChip').textContent = isMama() ? 'Mama' : 'Maria';
   $('#brand').textContent = isMama() ? PDECK.name : "Maria's Talk Cards";
   if (isMama()) {
@@ -658,6 +660,7 @@ function openProfile(p) {
 
 /* ---------- session ---------- */
 let S = null;    // current session or practice round
+let MATHS = null;  // the times-tables deck (maths.js), Maria only
 function newSession(mode, ids, warm = []) {
   S = { mode, queue: ids.slice(), all: new Set(ids), good: new Set(), again: new Set(), hint: new Set(), rated: new Set(),
         cur: null, flipped: false, seenBack: false, flipping: false, busy: false, celeb: [], frontPlan: null, backPlan: null,
@@ -1046,11 +1049,11 @@ function showCelebration(c, then) {
   btn.onclick = () => { ov.hidden = true; stopConfetti(); then(); };
 }
 let confettiRun = 0;
-function stopConfetti() { confettiRun++; const cv = $('#confetti'); cv.getContext('2d').clearRect(0, 0, cv.width, cv.height); }
-function confetti() {
+function stopConfetti(cv = $('#confetti')) { confettiRun++; cv.getContext('2d').clearRect(0, 0, cv.width, cv.height); }
+function confetti(cv = $('#confetti')) {
   if (reduced()) return;
   const run = ++confettiRun;
-  const cv = $('#confetti'), ctx = cv.getContext('2d'), dpr = Math.min(2, window.devicePixelRatio || 1);
+  const ctx = cv.getContext('2d'), dpr = Math.min(2, window.devicePixelRatio || 1);
   const W = innerWidth, H = innerHeight;
   cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   const cols = ['#FFD84D', '#8FE3BF', '#FF6FA8', '#DCD6F7', '#2B2340'];
@@ -1263,7 +1266,7 @@ function backup() {
     if (p === prof) profiles[p] = st;
     else if ((APP === 'talk-cards' || PROFILES.includes(p)) && lsGet(PROFILE_KEY[p])) profiles[p] = readProfile(p);
   });
-  const data = JSON.stringify({ app: 'maria-talk-cards', v: 2, saved: new Date().toISOString(), profiles });
+  const data = JSON.stringify({ app: 'maria-talk-cards', v: 2, saved: new Date().toISOString(), profiles, ...(MATHS ? { math: MATHS.snapshot() } : {}) });
   const name = `${APP}-backup-${today()}.json`;
   let file = null;
   try { file = new File([data], name, { type: 'application/json' }); } catch (e) {}
@@ -1277,17 +1280,20 @@ function backup() {
   setTimeout(() => URL.revokeObjectURL(url), 4000);
   toast('Backup saved.');
 }
-async function restore(file) {
+async function restore(file, after = renderParent) {
   try {
     const obj = JSON.parse(await file.text());
     if (!obj || obj.app !== 'maria-talk-cards') throw new Error('bad');
     const profiles = obj.profiles || (obj.state ? { maria: obj.state } : null);   // v1 files held Maria only
-    const ok = profiles && Object.keys(profiles).filter(p => PROFILES.includes(p) && profiles[p] && typeof profiles[p].cards === 'object');
-    if (!ok || !ok.length) throw new Error('bad');
+    const ok = profiles ? Object.keys(profiles).filter(p => PROFILES.includes(p) && profiles[p] && typeof profiles[p].cards === 'object') : [];
+    const math = MATHS && MATHS.valid(obj.math) ? obj.math : null;            // times tables (backups from October 2026 on)
+    if (!ok.length && !math) throw new Error('bad');
+    const what = [...ok.map(p => (p === 'mama' ? 'Mama' : 'Maria')), ...(math ? ['times tables'] : [])];
     if (!confirm(APP === 'prepositions' ? 'Replace your progress on this device with this backup?'
-      : `Replace the progress on this device with this backup (${ok.map(p => p === 'mama' ? 'Mama' : 'Maria').join(' and ')})?`)) return;
+      : `Replace the progress on this device with this backup (${what.join(' and ')})?`)) return;
     ok.forEach(p => lsSet(PROFILE_KEY[p], JSON.stringify(merge(profiles[p], p))));
-    load(prof); renderParent(); toast('Progress restored.');
+    if (math) MATHS.replace(math);
+    load(prof); after(); toast('Progress restored.');
   } catch (e) { toast(APP === 'prepositions' ? 'That file has no Prepositions progress.' : 'That file is not a Talk Cards backup.'); }
 }
 
@@ -1304,7 +1310,8 @@ function onDevClick(e) {
   Speech.stop(); S = null;
   $('#celebrate').hidden = true;
   renderDev();
-  if ($('#picker').hidden) renderHome();
+  if (MATHS && MATHS.isOn()) MATHS.home();
+  else if ($('#picker').hidden) renderHome();
 }
 
 /* ---------- wiring ---------- */
@@ -1343,7 +1350,7 @@ function wire() {
 
 function reloadForUpdate() {
   if (!reloadForUpdate.pending) return;
-  if (S || !$('#parent').hidden || !$('#celebrate').hidden) return;   // wait until she is back on Home or Done
+  if (S || !$('#parent').hidden || !$('#celebrate').hidden || (MATHS && MATHS.busy())) return;   // wait until she is back on Home or Done
   location.reload();
 }
 
@@ -1366,12 +1373,22 @@ async function boot() {
   const last = lsGet(LAST_KEY);
   const known = PROFILES.length === 1 || PROFILES.includes(last);
   load(PROFILES.includes(last) ? last : PROFILES[0]);
+  if (APP === 'talk-cards' && PROFILES.includes('maria') && window.TimesTables) {
+    MATHS = window.TimesTables.mount({
+      today, lsGet, lsSet, show, toast, SFX, confetti, stopConfetti, holdToOpen, reduced, DEV, backup, restore,
+      sfx: v => { if (v !== undefined) { st.settings.sfx = !!v; save(); } return st.settings.sfx; },
+      setDeck: d => lsSet(DECK_KEY, d),
+      stopEnglish: () => { Speech.stop(); S = null; },
+      english: () => { Speech.stop(); S = null; renderHome(); }
+    });
+  }
   if (DEV) {
     renderDev();
-    window.TC = { get st() { return st; }, get S() { return S; }, CARD, SET, SETS, today, buildQueue, newOrder, dueIds, eligible, trickyIds, funIds, flip, rate, save, Speech, SFX, setPracticeIds, get VOICE() { return VOICE; }, renderText, voiceEl, get prof() { return prof; }, openProfile, showPicker, PCARDS, weekStats, readProfile,
+    window.TC = { get MATHS() { return MATHS; }, get st() { return st; }, get S() { return S; }, CARD, SET, SETS, today, buildQueue, newOrder, dueIds, eligible, trickyIds, funIds, flip, rate, save, Speech, SFX, setPracticeIds, get VOICE() { return VOICE; }, renderText, voiceEl, get prof() { return prof; }, openProfile, showPicker, PCARDS, weekStats, readProfile,
       showCard(id) { if (!S) newSession('fun', [id]); else { S.queue = S.queue.filter(x => x !== id); S.cur = id; S.flipped = S.seenBack = S.flipping = S.busy = false; if (CARD[id].kind === 'gap') renderGapCard(CARD[id]); else renderCard(CARD[id]); } } };
   }
-  if (known) renderHome(); else showPicker();   // first launch with several profiles: choose one
+  if (MATHS && prof === 'maria' && lsGet(DECK_KEY) === 'math') MATHS.home();   // she was last in the times tables
+  else if (known) renderHome(); else showPicker();   // first launch with several profiles: choose one
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     // Updates: when a new version takes over, reload on its own, but never in the middle of a session.
     const hadController = !!navigator.serviceWorker.controller;

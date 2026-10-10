@@ -2,6 +2,8 @@
 
 Flashcards with spaced repetition and a recorded voice, made for the iPad, for Maria's spoken English (`sets.json`): 26 sets that unlock one by one, with stars and prizes.
 
+Maria also has a second deck, **جدول الضرب** (times tables 1 × 1 to 10 × 10): tap the pink chip at the top left of Home. See *Times tables* below.
+
 Mama's prepositions deck has its own shareable app, **Prepositions**: https://asmaasma1111.github.io/prepositions/. It is built from this same folder with `python3 scripts/export_prepositions.py` (then commit and push `~/Downloads/06_Projects_and_Code/prepositions-app`).
 
 **Link:** https://asmaasma1111.github.io/talk-cards/
@@ -18,6 +20,15 @@ Always use the Home Screen icon. The icon and a Safari tab keep separate progres
 
 - The gear at the top right opens the parent area. **Press and hold it for 2 seconds.**
 - In the parent area, **Back up progress** saves the progress in one file. Do this now and then. **Restore** brings it back.
+
+## Times tables (جدول الضرب)
+
+- The code is `maths.js` (styles at the end of `style.css`, font Tajawal in `fonts/`). Everything Maria sees is in Arabic with Arabic-Indic digits, and each sum is written right to left as in her school book (a hidden switch under **Advanced** in its parent area turns it left to right).
+- She types the answer on the number pad and taps تحقّق. Right within 4 seconds = Easy (two stars), right but slower = Good (one star), wrong = the answer and its dot picture, calmly, and the fact comes back a few cards later.
+- New facts come three or four at a time, in the order 1, 10, 2, 5, 3, 4, 9, 6, 7, 8, and only when the last set is mostly learned. Learned facts come back after 1, 2, 4, 7, 14 and 30 days. A table's sticker comes when all ten facts are a week or more apart.
+- Its parent area: press and hold the gear on its Home for 2 seconds (weakest facts, accuracy per table, days practised, settings, backup).
+- Progress is saved in its own place (`tc:maria:math`), so the English cards are never touched. **Back up progress** saves both decks in one file.
+- Tests: `node scripts/test_maths.js`.
 
 ## Changing the cards
 

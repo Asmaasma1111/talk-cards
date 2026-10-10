@@ -23,6 +23,7 @@ subs = [
     ('<meta name="apple-mobile-web-app-title" content="Talk Cards">', '<meta name="apple-mobile-web-app-title" content="Prepositions">'),
     ('<link rel="preload" href="fonts/andika-700.woff2" as="font" type="font/woff2" crossorigin>\n', ''),
     ('<body>', '<body data-profile="mama" class="single">'),
+    ('<script src="maths.js"></script>\n', ''),          # Maria's times tables stay in Talk Cards
 ]
 for old, new in subs:
     if old not in page:

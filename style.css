@@ -570,3 +570,209 @@ body[data-profile="mama"] .btn .when:empty { display: none; }
   .cue .ar { font-size: 20px; }
   .cue b { width: 24px; height: 24px; font-size: 13px; }
 }
+
+/* ---------- جدول الضرب: Maria's times tables (maths.js) ----------
+   Same card, buttons and colours as the English cards; Tajawal for Arabic text and Arabic-Indic digits. */
+@font-face { font-family: 'Tajawal'; src: url(fonts/tajawal-500.woff2) format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Tajawal'; src: url(fonts/tajawal-800.woff2) format('woff2'); font-weight: 800; font-style: normal; font-display: swap; }
+.mx { --mx: 'Tajawal', 'Geeza Pro', 'Noto Naskh Arabic', sans-serif; --paper: #FFF7EF; font-family: var(--mx); font-weight: 500; background: var(--paper); }
+.mx b, .mx h1, .mx h2, .mx .btn, .mx .label { font-weight: 800; }
+
+/* switching decks: a chip at the top left of each Home screen */
+.deck-chip {
+  position: absolute;
+  top: calc(var(--safe-t) + 14px);
+  left: calc(var(--safe-l) + 14px);
+  min-height: 50px;
+  padding: 0 20px;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 21px; font-weight: 800;
+  border: 2.5px solid var(--ink);
+  border-radius: 99px;
+  box-shadow: 0 4px 0 var(--ink);
+  transition: transform .08s ease, box-shadow .08s ease;
+}
+.deck-chip:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+.deck-math { background: var(--gum); font-family: 'Tajawal', var(--ar); }
+.deck-math .x { font-size: 1.25em; line-height: 1; }
+.deck-talk { background: var(--sun); font-family: var(--en); font-weight: 700; }
+body[data-profile="mama"] .deck-math { display: none; }
+
+/* Home */
+.mx-home { align-items: center; justify-content: center; gap: clamp(12px, 2.8vh, 28px); text-align: center; }
+.mx-title { margin: 0; display: flex; align-items: center; gap: 14px; font-size: clamp(38px, 6vw, 58px); line-height: 1.2; }
+.mx-logo { display: grid; place-items: center; width: 1.15em; height: 1.15em; font-size: .9em; line-height: 1; background: var(--gum); border: 3px solid var(--ink); border-radius: 30%; box-shadow: 0 4px 0 var(--ink); transform: rotate(-6deg); }
+.mx-stats { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+.mx-stat { min-width: 150px; padding: 8px 20px 10px; background: var(--white); border: 3px solid var(--ink); border-radius: var(--hand-btn); }
+.mx-stat-n { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 40px; line-height: 1.15; }
+.mx-stat .star, .mx-stat .flame { width: 36px; height: 36px; }
+.mx-stat-n b, #mxStarNum, .mx-reward b { transform: translateY(.13em); }
+.mx-stat span { display: block; font-size: 18px; color: var(--ink-soft); }
+.flame { fill: #FF9F43; stroke: var(--ink); stroke-width: 1.7; stroke-linejoin: round; }
+.btn-start.mx-start { background: var(--gum); font-family: var(--mx); font-weight: 800; font-size: 60px; min-width: 300px; padding-bottom: 6px; }
+.mx-goal { width: min(540px, 100%); display: flex; align-items: center; gap: 14px; font-size: 22px; }
+.mx-goal .bar { flex: 1; }
+.mx-goal .bar .fill { background: var(--mint); }
+.mx-goal b { min-width: 4.2em; text-align: end; white-space: nowrap; }
+.mx-goal.hit .bar .fill { background: #2EAD5B; }
+.mx-goal-t { white-space: nowrap; }
+.mx-stickers { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; max-width: calc(10 * 58px + 9 * 12px); }
+.mx-sticker {
+  position: relative;
+  width: 58px; height: 58px; padding: 0;
+  display: grid; place-items: center;
+  font-family: var(--mx); font-size: 26px; font-weight: 800; color: var(--ink);
+  border: 3px solid var(--ink); border-radius: 50%;
+  background: var(--white);
+}
+button.mx-sticker { cursor: pointer; transition: transform .08s ease; }
+button.mx-sticker:active { transform: scale(.9); }
+.mx-sticker span { line-height: 1; padding-top: .26em; }
+.mx-sticker.done { background: var(--mint); box-shadow: 0 4px 0 var(--ink); }
+.mx-sticker.done .star { position: absolute; top: -12px; left: -10px; width: 30px; height: 30px; transform: rotate(-14deg); }
+.mx-sticker.current { background: var(--sun); box-shadow: 0 0 0 5px rgba(255, 111, 168, .55), 0 0 16px 6px rgba(255, 111, 168, .45); animation: glow 2.4s ease-in-out infinite; }
+.mx-sticker.locked { background: var(--lilac); border-color: rgba(43, 35, 64, .3); color: rgba(43, 35, 64, .45); }
+.mx-now { font-size: 22px; min-height: 1.3em; }
+.mx-credit { position: absolute; left: 0; right: 0; bottom: calc(var(--safe-b) + 10px); font-family: var(--en); font-size: 13px; color: var(--ink-soft); }
+
+/* the round */
+#msession .topbar { min-height: 48px; }
+.mx-main { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 16px; padding-top: 12px; }
+.mx-cardbox { position: relative; flex: 1; min-height: 0; width: min(100%, 760px); margin: 0 auto; }
+.mx-cardbox.enter { animation: enter .22s ease-out; }
+.mx-side { position: relative; flex: none; width: min(100%, 500px); height: clamp(290px, 41vh, 460px); margin: 0 auto; }
+@media (orientation: landscape) and (min-width: 700px) {
+  .mx-main { flex-direction: row; align-items: center; gap: clamp(18px, 3vw, 36px); padding-top: 8px; }
+  .mx-cardbox { flex: 1.45; height: 100%; max-height: 720px; width: auto; margin: 0; }
+  .mx-side { flex: 1; max-width: 430px; height: min(100%, 580px); width: auto; margin: 0; }
+}
+.mx .face { padding: 16px 20px; }
+.mx-q { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+.mx-eq { display: flex; align-items: center; justify-content: center; gap: .16em; font-size: 120px; font-weight: 800; line-height: 1; white-space: nowrap; }
+.mx-eq .n { min-width: .55em; text-align: center; transform: translateY(.13em); }
+.mx-eq .op { font-weight: 500; font-size: .78em; opacity: .9; transform: translateY(.09em); }
+/* Tajawal's digits sit about .13em above the middle of their line box; these nudges centre them */
+.mx-ans {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 1.55em; height: 1.28em; padding: .26em .16em 0;
+  border: max(3px, .04em) dashed var(--ink); border-radius: .26em;
+  background: rgba(255, 255, 255, .88);
+  transition: background .15s;
+}
+.mx-ans.empty { color: rgba(43, 35, 64, .3); animation: mxwait 1.6s ease-in-out infinite; }
+.mx-ans.full { border-style: solid; background: var(--white); }
+.mx-ans.ok { border-style: solid; background: var(--mint); animation: mxok .4s ease; }
+@keyframes mxwait { 50% { border-color: rgba(43, 35, 64, .45); } }
+@keyframes mxok { 40% { transform: scale(1.12); } }
+.label.mx-new { background: var(--gum); }
+.label.mx-res { font-size: 26px; padding: 4px 22px; }
+.label.mx-good { background: var(--white); }
+.label.mx-calm { background: var(--lilac); }
+.mx-twin { display: inline-flex; align-items: center; gap: .45em; padding: 3px 18px 5px; font-size: 26px; font-weight: 800; border: 2.5px solid var(--ink); border-radius: 99px; background: var(--sun); }
+.mx-mini { display: inline-flex; gap: .3em; }
+.mx-foot { justify-content: center; min-height: 0; }
+.mx .hint-btn { font-family: var(--mx); font-weight: 800; }
+
+/* the dots: rows of dots, each row a pill; on the back each row ends with the running count */
+.mx-dotsarea { flex: 0 1 auto; min-height: 0; width: 100%; display: flex; align-items: center; justify-content: center; }
+.mx-dots { --d: 20px; display: flex; flex-direction: column; align-items: flex-start; gap: calc(var(--d) * .3); }
+.mx-line { display: flex; align-items: center; gap: calc(var(--d) * .4); }
+.mx-line.five { margin-bottom: calc(var(--d) * .4); }
+.mx-row { display: flex; gap: calc(var(--d) * .35); padding: calc(var(--d) * .35); border-radius: 99px; background: rgba(255, 255, 255, .62); }
+.mx-dot { display: block; width: var(--d); height: var(--d); border-radius: 50%; background: var(--gum); box-shadow: inset 0 0 0 max(1.5px, calc(var(--d) * .1)) var(--ink); }
+.mx-dot.five { margin-inline-end: calc(var(--d) * .5); }
+.mx-cum { min-width: 1.9em; font-size: max(13px, calc(var(--d) * .92)); line-height: 1; font-weight: 800; color: rgba(43, 35, 64, .5); text-align: start; transform: translateY(.13em); }
+.mx-cum.last { color: var(--ink); }
+.back .mx-line { animation: mxrow .32s ease-out both; animation-delay: calc(var(--r) * 70ms + 300ms); }
+@keyframes mxrow { from { opacity: 0; transform: scale(.85); } }
+
+/* number pad (digits 1 2 3 read left to right, as on a phone) */
+.mx-pad {
+  position: absolute; inset: 0;
+  display: grid; gap: clamp(8px, 1.3vh, 14px);
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(4, 1fr) 1.15fr;
+  grid-template-areas: "k1 k2 k3" "k4 k5 k6" "k7 k8 k9" "del k0 k0" "ok ok ok";
+  padding-bottom: 6px;
+}
+.mx-key {
+  min-height: 0; padding: 0;
+  display: grid; place-items: center;
+  font-family: var(--mx); font-size: clamp(30px, 5vh, 50px); font-weight: 800; line-height: 1;
+  border: 3px solid var(--ink); border-radius: var(--hand-btn);
+  background: var(--white);
+  box-shadow: 0 5px 0 var(--ink);
+  transition: transform .06s ease, box-shadow .06s ease;
+}
+.mx-key:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+.mx-key:not(.mx-del) { padding-top: .26em; }
+.mx-del { background: var(--lilac); }
+.mx-del svg { width: clamp(30px, 4.6vh, 46px); height: clamp(30px, 4.6vh, 46px); }
+.btn.mx-check { min-height: 0; height: 100%; font-size: clamp(30px, 4.8vh, 44px); }
+.btn.mx-check:disabled { opacity: .45; transform: none; box-shadow: 0 6px 0 var(--ink); }
+.mx-after { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 18px; padding-bottom: 6px; }
+.mx-reward { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 44px; }
+.mx-reward .star { width: clamp(52px, 8vh, 80px); height: clamp(52px, 8vh, 80px); }
+.mx-reward b { margin-inline-start: 8px; }
+.mx-reward.pop .star { animation: badge-in .5s cubic-bezier(.3, 1.5, .5, 1) both; }
+.mx-reward.pop .star + .star { animation-delay: .12s; }
+.btn.mx-next { width: 100%; min-height: clamp(96px, 15vh, 140px); font-size: clamp(36px, 5.4vh, 50px); background: var(--sun); }
+.btn.mx-next svg { width: 44px; height: 44px; }
+
+/* done and celebrations */
+#mdone { align-items: center; justify-content: center; gap: 24px; text-align: center; }
+#mdone .btn-soft { font-family: var(--mx); font-weight: 800; }
+#mdone .btn-link { font-family: var(--mx); font-size: 26px; }
+#mxCel { background: var(--paper); }
+#mxConfetti { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+#mxCel .cel-title { font-weight: 800; }
+.cel-badge.mx-cel-goal { background: var(--mint); }
+.cel-badge.mx-cel-goal svg { width: 110px; height: 110px; color: var(--ink); }
+.cel-badge.mx-cel-sticker { position: relative; background: var(--mint); font-family: var(--mx); }
+.cel-badge.mx-cel-sticker span { line-height: 1; padding-top: .26em; }
+.cel-badge.mx-cel-sticker .star { position: absolute; top: -18px; left: -14px; width: 70px; height: 70px; transform: rotate(-14deg); }
+
+/* parent area */
+#mparent { overflow-y: auto; -webkit-overflow-scrolling: touch; display: block; background: var(--cloud); z-index: 30; -webkit-user-select: text; user-select: text; }
+.mx-h2 { font-size: 18px; margin: 22px 4px 8px; color: var(--ink-soft); }
+.mx-trow { flex-wrap: nowrap; }
+.mx-tname { min-width: 64px; font-weight: 700; }
+.mx-tick { color: #E0A800; }
+.mx-tbar { flex: 1; height: 12px; border-radius: 99px; background: var(--lilac); overflow: hidden; min-width: 60px; }
+.mx-tbar i { display: block; height: 100%; background: #2EAD5B; border-radius: 99px; }
+.mx-tnum { min-width: 150px; text-align: right; }
+.mx-wfact { font-weight: 700; }
+.mx-wnum { text-align: right; }
+.mx-days { flex-direction: column; align-items: flex-start; }
+.mx-days .bars { gap: 8px; }
+.mx-adv summary { padding: 16px; font-size: 19px; font-weight: 700; cursor: pointer; }
+.mx-adv[open] summary { border-bottom: 2px solid var(--lilac); }
+.mx-preview { justify-content: center; font-family: 'Tajawal', var(--ar); }
+.mx-preview .mx-eq { font-size: 54px; }
+.mx-preview .mx-ans { font-size: 1em; }
+
+@media (max-width: 560px), (max-height: 560px) {
+  .deck-chip { min-height: 42px; padding: 0 14px; font-size: 17px; }
+  .mx-stat { min-width: 120px; padding: 6px 14px 8px; }
+  .mx-stat-n { font-size: 32px; }
+  .btn-start.mx-start { font-size: 48px; min-width: 240px; }
+  .mx-goal { font-size: 18px; gap: 10px; }
+  .mx-sticker { width: 46px; height: 46px; font-size: 21px; }
+  .mx-stickers { gap: 9px; max-width: calc(5 * 46px + 4 * 9px); }
+  .mx-now { font-size: 18px; }
+  .label.mx-res, .mx-twin { font-size: 21px; }
+}
+@media (max-height: 560px) {
+  .mx-home { gap: 8px; }
+  .mx-credit { display: none; }
+  .mx-title { font-size: 30px; }
+  .mx-logo { border-width: 2.5px; box-shadow: 0 3px 0 var(--ink); }
+  .mx-stat-n { font-size: 26px; }
+  .mx-stat .star, .mx-stat .flame { width: 26px; height: 26px; }
+  .mx-stat span { font-size: 14px; }
+  .btn-start.mx-start { min-height: 76px; font-size: 38px; }
+  .mx-stickers { max-width: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mx-ans.empty, .mx-ans.ok, .back .mx-line, .mx-reward.pop .star, .mx-sticker.current, .mx-cardbox.enter { animation: none; }
+}
