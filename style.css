@@ -633,7 +633,6 @@ button.mx-sticker:active { transform: scale(.9); }
 .mx-sticker.current { background: var(--sun); box-shadow: 0 0 0 5px rgba(255, 111, 168, .55), 0 0 16px 6px rgba(255, 111, 168, .45); animation: glow 2.4s ease-in-out infinite; }
 .mx-sticker.locked { background: var(--lilac); border-color: rgba(43, 35, 64, .3); color: rgba(43, 35, 64, .45); }
 .mx-now { font-size: 22px; min-height: 1.3em; }
-.mx-credit { position: absolute; left: 0; right: 0; bottom: calc(var(--safe-b) + 10px); font-family: var(--en); font-size: 13px; color: var(--ink-soft); }
 
 /* the round */
 #msession .topbar { min-height: 48px; }
@@ -764,7 +763,6 @@ button.mx-sticker:active { transform: scale(.9); }
 }
 @media (max-height: 560px) {
   .mx-home { gap: 8px; }
-  .mx-credit { display: none; }
   .mx-title { font-size: 30px; }
   .mx-logo { border-width: 2.5px; box-shadow: 0 3px 0 var(--ink); }
   .mx-stat-n { font-size: 26px; }
@@ -776,3 +774,11 @@ button.mx-sticker:active { transform: scale(.9); }
 @media (prefers-reduced-motion: reduce) {
   .mx-ans.empty, .mx-ans.ok, .back .mx-line, .mx-reward.pop .star, .mx-sticker.current, .mx-cardbox.enter { animation: none; }
 }
+
+/* Home footer (both decks): the credit, and under it a one-tap backup of all progress */
+.app-foot { position: absolute; left: 0; right: 0; bottom: calc(var(--safe-b) + 6px); display: flex; flex-direction: column; align-items: center; gap: 0; font-family: var(--en); font-size: 13px; color: var(--ink-soft); pointer-events: none; }
+.app-foot .credit { line-height: 1.3; }
+.backup-link { pointer-events: auto; min-height: 40px; padding: 0 14px; display: inline-flex; align-items: center; gap: 6px; border: none; background: none; font-family: var(--en); font-size: 14px; font-weight: 700; color: var(--ink-soft); text-decoration: underline; text-underline-offset: 3px; }
+.backup-link svg { width: 16px; height: 16px; }
+.backup-link:active { color: var(--ink); }
+@media (max-height: 560px) { .app-foot { display: none; } }

@@ -1337,6 +1337,7 @@ function wire() {
     if (e.target.id === 'pPrize') { st.settings.prize = e.target.value.trim() || 'a prize'; save(); }
   });
   $('#devbar').addEventListener('click', onDevClick);
+  document.addEventListener('click', e => { if (e.target.closest('[data-backup]')) backup(); });   // the line under "Designed by" on Home
   document.addEventListener('pointerdown', () => { if (SFX.ctx && SFX.ctx.state !== 'running') { try { SFX.ctx.resume(); } catch (e) {} } }, true);
   document.addEventListener('visibilitychange', () => { if (document.hidden) Speech.stop(); });
   window.addEventListener('pagehide', () => Speech.stop());

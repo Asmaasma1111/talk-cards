@@ -19,7 +19,7 @@ Always use the Home Screen icon. The icon and a Safari tab keep separate progres
 ## Everyday use
 
 - The gear at the top right opens the parent area. **Press and hold it for 2 seconds.**
-- In the parent area, **Back up progress** saves the progress in one file. Do this now and then. **Restore** brings it back.
+- **Back up progress** (the line under "Designed by" at the bottom of each Home screen, and in the parent area) saves all progress, English cards and times tables, in one file. Do this now and then. **Restore** (in the parent area) brings it back.
 
 ## Times tables (جدول الضرب)
 

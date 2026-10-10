@@ -293,7 +293,10 @@ function mount(api) {
   <div class="mx-goal" id="mxGoal"><span class="mx-goal-t">هدف اليوم</span><div class="bar"><div class="fill" id="mxGoalFill"></div></div><b id="mxGoalNum"></b></div>
   <div class="mx-stickers" id="mxStickers"></div>
   <div class="mx-now" id="mxNow"></div>
-  <div class="mx-credit" lang="en" dir="ltr">Designed by Dr Asma Khattala</div>
+  <div class="app-foot maria-only" lang="en" dir="ltr">
+    <div class="credit">Designed by Dr Asma Khattala</div>
+    <button class="backup-link" data-backup><svg aria-hidden="true"><use href="#i-save"/></svg>Back up progress</button>
+  </div>
 </section>
 
 <section id="msession" class="screen mx" dir="rtl" lang="ar" hidden>
