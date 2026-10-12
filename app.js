@@ -667,6 +667,10 @@ function renderHome() {
   $('#todayStars').textContent = starsToday();
   const n = streak();
   $('#streakNum').textContent = n; $('#streakWord').textContent = n === 1 ? 'day' : 'days';
+  if (SB) {
+    SB.sync(); SB.homeCard();
+    if (SB.pending()) setTimeout(() => { if (!$('#home').hidden && !S && SB.pending()) SB.celebrate(renderHome); }, 700);
+  }
   const { bank } = st.stars, { target, prize } = st.settings;
   $('#prizeFill').style.width = Math.min(100, bank / target * 100) + '%';
   $('#prizeCount').textContent = `${bank} / ${target}`;
@@ -706,6 +710,7 @@ function openProfile(p) {
 /* ---------- session ---------- */
 let S = null;    // current session or practice round
 let MATHS = null;  // the times-tables deck (maths.js), Maria only
+let SB = null;     // Maria's sticker book (stickerbook.js): a sticker for every 7 days in a row
 function newSession(mode, ids, warm = []) {
   S = { mode, queue: ids.slice(), all: new Set(ids), good: new Set(), again: new Set(), hint: new Set(), rated: new Set(),
         cur: null, flipped: false, seenBack: false, flipping: false, busy: false, celeb: [], frontPlan: null, backPlan: null,
@@ -766,7 +771,9 @@ function endSession() {
   Speech.stop();
   const fromHome = S && S.mode === 'set';
   S = null;
-  if (fromHome) renderHome(); else showDone();
+  const next = fromHome ? renderHome : showDone;
+  if (SB && SB.pending()) return SB.celebrate(next);   // 7 days in a row: the new sticker first
+  next();
 }
 
 function iconBtn(cls, icon, label) {
@@ -1003,7 +1010,7 @@ function rate(good) {
   const id = S.cur;
   if (S.mode === 'normal') logReview(id, good);
   S.rated.add(id);
-  if (!isMama()) { markDay(); save(); }
+  if (!isMama()) { markDay(); if (SB) SB.sync(); save(); }
   if (good) {
     SFX.good();
     const warm = S.mode === 'normal' && S.warm && S.warm.has(id);
@@ -1225,6 +1232,7 @@ function dailyRows() {
   const t = today(), practised = st.days.filter(d => d >= addDays(t, -6)).length;
   return `<div class="p-group">
       <div class="p-row"><span>${streak()} day${streak() === 1 ? '' : 's'} in a row<span class="sub">Practised on ${practised} of the last 7 days · ${st.days.length} day${st.days.length === 1 ? '' : 's'} in all</span></span></div>
+      ${SB ? `<div class="p-row"><span>Sticker book: ${SB.count()} sticker${SB.count() === 1 ? '' : 's'}<span class="sub">One for every 7 days in a row · next in ${SB.nextIn()} day${SB.nextIn() === 1 ? '' : 's'}</span></span><button class="p-btn" data-act="stickers">Open the sticker book</button></div>` : ''}
       <div class="p-row p-cal"><span>Practice calendar<span class="sub">✓ = practised. Days before day tracking were registered from her cards. Tap a day to register it, or tap again to take it off.</span></span>${calendarHTML({}, st.days, st.reg, 0)}</div>
     </div>`;
 }
@@ -1308,6 +1316,7 @@ function onParentClick(e) {
       }
       break;
     case 'backup': backup(); break;
+    case 'stickers': if (SB) SB.open(openParent); break;
     case 'restore': $('#pFile').click(); break;
     case 'reset':
     {
@@ -1413,7 +1422,7 @@ function wire() {
 
 function reloadForUpdate() {
   if (!reloadForUpdate.pending) return;
-  if (S || !$('#parent').hidden || !$('#celebrate').hidden || (MATHS && MATHS.busy())) return;   // wait until she is back on Home or Done
+  if (S || !$('#parent').hidden || !$('#celebrate').hidden || (MATHS && MATHS.busy()) || (SB && SB.busy())) return;   // wait until she is back on Home or Done
   location.reload();
 }
 
@@ -1445,9 +1454,17 @@ async function boot() {
       english: () => { Speech.stop(); S = null; renderHome(); }
     });
   }
+  if (APP === 'talk-cards' && PROFILES.includes('maria') && window.StickerBook) {
+    SB = window.StickerBook.mount({
+      st: () => st, save, today, addDays, show, SFX, confetti, stopConfetti, reduced, toast,
+      stopEnglish: () => { Speech.stop(); S = null; },
+      home: () => renderHome()
+    });
+    await SB.ready;
+  }
   if (DEV) {
     renderDev();
-    window.TC = { get MATHS() { return MATHS; }, get st() { return st; }, get S() { return S; }, CARD, SET, SETS, today, buildQueue, newOrder, dueIds, eligible, trickyIds, funIds, flip, rate, save, Speech, SFX, setPracticeIds, get VOICE() { return VOICE; }, renderText, voiceEl, get prof() { return prof; }, openProfile, showPicker, PCARDS, weekStats, readProfile,
+    window.TC = { get MATHS() { return MATHS; }, get SB() { return SB; }, get st() { return st; }, get S() { return S; }, CARD, SET, SETS, today, buildQueue, newOrder, dueIds, eligible, trickyIds, funIds, flip, rate, save, Speech, SFX, setPracticeIds, get VOICE() { return VOICE; }, renderText, voiceEl, get prof() { return prof; }, openProfile, showPicker, PCARDS, weekStats, readProfile,
       showCard(id) { if (!S) newSession('fun', [id]); else { S.queue = S.queue.filter(x => x !== id); S.cur = id; S.flipped = S.seenBack = S.flipping = S.busy = false; if (CARD[id].kind === 'gap') renderGapCard(CARD[id]); else renderCard(CARD[id]); } } };
   }
   if (MATHS && prof === 'maria' && lsGet(DECK_KEY) === 'math') MATHS.home();   // she was last in the times tables

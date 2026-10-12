@@ -24,6 +24,7 @@ subs = [
     ('<link rel="preload" href="fonts/andika-700.woff2" as="font" type="font/woff2" crossorigin>\n', ''),
     ('<body>', '<body data-profile="mama" class="single">'),
     ('<script src="maths.js"></script>\n', ''),          # Maria's times tables stay in Talk Cards
+    ('<script src="stickerbook.js"></script>\n', ''),    # and so does her sticker book
 ]
 for old, new in subs:
     if old not in page:

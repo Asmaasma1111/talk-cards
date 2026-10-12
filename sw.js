@@ -2,7 +2,7 @@
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
 // The same file serves both apps: Talk Cards registers sw.js, Prepositions registers sw.js?app=prepositions.
 const APP = new URL(location.href).searchParams.get('app') === 'prepositions' ? 'prepositions' : 'talk-cards';
-const VERSION = APP + '-v17';
+const VERSION = APP + '-v18';
 const FILES = APP === 'prepositions' ? [
   './',
   'index.html',
@@ -23,6 +23,8 @@ const FILES = APP === 'prepositions' ? [
   'style.css',
   'app.js',
   'maths.js',
+  'stickerbook.js',
+  'stickers/stickers.json',
   'sets.json',
   'prepositions.json',
   'manifest.json',
@@ -51,8 +53,17 @@ async function cacheVoice(cache) {
   } catch (e) { /* no recordings yet: the app falls back to the device voice */ }
 }
 
+// Maria's sticker book: every picture listed in stickers/stickers.json, so the book opens offline too.
+async function cacheStickers(cache) {
+  if (APP !== 'talk-cards') return;
+  try {
+    const m = await (await fetch('stickers/stickers.json', { cache: 'no-cache' })).json();
+    await cache.addAll(m.stickers.map(s => 'stickers/' + s.file));
+  } catch (e) { /* the book still opens when online */ }
+}
+
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSION).then(async c => { await c.addAll(FILES); await cacheVoice(c); }).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(VERSION).then(async c => { await c.addAll(FILES); await cacheVoice(c); await cacheStickers(c); }).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {

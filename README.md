@@ -26,6 +26,13 @@ Always use the Home Screen icon. The icon and a Safari tab keep separate progres
 - Both Home screens show how many days in a row she has practised. A day counts when she answers a card. The English cards have no minutes goal: they are about finishing sets and moving on.
 - Each parent area has a practice calendar for the last five weeks. Progress from before day tracking (October 2026) was registered from what the app had stored: the English cards' own dates, and every answer in the times tables. Tap a day to register it by hand, or tap again to take it off.
 
+## Sticker book (English cards)
+
+- One sticker for every 7 days in a row of practice on the English cards (the 7th, 14th, 21st... day of a run). Home shows **My Sticker Book** with this week's 7 dots.
+- A new sticker comes at the end of the session that completes the 7th day ("Stick it in my book": it flies into its place). Stickers she earned before the book existed (registered days) are given the next time Home opens. A sticker is never taken away.
+- 40 stickers in `stickers/` (order and names in `stickers/stickers.json`): 16 glitter squishies drawn for the app, food squishies and animals from Microsoft Fluent Emoji (MIT, see `stickers/LICENSE.txt`), and a sparkly one every 4th week. After 40 they start again (×2).
+- Code: `stickerbook.js` (styles at the end of `style.css`). Collected stickers are in Maria's profile, so the backup file carries them. Tests: `node scripts/test_stickers.js`.
+
 ## Times tables (جدول الضرب)
 
 - The code is `maths.js` (styles at the end of `style.css`, font Tajawal in `fonts/`). Everything Maria sees is in Arabic with Arabic-Indic digits, and each sum is written right to left as in her school book (a hidden switch under **Advanced** in its parent area turns it left to right).
