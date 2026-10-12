@@ -41,7 +41,9 @@ const KNOWN_BOX = 2;      // a set of new facts is "mostly mastered" when its fa
 const MASTER_BOX = 4;     // a table's sticker: all ten facts in box 4 or higher (a week or more apart)
 const MIN_SESSION = 5;    // short sessions are topped up with learned facts ("تذكّري")
 const MAX_VIEWS = 3;      // a card is shown at most three times in one session
-const DEFAULT_SETTINGS = { perSession: 8, batchSize: 4, newPerDay: 10, target: 10, fastSec: 4, dir: 'rtl' };
+const DEFAULT_SETTINGS = { perSession: 8, batchSize: 4, newPerDay: 10, goalMin: 5, fastSec: 4, dir: 'rtl' };
+const CARD_CAP = 120;     // daily goal: active seconds counted per card, at most (as in the English cards)
+const isDay = x => typeof x === 'string' && /^\d{4}-\d\d-\d\d$/.test(x);
 
 function blank() {
   return {
@@ -50,8 +52,9 @@ function blank() {
     open: [],                        // facts released so far, in order
     batch: [],                       // the most recent set of new facts
     stars: { total: 0, today: 0, day: '' },
-    daily: { day: '', correct: 0, hit: false },
-    streak: { n: 0, last: '' },      // days in a row with the daily target reached
+    daily: { day: '', hit: false },  // the day's goal reached (bonus star given)
+    active: {},                      // day -> seconds with a card on screen (the daily goal ring)
+    reg: [],                         // days registered by a parent, or from before the ring (minutes estimated)
     days: {},                        // 'YYYY-MM-DD' -> {n: answers, ok: correct}
     stickers: {},                    // table -> date mastered
     log: [],                         // [day, id, correct 1/0, ms]
@@ -64,12 +67,20 @@ function clean(s) {
   const obj = x => (x && typeof x === 'object' && !Array.isArray(x) ? x : {});
   const o = { ...d, ...s,
     cards: obj(s.cards), days: obj(s.days), stickers: obj(s.stickers),
-    stars: { ...d.stars, ...obj(s.stars) }, daily: { ...d.daily, ...obj(s.daily) }, streak: { ...d.streak, ...obj(s.streak) },
+    stars: { ...d.stars, ...obj(s.stars) }, daily: { ...d.daily, ...obj(s.daily) }, active: obj(s.active),
     settings: { ...d.settings, ...obj(s.settings) },
     open: Array.isArray(s.open) ? [...new Set(s.open.filter(id => FACT[id]))] : [],
     batch: Array.isArray(s.batch) ? s.batch.filter(id => FACT[id]) : [],
     log: Array.isArray(s.log) ? s.log : [] };
   if (o.settings.dir !== 'ltr') o.settings.dir = 'rtl';
+  o.reg = Array.isArray(s.reg) ? s.reg.filter(isDay) : [];
+  delete o.streak;
+  if (!s.active) {                  // from before the daily goal ring: every day she answered is registered, and its
+    o.daily = { day: '', hit: false };   // minutes estimated from the answer times (plus a few seconds on each back)
+    o.log.forEach(([day, , , ms]) => { if (isDay(day)) o.active[day] = (o.active[day] || 0) + Math.min(CARD_CAP, (Number(ms) || 0) / 1000 + 3); });
+    Object.keys(o.active).forEach(k => { o.active[k] = Math.round(o.active[k]); });
+    o.reg = Object.keys(o.days).filter(k => isDay(k) && o.days[k].n > 0).sort();
+  }
   return o;
 }
 const valid = s => !!(s && typeof s === 'object' && s.cards && typeof s.cards === 'object' && Array.isArray(s.open));
@@ -167,7 +178,7 @@ function schedule(c, step, g, t, views) {
 const tableIds = t => FACTS.filter(f => f.table === t).map(f => f.id);
 const tableMastered = (m, t) => tableIds(t).every(id => peek(m, id).box >= MASTER_BOX);
 // One answer. mode 'normal' moves the card through the boxes; 'practice' (tricky ones, a table from Home)
-// only counts stars, the daily target and the statistics.
+// only counts stars and the statistics.
 function answer(m, item, correct, ms, helped, t, views, mode = 'normal') {
   const f = FACT[item.id], c = rec(m, item.id);
   const g = gradeOf(m, correct, ms, helped, String(f.ans).length);
@@ -192,14 +203,6 @@ function answer(m, item, correct, ms, helped, t, views, mode = 'normal') {
     stars = g === 'easy' ? 2 : 1;                       // one star, and a bonus star for a fast answer
     if (m.stars.day !== t) { m.stars.day = t; m.stars.today = 0; }
     m.stars.today += stars; m.stars.total += stars;
-    if (m.daily.day !== t) m.daily = { day: t, correct: 0, hit: false };
-    m.daily.correct++;
-    if (!m.daily.hit && m.daily.correct >= m.settings.target) {
-      m.daily.hit = true;
-      const n = m.streak.last === t ? m.streak.n : m.streak.last === addDays(t, -1) ? m.streak.n + 1 : 1;
-      m.streak = { n, last: t };
-      events.push({ type: 'target', streak: n });
-    }
   }
   let again = null;
   if (mode === 'normal') {
@@ -216,8 +219,27 @@ function answer(m, item, correct, ms, helped, t, views, mode = 'normal') {
 // Insert a card again after two others (or at the end of a short queue).
 function requeue(queue, item, gap = 2) { queue.splice(Math.min(gap, queue.length), 0, item); return queue; }
 
-const streakNow = (m, t) => (m.streak.last === t || m.streak.last === addDays(t, -1) ? m.streak.n : 0);
-const correctToday = (m, t) => (m.daily.day === t ? m.daily.correct : 0);
+// The daily goal: minutes with a card on screen (at most 2 a card). Reaching it gives a bonus star, once a day.
+function addActive(m, t, secs) {
+  m.active[t] = (m.active[t] || 0) + Math.max(0, Math.min(CARD_CAP, secs));
+  const keys = Object.keys(m.active).sort();
+  if (keys.length > 120) keys.slice(0, keys.length - 120).forEach(k => delete m.active[k]);
+  if (m.daily.day !== t) m.daily = { day: t, hit: false };
+  if (m.daily.hit || m.active[t] < m.settings.goalMin * 60) return [];
+  m.daily.hit = true;
+  if (m.stars.day !== t) { m.stars.day = t; m.stars.today = 0; }
+  m.stars.today += 1; m.stars.total += 1;
+  return [{ type: 'target' }];
+}
+const activeOn = (m, t) => m.active[t] || 0;
+const practisedDays = m => [...new Set([...Object.keys(m.days).filter(d => m.days[d].n > 0), ...m.reg])].sort();
+function streakNow(m, t) {
+  const set = new Set(practisedDays(m));
+  let d = t, n = 0;
+  if (!set.has(d)) d = addDays(d, -1);
+  while (set.has(d)) { n++; d = addDays(d, -1); }
+  return n;
+}
 const twinKnown = (m, f) => { const tw = twinOf(f); return tw && peek(m, tw.id).box >= 1 ? tw : null; };
 function trickyIds(m, t) {
   const from = addDays(t, -6);
@@ -254,7 +276,7 @@ function weakest(m, k = 10) {
 const core = { toAr, toWestern, parseAnswer, TABLES, FACTS, FACT, twinOf, addDays, INTERVAL, TOP_BOX, KNOWN_BOX, MASTER_BOX,
   MIN_SESSION, MAX_VIEWS, DEFAULT_SETTINGS, blank, clean, valid, peek, rec, batchesFor, nextBatch, batchReady, introducedOn,
   canRelease, release, weakness, dueIds, buildSession, gradeOf, schedule, answer, requeue, tableIds, tableMastered,
-  streakNow, correctToday, twinKnown, trickyIds, tablePracticeIds, currentTable, tableStats, weakest };
+  streakNow, addActive, activeOn, practisedDays, CARD_CAP, twinKnown, trickyIds, tablePracticeIds, currentTable, tableStats, weakest };
 
 /* =====================================================================================================
    The screens. api comes from app.js: today, lsGet, lsSet, show, toast, SFX, sfx(), confetti, stopConfetti,
@@ -273,7 +295,6 @@ function mount(api) {
   const keys = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => `<button class="mx-key" data-k="${d}" style="grid-area:k${d}">${toAr(d)}</button>`).join('');
   document.body.insertAdjacentHTML('beforeend', `
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12.6 2.4c.5 2.9-1.1 4.5-2.6 6.2C8.4 10.4 6.6 12.4 6.6 15.3c0 3.6 2.5 6.3 5.6 6.3s5.8-2.6 5.8-6.2c0-2.5-1.2-4.6-2.7-6.1-.2 1.4-.9 2.5-2 3 .5-3.5-.2-7.4-.7-9.9z"/></symbol>
   <symbol id="i-bksp" viewBox="0 0 24 24"><path d="M9.2 5.2h10.3a1.6 1.6 0 0 1 1.6 1.6v10.4a1.6 1.6 0 0 1-1.6 1.6H9.2L3 12z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M11.8 9.4l5.2 5.2M17 9.4l-5.2 5.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
   <symbol id="i-next" viewBox="0 0 24 24"><path d="M19 12H5.5M11 5.5L4.5 12l6.5 6.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </svg>
@@ -290,7 +311,7 @@ function mount(api) {
     <div class="mx-stat"><div class="mx-stat-n"><svg class="flame" aria-hidden="true"><use href="#i-flame"/></svg><b id="mxStreak"></b></div><span>أيام متتالية</span></div>
   </div>
   <button id="mxStart" class="btn-start mx-start">ابدئي</button>
-  <div class="mx-goal" id="mxGoal"><span class="mx-goal-t">هدف اليوم</span><div class="bar"><div class="fill" id="mxGoalFill"></div></div><b id="mxGoalNum"></b></div>
+  <div class="goal" id="mxGoal"><svg class="ring" viewBox="0 0 64 64" aria-hidden="true"><circle class="ring-bg" cx="32" cy="32" r="27"/><circle class="ring-fg" id="mxRing" cx="32" cy="32" r="27"/></svg><div class="goal-text"><b id="mxMins"></b><span id="mxGoalText"></span></div></div>
   <div class="mx-stickers" id="mxStickers"></div>
   <div class="mx-now" id="mxNow"></div>
   <div class="app-foot maria-only" lang="en" dir="ltr">
@@ -303,6 +324,7 @@ function mount(api) {
   <div class="topbar">
     <button id="mxQuit" class="quit" aria-label="الرئيسية"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
     <div class="progress"><div class="fill" id="mxProg"></div></div>
+    <div class="mini-goal" id="mxMini"><svg class="ring" viewBox="0 0 64 64" aria-hidden="true"><circle class="ring-bg" cx="32" cy="32" r="25"/><circle class="ring-fg" id="mxSessRing" cx="32" cy="32" r="25"/></svg><span id="mxSessMins"></span></div>
     <div class="star-count" id="mxStarCount"><svg class="star" aria-hidden="true"><use href="#i-star"/></svg><span id="mxStarNum"></span></div>
   </div>
   <div class="mx-main">
@@ -333,7 +355,7 @@ function mount(api) {
 <section id="mdone" class="screen mx" dir="rtl" lang="ar" hidden>
   <h1 class="done-title">انتهينا!</h1>
   <div class="done-stars" id="mxDoneStarsRow"><svg class="star" aria-hidden="true"><use href="#i-star"/></svg><b id="mxDoneStars" dir="ltr"></b></div>
-  <div class="mx-goal" id="mxDoneGoal"><span class="mx-goal-t">هدف اليوم</span><div class="bar"><div class="fill" id="mxDoneGoalFill"></div></div><b id="mxDoneGoalNum"></b></div>
+  <div class="goal" id="mxDoneGoal"><svg class="ring" viewBox="0 0 64 64" aria-hidden="true"><circle class="ring-bg" cx="32" cy="32" r="27"/><circle class="ring-fg" id="mxDoneRing" cx="32" cy="32" r="27"/></svg><div class="goal-text"><b id="mxDoneMins"></b><span id="mxDoneGoalText"></span></div></div>
   <button id="mxMore" class="btn btn-soft"></button>
   <button id="mxHome" class="btn-link">الرئيسية</button>
 </section>
@@ -358,12 +380,28 @@ function mount(api) {
 
   /* ---------- Home ---------- */
   const starSvg = '<svg class="star" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg>';
-  function goalInto(fill, num, box) {
-    const t = today(), c = correctToday(m, t), target = m.settings.target;
-    fill.style.width = Math.min(100, c / target * 100) + '%';
-    num.textContent = `${toAr(Math.min(c, target))} من ${toAr(target)}`;
-    box.classList.toggle('hit', c >= target);
+  // The daily goal ring, as on the English Home: minutes today out of the goal (٥ by default).
+  const clock = {
+    acc: 0, since: null, on: false,
+    start() { this.acc = 0; this.on = true; this.since = document.hidden ? null : performance.now(); },
+    pause() { if (this.since != null) { this.acc += performance.now() - this.since; this.since = null; } },
+    resume() { if (this.on && this.since == null) this.since = performance.now(); },
+    secs() { if (!this.on) return 0; return Math.min(CARD_CAP, (this.acc + (this.since != null ? performance.now() - this.since : 0)) / 1000); },
+    stop() { const s = this.secs(); this.on = false; this.since = null; this.acc = 0; return s; }
+  };
+  let tick = 0;
+  const minWord = n => (n === 1 ? 'دقيقة' : n === 2 ? 'دقيقتين' : n <= 10 ? 'دقائق' : 'دقيقة');
+  function ringInto(ring, num, text, box) {
+    const secs = activeOn(m, today()) + clock.secs(), goal = m.settings.goalMin, done = secs >= goal * 60;
+    const mins = done ? Math.floor(secs / 60) : Math.min(goal, Math.floor(secs / 60));
+    const r = Number(ring.getAttribute('r')), C = 2 * Math.PI * r;
+    ring.style.strokeDasharray = `${C}`;
+    ring.style.strokeDashoffset = `${C * (1 - Math.min(1, secs / (goal * 60)))}`;
+    num.textContent = toAr(mins);
+    if (text) text.textContent = done ? 'وصلتِ لهدف اليوم!' : `من ${toAr(goal)} ${minWord(goal)} اليوم`;
+    box.classList.toggle('reached', done);
   }
+  const sessRing = () => ringInto($('#mxSessRing'), $('#mxSessMins'), null, $('#mxMini'));
   function home() {
     stopRound();
     api.stopEnglish();
@@ -372,7 +410,7 @@ function mount(api) {
     const t = today();
     $('#mxStars').textContent = toAr(m.stars.total);
     $('#mxStreak').textContent = toAr(streakNow(m, t));
-    goalInto($('#mxGoalFill'), $('#mxGoalNum'), $('#mxGoal'));
+    ringInto($('#mxRing'), $('#mxMins'), $('#mxGoalText'), $('#mxGoal'));
     const cur = currentTable(m);
     const box = $('#mxStickers'); box.textContent = '';
     tableStats(m).forEach(s => {
@@ -393,6 +431,7 @@ function mount(api) {
   /* ---------- a round ---------- */
   function stopRound() {
     S = null;
+    clock.stop(); clearInterval(tick);
     $('#mxCel').hidden = true;
     api.stopConfetti($('#mxConfetti'));
   }
@@ -428,10 +467,12 @@ function mount(api) {
     renderFront();
     progress();
     S.shownAt = performance.now(); S.hiddenAt = 0;
+    clock.start(); clearInterval(tick); tick = setInterval(sessRing, 1000); sessRing();
   }
   function endRound() {
     const done = S;
     S = null;
+    clock.stop(); clearInterval(tick);
     showDone(done);
   }
 
@@ -591,6 +632,10 @@ function mount(api) {
   function next() {
     if (!S || S.phase !== 'back') return;
     S.phase = 'leaving';
+    S.celeb.push(...addActive(m, today(), Math.round(clock.stop())));   // this card's time towards the daily goal
+    save();
+    $('#mxStarNum').textContent = toAr(m.stars.today);
+    sessRing();
     const go = () => { if (!S) return; if (S.celeb.length) celebrate(S.celeb.shift(), go); else nextCard(); };
     go();
   }
@@ -625,7 +670,7 @@ function mount(api) {
   function showDone(done) {
     $('#mxDoneStars').textContent = '+' + toAr(done.stars || 0);
     $('#mxDoneStarsRow').hidden = !done.stars;
-    goalInto($('#mxDoneGoalFill'), $('#mxDoneGoalNum'), $('#mxDoneGoal'));
+    ringInto($('#mxDoneRing'), $('#mxDoneMins'), $('#mxDoneGoalText'), $('#mxDoneGoal'));
     const tricky = trickyIds(m, today()), more = $('#mxMore');
     more.textContent = tricky.length ? 'الصعبة مرة أخرى' : 'جولة أخرى';
     more.dataset.kind = tricky.length ? 'tricky' : 'normal';
@@ -638,7 +683,7 @@ function mount(api) {
 
   /* ---------- parent area (English, Western digits) ---------- */
   const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
-  const STEPS = { perSession: [5, 10, 1], batchSize: [3, 4, 1], newPerDay: [3, 20, 1], target: [5, 40, 1], fastSec: [2, 8, 1] };
+  const STEPS = { perSession: [5, 10, 1], batchSize: [3, 4, 1], newPerDay: [3, 20, 1], goalMin: [3, 20, 1], fastSec: [2, 8, 1] };
   const stepper = (k, v, unit = '') => `<div class="step"><button class="p-btn" data-step="${k}" data-d="-1" aria-label="Less">−</button><output>${v}${unit}</output><button class="p-btn" data-step="${k}" data-d="1" aria-label="More">+</button></div>`;
   const pct = (a, b) => (b ? Math.round(a / b * 100) : 0);
   const asDate = ds => { const [y, mo, d] = ds.split('-').map(Number); return new Date(y, mo - 1, d); };
@@ -658,9 +703,8 @@ function mount(api) {
       <div class="p-row"><span class="mx-wfact">${f.a} × ${f.b} = ${f.ans}</span>
         <span class="mx-wnum">${c.right || 0} of ${c.seen} right${c.msN ? ` · ${(c.msSum / c.msN / 1000).toFixed(1)} s average` : ''}<span class="sub">box ${c.box || 0}${c.due ? ` · next ${c.due <= t ? 'today' : shortDate(c.due)}` : ''}</span></span></div>`).join('')
       || `<div class="p-row"><span class="sub">${FACTS.some(f => peek(m, f.id).seen) ? 'None yet: every fact so far has been answered right and quickly.' : 'No answers yet.'}</span></div>`;
-    const last14 = Array.from({ length: 14 }, (_, i) => addDays(t, i - 13));
-    const maxN = Math.max(1, ...last14.map(d => (m.days[d] || {}).n || 0));
-    const bars = last14.map(d => { const n = (m.days[d] || {}).n || 0; return `<div class="wk${d === t ? ' today' : ''}" title="${shortDate(d)}: ${n}"><i style="height:${Math.round(n / maxN * 34)}px"></i><span>${asDate(d).getDate()}</span></div>`; }).join('');
+    const days = practisedDays(m), week = Array.from({ length: 7 }, (_, i) => addDays(t, -i));
+    const goalDays = week.filter(d => activeOn(m, d) >= s.goalMin * 60).length;
     const nb = nextBatch(m);
     const sample = FACT.m3x4;
     $('#mparent').innerHTML = `<div class="p-wrap">
@@ -675,8 +719,8 @@ function mount(api) {
 
     <h2 class="mx-h2">Days practised</h2>
     <div class="p-group">
-      <div class="p-row"><span>${practised.length} day${practised.length === 1 ? '' : 's'} in all · ${answers} answers · ${pct(right, answers)}% right<span class="sub">${practised.length ? `First ${shortDate(practised[0])} · last ${shortDate(practised[practised.length - 1])}` : 'Not started yet'}</span></span></div>
-      <div class="p-row mx-days"><div class="bars">${bars}</div><span class="sub">Answers a day, last 14 days</span></div>
+      <div class="p-row"><span>${days.length} day${days.length === 1 ? '' : 's'} in all · ${answers} answers · ${pct(right, answers)}% right<span class="sub">Today ${Math.floor(activeOn(m, t) / 60)} min · ${streakNow(m, t)} day${streakNow(m, t) === 1 ? '' : 's'} in a row · last 7 days: goal reached on ${goalDays}${days.length ? ` · first ${shortDate(days[0])}, last ${shortDate(days[days.length - 1])}` : ''}</span></span></div>
+      <div class="p-row p-cal"><span>Practice calendar<span class="sub">Minutes a day (estimated for days before the goal ring). ✓ = registered without minutes. Tap a day without minutes to register it, or tap again to take it off.</span></span>${api.calendarHTML(m.active, days, m.reg, s.goalMin)}</div>
     </div>
 
     <h2 class="mx-h2">Settings</h2>
@@ -684,7 +728,7 @@ function mount(api) {
       <div class="p-row"><span>Cards per session<span class="sub">Short sessions: 5 to 10 facts</span></span>${stepper('perSession', s.perSession)}</div>
       <div class="p-row"><span>New facts per set</span>${stepper('batchSize', s.batchSize)}</div>
       <div class="p-row"><span>New facts per day (at most)</span>${stepper('newPerDay', s.newPerDay)}</div>
-      <div class="p-row"><span>Daily target<span class="sub">Correct answers a day</span></span>${stepper('target', s.target)}</div>
+      <div class="p-row"><span>Daily goal<span class="sub">Minutes with a card on screen (at most 2 a card); a bonus star when reached</span></span>${stepper('goalMin', s.goalMin, ' min')}</div>
       <div class="p-row"><span>Fast answer<span class="sub">Right within this time: Easy + bonus star</span></span>${stepper('fastSec', s.fastSec, ' s')}</div>
       <div class="p-row"><span>Sound effects<span class="sub">Shared with the English cards</span></span><button class="switch" role="switch" aria-checked="${api.sfx()}" data-act="sfx" aria-label="Sound effects"></button></div>
     </div>
@@ -721,7 +765,13 @@ function mount(api) {
     if (b.dataset.step) {
       const k = b.dataset.step, [lo, hi, inc] = STEPS[k];
       s[k] = Math.min(hi, Math.max(lo, s[k] + inc * Number(b.dataset.d)));
-      save(); b.parentElement.querySelector('output').textContent = s[k] + (k === 'fastSec' ? ' s' : '');
+      save(); b.parentElement.querySelector('output').textContent = s[k] + (k === 'fastSec' ? ' s' : k === 'goalMin' ? ' min' : '');
+      return;
+    }
+    if (b.dataset.day) {                   // register a practice day by hand, or take it off
+      const d = b.dataset.day, on = m.reg.includes(d);
+      m.reg = on ? m.reg.filter(x => x !== d) : [...m.reg, d].sort();
+      save(); renderParent(); api.toast(on ? `${d} taken off.` : `${d} registered as practised.`);
       return;
     }
     if (b.dataset.dir) { s.dir = b.dataset.dir; save(); renderParent(); $('#mparent .mx-adv').open = true; return; }
@@ -767,7 +817,8 @@ function mount(api) {
     else if (e.key === 'Backspace') { e.preventDefault(); press('del'); }
     else if (e.key === 'Enter') { e.preventDefault(); if (S.phase === 'ask') check(); else if (S.phase === 'back') next(); }
   });
-  document.addEventListener('visibilitychange', () => {   // time away from the app does not count against "fast"
+  document.addEventListener('visibilitychange', () => {   // time away from the app counts neither for "fast" nor for the goal
+    if (document.hidden) clock.pause(); else clock.resume();
     if (!S || S.phase !== 'ask') return;
     if (document.hidden) S.hiddenAt = performance.now();
     else if (S.hiddenAt) { S.shownAt += performance.now() - S.hiddenAt; S.hiddenAt = 0; }

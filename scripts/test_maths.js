@@ -136,17 +136,41 @@ ok(C.batchesFor(4).every(b => new Set(b.map(id => C.FACT[id].table)).size === 1)
   ok(r.events.some(e => e.type === 'sticker' && e.table === 1), 'sticker for the 1 table when the last fact reaches box 4');
   eq(s.stickers[1], T0, 'sticker saved');
 
-  const g = C.blank(); g.settings.target = 3;
-  const hit = t => C.answer(g, { id: 'm1x1', step: 'practice' }, true, 1000, false, t, 1, 'practice').events.filter(e => e.type === 'target');
-  eq([hit(T0).length, hit(T0).length, hit(T0).length, hit(T0).length], [0, 0, 1, 0], 'target celebrated once, at the third right answer');
+  // the daily goal: minutes with a card on screen, at most 2 a card, a bonus star once a day
+  const g = C.blank(); g.settings.goalMin = 2;
+  const hit = (t, secs) => C.addActive(g, t, secs).filter(e => e.type === 'target').length;
+  eq([hit(T0, 50), hit(T0, 50), hit(T0, 30), hit(T0, 60)], [0, 0, 1, 0], 'goal celebrated once, when 2 minutes are reached');
+  eq(g.active[T0], 190, 'seconds add up');
+  eq(g.stars.total, 1, 'one bonus star for the goal');
+  C.addActive(g, day(1), 500);
+  eq(g.active[day(1)], C.CARD_CAP, 'at most 2 minutes count for one card');
+  const answerOn = t => C.answer(g, { id: 'm1x1', step: 'practice' }, true, 1000, false, t, 1, 'practice');
+  answerOn(T0);
   eq(C.streakNow(g, T0), 1, 'streak 1');
-  [0, 1, 2].forEach(() => hit(day(1)));
+  answerOn(day(1));
   eq(C.streakNow(g, day(1)), 2, 'next day: streak 2');
   eq(C.streakNow(g, day(2)), 2, 'still shown the day after (not broken yet)');
   eq(C.streakNow(g, day(3)), 0, 'a missed day ends it');
-  [0, 1, 2].forEach(() => hit(day(3)));
-  eq(C.streakNow(g, day(3)), 1, 'starts again at 1');
-  eq(g.stars.total, 10 * 2, 'two stars for each fast answer (10 answers)');
+  g.reg.push(day(2));
+  eq(C.streakNow(g, day(3)), 3, 'a day registered by a parent fills the gap');
+  answerOn(day(5));
+  eq(C.streakNow(g, day(5)), 1, 'starts again at 1');
+  eq(C.answer(g, { id: 'm1x1', step: 'practice' }, true, 1000, false, day(5), 1, 'practice').events.filter(e => e.type === 'target'), [], 'answers alone no longer trigger the goal');
+}
+
+/* ---------- registering practice from before the daily goal ring ---------- */
+{
+  const old = { v: 1, cards: { m1x1: { box: 2, seen: 2, right: 2 } }, open: ['m1x1'], batch: ['m1x1'],
+    days: { [T0]: { n: 8, ok: 8 }, [day(1)]: { n: 4, ok: 3 } }, daily: { day: day(1), correct: 10, hit: true }, streak: { n: 2, last: day(1) },
+    log: [[T0, 'm1x1', 1, 2000], [T0, 'm1x2', 1, 3000], [day(1), 'm1x1', 0, 400000]], settings: { target: 10 } };
+  const m = C.clean(JSON.parse(JSON.stringify(old)));
+  eq(m.reg, [T0, day(1)], 'every day she answered is registered as practised');
+  eq([m.active[T0], m.active[day(1)]], [11, 120], 'minutes estimated from her answer times (+3 s a card, at most 2 minutes a card)');
+  eq(C.streakNow(m, day(1)), 2, 'her streak carries over');
+  eq(m.settings.goalMin, 5, 'default goal: 5 minutes');
+  eq(m.daily.hit, false, 'today\'s goal is measured afresh');
+  const again = C.clean(JSON.parse(JSON.stringify(m)));
+  eq([again.reg, again.active], [m.reg, m.active], 'registered only once (saved and reloaded: unchanged)');
 }
 
 /* ---------- weakest facts for the parent area: missed or slow only ---------- */

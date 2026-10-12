@@ -28,6 +28,7 @@
   <symbol id="i-cross" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
   <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3.5" y="8" width="17" height="4.5" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5.5 12.5V20h13v-7.5M12 8v12M12 8c-1.8-3.6-5.6-3.4-5.2-1 .3 1.4 2.6 1 5.2 1zm0 0c1.8-3.6 5.6-3.4 5.2-1-.3 1.4-2.6 1-5.2 1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12.6 2.4c.5 2.9-1.1 4.5-2.6 6.2C8.4 10.4 6.6 12.4 6.6 15.3c0 3.6 2.5 6.3 5.6 6.3s5.8-2.6 5.8-6.2c0-2.5-1.2-4.6-2.7-6.1-.2 1.4-.9 2.5-2 3 .5-3.5-.2-7.4-.7-9.9z"/></symbol>
   <symbol id="i-save" viewBox="0 0 24 24"><path d="M12 3.5v11M7.2 10l4.8 4.8 4.8-4.8M4.5 16.5v2.2c0 .9.7 1.6 1.6 1.6h11.8c.9 0 1.6-.7 1.6-1.6v-2.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
 </svg>
@@ -50,7 +51,10 @@
     <div class="bars" id="mBars" aria-hidden="true"></div>
     <div class="week-text" id="mWeek"></div>
   </div>
-  <div class="today maria-only"><svg class="star" aria-hidden="true"><use href="#i-star"/></svg><span><b id="todayStars">0</b> today</span></div>
+  <div class="daily maria-only">
+    <div class="today"><svg class="star" aria-hidden="true"><use href="#i-star"/></svg><span><b id="todayStars">0</b> today</span></div>
+    <div class="streak"><svg class="flame" aria-hidden="true"><use href="#i-flame"/></svg><span><b id="streakNum">0</b> <span id="streakWord">days</span> in a row</span></div>
+  </div>
   <div class="prize maria-only">
     <div class="bar"><div class="fill" id="prizeFill"></div></div>
     <div class="prize-text"><b id="prizeCount">0 / 50</b> stars to: <span id="prizeName"></span></div>

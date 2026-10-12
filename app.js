@@ -18,6 +18,7 @@ const DEV_KEY = 'mariaTalkCards.devOffset';
 const INTERVAL = [0, 1, 2, 4, 8, 16, 32, 64];          // days until next review, by box
 const SPEEDS = { slow: 0.75, standard: 0.85, normal: 0.95 };
 const STAR_FLIGHT = 560;                                 // ms
+const TRACK_FROM = '2026-10-01';                         // the practice calendar starts with this version of the app
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const ARABIC = /[؀-ۿ]/;
 
@@ -98,7 +99,9 @@ function defaults(p = prof) {
     stars: { bank: 0, today: 0, day: '' },
     prizes: [],
     settings: { newPerDay: 12, perSession: 12, target: 50, prize: 'new coloring set', voice: '', speed: 'standard', sfx: true },
-    pace: 2                                // 2 = two sets a day (October 2026)
+    pace: 2,                               // 2 = two sets a day (October 2026)
+    days: [],                              // days she practised (days in a row on Home)
+    reg: [],                               // of those, days registered from earlier progress or marked by a parent
   };
 }
 let st;
@@ -121,12 +124,23 @@ function merge(s, p = prof) {
     o.stars = { ...d.stars, ...(s.stars || {}) };
     o.passed = Array.isArray(s.passed) ? s.passed : [];
     o.prizes = Array.isArray(s.prizes) ? s.prizes : [];
+    if (Array.isArray(s.days)) { o.days = s.days.filter(isDay); o.reg = Array.isArray(s.reg) ? s.reg.filter(isDay) : []; }
+    else { o.days = practisedBefore(o); o.reg = o.days.slice(); }   // from before day tracking: registered from the cards' own dates
     if (!s.pace) {                         // profiles from the one-set-a-day version: 4 new cards becomes 12
       if (o.settings.newPerDay === 4) o.settings.newPerDay = 12;
       o.pace = 2;
     }
   }
   return o;
+}
+const isDay = x => typeof x === 'string' && /^\d{4}-\d\d-\d\d$/.test(x);
+// Every day Maria's cards show she practised: first learned, moved up, missed, hint used, prize won, stars earned.
+function practisedBefore(o) {
+  const d = new Set();
+  Object.values(o.cards).forEach(c => { if (c && typeof c === 'object') [c.intro, c.up, c.hintDay, ...(Array.isArray(c.again) ? c.again : [])].forEach(x => { if (isDay(x)) d.add(x); }); });
+  o.prizes.forEach(p => { if (p && isDay(p.date)) d.add(p.date); });
+  if (o.stars && isDay(o.stars.day) && o.stars.today > 0) d.add(o.stars.day);
+  return [...d].sort();
 }
 function readProfile(p) { try { return merge(JSON.parse(lsGet(PROFILE_KEY[p]) || 'null'), p); } catch (e) { return defaults(p); } }
 function load(p) { prof = p; st = readProfile(p); }
@@ -589,6 +603,35 @@ const SFX = {
 // Speech always waits for sound effects to finish, plus about 250 ms.
 function speechDelay(min = 0) { return Math.max(min, Math.max(0, SFX.busyUntil - performance.now()) + 250); }
 
+/* ---------- practice days (Maria): days in a row on Home, a calendar in the parent area ---------- */
+// Talk Cards is about finishing sets and moving on, so there is no minutes goal: a day counts when she answers a card.
+function markDay(t = today()) { if (!st.days.includes(t)) { st.days.push(t); st.days.sort(); } }
+function streak() {
+  const set = new Set(st.days);
+  let d = today(), n = 0;
+  if (!set.has(d)) d = addDays(d, -1);
+  while (set.has(d)) { n++; d = addDays(d, -1); }
+  return n;
+}
+// The parent's practice calendar: the last five weeks (Sunday first). A practised day shows its minutes when they
+// were measured (times tables) or a tick; a parent can tap a day without minutes to register it or take it off.
+function calendarHTML(active, days, reg, goalMin) {
+  const t = today(), [y, m, d] = t.split('-').map(Number);
+  const start = addDays(t, -new Date(y, m - 1, d).getDay() - 28);
+  const set = new Set(days), regSet = new Set(reg);
+  let cells = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(x => `<span class="cal-h">${x}</span>`).join('');
+  for (let i = 0; i < 35; i++) {
+    const day = addDays(start, i), [, , dd] = day.split('-').map(Number), secs = active[day] || 0;
+    const future = day > t, measured = secs > 0, goal = goalMin > 0 && secs >= goalMin * 60;
+    const cls = ['cal-d', future ? 'future' : '', day === t ? 'today' : '', goal ? 'goal' : set.has(day) ? 'done' : '', regSet.has(day) && !measured ? 'reg' : ''].filter(Boolean).join(' ');
+    const mark = measured ? `${Math.max(1, Math.round(secs / 60))}m` : set.has(day) ? '✓' : '';
+    const tap = !future && !measured && day >= TRACK_FROM;
+    cells += tap ? `<button class="${cls}" data-day="${day}" aria-label="${day}${set.has(day) ? ', practised' : ''}"><b>${dd}</b><i>${mark}</i></button>`
+      : `<span class="${cls}"><b>${dd}</b><i>${mark}</i></span>`;
+  }
+  return `<div class="cal">${cells}</div>`;
+}
+
 /* ---------- screens ---------- */
 function show(name) {     // every screen (the times-tables screens too): only the named one is visible
   document.querySelectorAll('body > .screen').forEach(el => { el.hidden = el.id !== name; });
@@ -622,6 +665,8 @@ function renderHome() {
     return show('home');
   }
   $('#todayStars').textContent = starsToday();
+  const n = streak();
+  $('#streakNum').textContent = n; $('#streakWord').textContent = n === 1 ? 'day' : 'days';
   const { bank } = st.stars, { target, prize } = st.settings;
   $('#prizeFill').style.width = Math.min(100, bank / target * 100) + '%';
   $('#prizeCount').textContent = `${bank} / ${target}`;
@@ -958,6 +1003,7 @@ function rate(good) {
   const id = S.cur;
   if (S.mode === 'normal') logReview(id, good);
   S.rated.add(id);
+  if (!isMama()) { markDay(); save(); }
   if (good) {
     SFX.good();
     const warm = S.mode === 'normal' && S.warm && S.warm.has(id);
@@ -1127,8 +1173,8 @@ function holdToOpen(el, ms, fn) {
   el.addEventListener('click', e => e.preventDefault());
 }
 const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
-function stepper(key, val) {
-  return `<div class="step"><button class="p-btn" data-step="${key}" data-d="-1" aria-label="Less">−</button><output>${val}</output><button class="p-btn" data-step="${key}" data-d="1" aria-label="More">+</button></div>`;
+function stepper(key, val, unit = '') {
+  return `<div class="step"><button class="p-btn" data-step="${key}" data-d="-1" aria-label="Less">−</button><output>${val}${unit}</output><button class="p-btn" data-step="${key}" data-d="1" aria-label="More">+</button></div>`;
 }
 const STEPS = { newPerDay: [1, 20, 1], perSession: [4, 30, 1], target: [5, 500, 5] };
 const MAMA_STEPS = { newPerDay: [1, 40, 1], perSession: [5, 100, 5] };
@@ -1175,6 +1221,13 @@ function renderMamaSettings() {
     ${backupRows()}
   </div>`;
 }
+function dailyRows() {
+  const t = today(), practised = st.days.filter(d => d >= addDays(t, -6)).length;
+  return `<div class="p-group">
+      <div class="p-row"><span>${streak()} day${streak() === 1 ? '' : 's'} in a row<span class="sub">Practised on ${practised} of the last 7 days · ${st.days.length} day${st.days.length === 1 ? '' : 's'} in all</span></span></div>
+      <div class="p-row p-cal"><span>Practice calendar<span class="sub">✓ = practised. Days before day tracking were registered from her cards. Tap a day to register it, or tap again to take it off.</span></span>${calendarHTML({}, st.days, st.reg, 0)}</div>
+    </div>`;
+}
 function renderParent() {
   if (isMama()) return renderMamaSettings();
   const s = st.settings, t = today();
@@ -1198,6 +1251,8 @@ function renderParent() {
 
     ${commonRows(s)}
 
+    ${dailyRows()}
+
     <div class="p-group">
       <div class="p-row"><span>Sets open: 1–${st.open}<span class="sub">Newest: ${esc(cur ? cur.title : '')}</span></span></div>
       <div class="p-row"><div class="btns">
@@ -1217,6 +1272,13 @@ function onParentClick(e) {
     const k = b.dataset.step, [lo, hi, inc] = (isMama() ? MAMA_STEPS : STEPS)[k];
     s[k] = Math.min(hi, Math.max(lo, s[k] + inc * Number(b.dataset.d)));
     save(); b.parentElement.querySelector('output').textContent = s[k];
+    return;
+  }
+  if (b.dataset.day) {                     // register a practice day by hand, or take it off
+    const d = b.dataset.day;
+    if (st.days.includes(d)) { st.days = st.days.filter(x => x !== d); st.reg = st.reg.filter(x => x !== d); }
+    else { st.days.push(d); st.days.sort(); st.reg.push(d); st.reg.sort(); }
+    save(); renderParent(); toast(st.days.includes(d) ? `${d} registered as practised.` : `${d} taken off.`);
     return;
   }
   if (b.dataset.speed) {
@@ -1376,7 +1438,7 @@ async function boot() {
   load(PROFILES.includes(last) ? last : PROFILES[0]);
   if (APP === 'talk-cards' && PROFILES.includes('maria') && window.TimesTables) {
     MATHS = window.TimesTables.mount({
-      today, lsGet, lsSet, show, toast, SFX, confetti, stopConfetti, holdToOpen, reduced, DEV, backup, restore,
+      today, lsGet, lsSet, show, toast, SFX, confetti, stopConfetti, holdToOpen, reduced, DEV, backup, restore, calendarHTML,
       sfx: v => { if (v !== undefined) { st.settings.sfx = !!v; save(); } return st.settings.sfx; },
       setDeck: d => lsSet(DECK_KEY, d),
       stopEnglish: () => { Speech.stop(); S = null; },

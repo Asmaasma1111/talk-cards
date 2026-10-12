@@ -21,12 +21,18 @@ Always use the Home Screen icon. The icon and a Safari tab keep separate progres
 - The gear at the top right opens the parent area. **Press and hold it for 2 seconds.**
 - **Back up progress** (the line under "Designed by" at the bottom of each Home screen, and in the parent area) saves all progress, English cards and times tables, in one file. Do this now and then. **Restore** (in the parent area) brings it back.
 
+## Practice days
+
+- Both Home screens show how many days in a row she has practised. A day counts when she answers a card. The English cards have no minutes goal: they are about finishing sets and moving on.
+- Each parent area has a practice calendar for the last five weeks. Progress from before day tracking (October 2026) was registered from what the app had stored: the English cards' own dates, and every answer in the times tables. Tap a day to register it by hand, or tap again to take it off.
+
 ## Times tables (جدول الضرب)
 
 - The code is `maths.js` (styles at the end of `style.css`, font Tajawal in `fonts/`). Everything Maria sees is in Arabic with Arabic-Indic digits, and each sum is written right to left as in her school book (a hidden switch under **Advanced** in its parent area turns it left to right).
 - She types the answer on the number pad and taps تحقّق. Right within 4 seconds = Easy (two stars), right but slower = Good (one star), wrong = the answer and its dot picture, calmly, and the fact comes back a few cards later.
 - New facts come three or four at a time, in the order 1, 10, 2, 5, 3, 4, 9, 6, 7, 8, and only when the last set is mostly learned. Learned facts come back after 1, 2, 4, 7, 14 and 30 days. A table's sticker comes when all ten facts are a week or more apart.
-- Its parent area: press and hold the gear on its Home for 2 seconds (weakest facts, accuracy per table, days practised, settings, backup).
+- Its Home has a daily goal ring: minutes with a card on screen (5 by default, at most 2 minutes a card, paused in the background); reaching it gives a bonus star.
+- Its parent area: press and hold the gear on its Home for 2 seconds (weakest facts, accuracy per table, practice calendar, settings, backup).
 - Progress is saved in its own place (`tc:maria:math`), so the English cards are never touched. **Back up progress** saves both decks in one file.
 - Tests: `node scripts/test_maths.js`.
 
