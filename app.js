@@ -98,7 +98,7 @@ function defaults(p = prof) {
     cards: {},                             // id -> {box, due, again:[dates], aTs, clean, intro, up, hints}
     stars: { bank: 0, today: 0, day: '' },
     prizes: [],
-    settings: { newPerDay: 12, perSession: 12, target: 50, prize: 'new coloring set', voice: '', speed: 'standard', sfx: true },
+    settings: { newPerDay: 12, perSession: 12, target: 50, prize: 'new coloring set', voice: '', speed: 'standard', sfx: true, stickerDays: 2 },
     pace: 2,                               // 2 = two sets a day (October 2026)
     days: [],                              // days she practised (days in a row on Home)
     reg: [],                               // of those, days registered from earlier progress or marked by a parent
@@ -1183,7 +1183,7 @@ const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;
 function stepper(key, val, unit = '') {
   return `<div class="step"><button class="p-btn" data-step="${key}" data-d="-1" aria-label="Less">−</button><output>${val}${unit}</output><button class="p-btn" data-step="${key}" data-d="1" aria-label="More">+</button></div>`;
 }
-const STEPS = { newPerDay: [1, 20, 1], perSession: [4, 30, 1], target: [5, 500, 5] };
+const STEPS = { newPerDay: [1, 20, 1], perSession: [4, 30, 1], target: [5, 500, 5], stickerDays: [1, 7, 1] };
 const MAMA_STEPS = { newPerDay: [1, 40, 1], perSession: [5, 100, 5] };
 function voiceNote() {
   const d = deckVoice();
@@ -1232,7 +1232,8 @@ function dailyRows() {
   const t = today(), practised = st.days.filter(d => d >= addDays(t, -6)).length;
   return `<div class="p-group">
       <div class="p-row"><span>${streak()} day${streak() === 1 ? '' : 's'} in a row<span class="sub">Practised on ${practised} of the last 7 days · ${st.days.length} day${st.days.length === 1 ? '' : 's'} in all</span></span></div>
-      ${SB ? `<div class="p-row"><span>Sticker book: ${SB.count()} sticker${SB.count() === 1 ? '' : 's'}<span class="sub">One for every 7 days in a row · next in ${SB.nextIn()} day${SB.nextIn() === 1 ? '' : 's'}</span></span><button class="p-btn" data-act="stickers">Open the sticker book</button></div>` : ''}
+      ${SB ? `<div class="p-row"><span>Sticker book: ${SB.count()} sticker${SB.count() === 1 ? '' : 's'}<span class="sub">Next in ${SB.nextIn()} day${SB.nextIn() === 1 ? '' : 's'}</span></span><button class="p-btn" data-act="stickers">Open the sticker book</button></div>
+      <div class="p-row"><span>Days in a row for one sticker<span class="sub">Stickers she already has are kept if you change this</span></span>${stepper('stickerDays', st.settings.stickerDays)}</div>` : ''}
       <div class="p-row p-cal"><span>Practice calendar<span class="sub">✓ = practised. Days before day tracking were registered from her cards. Tap a day to register it, or tap again to take it off.</span></span>${calendarHTML({}, st.days, st.reg, 0)}</div>
     </div>`;
 }
@@ -1280,6 +1281,7 @@ function onParentClick(e) {
     const k = b.dataset.step, [lo, hi, inc] = (isMama() ? MAMA_STEPS : STEPS)[k];
     s[k] = Math.min(hi, Math.max(lo, s[k] + inc * Number(b.dataset.d)));
     save(); b.parentElement.querySelector('output').textContent = s[k];
+    if (k === 'stickerDays') renderParent();
     return;
   }
   if (b.dataset.day) {                     // register a practice day by hand, or take it off
@@ -1457,6 +1459,7 @@ async function boot() {
   if (APP === 'talk-cards' && PROFILES.includes('maria') && window.StickerBook) {
     SB = window.StickerBook.mount({
       st: () => st, save, today, addDays, show, SFX, confetti, stopConfetti, reduced, toast,
+      perDays: () => st.settings.stickerDays,
       stopEnglish: () => { Speech.stop(); S = null; },
       home: () => renderHome()
     });

@@ -3,7 +3,7 @@ Stickers for Maria's Talk Cards
 The glitter squishies (purple, pink, kitty, mint mochi, bunny, bear, heart, cloud, chick, frog, jelly bean,
 peach bun, rainbow, clear sparkle, star and unicorn squishies) were drawn for this app.
 
-All other stickers are made from Microsoft Fluent Emoji (https://github.com/microsoft/fluentui-emoji), with a
+All other stickers (animals, food, a dinosaur, a rocket, planets, toys and the rest) are made from Microsoft Fluent Emoji (https://github.com/microsoft/fluentui-emoji), with a
 sticker border added and, on the food, small faces drawn on. Fluent Emoji is released under the MIT License:
 
 MIT License

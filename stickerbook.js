@@ -1,20 +1,20 @@
-/* Maria's Sticker Book: one sticker for every 7 days in a row on the English cards.
+/* Maria's Sticker Book: one sticker for every 2 days in a row on the English cards (a parent can change the 2).
    Loaded before app.js; app.js calls StickerBook.mount(api) for Maria. Collected stickers live in her profile
    (st.stk), so the backup file carries them. The pictures and their order are in stickers/stickers.json. */
 (function (root) {
 'use strict';
 
-const PER = 7;   // days in a row for one sticker
+const DEFAULT_PER = 2;   // days in a row for one sticker (Maria's settings.stickerDays; it was 7 until 13 Oct 2026)
 
 /* ---------- which days earn a sticker (no DOM: scripts/test_stickers.js runs this in Node) ---------- */
-// The 7th, 14th, 21st... day of every run of days in a row.
-function earnedDays(days, addDays) {
+// The 2nd, 4th, 6th... day of every run of days in a row (with per = 2).
+function earnedDays(days, addDays, per = DEFAULT_PER) {
   const out = [];
   let run = 0, prev = null;
   [...new Set(days)].sort().forEach(d => {
     run = prev && addDays(prev, 1) === d ? run + 1 : 1;
     prev = d;
-    if (run % PER === 0) out.push(d);
+    if (run % per === 0) out.push(d);
   });
   return out;
 }
@@ -25,24 +25,45 @@ function currentRun(days, t, addDays) {
   while (set.has(d)) { n++; d = addDays(d, -1); }
   return { n, today: set.has(t) };
 }
-// Adds the stickers she has earned and not yet received. Stickers are never taken away.
-function sync(stk, days, addDays) {
-  const e = earnedDays(days, addDays);
+// Adds the stickers she has earned and not yet received, each with its own picture (so a new order of the book
+// never changes a sticker she has). Stickers are never taken away.
+function sync(stk, days, addDays, per, order) {
+  const e = earnedDays(days, addDays, per);
   let added = 0;
-  while (stk.got.length < e.length) { stk.got.push({ day: e[stk.got.length], seen: false }); added++; }
+  while (stk.got.length < e.length) { stk.got.push({ day: e[stk.got.length], seen: false, file: nextFile(order, stk.got) }); added++; }
   return added;
 }
-const core = { PER, earnedDays, currentRun, sync };
+// The next sticker: the first in the book's order she does not have yet; when she has them all, round again.
+function nextFile(order, got) {
+  if (!order.length) return '';
+  const have = new Map(); got.forEach(g => have.set(g.file, (have.get(g.file) || 0) + 1));
+  const round = Math.floor(got.length / order.length);
+  const s = order.find(x => (have.get(x.file) || 0) <= round);
+  return (s || order[got.length % order.length]).file;
+}
+// Stickers given before each one kept its picture (cache v18-v19) were the book's old order by position.
+function fillFiles(got, legacy, order) {
+  let changed = false;
+  got.forEach((g, i) => { if (!g.file) { g.file = legacy[i % Math.max(1, legacy.length)] || (order[i % order.length] || {}).file; changed = true; } });
+  return changed;
+}
+const core = { DEFAULT_PER, earnedDays, currentRun, sync, nextFile, fillFiles };
 
 /* ---------- the screens ---------- */
 function mount(api) {
   const $ = (s, r = document) => r.querySelector(s);
-  let META = [];
+  let META = [], LEGACY = [];
+  const PERD = () => Math.max(1, Math.min(7, Number(api.perDays && api.perDays()) || DEFAULT_PER));
   let page = 0;
   let onClose = null;
   const st = () => api.st();
-  function stk() { const s = st(); if (!s.stk || !Array.isArray(s.stk.got)) s.stk = { got: [] }; return s.stk; }
-  const meta = i => META.length ? META[i % META.length] : null;
+  function stk() {
+    const s = st(); if (!s.stk || !Array.isArray(s.stk.got)) s.stk = { got: [] };
+    if (META.length && fillFiles(s.stk.got, LEGACY, META)) api.save();
+    return s.stk;
+  }
+  const byFile = f => META.find(x => x.file === f) || null;
+  const meta = i => { const g = stk().got[i]; return g ? byFile(g.file) : null; };   // the sticker in place i of her book
   const src = m => 'stickers/' + m.file;
   const rot = i => [-7, 5, -3, 8, -5, 3, -8, 6, -2, 7, -6, 4][i % 12];
   const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
@@ -58,14 +79,14 @@ function mount(api) {
     <div class="sb-count"><svg class="star" aria-hidden="true"><use href="#i-star"/></svg><b id="sbHave">0</b><span id="sbHaveWord">stickers</span></div>
   </div>
   <div class="sb-book" id="sbBook">
-    <div class="sb-page left"><h1><span>Maria's Sticker Book</span></h1><h2>One sticker for every 7 days in a row</h2><div class="sb-grid" id="sbG1"></div></div>
+    <div class="sb-page left"><h1><span>Maria's Sticker Book</span></h1><h2 id="sbSub">One sticker for every 2 days in a row</h2><div class="sb-grid" id="sbG1"></div></div>
     <div class="sb-page right"><h2 class="sb-pno" id="sbPageNo"></h2><div class="sb-grid" id="sbG2"></div></div>
   </div>
   <div class="sb-pager"><button id="sbPrev" aria-label="Previous page">‹</button><div class="sb-pd" id="sbPd"></div><button id="sbNext" aria-label="Next page">›</button></div>
 </section>
 <section id="sbAward" class="overlay sb-award" hidden>
   <canvas id="sbConfetti" aria-hidden="true"></canvas>
-  <div class="sb-kicker">7 days in a row!</div>
+  <div class="sb-kicker" id="sbKicker">2 days in a row!</div>
   <div class="sb-big" id="sbBig"></div>
   <h2 class="sb-title" id="sbTitle"></h2>
   <div class="sb-week" id="sbWeek"></div>
@@ -104,7 +125,7 @@ function mount(api) {
   /* ---------- Home ---------- */
   function homeCard() {
     const got = stk().got, run = currentRun(st().days || [], api.today(), api.addDays);
-    const p = run.n % PER, justGot = run.today && run.n > 0 && p === 0;
+    const PER = PERD(), p = run.n % PER, justGot = run.today && run.n > 0 && p === 0;
     const filled = justGot ? PER : p;
     $('#sbDots').innerHTML = Array.from({ length: PER }, (_, k) => `<i class="${k < filled ? 'on' : ''}"></i>`).join('');
     const left = PER - p;
@@ -121,7 +142,8 @@ function mount(api) {
   function renderBook(hideIndex = -1) {
     const got = stk().got, per = perView(), pages = Math.ceil(total() / per);
     page = Math.min(Math.max(0, page), pages - 1);
-    const run = currentRun(st().days || [], api.today(), api.addDays), p = run.n % PER;
+    const PER = PERD(), run = currentRun(st().days || [], api.today(), api.addDays), p = run.n % PER;
+    $('#sbSub').textContent = `One sticker for every ${PER} days in a row`;
     $('#sbHave').textContent = got.length; $('#sbHaveWord').textContent = got.length === 1 ? 'sticker' : 'stickers';
     const fill = (grid, from) => {
       grid.textContent = '';
@@ -133,14 +155,15 @@ function mount(api) {
           slot.className = 'sb-slot got';
           if (i !== hideIndex) { const e = stickerEl(m); e.style.transform = `rotate(${rot(i)}deg)`; spot.append(e); }
           else slot.classList.add('waiting');
-          lbl.textContent = m.name + (i >= META.length ? ` ×${Math.floor(i / META.length) + 1}` : '');
+          const n = got.slice(0, i + 1).filter(g => g.file === got[i].file).length;   // the same sticker again: ×2
+          lbl.textContent = m.name + (n > 1 ? ` ×${n}` : '');
         } else if (i === got.length) {
           slot.className = 'sb-slot next';
           spot.innerHTML = `<span class="sb-q">?</span><span class="sb-dots">${Array.from({ length: PER }, (_, k) => `<i class="${k < p ? 'on' : ''}"></i>`).join('')}</span>`;
           lbl.textContent = `${p} of ${PER} days`;
         } else if (i < total()) {
           slot.className = 'sb-slot';
-          lbl.textContent = `Week ${i + 1}`;
+          lbl.textContent = String(i + 1);
         } else { slot.className = 'sb-slot empty'; }
         slot.append(spot, lbl); grid.append(slot);
       }
@@ -181,7 +204,7 @@ function mount(api) {
   function play(slot) {
     const st0 = slot.querySelector('.sb-st'), spot = slot.querySelector('.sb-spot'), i = Number(slot.dataset.i), m = meta(i);
     if (!st0 || !m || slot.classList.contains('playing')) return;
-    const kind = m.sparkle ? 'sparkly' : (m.kind || 'animal'), r = rot(i);
+    const kind = m.sparkle ? 'sparkly' : (['glitter', 'food', 'animal'].includes(m.kind) ? m.kind : 'animal'), r = rot(i);
     slot.classList.add('playing');
     const glow = document.createElement('div');
     glow.className = 'sb-glow' + (kind === 'sparkly' ? ' rainbow' : '');
@@ -239,18 +262,33 @@ function mount(api) {
   }
 
   /* ---------- a new sticker ---------- */
-  const pending = () => stk().got.findIndex(g => !g.seen);
+  const pendingList = () => stk().got.map((g, i) => (g.seen ? -1 : i)).filter(i => i >= 0);
+  const pending = () => { const l = pendingList(); return l.length ? l[0] : -1; };
   function celebrate(then) {
-    const i = pending();
-    if (i < 0 || !META.length) return then();
+    const list = pendingList();
+    if (!list.length || !META.length) return then();
     api.stopEnglish();
-    const g = stk().got[i], m = meta(i);
+    const PER = PERD(), many = list.length >= 3;          // her earlier days can give several at once
     const ov = $('#sbAward'), big = $('#sbBig');
-    big.textContent = ''; big.append(stickerEl(m, true));
+    big.textContent = ''; big.classList.toggle('fan', many);
+    if (many) {
+      list.slice(0, 5).forEach((i, k, arr) => {
+        const e = stickerEl(meta(i)); e.style.setProperty('--k', k - (arr.length - 1) / 2); big.append(e);
+      });
+      $('#sbKicker').textContent = 'Look what you earned!';
+      $('#sbTitle').textContent = `${list.length} new stickers!`;
+      $('#sbWeek').innerHTML = '';
+      $('#sbStick').textContent = 'Stick them in my book';
+    } else {
+      const g = stk().got[list[0]], m = meta(list[0]);
+      big.append(stickerEl(m, true));
+      $('#sbKicker').textContent = `${PER} days in a row!`;
+      $('#sbTitle').textContent = `A new sticker: ${m.name}!`;
+      const days = Array.from({ length: PER }, (_, k) => api.addDays(g.day, k - PER + 1));
+      $('#sbWeek').innerHTML = days.map(d => { const [y, mo, dd] = d.split('-').map(Number); return `<i>${'SMTWTFS'[new Date(y, mo - 1, dd).getDay()]}</i>`; }).join('');
+      $('#sbStick').textContent = 'Stick it in my book';
+    }
     big.style.animation = 'none'; void big.offsetWidth; big.style.animation = '';
-    $('#sbTitle').textContent = `A new sticker: ${m.name}!`;
-    const days = Array.from({ length: PER }, (_, k) => api.addDays(g.day, k - PER + 1));
-    $('#sbWeek').innerHTML = days.map(d => { const [y, mo, dd] = d.split('-').map(Number); return `<i>${'SMTWTFS'[new Date(y, mo - 1, dd).getDay()]}</i>`; }).join('');
     ov.hidden = false;
     api.SFX.init(); api.SFX.unlock();
     api.confetti($('#sbConfetti'));
@@ -258,11 +296,17 @@ function mount(api) {
     btn.disabled = true; setTimeout(() => { btn.disabled = false; }, 900);
     btn.onclick = () => {
       ov.hidden = true; api.stopConfetti($('#sbConfetti'));
-      stickIn(i, () => {
-        g.seen = true; api.save();
-        if (pending() >= 0) setTimeout(() => celebrate(then), 900);   // more than one waiting (her earlier weeks)
-        else onClose = then;
-      });
+      const queue = many ? list : [list[0]];
+      const next = () => {
+        const i = queue.shift();
+        stickIn(i, () => {
+          stk().got[i].seen = true; api.save();
+          if (queue.length) setTimeout(next, 650);
+          else if (pending() >= 0) setTimeout(() => celebrate(then), 900);
+          else onClose = then;
+        });
+      };
+      next();
     };
   }
   // The new sticker flies from the middle of the screen into its place in the book, then squishes down.
@@ -272,6 +316,8 @@ function mount(api) {
     renderBook(i);
     api.show('sbook');
     const slot = document.querySelector(`#sbook .sb-slot[data-i="${i}"]`), m = meta(i);
+    // the stickers still waiting to be stuck in stay empty on this page until their turn
+    stk().got.forEach((g, k) => { if (!g.seen && k !== i) { const o = document.querySelector(`#sbook .sb-slot[data-i="${k}"]`); if (o) { o.classList.add('waiting'); const e = o.querySelector('.sb-st'); if (e) e.remove(); } } });
     const reveal = () => {
       slot.classList.remove('waiting');
       const spot = slot.querySelector('.sb-spot'), e = stickerEl(m);
@@ -314,17 +360,19 @@ function mount(api) {
   let rt = null;
   window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { if (!$('#sbook').hidden && !document.querySelector('.sb-fly')) renderBook(); }, 150); });
 
-  const ready = fetch('stickers/stickers.json').then(r => r.json()).then(j => { META = Array.isArray(j.stickers) ? j.stickers : []; }).catch(() => { META = []; });
+  const ready = fetch('stickers/stickers.json').then(r => r.json())
+    .then(j => { META = Array.isArray(j.stickers) ? j.stickers : []; LEGACY = Array.isArray(j.legacy) ? j.legacy : []; }).catch(() => { META = []; });
 
   return {
     ready,
-    sync() { const n = sync(stk(), st().days || [], api.addDays); if (n) api.save(); return n; },
+    sync() { if (!META.length) return 0; const n = sync(stk(), st().days || [], api.addDays, PERD(), META); if (n) api.save(); return n; },
     homeCard() { if (META.length) homeCard(); },
     pending: () => META.length ? pending() >= 0 : false,
     celebrate, open,
     busy: () => !$('#sbook').hidden || !$('#sbAward').hidden,
     count: () => stk().got.length,
-    nextIn: () => PER - currentRun(st().days || [], api.today(), api.addDays).n % PER,
+    nextIn: () => PERD() - currentRun(st().days || [], api.today(), api.addDays).n % PERD(),
+    per: PERD,
     get meta() { return META; }, core
   };
 }

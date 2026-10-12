@@ -28,9 +28,9 @@ Always use the Home Screen icon. The icon and a Safari tab keep separate progres
 
 ## Sticker book (English cards)
 
-- One sticker for every 7 days in a row of practice on the English cards (the 7th, 14th, 21st... day of a run). Home shows **My Sticker Book** with this week's 7 dots.
+- One sticker for every 2 days in a row of practice on the English cards (the 2nd, 4th, 6th... day of a run; the parent area can change the 2). Home shows **My Sticker Book** with the dots for the next one.
 - A new sticker comes at the end of the session that completes the 7th day ("Stick it in my book": it flies into its place). Stickers she earned before the book existed (registered days) are given the next time Home opens. A sticker is never taken away.
-- 40 stickers in `stickers/` (order and names in `stickers/stickers.json`): 16 glitter squishies drawn for the app, food squishies and animals from Microsoft Fluent Emoji (MIT, see `stickers/LICENSE.txt`), and a sparkly one every 4th week. After 40 they start again (×2).
+- 80 stickers in `stickers/` (order and names in `stickers/stickers.json`): 16 glitter squishies drawn for the app, food squishies, animals and other surprises from Microsoft Fluent Emoji (MIT, see `stickers/LICENSE.txt`), and a sparkly one every 4th. Each sticker she gets keeps its picture (`file`), so the order can change without changing her book. After 80 they start again (×2).
 - Code: `stickerbook.js` (styles at the end of `style.css`). Collected stickers are in Maria's profile, so the backup file carries them. Tests: `node scripts/test_stickers.js`.
 
 ## Times tables (جدول الضرب)

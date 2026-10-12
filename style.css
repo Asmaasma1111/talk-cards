@@ -932,3 +932,5 @@ button.cal-d:active { transform: scale(.94); }
 .sb-burst svg { fill: var(--c, #FFF6B0); }
 .sb-burst.heart { width: 20px; height: 20px; }
 .sb-burst.heart svg { stroke: rgba(255, 255, 255, .9); stroke-width: 1.5; filter: drop-shadow(0 0 3px rgba(255, 111, 168, .6)); }
+/* several new stickers at once: a fan */
+.sb-big.fan .sb-st { position: absolute; inset: 0; transform: translateX(calc(var(--k) * 34%)) rotate(calc(var(--k) * 12deg)) scale(.72); transform-origin: 50% 90%; }

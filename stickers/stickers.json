@@ -1,6 +1,5 @@
 {
- "v": 1,
- "perSticker": 7,
+ "v": 2,
  "stickers": [
   {
    "file": "01-purpleglittersquishy.webp",
@@ -27,16 +26,40 @@
    "kind": "sparkly"
   },
   {
+   "file": "n-sauropod.webp",
+   "name": "Dinosaur",
+   "sparkle": false,
+   "kind": "animal"
+  },
+  {
    "file": "05-pinkglittersquishy.webp",
    "name": "Pink glitter squishy",
    "sparkle": false,
    "kind": "glitter"
   },
   {
+   "file": "n-rocket.webp",
+   "name": "Rocket",
+   "sparkle": false,
+   "kind": "thing"
+  },
+  {
+   "file": "n-ringedplanet.webp",
+   "name": "Planet",
+   "sparkle": true,
+   "kind": "sparkly"
+  },
+  {
    "file": "06-doughnut.webp",
    "name": "Doughnut",
    "sparkle": false,
    "kind": "food"
+  },
+  {
+   "file": "n-sloth.webp",
+   "name": "Sloth",
+   "sparkle": false,
+   "kind": "animal"
   },
   {
    "file": "07-hamster.webp",
@@ -51,16 +74,40 @@
    "kind": "sparkly"
   },
   {
+   "file": "n-avocado.webp",
+   "name": "Avocado",
+   "sparkle": false,
+   "kind": "food"
+  },
+  {
    "file": "09-kittysquishy.webp",
    "name": "Kitty squishy",
    "sparkle": false,
    "kind": "glitter"
   },
   {
+   "file": "n-camel.webp",
+   "name": "Camel",
+   "sparkle": false,
+   "kind": "animal"
+  },
+  {
+   "file": "n-crystalball.webp",
+   "name": "Crystal ball",
+   "sparkle": true,
+   "kind": "sparkly"
+  },
+  {
    "file": "10-cupcake.webp",
    "name": "Cupcake",
    "sparkle": false,
    "kind": "food"
+  },
+  {
+   "file": "n-guitar.webp",
+   "name": "Guitar",
+   "sparkle": false,
+   "kind": "thing"
   },
   {
    "file": "11-rabbit_face.webp",
@@ -75,16 +122,40 @@
    "kind": "glitter"
   },
   {
+   "file": "n-otter.webp",
+   "name": "Otter",
+   "sparkle": false,
+   "kind": "animal"
+  },
+  {
    "file": "13-mintmochi.webp",
    "name": "Mint mochi",
    "sparkle": false,
    "kind": "glitter"
   },
   {
+   "file": "n-pizza.webp",
+   "name": "Pizza",
+   "sparkle": false,
+   "kind": "food"
+  },
+  {
+   "file": "n-magicwand.webp",
+   "name": "Magic wand",
+   "sparkle": true,
+   "kind": "sparkly"
+  },
+  {
    "file": "14-bubble_tea.webp",
    "name": "Bubble tea",
    "sparkle": false,
    "kind": "food"
+  },
+  {
+   "file": "n-robot.webp",
+   "name": "Robot",
+   "sparkle": false,
+   "kind": "thing"
   },
   {
    "file": "15-seal.webp",
@@ -99,14 +170,38 @@
    "kind": "sparkly"
   },
   {
+   "file": "n-flamingo.webp",
+   "name": "Flamingo",
+   "sparkle": false,
+   "kind": "animal"
+  },
+  {
    "file": "17-bunnysquishy.webp",
    "name": "Bunny squishy",
    "sparkle": false,
    "kind": "glitter"
   },
   {
+   "file": "n-ghost.webp",
+   "name": "Friendly ghost",
+   "sparkle": false,
+   "kind": "thing"
+  },
+  {
+   "file": "n-mirrorball.webp",
+   "name": "Disco ball",
+   "sparkle": true,
+   "kind": "sparkly"
+  },
+  {
    "file": "18-peach.webp",
    "name": "Peach",
+   "sparkle": false,
+   "kind": "food"
+  },
+  {
+   "file": "n-dumpling.webp",
+   "name": "Dumpling",
    "sparkle": false,
    "kind": "food"
   },
@@ -123,16 +218,40 @@
    "kind": "sparkly"
   },
   {
+   "file": "n-koala.webp",
+   "name": "Koala",
+   "sparkle": false,
+   "kind": "animal"
+  },
+  {
    "file": "21-bearsquishy.webp",
    "name": "Bear squishy",
    "sparkle": false,
    "kind": "glitter"
   },
   {
+   "file": "n-kite.webp",
+   "name": "Kite",
+   "sparkle": false,
+   "kind": "thing"
+  },
+  {
+   "file": "n-trophy.webp",
+   "name": "Trophy",
+   "sparkle": true,
+   "kind": "sparkly"
+  },
+  {
    "file": "22-dango.webp",
    "name": "Dango",
    "sparkle": false,
    "kind": "food"
+  },
+  {
+   "file": "n-hedgehog.webp",
+   "name": "Hedgehog",
+   "sparkle": false,
+   "kind": "animal"
   },
   {
    "file": "23-penguin.webp",
@@ -147,16 +266,40 @@
    "kind": "glitter"
   },
   {
+   "file": "n-popcorn.webp",
+   "name": "Popcorn",
+   "sparkle": false,
+   "kind": "food"
+  },
+  {
    "file": "25-heartsquishy.webp",
    "name": "Heart squishy",
    "sparkle": false,
    "kind": "glitter"
   },
   {
+   "file": "n-owl.webp",
+   "name": "Owl",
+   "sparkle": false,
+   "kind": "animal"
+  },
+  {
+   "file": "n-gemstone.webp",
+   "name": "Gem",
+   "sparkle": true,
+   "kind": "sparkly"
+  },
+  {
    "file": "26-soft_ice_cream.webp",
    "name": "Ice cream",
    "sparkle": false,
    "kind": "food"
+  },
+  {
+   "file": "n-alien.webp",
+   "name": "Alien",
+   "sparkle": false,
+   "kind": "thing"
   },
   {
    "file": "27-teddy_bear.webp",
@@ -171,16 +314,40 @@
    "kind": "sparkly"
   },
   {
+   "file": "n-turtle.webp",
+   "name": "Turtle",
+   "sparkle": false,
+   "kind": "animal"
+  },
+  {
    "file": "29-cloudsquishy.webp",
    "name": "Cloud squishy",
    "sparkle": false,
    "kind": "glitter"
   },
   {
+   "file": "n-watermelon.webp",
+   "name": "Watermelon",
+   "sparkle": false,
+   "kind": "food"
+  },
+  {
+   "file": "n-carouselhorse.webp",
+   "name": "Carousel horse",
+   "sparkle": true,
+   "kind": "sparkly"
+  },
+  {
    "file": "30-shortcake.webp",
    "name": "Cake",
    "sparkle": false,
    "kind": "food"
+  },
+  {
+   "file": "n-dragonface.webp",
+   "name": "Dragon",
+   "sparkle": false,
+   "kind": "animal"
   },
   {
    "file": "31-chicksquishy.webp",
@@ -195,14 +362,38 @@
    "kind": "glitter"
   },
   {
+   "file": "n-snail.webp",
+   "name": "Snail",
+   "sparkle": false,
+   "kind": "animal"
+  },
+  {
    "file": "33-frogsquishy.webp",
    "name": "Frog squishy",
    "sparkle": false,
    "kind": "glitter"
   },
   {
+   "file": "n-videogame.webp",
+   "name": "Game controller",
+   "sparkle": false,
+   "kind": "thing"
+  },
+  {
+   "file": "n-partypopper.webp",
+   "name": "Party popper",
+   "sparkle": true,
+   "kind": "sparkly"
+  },
+  {
    "file": "34-custard.webp",
    "name": "Pudding",
+   "sparkle": false,
+   "kind": "food"
+  },
+  {
+   "file": "n-pancakes.webp",
+   "name": "Pancakes",
    "sparkle": false,
    "kind": "food"
   },
@@ -219,14 +410,38 @@
    "kind": "sparkly"
   },
   {
+   "file": "n-llama.webp",
+   "name": "Llama",
+   "sparkle": false,
+   "kind": "animal"
+  },
+  {
    "file": "37-peachbunsquishy.webp",
    "name": "Peach bun squishy",
    "sparkle": false,
    "kind": "glitter"
   },
   {
+   "file": "n-nestingdolls.webp",
+   "name": "Nesting dolls",
+   "sparkle": false,
+   "kind": "thing"
+  },
+  {
+   "file": "n-fullmoonface.webp",
+   "name": "Smiling moon",
+   "sparkle": true,
+   "kind": "sparkly"
+  },
+  {
    "file": "38-rice_ball.webp",
    "name": "Onigiri",
+   "sparkle": false,
+   "kind": "food"
+  },
+  {
+   "file": "n-cactus.webp",
+   "name": "Cactus",
    "sparkle": false,
    "kind": "food"
   },
@@ -241,6 +456,72 @@
    "name": "Unicorn squishy",
    "sparkle": true,
    "kind": "glitter"
+  },
+  {
+   "file": "n-lion.webp",
+   "name": "Lion",
+   "sparkle": false,
+   "kind": "animal"
+  },
+  {
+   "file": "n-croissant.webp",
+   "name": "Croissant",
+   "sparkle": false,
+   "kind": "food"
+  },
+  {
+   "file": "n-fox.webp",
+   "name": "Fox",
+   "sparkle": false,
+   "kind": "animal"
+  },
+  {
+   "file": "n-wrappedgift.webp",
+   "name": "Gift",
+   "sparkle": true,
+   "kind": "sparkly"
   }
+ ],
+ "legacy": [
+  "01-purpleglittersquishy.webp",
+  "02-strawberry.webp",
+  "03-panda.webp",
+  "04-unicorn.webp",
+  "05-pinkglittersquishy.webp",
+  "06-doughnut.webp",
+  "07-hamster.webp",
+  "08-rainbow.webp",
+  "09-kittysquishy.webp",
+  "10-cupcake.webp",
+  "11-rabbit_face.webp",
+  "12-rainbowsquishy.webp",
+  "13-mintmochi.webp",
+  "14-bubble_tea.webp",
+  "15-seal.webp",
+  "16-sparkling_heart.webp",
+  "17-bunnysquishy.webp",
+  "18-peach.webp",
+  "19-cat_face.webp",
+  "20-glowing_star.webp",
+  "21-bearsquishy.webp",
+  "22-dango.webp",
+  "23-penguin.webp",
+  "24-clearsparklesquishy.webp",
+  "25-heartsquishy.webp",
+  "26-soft_ice_cream.webp",
+  "27-teddy_bear.webp",
+  "28-butterfly.webp",
+  "29-cloudsquishy.webp",
+  "30-shortcake.webp",
+  "31-chicksquishy.webp",
+  "32-starsquishy.webp",
+  "33-frogsquishy.webp",
+  "34-custard.webp",
+  "35-jellybeansquishy.webp",
+  "36-crown.webp",
+  "37-peachbunsquishy.webp",
+  "38-rice_ball.webp",
+  "39-honey_pot.webp",
+  "40-unicornsquishy.webp"
  ]
 }
