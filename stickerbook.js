@@ -49,6 +49,7 @@ function mount(api) {
 
   document.body.insertAdjacentHTML('beforeend', `
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.3C.8 8.1 2.9 4.5 6.4 4.3c2.2-.1 3.9 1.2 5.6 3.2 1.7-2 3.4-3.3 5.6-3.2 3.5.2 5.6 3.8 4 7.4C19.5 16.4 12 21 12 21z"/></symbol>
   <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 1.5c.9 5.6 2.9 8.6 10.5 10.5-7.6 1.9-9.6 4.9-10.5 10.5-.9-5.6-2.9-8.6-10.5-10.5C9.1 10.1 11.1 7.1 12 1.5z"/></symbol>
 </svg>
 <section id="sbook" class="screen sb-screen" hidden>
@@ -162,24 +163,78 @@ function mount(api) {
     (then || api.home)();
   }
   function turn(d) { page += d; renderBook(); try { $('#sbBook').animate([{ opacity: .4, transform: `translateX(${d * 30}px)` }, { opacity: 1, transform: 'none' }], { duration: 260, easing: 'ease-out' }); } catch (e) {} }
-  function wiggle(slot) {
-    const st0 = slot.querySelector('.sb-st'); if (!st0) return;
-    const r = rot(Number(slot.dataset.i));
-    if (!api.reduced()) st0.animate([{ transform: `rotate(${r}deg) scale(1)` }, { transform: `rotate(${r - 8}deg) scale(1.12)` }, { transform: `rotate(${r + 6}deg) scale(1.08)` }, { transform: `rotate(${r}deg) scale(1)` }], { duration: 520, easing: 'ease-out' });
-    burst(slot.querySelector('.sb-spot'));
-    api.SFX.init(); api.SFX.star(0);
+  /* ---------- tapping a sticker: it comes alive, with a glow, sparkles and a sound for its kind ---------- */
+  // glitter squishy: a jelly squeeze and wobble; food: a squish and bounce; animal: a hop; sparkly: a spin.
+  const GLOW = { glitter: 'rgba(255, 120, 200, .75)', food: 'rgba(255, 190, 90, .7)', animal: 'rgba(255, 216, 77, .75)' };
+  const BURST = { glitter: ['#FFB3DD', '#E2CCFF', '#C7EEFF', '#FFFFFF'], food: ['#FFD27A', '#FFB3DD', '#FFFFFF'],
+                  animal: ['#FFE36E', '#FFFFFF', '#B8F0D6'], sparkly: ['#FFB3D6', '#FFE98A', '#A8F0CC', '#9FD2FF', '#CDB0FF'] };
+  function moves(kind, r) {
+    const R = d => `rotate(${r + d}deg)`;
+    if (kind === 'glitter') return [[`${R(0)} scale(1)`, 0], [`${R(0)} translateY(4%) scale(1.28, .74)`, .16], [`${R(0)} translateY(-14%) scale(.82, 1.22)`, .36],
+      [`${R(0)} translateY(2%) scale(1.14, .9)`, .56], [`${R(0)} scale(.94, 1.07)`, .74], [`${R(0)} scale(1.03, .98)`, .88], [`${R(0)} scale(1)`, 1]];
+    if (kind === 'food') return [[`${R(0)} scale(1)`, 0], [`${R(0)} scale(1.22, .8)`, .2], [`${R(0)} translateY(-10%) scale(.9, 1.14)`, .45],
+      [`${R(0)} scale(1.06, .95)`, .7], [`${R(0)} scale(1)`, 1]];
+    if (kind === 'animal') return [[`${R(0)} scale(1)`, 0], [`${R(0)} translateY(4%) scale(1.12, .9)`, .14], [`${R(-12)} translateY(-34%) scale(1.12)`, .42],
+      [`${R(10)} translateY(-26%) scale(1.1)`, .6], [`${R(0)} translateY(3%) scale(1.1, .9)`, .82], [`${R(0)} scale(1)`, 1]];
+    return [[`${R(0)} scale(1)`, 0], [`${R(180)} scale(1.3)`, .5], [`${R(360)} scale(1.1)`, .8], [`${R(360)} scale(1)`, 1]];   // sparkly: a spin
   }
-  function burst(el) {
+  function play(slot) {
+    const st0 = slot.querySelector('.sb-st'), spot = slot.querySelector('.sb-spot'), i = Number(slot.dataset.i), m = meta(i);
+    if (!st0 || !m || slot.classList.contains('playing')) return;
+    const kind = m.sparkle ? 'sparkly' : (m.kind || 'animal'), r = rot(i);
+    slot.classList.add('playing');
+    const glow = document.createElement('div');
+    glow.className = 'sb-glow' + (kind === 'sparkly' ? ' rainbow' : '');
+    if (kind !== 'sparkly') glow.style.background = `radial-gradient(circle, ${GLOW[kind] || GLOW.animal} 0%, rgba(255, 255, 255, 0) 68%)`;
+    spot.prepend(glow);
+    const dur = kind === 'sparkly' ? 1000 : kind === 'glitter' ? 950 : 800;
+    glow.animate([{ opacity: 0, transform: 'scale(.6)' }, { opacity: 1, transform: 'scale(1.25)', offset: .35 }, { opacity: .9, transform: 'scale(1.15)', offset: .7 }, { opacity: 0, transform: 'scale(1.4)' }],
+      { duration: dur + 300, easing: 'ease-out' }).onfinish = () => glow.remove();
+    const done = () => slot.classList.remove('playing');
+    if (api.reduced()) setTimeout(done, dur);
+    else st0.animate(moves(kind, r).map(([transform, offset]) => ({ transform, offset })), { duration: dur, easing: 'ease-in-out' }).onfinish = done;
+    st0.animate([{ filter: 'brightness(1)' }, { filter: 'brightness(1.18) saturate(1.15)', offset: .35 }, { filter: 'brightness(1)' }], { duration: dur });
+    setTimeout(() => burst(spot, BURST[kind], kind === 'glitter' || kind === 'food' ? 4 : 0, kind === 'sparkly' ? 18 : 12), kind === 'animal' ? 260 : 120);
+    sound(kind);
+  }
+  function nudge(slot) {                        // the next sticker's "?": a bounce, and the week's dots light up
+    if (slot.classList.contains('playing')) return;
+    slot.classList.add('playing');
+    const spot = slot.querySelector('.sb-spot');
+    if (!api.reduced()) spot.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.1) rotate(-3deg)', offset: .3 }, { transform: 'scale(.96) rotate(2deg)', offset: .6 }, { transform: 'scale(1)' }], { duration: 600, easing: 'ease-out' });
+    slot.querySelectorAll('.sb-dots i').forEach((d, k) => d.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.6)', boxShadow: '0 0 0 4px rgba(255, 111, 168, .35)' }, { transform: 'scale(1)' }], { duration: 380, delay: k * 70 }));
+    api.SFX.init(); api.SFX.star(0); api.SFX.star(.18);
+    setTimeout(() => slot.classList.remove('playing'), 900);
+  }
+  // little sounds made on the spot (Web Audio), quiet beside the voice
+  function sound(kind) {
+    const S = api.SFX; S.init();
+    if (!S.ready()) return;
+    const c = S.ctx, t = c.currentTime + .01;
+    const glide = (f0, f1, at, dur, peak, type = 'sine') => {
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type; o.frequency.setValueAtTime(f0, t + at); o.frequency.exponentialRampToValueAtTime(f1, t + at + dur);
+      g.gain.setValueAtTime(.0001, t + at); g.gain.exponentialRampToValueAtTime(peak, t + at + .02); g.gain.exponentialRampToValueAtTime(.0001, t + at + dur);
+      o.connect(g); g.connect(S.out); o.start(t + at); o.stop(t + at + dur + .05);
+    };
+    if (kind === 'glitter' || kind === 'food') { glide(520, 170, 0, .22, .35); glide(260, 620, .2, .2, .22, 'triangle'); S.star(.42); }   // squish... and back
+    else if (kind === 'animal') { glide(300, 760, 0, .18, .3); glide(760, 420, .18, .2, .2); }                                     // boing
+    else { [1318.5, 1568, 2093, 2637].forEach((f, k) => S.star(k * .09)); glide(880, 1760, 0, .5, .12, 'triangle'); }              // twinkle
+  }
+  function burst(el, colors, hearts = 0, n = 10) {
     if (api.reduced() || !el) return;
     const r = el.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
-    for (let i = 0; i < 10; i++) {
-      const s = document.createElement('div'); s.className = 'sb-burst';
-      s.innerHTML = '<svg aria-hidden="true"><use href="#i-spark"/></svg>';
+    for (let i = 0; i < n + hearts; i++) {
+      const heart = i >= n;
+      const s = document.createElement('div'); s.className = 'sb-burst' + (heart ? ' heart' : '');
+      s.innerHTML = `<svg aria-hidden="true"><use href="#${heart ? 'i-heart' : 'i-spark'}"/></svg>`;
+      if (colors) s.style.setProperty('--c', colors[i % colors.length]);
       document.body.append(s);
-      const a = i / 10 * Math.PI * 2, d = r.width * (.55 + (i % 2) * .2);
+      const a = (heart ? -Math.PI / 2 + (i - n - (hearts - 1) / 2) * .5 : i / n * Math.PI * 2), d = r.width * (heart ? .85 : .55 + (i % 2) * .25);
       s.animate([{ transform: `translate(${x}px, ${y}px) scale(.3)`, opacity: 1 },
-                 { transform: `translate(${x + Math.cos(a) * d}px, ${y + Math.sin(a) * d}px) scale(1)`, opacity: 0 }],
-                { duration: 700, easing: 'ease-out' }).onfinish = () => s.remove();
+                 { transform: `translate(${x + Math.cos(a) * d * .6}px, ${y + Math.sin(a) * d * .6}px) scale(1.15)`, opacity: 1, offset: .55 },
+                 { transform: `translate(${x + Math.cos(a) * d}px, ${y + Math.sin(a) * d - (heart ? 20 : 0)}px) scale(.9)`, opacity: 0 }],
+                { duration: heart ? 1100 : 800, easing: 'ease-out' }).onfinish = () => s.remove();
     }
   }
 
@@ -246,7 +301,10 @@ function mount(api) {
   $('#sbClose').addEventListener('click', close);
   $('#sbPrev').addEventListener('click', () => turn(-1));
   $('#sbNext').addEventListener('click', () => turn(1));
-  $('#sbook').addEventListener('click', e => { const s = e.target.closest('.sb-slot.got'); if (s && !s.classList.contains('waiting')) wiggle(s); });
+  $('#sbook').addEventListener('click', e => {
+    const s = e.target.closest('.sb-slot'); if (!s || s.classList.contains('waiting')) return;
+    if (s.classList.contains('got')) play(s); else if (s.classList.contains('next')) nudge(s);
+  });
   let sx = null;                                   // swipe to turn the page
   $('#sbook').addEventListener('pointerdown', e => { sx = e.clientX; });
   $('#sbook').addEventListener('pointerup', e => {

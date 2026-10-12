@@ -924,3 +924,11 @@ button.cal-d:active { transform: scale(.94); }
   #home .badges { gap: 8px; max-width: calc(13 * 40px + 12 * 8px); }
   #home .prize-text, #home .current-set { font-size: 19px; }
 }
+/* tapping a sticker: a glow behind it while it moves */
+.sb-slot.playing { z-index: 5; }
+.sb-glow { position: absolute; inset: -28%; border-radius: 50%; pointer-events: none; z-index: -1; }
+.sb-glow.rainbow { background: conic-gradient(from 0deg, rgba(255, 179, 214, .9), rgba(255, 233, 138, .9), rgba(168, 240, 204, .9), rgba(159, 210, 255, .9), rgba(205, 176, 255, .9), rgba(255, 179, 214, .9)); -webkit-mask: radial-gradient(circle, #000 20%, transparent 68%); mask: radial-gradient(circle, #000 20%, transparent 68%); }
+.sb-spot { isolation: isolate; }
+.sb-burst svg { fill: var(--c, #FFF6B0); }
+.sb-burst.heart { width: 20px; height: 20px; }
+.sb-burst.heart svg { stroke: rgba(255, 255, 255, .9); stroke-width: 1.5; filter: drop-shadow(0 0 3px rgba(255, 111, 168, .6)); }
