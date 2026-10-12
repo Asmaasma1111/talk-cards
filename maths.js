@@ -58,6 +58,7 @@ function blank() {
     days: {},                        // 'YYYY-MM-DD' -> {n: answers, ok: correct}
     stickers: {},                    // table -> date mastered
     log: [],                         // [day, id, correct 1/0, ms]
+    garden: { done: 0 },             // the science garden (garden.js): steps taken, one for every 50 stars
     settings: { ...DEFAULT_SETTINGS }
   };
 }
@@ -71,7 +72,8 @@ function clean(s) {
     settings: { ...d.settings, ...obj(s.settings) },
     open: Array.isArray(s.open) ? [...new Set(s.open.filter(id => FACT[id]))] : [],
     batch: Array.isArray(s.batch) ? s.batch.filter(id => FACT[id]) : [],
-    log: Array.isArray(s.log) ? s.log : [] };
+    log: Array.isArray(s.log) ? s.log : [],
+    garden: { ...obj(s.garden), done: Math.max(0, Math.floor(Number(obj(s.garden).done) || 0)) } };
   if (o.settings.dir !== 'ltr') o.settings.dir = 'rtl';
   o.reg = Array.isArray(s.reg) ? s.reg.filter(isDay) : [];
   delete o.streak;
@@ -280,7 +282,7 @@ const core = { toAr, toWestern, parseAnswer, TABLES, FACTS, FACT, twinOf, addDay
 
 /* =====================================================================================================
    The screens. api comes from app.js: today, lsGet, lsSet, show, toast, SFX, sfx(), confetti, stopConfetti,
-   holdToOpen, reduced, DEV, backup, restore, english, stopEnglish, setDeck.
+   holdToOpen, reduced, DEV, backup, restore, english, stopEnglish, setDeck. The science garden (garden.js) is mounted here.
    ===================================================================================================== */
 function mount(api) {
   const $ = (s, r = document) => r.querySelector(s);
@@ -372,6 +374,11 @@ function mount(api) {
   </div>
 </section>`);
 
+  // the science garden: one step for every 50 stars (garden.js; its card sits on this Home, its button on Done)
+  const garden = root.ScienceGarden ? root.ScienceGarden.mount({
+    m: () => m, save, today, toAr, home, show: api.show, SFX: api.SFX, confetti: api.confetti, stopConfetti: api.stopConfetti, reduced: api.reduced
+  }) : null;
+
   // the way in, on the English Home screen
   const chip = document.createElement('button');
   chip.className = 'deck-chip deck-math'; chip.id = 'toMaths'; chip.lang = 'ar'; chip.dir = 'rtl';
@@ -425,6 +432,7 @@ function mount(api) {
     });
     const all = TABLES.every(x => m.stickers[x]);
     $('#mxNow').textContent = all ? 'أتقنتِ كلَّ الجداول!' : cur ? `الآن: جدول ${toAr(cur)}` : '';
+    if (garden) garden.homeCard();
     api.show('mhome');
   }
 
@@ -434,6 +442,7 @@ function mount(api) {
     clock.stop(); clearInterval(tick);
     $('#mxCel').hidden = true;
     api.stopConfetti($('#mxConfetti'));
+    if (garden) garden.dismiss();                  // the garden's "50 stars" moment, if it was still open
   }
   function startNormal() {
     api.SFX.init();
@@ -448,7 +457,8 @@ function mount(api) {
     if (ids.length) startRound('practice', ids.map(id => ({ id, step: 'practice' })));
   }
   function startRound(mode, items) {
-    S = { mode, queue: items.slice(), views: {}, answered: 0, stars: 0, celeb: [], item: null, typed: '', helped: false,
+    if (garden) garden.dismiss();
+    S = { mode, queue: items.slice(), views: {}, answered: 0, stars: 0, starsAt: m.stars.total, celeb: [], item: null, typed: '', helped: false,
           phase: 'ask', shownAt: 0, hiddenAt: 0 };
     $('#mxStarNum').textContent = toAr(m.stars.day === today() ? m.stars.today : 0);
     api.show('msession');
@@ -675,6 +685,7 @@ function mount(api) {
     more.textContent = tricky.length ? 'الصعبة مرة أخرى' : 'جولة أخرى';
     more.dataset.kind = tricky.length ? 'tricky' : 'normal';
     api.show('mdone');
+    if (garden) garden.afterRound(done.starsAt);     // a new step in her garden for every 50 stars
   }
   function more() {
     if ($('#mxMore').dataset.kind === 'tricky') startPractice(trickyIds(m, today()));
@@ -723,7 +734,10 @@ function mount(api) {
       <div class="p-row p-cal"><span>Practice calendar<span class="sub">Minutes a day (estimated for days before the goal ring). ✓ = registered without minutes. Tap a day without minutes to register it, or tap again to take it off.</span></span>${api.calendarHTML(m.active, days, m.reg, s.goalMin)}</div>
     </div>
 
-    <h2 class="mx-h2">Settings</h2>
+    ${garden ? `<h2 class="mx-h2">Science garden</h2>
+    <div class="p-group">${garden.parentRows()}</div>
+
+    ` : ''}<h2 class="mx-h2">Settings</h2>
     <div class="p-group">
       <div class="p-row"><span>Cards per session<span class="sub">Short sessions: 5 to 10 facts</span></span>${stepper('perSession', s.perSession)}</div>
       <div class="p-row"><span>New facts per set</span>${stepper('batchSize', s.batchSize)}</div>
@@ -777,6 +791,7 @@ function mount(api) {
     if (b.dataset.dir) { s.dir = b.dataset.dir; save(); renderParent(); $('#mparent .mx-adv').open = true; return; }
     switch (b.dataset.act) {
       case 'close': home(); break;
+      case 'garden': if (garden) garden.open(); break;
       case 'sfx': { const v = !api.sfx(); api.sfx(v); b.setAttribute('aria-checked', String(v)); if (v) { api.SFX.init(); api.SFX.good(); } break; }
       case 'next-set': { const nb = release(m); save(); renderParent(); if (nb.length) api.toast(`Opened: ${nb.map(id => `${FACT[id].a} × ${FACT[id].b}`).join(', ')}`); break; }
       case 'backup': save(); api.backup(); break;
@@ -828,14 +843,14 @@ function mount(api) {
 
   return {
     home,
-    isOn: () => ['mhome', 'msession', 'mdone', 'mparent'].some(id => !$('#' + id).hidden) || !$('#mxCel').hidden,
-    busy: () => !!S || !$('#mparent').hidden || !$('#mxCel').hidden,
+    isOn: () => ['mhome', 'msession', 'mdone', 'mparent'].some(id => !$('#' + id).hidden) || !$('#mxCel').hidden || !!(garden && garden.isOn()),
+    busy: () => !!S || !$('#mparent').hidden || !$('#mxCel').hidden || !!(garden && garden.busy()),
     reload() { m = load(); },
     snapshot() { return JSON.parse(JSON.stringify(m)); },
     valid,
     replace(obj) { m = clean(obj); save(); },
     // for tests (?dev=1)
-    get state() { return m; }, get round() { return S; }, press, check, next, hint, startNormal, startPractice, renderParent, core
+    get state() { return m; }, get round() { return S; }, press, check, next, hint, startNormal, startPractice, renderParent, garden, core
   };
 }
 

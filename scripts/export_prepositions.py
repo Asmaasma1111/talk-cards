@@ -23,7 +23,8 @@ subs = [
     ('<meta name="apple-mobile-web-app-title" content="Talk Cards">', '<meta name="apple-mobile-web-app-title" content="Prepositions">'),
     ('<link rel="preload" href="fonts/andika-700.woff2" as="font" type="font/woff2" crossorigin>\n', ''),
     ('<body>', '<body data-profile="mama" class="single">'),
-    ('<script src="maths.js"></script>\n', ''),          # Maria's times tables stay in Talk Cards
+    ('<script src="garden.js"></script>\n', ''),         # Maria's science garden,
+    ('<script src="maths.js"></script>\n', ''),          # her times tables
     ('<script src="stickerbook.js"></script>\n', ''),    # and so does her sticker book
 ]
 for old, new in subs:

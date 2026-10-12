@@ -45,6 +45,27 @@ Always use the Home Screen icon. The icon and a Safari tab keep separate progres
 - Progress is saved in its own place (`tc:maria:math`), so the English cards are never touched. **Back up progress** saves both decks in one file.
 - Tests: `node scripts/test_maths.js`.
 
+## Science garden (حديقة العالِمة ماريا), the times tables' reward
+
+- Every 50 stars in the times tables is one step in her garden. The steps follow her Grade 3 term-1 science book (chapters 1-3 and 6), with the book's own words:
+  1. Three flowering plants, 6 steps each: بذرة، إنبات، نبتة صغيرة، نبات مزهر، تلقيح (the bee comes), ثمرة وبذور. The plants are الرمّان, then عبّاد الشمس, then الفراولة.
+  2. When the plants are grown, the insects and animals come, 4 steps each:
+     - the butterfly: بيضة، يرقة، عذراء، فراشة;
+     - the frog: البيضة، أبو ذُنَيبة، الضفدع الصغير، الضفدع المكتمل النمو;
+     - a sparrow's nest in the tree: البيض في العش، الأم ترقد، الفرخ، العصفور.
+  3. Then one step each for four visitors and ideas:
+     - the hedgehog (التكيّف);
+     - the grasshopper (a food chain: الشمس ← النبات ← الجرادة ← العصفور, مُنتِج / مُستهلِك);
+     - fallen leaves and an earthworm (المحلّلات);
+     - rich soil (الدبال).
+  4. That makes 34 steps, about 4 months. Then a new round begins: the plants grow again from seed, and the counts keep growing.
+- **Each step:** the watering (or the surprise), the new stage, a 🔬 fact from the book, the life-cycle strip and a count ("عدد الحشرات في حديقتكِ: ٣").
+- **The garden screen:** counts at the top (plants, insects, frogs, birds). Tapping anything (the sun, a plant, the bee, the pond, the worm...) gives a fact from the book; a grown plant also shows its parts (الجذور، الساق، الأوراق، الزهرة). **دورات الحياة** shows the four life-cycle wheels, the food chain, the decomposers and adaptation.
+- **The way in:** the card **حديقتي** on the times-tables Home. When a round passes a 50, the Done screen says so («إلى حديقتي» / «لاحقًا») and keeps a button to the garden. Stars from before the garden count too.
+- **Parent area:** the parent area shows the step, the counts and a button to open the garden.
+- **Code:** `garden.js`, with styles at the end of `style.css`. The drawings are SVG inside `garden.js`. The sounds are Web Audio. Progress is `garden.done` in `tc:maria:math`, so the backup file carries it.
+- **Tests:** `node scripts/test_garden.js`.
+
 ## Changing the cards
 
 - Maria's cards are in `sets.json`; add new sets at the end. Mama's are in `prepositions.json` (keep each card `id` unchanged, because progress is stored by `id`), then run the export script for the Prepositions app.
