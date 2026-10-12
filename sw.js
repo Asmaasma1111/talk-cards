@@ -58,7 +58,7 @@ async function cacheStickers(cache) {
   if (APP !== 'talk-cards') return;
   try {
     const m = await (await fetch('stickers/stickers.json', { cache: 'no-cache' })).json();
-    await cache.addAll(m.stickers.map(s => 'stickers/' + s.file));
+    await cache.addAll([...m.stickers, ...(m.friends || [])].map(s => 'stickers/' + s.file));
   } catch (e) { /* the book still opens when online */ }
 }
 

@@ -1232,7 +1232,7 @@ function dailyRows() {
   const t = today(), practised = st.days.filter(d => d >= addDays(t, -6)).length;
   return `<div class="p-group">
       <div class="p-row"><span>${streak()} day${streak() === 1 ? '' : 's'} in a row<span class="sub">Practised on ${practised} of the last 7 days · ${st.days.length} day${st.days.length === 1 ? '' : 's'} in all</span></span></div>
-      ${SB ? `<div class="p-row"><span>Sticker book: ${SB.count()} sticker${SB.count() === 1 ? '' : 's'}<span class="sub">Next in ${SB.nextIn()} day${SB.nextIn() === 1 ? '' : 's'}</span></span><button class="p-btn" data-act="stickers">Open the sticker book</button></div>
+      ${SB ? `<div class="p-row"><span>Sticker book: ${SB.count()} sticker${SB.count() === 1 ? '' : 's'} · ${SB.friends()} of ${SB.friendsTotal()} Star Friends<span class="sub">Next sticker in ${SB.nextIn()} day${SB.nextIn() === 1 ? '' : 's'} · every 7th reward is a Star Friend${SB.toFriend() < 0 ? ' (all of them collected: add more)' : ` (next after ${SB.toFriend()} more sticker${SB.toFriend() === 1 ? '' : 's'})`}</span></span><button class="p-btn" data-act="stickers">Open the sticker book</button></div>
       <div class="p-row"><span>Days in a row for one sticker<span class="sub">Stickers she already has are kept if you change this</span></span>${stepper('stickerDays', st.settings.stickerDays)}</div>` : ''}
       <div class="p-row p-cal"><span>Practice calendar<span class="sub">✓ = practised. Days before day tracking were registered from her cards. Tap a day to register it, or tap again to take it off.</span></span>${calendarHTML({}, st.days, st.reg, 0)}</div>
     </div>`;

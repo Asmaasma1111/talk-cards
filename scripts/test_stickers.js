@@ -41,5 +41,23 @@ eq(order.every((s, i) => s.sparkle === (i % 4 === 3)), true, 'sparkly ones in pl
 eq(order.every(s => fs.existsSync(path.join(__dirname, '..', 'stickers', s.file))), true, 'every picture is there');
 eq(book.legacy.length, 40, 'the old order kept for stickers given before');
 eq(order.slice(0, 4).map(s => s.name), ['Purple glitter squishy', 'Strawberry', 'Panda', 'Unicorn'], 'the first four did not move');
+// Star Friends: every 7th reward, in their order; when all are collected, a sticker comes instead
+const friends = book.friends;
+eq(friends.length, 9, '9 Star Friends (about 4 months, one every 2 weeks)');
+eq(friends.map(f => f.name).slice(0, 3), ['Princess', 'Doctor', 'Fairy'], 'Princess first');
+eq(friends.every(f => fs.existsSync(path.join(__dirname, '..', 'stickers', f.file))), true, 'every Star Friend picture is there');
+const r = { got: [] };
+C.sync(r, range(0, 27), addDays, 2, order, friends);                // 28 days in a row: 14 rewards
+eq(r.got.length, 14, '14 rewards');
+eq(r.got.map((g, i) => (g.friend ? i + 1 : 0)).filter(Boolean), [7, 14], 'rewards 7 and 14 are Star Friends');
+eq(r.got.filter(g => g.friend).map(g => g.file), [friends[0].file, friends[1].file], 'Princess, then Doctor');
+eq(r.got.filter(g => !g.friend).map(g => g.file).slice(0, 4), order.slice(0, 4).map(s => s.file), 'stickers keep their own order');
+eq(C.toNextFriend(r.got, friends), 6, 'after the 14th: 6 more stickers to the next Star Friend');
+eq(C.toNextFriend(r.got.slice(0, 6), friends), 0, 'after 6 rewards: the next one is a Star Friend');
+const full = { got: [] };
+C.sync(full, range(0, 2 * 7 * 11 - 1), addDays, 2, order, friends);   // 11 Star Friend turns, only 9 friends
+eq(full.got.filter(g => g.friend).length, 9, 'each Star Friend once');
+eq(full.got.length, 77, 'and a sticker in the turns after that');
+eq(C.toNextFriend(full.got, friends), -1, 'no Star Friends left: the parent area says to add more');
 console.log(`${passed} passed, ${failed} failed`);
 process.exit(failed ? 1 : 0);

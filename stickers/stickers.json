@@ -1,5 +1,5 @@
 {
- "v": 2,
+ "v": 3,
  "stickers": [
   {
    "file": "01-purpleglittersquishy.webp",
@@ -523,5 +523,53 @@
   "38-rice_ball.webp",
   "39-honey_pot.webp",
   "40-unicornsquishy.webp"
+ ],
+ "friendEvery": 7,
+ "friends": [
+  {
+   "file": "friends/princess.webp",
+   "name": "Princess",
+   "dance": "twirl"
+  },
+  {
+   "file": "friends/health-worker.webp",
+   "name": "Doctor",
+   "dance": "bounce"
+  },
+  {
+   "file": "friends/fairy.webp",
+   "name": "Fairy",
+   "dance": "fly"
+  },
+  {
+   "file": "friends/astronaut.webp",
+   "name": "Astronaut",
+   "dance": "fly"
+  },
+  {
+   "file": "friends/cartwheeling.webp",
+   "name": "Cartwheel girl",
+   "dance": "spin"
+  },
+  {
+   "file": "friends/scientist.webp",
+   "name": "Scientist",
+   "dance": "sway"
+  },
+  {
+   "file": "friends/superhero.webp",
+   "name": "Superwoman",
+   "dance": "fly"
+  },
+  {
+   "file": "friends/artist.webp",
+   "name": "Artist",
+   "dance": "sway"
+  },
+  {
+   "file": "friends/pilot.webp",
+   "name": "Pilot",
+   "dance": "sway"
+  }
  ]
 }
