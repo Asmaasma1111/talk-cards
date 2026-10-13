@@ -1320,6 +1320,13 @@ body[data-profile="mama"] .deck-lib { display: none; }
 .lb-bk:active { transform: translateY(-6px); }
 .lb-row .lb-bk:last-of-type:active { transform: rotate(7deg) translateY(-6px); }
 .lb-bk.out { visibility: hidden; }
+/* the next book to read: a soft glow and a little bouncing heart above it */
+.lb-bk.new .lb-sp { animation: lbNextBk 2.4s ease-in-out infinite; }
+@keyframes lbNextBk { 50% { box-shadow: 0 0 0 4px rgba(255, 214, 92, .95), 0 0 22px 6px rgba(255, 150, 196, .75); } }
+.lb-bk.new::before { content: '♥'; position: absolute; left: 50%; top: -30px; transform: translateX(-50%); font-size: 22px; line-height: 1; color: #FF5C9E;
+  text-shadow: 0 1px 0 #fff, 0 2px 4px rgba(0, 0, 0, .25); animation: lbHere 1.2s ease-in-out infinite; pointer-events: none; }
+@keyframes lbHere { 50% { transform: translate(-50%, -6px); } }
+.lb-bk.later .lb-sp { filter: saturate(.85); }
 .lb-bk.wig { animation: lbWig .6s ease; }
 @keyframes lbWig { 20% { transform: translateY(-5px) rotate(-3deg); } 45% { transform: translateY(-5px) rotate(3deg); } 70% { transform: translateY(-2px) rotate(-1.5deg); } }
 .lb-sp-lock { position: absolute; left: 50%; top: 46%; width: 24px; height: 24px; transform: translate(-50%, -50%); filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .4)); }
@@ -1521,3 +1528,5 @@ body[data-profile="mama"] .deck-lib { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .lb-dot.next b, .lb-curl, .lb-cel-burst, .lb-cel-burst b { animation: none; }
 }
+
+@media (prefers-reduced-motion: reduce) { .lb-bk.new .lb-sp, .lb-bk.new::before { animation: none; } }

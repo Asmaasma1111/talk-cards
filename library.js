@@ -42,13 +42,26 @@ const shelves = stories => [...new Set(stories.map(s => s.shelf))].sort((a, b) =
 function shelfOpen(lib, stories, n) {
   return n === shelves(stories)[0] || onShelf(stories, n - 1).every(s => lib.read[s.id]);
 }
-// What happens when she taps a book: 'read' (reread it), 'new' (today's new book), 'door' (its shelf is still behind glass),
-// 'last' (the shelf's last book, which opens after the other nine), 'tomorrow' (she already opened a new book today).
+// The books are read in order (her request, 13 Oct 2026): the next book is the first unread one on the shelf.
+const nextOn = (lib, stories, n) => onShelf(stories, n).filter(s => !lib.read[s.id]).sort((a, b) => a.day - b.day)[0] || null;
+// A new book finished today, in order (a book read out of order before this rule does not count).
+function newToday(lib, stories, t) {
+  return stories.some(s => {
+    const r = lib.read[s.id]; if (!r || r.day !== t) return false;
+    const nx = nextOn(lib, stories, s.shelf);
+    return !nx || s.day < nx.day;
+  });
+}
+// What happens when she taps a book: 'read' (reread it), 'new' (the next book, today's), 'door' (its shelf is still behind
+// glass), 'last' (the shelf's last book, which opens after the other nine), 'later' (an earlier book comes first),
+// 'tomorrow' (she already finished a new book today). Opening a book without finishing it does not use up the day.
 function status(lib, stories, story, t) {
   if (lib.read[story.id]) return 'read';
   if (!shelfOpen(lib, stories, story.shelf)) return 'door';
   if (story.locked_until_shelf_done && onShelf(stories, story.shelf).some(s => s.id !== story.id && !lib.read[s.id])) return 'last';
-  if (lib.today.day === t && lib.today.id && lib.today.id !== story.id) return 'tomorrow';
+  const nx = nextOn(lib, stories, story.shelf);
+  if (nx && nx.id !== story.id) return 'later';
+  if (newToday(lib, stories, t)) return 'tomorrow';
   return 'new';
 }
 function start(lib, story, t) {
@@ -86,7 +99,7 @@ function leaves(story) {
   ['other', 'magic', 'feeling', 'tool', 'mission'].forEach(kind => out.push({ kind }));
   return out;
 }
-const core = { KEY, TRACK, blank, clean, valid, onShelf, shelves, shelfOpen, status, start, finish, setMission, doorsWaiting, path, leaves };
+const core = { KEY, TRACK, blank, clean, valid, onShelf, shelves, shelfOpen, nextOn, newToday, status, start, finish, setMission, doorsWaiting, path, leaves };
 
 /* =====================================================================================================
    The screens. api from app.js: lsGet, lsSet, today, show, toast, SFX, confetti, stopConfetti, reduced, DEV,
@@ -350,6 +363,12 @@ function mount(api) {
     api.SFX.init();
     if (st === 'tomorrow') { wiggle(b); note(b, 'كتاب جديد غداً! تستطيعين إعادة قراءة كتبكِ.'); return; }
     if (st === 'last') { wiggle(b); note(b, 'هذا الكتاب يُفتح بعد كتب الرفّ كلّها.'); return; }
+    if (st === 'later') {
+      const nx = nextOn(lib, ST, s.shelf), el = nx && $(`.lb-bk[data-id="${nx.id}"]`);
+      wiggle(b); if (el) wiggle(el);
+      note(b, nx ? `نقرأ الكتب بالترتيب: ابدئي بالكتاب رقم ${AR(nx.day)} «${nx.title}».` : 'نقرأ الكتب بالترتيب.');
+      return;
+    }
     if (st === 'door') { wiggle(b); return; }
     openBook(s, b);
   });
