@@ -1291,6 +1291,18 @@ body[data-profile="mama"] .deck-lib { display: none; }
 .lb-shelf + .lb-shelf { margin-top: 0; }
 .lb-row { flex: 1; min-height: 0; display: flex; align-items: flex-end; gap: 4px; padding: 14px 14px 0; }
 .lb-board { flex: none; height: 12px; position: relative; z-index: 1; border-radius: 0 0 6px 6px; background: linear-gradient(#FFFFFF, #ECF1F3); box-shadow: 0 6px 10px rgba(60, 95, 120, .14); }
+.lb-shelf.dc-white { background: linear-gradient(#FFFFFF, #FBFDFD 60%, #F6F9FA); }
+.lb-shelf.dc-sage { background: linear-gradient(#D4E9D8, #E3F1E5 60%, #D9ECDC); }
+.lb-shelf.dc-sky { background: linear-gradient(#CFE5F5, #E0EFF9 60%, #D3E8F6); }
+.lb-shelf.dc-butter { background: linear-gradient(#F8E8B6, #FCF1CF 60%, #F7E6B0); }
+.lb-shelf.dc-peach { background: linear-gradient(#F8DACA, #FBE8DD 60%, #F6D6C4); }
+.lb-shelf.dc-stars { background: radial-gradient(circle, rgba(255, 231, 160, .9) 0 1.6px, transparent 2.4px) 0 0 / 22px 22px, radial-gradient(circle, rgba(255, 255, 255, .55) 0 1px, transparent 1.8px) 11px 11px / 22px 22px, linear-gradient(#2E4A63, #3A5A76); }
+.lb-shelf.garl .lb-row { padding-top: 48px; }
+.lb-garland { position: absolute; left: 3%; top: 3px; width: 94%; height: 42px; object-fit: fill; z-index: 2; cursor: pointer; filter: drop-shadow(0 3px 3px rgba(50, 80, 100, .2)); }
+.lb-deco { position: relative; flex: none; align-self: flex-end; height: 72%; max-width: 116px; margin-inline-start: auto; padding: 0; border: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.lb-deco img { display: block; height: 100%; max-width: 116px; object-fit: contain; filter: drop-shadow(0 5px 6px rgba(50, 80, 100, .22)); }
+.lb-deco.ph b, .lb-ph b { position: absolute; left: 20.6%; top: 13.5%; right: 15.8%; bottom: 13.5%; background: center / cover no-repeat; border-radius: 3px; }
+.lb-deco:active { transform: translateY(-4px); }
 .lb-shelf.lit::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(closest-side, rgba(255, 236, 170, .65), rgba(255, 236, 170, 0)); animation: lbLit 1.6s ease-out both; }
 @keyframes lbLit { from { opacity: 1; } to { opacity: 0; } }
 .lb-end { flex: none; width: 34px; height: 46px; margin-inline-start: auto; position: relative; }
@@ -1321,17 +1333,13 @@ body[data-profile="mama"] .deck-lib { display: none; }
 @keyframes lbWig { 20% { transform: translateY(-5px) rotate(-3deg); } 45% { transform: translateY(-5px) rotate(3deg); } 70% { transform: translateY(-2px) rotate(-1.5deg); } }
 .lb-sp-lock { position: absolute; left: 50%; top: 46%; width: 24px; height: 24px; transform: translate(-50%, -50%); filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .4)); }
 .lb-bk.last .lb-sp { filter: saturate(.75) brightness(.95); }
-.lb-slip { position: absolute; top: -12px; left: 30%; width: 40%; height: 26px; background: #FFFDF6; border-radius: 2px 2px 0 0; box-shadow: 0 0 0 1px rgba(0, 0, 0, .12); z-index: -1; }
-.lb-rib, .lb-seal { display: none; }
-.lb-bk.read .lb-rib { display: block; position: absolute; top: -17px; left: 20%; width: 9px; height: 25px; z-index: -1; background: linear-gradient(90deg, #C99A2E, #FFE7A0 45%, #D9A441); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%); filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .35)); }
+.lb-rib { position: absolute; top: -16px; left: 2px; width: 11px; height: 32px; z-index: 2; pointer-events: none; filter: drop-shadow(0 1px 1px rgba(80, 20, 40, .3)); }
+.lb-medal { position: absolute; left: 50%; bottom: 3px; width: 36px; height: 36px; transform: translateX(-50%); z-index: 2; pointer-events: none; filter: drop-shadow(0 2px 2px rgba(90, 60, 0, .35)); }
 .lb-bk.read .lb-sp-n { visibility: hidden; }
-.lb-bk.read .lb-seal { display: grid; place-items: center; position: absolute; left: 50%; bottom: 3px; width: 38px; height: 38px; transform: translateX(-50%) rotate(-10deg); border-radius: 50%;
-  font-size: 9.5px; font-weight: 800; line-height: 1; color: #6B4510; background: radial-gradient(circle at 35% 30%, #FFF2BF, #E7B84E 70%, #C69227); box-shadow: 0 1px 2px rgba(0, 0, 0, .4), inset 0 0 0 2px rgba(255, 245, 210, .6); }
-.lb-seal b { display: block; font-size: 14px; line-height: .9; }
 .lb-bk.just-read .lb-rib { animation: lbRib .7s .15s cubic-bezier(.3, 1.4, .5, 1) both; transform-origin: top; }
-.lb-bk.just-read .lb-seal { animation: lbSeal .55s .5s cubic-bezier(.3, 1.6, .5, 1) both; }
+.lb-bk.just-read .lb-medal { animation: lbMedal .6s .5s cubic-bezier(.3, 1.6, .5, 1) both; }
 @keyframes lbRib { from { transform: scaleY(0); } }
-@keyframes lbSeal { from { transform: translateX(-50%) rotate(-30deg) scale(2.4); opacity: 0; } }
+@keyframes lbMedal { from { transform: translateX(-50%) rotate(-40deg) scale(2.6); opacity: 0; } }
 
 /* the glass doors of the shelves still to come, with a small brass lock */
 .lb-doors { position: absolute; left: 0; right: 0; top: 0; bottom: 20px; z-index: 3; display: flex; transform-style: preserve-3d; }
@@ -1379,6 +1387,32 @@ body[data-profile="mama"] .deck-lib { display: none; }
 .lb-cel h2 { margin: 6px 0 0; font-size: 40px; line-height: 1.4; } .lb-cel p { margin: 0 0 8px; font-size: 20px; }
 .lb-cel.play .lb-cel-box { animation: lbPop .6s cubic-bezier(.3, 1.5, .5, 1) both; }
 @keyframes lbPop { from { transform: scale(.4); opacity: 0; } }
+
+/* decorating a finished shelf */
+.lb-dec { position: absolute; inset: 0; z-index: 42; display: grid; place-items: center; padding: 14px; background: rgba(214, 232, 242, .55); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+.lb-dec-box { width: min(1010px, 100%); max-height: calc(100% - 10px); overflow-y: auto; padding: 22px 30px 20px; text-align: center; background: rgba(255, 255, 255, .97); border-radius: 34px; box-shadow: 0 30px 70px rgba(50, 90, 120, .28); }
+.lb-dec.play .lb-dec-box { animation: lbPop .5s cubic-bezier(.3, 1.5, .5, 1) both; }
+.lb-dec h2 { margin: 0; font-size: 34px; line-height: 1.4; color: #3F6E5C; } .lb-dec p { margin: 0 0 8px; font-size: 18px; color: rgba(43, 58, 68, .6); }
+.lb-dec h3 { margin: 8px 0 8px; font-size: 20px; text-align: right; }
+.lb-dec-paints { display: flex; gap: 14px; flex-wrap: wrap; }
+.lb-pt { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 0; font: inherit; font-size: 15px; font-weight: 700; color: inherit; background: none; border: 0; }
+.lb-pt i { width: 52px; height: 52px; border-radius: 18px; box-shadow: inset 0 0 0 1.5px rgba(43, 58, 68, .1); }
+.lb-pt.dc-white i { background: #FFFFFF; } .lb-pt.dc-sage i { background: #DCEEDF; } .lb-pt.dc-sky i { background: #D9ECF8; }
+.lb-pt.dc-butter i { background: #FDF0C4; } .lb-pt.dc-peach i { background: #FBE2D4; }
+.lb-pt.dc-stars i { background: radial-gradient(circle, #FFE7A0 0 2.5px, transparent 3.5px) 0 0 / 16px 16px, #2E4A63; }
+.lb-pt.on i { box-shadow: 0 0 0 3px #fff, 0 0 0 6px #F5B82E; }
+.lb-dec-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.lb-dec-gar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.lb-it { position: relative; height: 118px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 5px; padding: 8px 6px 9px; font: inherit; font-size: 16px; font-weight: 700; color: inherit;
+  background: #F6FAFB; border: 0; border-radius: 22px; box-shadow: inset 0 0 0 1.5px #E1EBF0; }
+.lb-it img { max-width: 88px; max-height: 74px; object-fit: contain; filter: drop-shadow(0 4px 5px rgba(50, 80, 100, .18)); }
+.lb-it.wide { height: 92px; } .lb-it.wide img { max-width: 220px; max-height: 44px; margin-bottom: 4px; } .lb-it em { font-style: normal; font-size: 26px; color: rgba(43, 58, 68, .35); }
+.lb-it.on { background: #FFFBEC; box-shadow: inset 0 0 0 3px #F5B82E, 0 6px 16px rgba(245, 184, 46, .25); }
+.lb-ph { position: relative; display: inline-block; } .lb-ph img { display: block; }
+.lb-dec-go { margin-top: 16px; min-height: 60px; min-width: 250px; font: inherit; font-size: 26px; font-weight: 800; color: #fff; background: #5BAA7A; border: 0; border-radius: 99px; box-shadow: 0 8px 18px rgba(63, 110, 92, .3); }
+.lb-dec-go:active { transform: translateY(3px); }
+.lb-dec-note { font-size: 14px; margin-top: 8px; color: rgba(43, 58, 68, .5); }
+@media (orientation: portrait) { .lb-dec-grid { grid-template-columns: repeat(4, 1fr); } }
 
 /* the book flying from the shelf: a real 3D book (spine, covers, page edges) */
 .lb-fly { position: fixed; inset: 0; z-index: 70; pointer-events: none; perspective: 1500px; }

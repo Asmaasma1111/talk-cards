@@ -24,6 +24,7 @@ function blank() {
     tools: [], notebook: [], feelings: [],   // ids whose tool / magic sentence / feeling word she has collected
     doors: {},                         // shelf -> the day its glass door swung open (shown once)
     seen: {},                          // milestone celebrations already shown (10, 20, 30)
+    deco: {},                          // shelf -> {color, item, garland, photo}: how she decorated a finished shelf
     sound: true
   };
 }
@@ -34,7 +35,7 @@ function clean(s) {
   const arr = x => (Array.isArray(x) ? x.filter(v => typeof v === 'string') : []);
   return { ...d, ...s, read: obj(s.read), order: arr(s.order), today: { ...d.today, ...obj(s.today) }, place: obj(s.place),
     missions: obj(s.missions), tools: arr(s.tools), notebook: arr(s.notebook), feelings: arr(s.feelings),
-    doors: obj(s.doors), seen: obj(s.seen), sound: s.sound !== false };
+    doors: obj(s.doors), seen: obj(s.seen), deco: obj(s.deco), sound: s.sound !== false };
 }
 const valid = s => !!(s && typeof s === 'object' && s.read && typeof s.read === 'object' && Array.isArray(s.order));
 const onShelf = (stories, n) => stories.filter(s => s.shelf === n);
@@ -121,6 +122,8 @@ function mount(api) {
   <symbol id="lb-i-sound" viewBox="0 0 24 24"><path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z" fill="currentColor"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.6a7.6 7.6 0 0 1 0 10.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
   <symbol id="lb-i-mute" viewBox="0 0 24 24"><path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z" fill="currentColor"/><path d="M16 9.5l5 5M21 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
   <symbol id="lb-i-lock" viewBox="0 0 24 24"><path d="M7.5 10.5V8a4.5 4.5 0 0 1 9 0v2.5" fill="none" stroke="#8A5A1C" stroke-width="2.4"/><rect x="5" y="10" width="14" height="10.5" rx="2.6" fill="url(#lb-brass)" stroke="#8A5A1C" stroke-width="1.4"/><circle cx="12" cy="14.6" r="1.6" fill="#5A3A10"/><path d="M12 15.6v2.4" stroke="#5A3A10" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  <linearGradient id="lb-satin" gradientUnits="userSpaceOnUse" x1="2" y1="0" x2="10" y2="0"><stop offset="0" stop-color="#D45682"/><stop offset=".45" stop-color="#FFB8CF"/><stop offset=".7" stop-color="#F189AC"/><stop offset="1" stop-color="#C9496F"/></linearGradient>
+  <symbol id="lb-i-rib" viewBox="0 0 12 34"><path d="M6 0 C 6 6, 6 9, 6 24" fill="none" stroke="url(#lb-satin)" stroke-width="6.4"/><path d="M2.8 23 h6.4 v10 l-3.2 -4.2 l-3.2 4.2 z" fill="url(#lb-satin)"/></symbol>
   <linearGradient id="lb-brass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F8DC8C"/><stop offset=".5" stop-color="#D9A441"/><stop offset="1" stop-color="#A9751F"/></linearGradient>
 </svg>
 
@@ -137,6 +140,15 @@ function mount(api) {
   <div class="lb-top"><div class="deck-row" id="lbDecks"></div><button class="lb-snd" id="lbSound" aria-label="الصوت"></button></div>
   <div class="lb-note" id="lbNote" hidden></div>
   <canvas class="lb-confetti" id="lbConfetti" aria-hidden="true"></canvas>
+  <div class="lb-dec" id="lbDec" dir="rtl" hidden><div class="lb-dec-box">
+    <h2 id="lbDecTitle"></h2><p>اختاري لوناً لظهر الرفّ، وشيئاً تضعينه عليه، وزينة فوقه إن أحببتِ</p>
+    <h3>لون الرفّ</h3><div class="lb-dec-paints" id="lbDecPaints"></div>
+    <h3>ماذا تضعين على رفّكِ؟</h3><div class="lb-dec-grid" id="lbDecItems"></div>
+    <h3>زينة فوق الرفّ</h3><div class="lb-dec-gar" id="lbDecGar"></div>
+    <button class="lb-dec-go" id="lbDecGo">ضعيها على الرفّ</button>
+    <div class="lb-dec-note">«صورتي»: تختارين صورة من الآيباد، وتبقى في الآيباد فقط</div>
+    <input type="file" id="lbDecFile" accept="image/*" hidden>
+  </div></div>
   <div class="lb-cel" id="lbCel" hidden><div class="lb-cel-box"><div class="lb-cel-burst" id="lbCelIc"></div><h2 id="lbCelTitle"></h2><p id="lbCelSub"></p><button class="btn btn-good" id="lbCelOk">رائع!</button></div></div>
 </section>
 
@@ -269,6 +281,11 @@ function mount(api) {
   addEventListener('resize', () => { if (dust.fit) dust.fit(); if (!$('#lhome').hidden) { fitBooks(); placeTrackDots(); } if (R) layoutReader(); });
 
   /* ---------- the bookcase ---------- */
+  const PAINTS = [['white', 'أبيض'], ['sage', 'أخضر هادئ'], ['sky', 'سماوي'], ['butter', 'أصفر'], ['peach', 'خوخي'], ['stars', 'نجوم']];
+  const ITEMS = [['frame', 'صورتي'], ['plant', 'نبتة'], ['camel', 'جمل صغير'], ['bear', 'دبدوب'], ['trophy', 'كأس ذهبية'], ['jar', 'برطمان حلوى'],
+    ['globe', 'كرة أرضية'], ['butterfly', 'فراشة'], ['starlamp', 'مصباح نجمة'], ['books', 'كتب وكوب']];
+  const GARLANDS = [['', 'بلا زينة'], ['lights', 'أضواء'], ['bunting', 'أعلام ملوّنة']];
+  const ORD = { 1: 'الأوّل', 2: 'الثاني', 3: 'الثالث' };
   // the fresh garden palette (her choice, 13 Oct 2026): leaf green, butter, powder blue, warm white, peach, sage
   const PAL = [['#8CC27A', '#6BA65A', '#fff'], ['#FBE08A', '#EBC458', '#2B2340'], ['#A9D0EF', '#7FB2DE', '#2B2340'], ['#FBF4E4', '#E9DCC2', '#2B2340'],
     ['#F7BE9E', '#E99A74', '#2B2340'], ['#B8D8B0', '#8FBB86', '#2B2340'], ['#7FB9E3', '#5797CC', '#fff'], ['#F3CD72', '#DCA941', '#2B2340'],
@@ -276,7 +293,7 @@ function mount(api) {
   const rnd = seed => { let x = Math.sin(seed * 9301 + 49297) * 233280; return x - Math.floor(x); };
   function look(s) {
     const d = s.day, p = PAL[(d * 7 + s.shelf * 3) % PAL.length];
-    return { w: Math.round(48 + rnd(d) * 18), h: Math.round(80 + rnd(d + 50) * 15), c: p[0], c2: p[1], ink: p[2], band: rnd(d + 9) > 0.5 };
+    return { w: Math.round(36 + rnd(d) * 12), h: Math.round(80 + rnd(d + 50) * 15), c: p[0], c2: p[1], ink: p[2], band: rnd(d + 9) > 0.5 };
   }
   function bookHTML(s) {
     const L = look(s), st = status(lib, ST, s, t()), read = !!lib.read[s.id], going = !read && lib.place[s.id] != null;
@@ -284,19 +301,28 @@ function mount(api) {
     return `<button class="lb-bk ${st}${going ? ' going' : ''}${L.band ? ' band' : ''}${long}" data-id="${s.id}" style="--w:${L.w}px; --h:${L.h}%; --c:${L.c}; --c2:${L.c2}; --tx:${L.ink}" aria-label="${s.title}">
       <span class="lb-sp"><span class="lb-sp-t">${s.title}</span><span class="lb-sp-n">${AR(s.day)}</span></span>
       ${st === 'last' ? '<svg class="lb-sp-lock" aria-hidden="true"><use href="#lb-i-lock"/></svg>' : ''}
-      ${going ? '<i class="lb-slip"></i>' : ''}<i class="lb-rib"></i><span class="lb-seal"><b>✓</b>قرأتُه</span></button>`;
+      ${read || going ? '<svg class="lb-rib" aria-hidden="true"><use href="#lb-i-rib"/></svg>' : ''}${read ? '<img class="lb-medal" src="assets/library/medal.webp" alt="قرأتُه">' : ''}</button>`;
   }
   function renderCase() {
     $('#lbShelves').innerHTML = shelves(ST).map(n => {
       const open = shelfOpen(lib, ST, n), books = onShelf(ST, n);
       const shown = open && (n === shelves(ST)[0] || lib.doors[n]);
-      return `<div class="lb-shelf${open ? '' : ' shut'}" data-shelf="${n}">
-        <div class="lb-row">${books.map(bookHTML).join('')}<span class="lb-end" aria-hidden="true"></span></div>
+      const dc = lib.deco[n], col = dc && PAINTS.some(p => p[0] === dc.color) ? dc.color : '';
+      return `<div class="lb-shelf${open ? '' : ' shut'}${col ? ' dc-' + col : ''}${dc && dc.garland ? ' garl' : ''}" data-shelf="${n}">
+        ${dc && dc.garland ? `<img class="lb-garland" src="assets/library/deco/${dc.garland}.webp" alt="">` : ''}
+        <div class="lb-row">${books.map(bookHTML).join('')}${dc && dc.item ? decoHTML(dc) : '<span class="lb-end" aria-hidden="true"></span>'}</div>
         <div class="lb-board"></div>
         ${shown ? '' : `<div class="lb-doors${open ? ' opening' : ''}"><div class="lb-door r"></div><div class="lb-door l"></div><div class="lb-lockbox"><svg aria-hidden="true"><use href="#lb-i-lock"/></svg></div></div>`}
       </div>`;
     }).join('');
     fitBooks();
+  }
+  // her decoration at the end of the row; her own photo sits inside the frame
+  function decoHTML(dc) {
+    if (!ITEMS.some(i => i[0] === dc.item)) return '<span class="lb-end" aria-hidden="true"></span>';
+    const img = `<img src="assets/library/deco/${dc.item}.webp" alt="">`;
+    return dc.item === 'frame' ? `<button class="lb-deco ph" aria-label="صورتي">${img}<b${dc.photo ? ` style="background-image:url(${dc.photo})"` : ''}></b></button>`
+      : `<button class="lb-deco" aria-label="زينة الرفّ">${img}</button>`;
   }
   // the books shrink a little on narrow screens so ten always stand on a shelf
   function fitBooks() {
@@ -359,6 +385,8 @@ function mount(api) {
   function wiggle(el) { el.classList.remove('wig'); void el.offsetWidth; el.classList.add('wig'); setTimeout(() => el.classList.remove('wig'), 700); }
   $('#lbShelves').addEventListener('click', e => {
     if (busy) return;
+    const dz = e.target.closest('.lb-deco, .lb-garland');
+    if (dz) { api.SFX.init(); openDeco(+dz.closest('.lb-shelf').dataset.shelf, null, true); return; }
     const shut = e.target.closest('.lb-shelf.shut');
     if (shut) { wiggle(shut.querySelector('.lb-doors') || shut); SND.play('creak', 0.18, { rate: 1.6 }); return; }
     const b = e.target.closest('.lb-bk'); if (!b) return;
@@ -792,20 +820,75 @@ function mount(api) {
     $('#lbCelSub').textContent = n === 30 ? 'قرأتِ الكتب الثلاثين كلّها!' : 'أكملتِ رفّاً كاملاً من الكتب!';
     const c = $('#lbCel'); c.hidden = false; c.classList.remove('play'); void c.offsetWidth; c.classList.add('play');
     SND.fanfare(); api.confetti($('#lbConfetti'));
-    $('#lbCelOk').onclick = () => { c.hidden = true; api.stopConfetti($('#lbConfetti')); then && then(); };
+    $('#lbCelOk').onclick = () => {
+      c.hidden = true; api.stopConfetti($('#lbConfetti'));
+      const k = n / 10;
+      if (onShelf(ST, k).length && !lib.deco[k]) openDeco(k, then); else then && then();
+    };
+  }
+
+  /* ---------- decorating a finished shelf: a back colour, one thing to stand on it, and a garland if she likes ---------- */
+  function openDeco(k, then, edit) {
+    const box = $('#lbDec'), cur = lib.deco[k] || {};
+    const pick = { color: cur.color || 'sage', item: cur.item || 'plant', garland: cur.garland || '', photo: cur.photo || '' };
+    $('#lbDecTitle').textContent = edit ? 'زيّني رفّكِ' : `أكملتِ الرفّ ${ORD[k] || ''}! زيّني رفّكِ`;
+    const draw = () => {
+      $('#lbDecPaints').innerHTML = PAINTS.map(([id, name]) => `<button class="lb-pt dc-${id}${pick.color === id ? ' on' : ''}" data-c="${id}"><i></i><span>${name}</span></button>`).join('');
+      $('#lbDecItems').innerHTML = ITEMS.map(([id, name]) => `<button class="lb-it${pick.item === id ? ' on' : ''}" data-i="${id}">${id === 'frame'
+        ? `<span class="lb-ph"><img src="assets/library/deco/frame.webp" alt=""><b${pick.photo ? ` style="background-image:url(${pick.photo})"` : ''}></b></span>`
+        : `<img src="assets/library/deco/${id}.webp" alt="">`}<span>${name}</span></button>`).join('');
+      $('#lbDecGar').innerHTML = GARLANDS.map(([id, name]) => `<button class="lb-it wide${pick.garland === id ? ' on' : ''}" data-g="${id}">${id ? `<img src="assets/library/deco/${id}.webp" alt="">` : '<em>—</em>'}<span>${name}</span></button>`).join('');
+    };
+    draw();
+    box.onclick = e => {
+      const b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.c) pick.color = b.dataset.c;
+      else if (b.dataset.i) { pick.item = b.dataset.i; if (b.dataset.i === 'frame') $('#lbDecFile').click(); }   // her photo, chosen from the iPad
+      else if (b.dataset.g != null) pick.garland = b.dataset.g;
+      else if (b.id === 'lbDecGo') {
+        lib.deco[k] = { color: pick.color, item: pick.item, garland: pick.garland, ...(pick.photo ? { photo: pick.photo } : {}) }; save();
+        box.hidden = true; renderCase(); fitBooks();
+        const sh = $(`.lb-shelf[data-shelf="${k}"]`);
+        if (sh) { sh.classList.add('lit'); setTimeout(() => sh.classList.remove('lit'), 1600); const d = sh.querySelector('.lb-deco'); if (d) sparkle(d); }
+        SND.chime(0.1, 0.6); api.SFX.good && api.SFX.good();
+        then && then(); return;
+      } else return;
+      api.SFX.tap && api.SFX.tap();
+      draw();
+    };
+    $('#lbDecFile').onchange = async e => {
+      const f = e.target.files && e.target.files[0]; e.target.value = '';
+      if (!f) return;
+      try { pick.photo = await shrinkPhoto(f); pick.item = 'frame'; draw(); } catch (err) { /* a picture she cannot use: keep the empty frame */ }
+    };
+    box.hidden = false; box.classList.remove('play'); void box.offsetWidth; box.classList.add('play');
+  }
+  // her photo, made small (it stays on the iPad, in her progress and her backup file)
+  function shrinkPhoto(file) {
+    return new Promise((ok, bad) => {
+      const url = URL.createObjectURL(file), im = new Image();
+      im.onload = () => {
+        const S = 360, r = Math.min(1, S / Math.max(im.width, im.height)), cv = document.createElement('canvas');
+        cv.width = Math.round(im.width * r); cv.height = Math.round(im.height * r);
+        cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height); URL.revokeObjectURL(url);
+        ok(cv.toDataURL('image/jpeg', 0.82));
+      };
+      im.onerror = () => { URL.revokeObjectURL(url); bad(new Error('not a picture')); };
+      im.src = url;
+    });
   }
 
   return {
     home, ready,
     isOn: () => !$('#lhome').hidden || !$('#lbook').hidden,
-    busy: () => !$('#lbook').hidden || busy || !$('#lbCel').hidden,
+    busy: () => !$('#lbook').hidden || busy || !$('#lbCel').hidden || !$('#lbDec').hidden,
     reload() { lib = load(); },
     snapshot() { return JSON.parse(JSON.stringify(lib)); },
     valid,
     replace(obj) { lib = clean(obj); save(); },
     leave: leaveRoom,
     // for tests (?dev=1)
-    get state() { return lib; }, get reader() { return R; }, get stories() { return ST; }, turn, core
+    get state() { return lib; }, get reader() { return R; }, get stories() { return ST; }, turn, core, openDeco, milestone
   };
 }
 

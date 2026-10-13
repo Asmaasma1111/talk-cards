@@ -56,7 +56,20 @@ const FILES = APP === 'prepositions' ? [
   'assets/library/window.webp',
   'assets/library/plant.webp',
   'assets/library/trailing.webp',
-  'assets/library/leaves.webp'
+  'assets/library/leaves.webp',
+  'assets/library/medal.webp',
+  'assets/library/deco/frame.webp',
+  'assets/library/deco/plant.webp',
+  'assets/library/deco/camel.webp',
+  'assets/library/deco/bear.webp',
+  'assets/library/deco/trophy.webp',
+  'assets/library/deco/jar.webp',
+  'assets/library/deco/globe.webp',
+  'assets/library/deco/butterfly.webp',
+  'assets/library/deco/starlamp.webp',
+  'assets/library/deco/books.webp',
+  'assets/library/deco/lights.webp',
+  'assets/library/deco/bunting.webp'
 ];
 
 // The recorded voice: audio/voice.json lists every clip; all of them are cached so the car works offline.

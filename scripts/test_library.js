@@ -44,6 +44,8 @@ eq(C.status(L, ST, by('d30'), '2026-10-20'), 'new', 'then Day 30 opens');
 eq(C.setMission(L, 'd01', 'later', t).state, 'later', 'mission later'); eq(C.setMission(L, 'd01', 'done', t, '😊'), { state: 'done', day: t, feel: '😊' }, 'mission done with a feeling');
 eq(C.setMission(L, 'd01', 'later', t2).state, 'done', 'a done mission stays done');
 // saved state survives a round trip and bad data
+L.deco[1] = { color: 'sage', item: 'frame', garland: 'lights', photo: 'data:image/jpeg;base64,xx' };
+eq(C.clean(JSON.parse(JSON.stringify(L))).deco[1].garland, 'lights', 'clean keeps her shelf decoration'); eq(C.clean({ deco: 'x' }).deco, {}, 'bad decoration data is dropped');
 eq(C.clean(JSON.parse(JSON.stringify(L))).order.length, 29, 'clean keeps progress'); eq(C.clean(null).order, [], 'clean of nothing');
 eq(C.clean({ read: [], order: 'x', sound: false }).sound, false, 'clean keeps the sound choice'); eq(C.valid({ read: {}, order: [] }), true, 'valid backup'); eq(C.valid({}), false, 'invalid backup');
 console.log(fails ? `${fails} failed` : 'library core: all passed');
