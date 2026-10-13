@@ -443,7 +443,7 @@ function mount(api) {
     mover.style.left = cx + 'px'; mover.style.top = cy + 'px';
     const half = W / sc / 2, out = Math.round(half * 1.6), k = 1 / sc;
     const at = (x, y) => `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
-    return { mover, box, front, D, k, half, out, here: at(0, 0), there: at(tx - cx, ty - cy),
+    return { mover, box, front, D, k, half, out, here: at(0, 0), there: at(tx - cx, ty - cy), mid: at(innerWidth / 2 - cx, ty - cy),
       shelf: `translateZ(${-half}px) rotateY(-90deg) scale3d(${k}, ${k}, ${k})`,
       pulled: `translateZ(${out - half}px) rotateY(-90deg) scale3d(${k}, ${k}, ${k})`,
       turned: `translateZ(${out}px) rotateY(0deg) scale3d(.92, .92, .92)`, big: 'translateZ(0) rotateY(0deg) scale3d(1, 1, 1)',
@@ -456,15 +456,30 @@ function mount(api) {
     SND.play('slide', 0.9);
     const a1 = F.box.animate([{ transform: F.shelf }, { transform: F.pulled, offset: 0.25 }, { transform: F.turned, offset: 0.62 }, { transform: F.big }],
       { duration: ms, easing: 'ease-in-out', fill: 'forwards' });
-    F.mover.animate([{ transform: F.here }, { transform: F.here, offset: 0.25 }, { transform: F.there, offset: 0.62 }, { transform: F.there }],
+    F.mover.animate([{ transform: F.here }, { transform: F.here, offset: 0.25 }, { transform: F.mid, offset: 0.62 }, { transform: F.mid }],
       { duration: ms, easing: 'ease-in-out', fill: 'forwards' });
-    F.front.animate([{ transform: F.shut }, { transform: F.shut, offset: 0.66 }, { transform: F.open }], { duration: ms, easing: 'cubic-bezier(.45, 0, .3, 1)', fill: 'forwards' });
-    setTimeout(() => SND.play('open', 0.9), 760 * dur);
+    F.front.style.transform = F.shut;                // the book arrives closed in the middle: she sees its cover first
+    fly.insertAdjacentHTML('afterbegin', '<i class="lb-dim"></i>');
     await a1.finished.catch(() => {});
+    await coverWait();                               // and opens it herself with a tap
+    SND.play('open', 0.9);
+    const om = 760 * dur;
+    F.mover.animate([{ transform: F.mid }, { transform: F.there }], { duration: om, easing: 'ease-in-out', fill: 'forwards' });   // in a spread it moves onto the left page
+    await F.front.animate([{ transform: F.shut }, { transform: F.open }], { duration: om, easing: 'cubic-bezier(.45, 0, .3, 1)', fill: 'forwards' }).finished.catch(() => {});
     start(lib, s, t()); save();
     openReader(s);
     fly.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 240 * dur, fill: 'forwards' }).finished.then(() => { fly.hidden = true; fly.innerHTML = ''; fly.getAnimations().forEach(a => a.cancel()); });
     busy = false;
+  }
+  // the closed book in the middle of the screen: one tap anywhere opens its cover
+  function coverWait() {
+    return new Promise(done => {
+      const catcher = Object.assign(document.createElement('button'), { className: 'lb-open-catch' }), tip = Object.assign(document.createElement('button'), { className: 'lb-open-tip', textContent: 'اضغطي لتفتحي الكتاب' });
+      catcher.setAttribute('aria-label', 'افتحي الكتاب');
+      fly.append(catcher, tip); fly.classList.add('wait'); fly.removeAttribute('aria-hidden');
+      const go = () => { catcher.remove(); tip.remove(); fly.classList.remove('wait'); fly.setAttribute('aria-hidden', 'true'); done(); };
+      catcher.onclick = go; tip.onclick = go;
+    });
   }
   // closing: the cover shuts, the book turns its spine to us and slides back into its place
   async function shelveBook(s, then) {

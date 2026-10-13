@@ -1493,7 +1493,18 @@ body[data-profile="mama"] .deck-lib { display: none; }
 .pg-body .lb-txt { padding: 4% 8% 6%; }
 .lb-txt p { margin: 0; font-family: var(--naskh); font-size: clamp(24px, 2.7vw, 34px); line-height: 2.05; text-align: center; color: #2B2340; }
 .pg-s .lb-txt p { font-size: clamp(26px, 4.1vw, 38px); }
-.lb-pno { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); font-size: 15px; color: rgba(43, 35, 64, .45); }
+.lb-pno { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); min-width: 38px; height: 38px; padding: 4px 8px 0; display: grid; place-items: center;
+  font-family: var(--baloo); font-size: 20px; font-weight: 800; line-height: 1; color: #3F6E5C; background: #EAF5EE; border-radius: 99px; box-shadow: inset 0 0 0 1.5px rgba(63, 110, 92, .18); }
+/* the closed book waits in the middle: she opens the cover herself */
+.lb-fly.wait { pointer-events: auto; }
+.lb-dim { position: absolute; inset: 0; background: rgba(214, 232, 242, .72); animation: lbDim .6s ease both; }
+@keyframes lbDim { from { opacity: 0; } }
+.lb-open-catch { position: absolute; inset: 0; padding: 0; border: 0; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.lb-open-tip { position: absolute; left: 50%; bottom: calc(var(--safe-b, 0px) + 22px); transform: translateX(-50%); padding: 8px 26px 10px; font-family: var(--baloo); font-size: 24px; font-weight: 800; color: #3F6E5C;
+  background: rgba(255, 255, 255, .95); border: 0; border-radius: 99px; box-shadow: 0 8px 20px rgba(50, 90, 120, .22); animation: lbTip 1.6s ease-in-out infinite; }
+@keyframes lbTip { 50% { transform: translateX(-50%) translateY(-5px); } }
+.lb-fly.wait .lb-box { animation: lbBreathe 2.2s ease-in-out infinite; }
+@keyframes lbBreathe { 50% { scale: 1.015; } }
 .pg-body { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; }
 /* a pause question: three big buttons, nothing marked right or wrong */
 .lb-q, .lb-endc { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 6% 8%; text-align: center; }
