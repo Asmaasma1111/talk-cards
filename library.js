@@ -126,10 +126,12 @@ function mount(api) {
 
 <section id="lhome" class="screen lb" dir="rtl" lang="ar" hidden>
   <div class="lb-wall"></div>
-  <div class="lb-window"><div class="lb-sky"></div><div class="lb-bars"></div><div class="lb-curtain r"></div><div class="lb-curtain l"></div></div>
+  <img class="lb-leaves" src="assets/library/leaves.webp" alt="" aria-hidden="true">
+  <img class="lb-window" src="assets/library/window.webp" alt="" aria-hidden="true">
   <div class="lb-beam"></div>
   <div class="lb-floor"></div><div class="lb-rug"></div>
-  <div class="lb-case" id="lbCase"><div class="lb-lamp" id="lbLamp"><div class="lb-shade"></div><div class="lb-bulb"></div><div class="lb-pole"></div><div class="lb-base"></div></div>
+  <img class="lb-plant" src="assets/library/plant.webp" alt="" aria-hidden="true">
+  <div class="lb-case" id="lbCase"><img class="lb-ivy" src="assets/library/trailing.webp" alt="" aria-hidden="true">
     <div class="lb-glow"></div><canvas class="lb-dust" id="lbDust" aria-hidden="true"></canvas><div class="lb-crown"><span>مكتبتي</span></div><div class="lb-shelves" id="lbShelves"></div><div class="lb-plinth"></div></div>
   <div class="lb-track" id="lbTrack"></div>
   <div class="lb-top"><div class="deck-row" id="lbDecks"></div><button class="lb-snd" id="lbSound" aria-label="الصوت"></button></div>
@@ -267,9 +269,10 @@ function mount(api) {
   addEventListener('resize', () => { if (dust.fit) dust.fit(); if (!$('#lhome').hidden) { fitBooks(); placeTrackDots(); } if (R) layoutReader(); });
 
   /* ---------- the bookcase ---------- */
-  const PAL = [['#FF8DB8', '#E2588F', '#fff'], ['#FFD84D', '#E9B726', '#2B2340'], ['#8FE3BF', '#4FBF8E', '#2B2340'], ['#FFB5D0', '#F07FAA', '#2B2340'],
-    ['#FFE89A', '#F2C64B', '#2B2340'], ['#5FCFA0', '#2E9E70', '#fff'], ['#F7A1C4', '#D4578D', '#fff'], ['#B8F0D8', '#6FCCA4', '#2B2340'],
-    ['#FFCF6B', '#E0A322', '#2B2340'], ['#E56A9C', '#B83E70', '#fff']];
+  // the fresh garden palette (her choice, 13 Oct 2026): leaf green, butter, powder blue, warm white, peach, sage
+  const PAL = [['#8CC27A', '#6BA65A', '#fff'], ['#FBE08A', '#EBC458', '#2B2340'], ['#A9D0EF', '#7FB2DE', '#2B2340'], ['#FBF4E4', '#E9DCC2', '#2B2340'],
+    ['#F7BE9E', '#E99A74', '#2B2340'], ['#B8D8B0', '#8FBB86', '#2B2340'], ['#7FB9E3', '#5797CC', '#fff'], ['#F3CD72', '#DCA941', '#2B2340'],
+    ['#C9E6DA', '#97CDB6', '#2B2340'], ['#E8A98C', '#D2845F', '#fff']];
   const rnd = seed => { let x = Math.sin(seed * 9301 + 49297) * 233280; return x - Math.floor(x); };
   function look(s) {
     const d = s.day, p = PAL[(d * 7 + s.shelf * 3) % PAL.length];
