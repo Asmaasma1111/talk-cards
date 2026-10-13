@@ -886,7 +886,16 @@
    },
    "unlocks_baba_message": false,
    "locked_until_shelf_done": false,
-   "images": []
+   "images": [
+    "cover",
+    "p01",
+    "p02",
+    "p03",
+    "p04",
+    "p05",
+    "p06",
+    "p07"
+   ]
   },
   {
    "id": "d10",
