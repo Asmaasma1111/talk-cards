@@ -667,6 +667,17 @@ button.mx-sticker:active { transform: scale(.9); }
 .mx-ans.ok { border-style: solid; background: var(--mint); animation: mxok .4s ease; }
 @keyframes mxwait { 50% { border-color: rgba(43, 35, 64, .45); } }
 @keyframes mxok { 40% { transform: scale(1.12); } }
+.mx-ans.no { border-style: solid; background: #FFD9CF; animation: mxno .5s ease; }
+@keyframes mxno { 15%, 55% { transform: translateX(-.09em) rotate(-3deg); } 35%, 75% { transform: translateX(.09em) rotate(3deg); } }
+.mx-again {
+  margin-top: .5em; padding: 4px 22px 6px;
+  font-size: 28px; font-weight: 800;
+  border: 2.5px solid var(--ink); border-radius: 99px; background: var(--white);
+  animation: mxagain .35s cubic-bezier(.3, 1.6, .5, 1);
+}
+@keyframes mxagain { from { transform: scale(.4); opacity: 0; } }
+.mx-burst { position: fixed; inset: 0; z-index: 60; pointer-events: none; }
+.mx-burst i { position: absolute; display: block; }
 .label.mx-new { background: var(--gum); }
 .label.mx-res { font-size: 26px; padding: 4px 22px; }
 .label.mx-good { background: var(--white); }
@@ -775,7 +786,7 @@ button.mx-sticker:active { transform: scale(.9); }
   .mx-stickers { max-width: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .mx-ans.empty, .mx-ans.ok, .back .mx-line, .mx-reward.pop .star, .mx-sticker.current, .mx-cardbox.enter { animation: none; }
+  .mx-ans.empty, .mx-ans.ok, .mx-ans.no, .mx-again, .back .mx-line, .mx-reward.pop .star, .mx-sticker.current, .mx-cardbox.enter { animation: none; }
 }
 
 /* Home footer (both decks): the credit, and under it a one-tap backup of all progress */

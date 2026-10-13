@@ -472,7 +472,7 @@ function mount(api) {
     if (!S) return;
     if (!S.queue.length) return endRound();
     S.item = S.queue.shift();
-    S.typed = ''; S.phase = 'ask';
+    S.typed = ''; S.phase = 'ask'; S.missed = false;
     S.helped = S.item.step === 'show';            // a new fact comes with its dot picture
     renderFront();
     progress();
@@ -540,9 +540,9 @@ function mount(api) {
     area.append(dotsEl(f, counted));
     face.querySelector('.mx-q').append(area);
   }
-  function renderBack(f, correct, res) {
+  function renderBack(f, correct, res, second) {
     const back = $('#mxBack');
-    const lab = !correct ? 'لا بأس' : res.grade === 'easy' ? 'سريعة!' : 'أحسنتِ!';
+    const lab = !correct ? 'لا بأس' : second ? 'صحّحتِها!' : res.grade === 'easy' ? 'سريعة!' : 'أحسنتِ!';
     const tw = twinKnown(m, f);
     back.innerHTML = `<div class="label mx-res ${correct ? 'mx-good' : 'mx-calm'}">${lab}</div>
       <div class="mx-q">${eqHTML(f, `<span class="mx-ans full">${toAr(f.ans)}</span>`, 'small')}
@@ -601,19 +601,61 @@ function mount(api) {
   function activeMs() { return performance.now() - S.shownAt - (S.hiddenAt ? performance.now() - S.hiddenAt : 0); }
   function check() {
     if (!S || S.phase !== 'ask' || !S.typed) return;
-    S.phase = 'checked';
     const f = FACT[S.item.id];
     const correct = parseAnswer(S.typed) === f.ans;
+    if (!correct && !S.missed) { S.missed = true; tryAgain(); return; }   // the first miss: one more go
+    S.phase = 'checked';
     const views = S.views[f.id] = (S.views[f.id] || 0) + 1;
-    const res = answer(m, S.item, correct, activeMs(), S.helped, today(), views, S.mode);
+    // only a right FIRST answer counts as right, so a fact she missed still comes back soon
+    const res = answer(m, S.item, correct && !S.missed, activeMs(), S.helped, today(), views, S.mode);
     save();                                        // after every answer
     if (res.again) requeue(S.queue, { id: f.id, step: res.again });
     S.answered++; S.stars += res.stars; S.celeb.push(...res.events);
     progress();
-    renderBack(f, correct, res);
+    renderBack(f, correct, res, S.missed);
     const ans = $('#mxAns');
-    if (correct) { ans.classList.add('ok'); api.SFX.good(); }
-    setTimeout(() => flipToBack(res), correct ? 420 : 160);
+    $('#mxAgain')?.remove();
+    if (correct) { ans.classList.add('ok'); api.SFX.good(); burst(ans, res.grade === 'easy' ? 64 : 46); }
+    setTimeout(() => flipToBack(res), correct ? 720 : 160);
+  }
+  // A wrong first answer: the box shakes, a soft "uh-oh", and «حاولي مرّة أخرى» until she types again.
+  function tryAgain() {
+    S.phase = 'wait';
+    const ans = $('#mxAns');
+    ans.classList.remove('no'); void ans.offsetWidth; ans.classList.add('no');
+    api.SFX.again();
+    $('#mxAgain')?.remove();
+    const q = $('#mxFront .mx-q');
+    q.append(Object.assign(document.createElement('div'), { className: 'mx-again', id: 'mxAgain', textContent: 'حاولي مرّة أخرى 💪' }));
+    $('#mxCheck').disabled = true;
+    layout();
+    setTimeout(() => {
+      if (!S || S.phase !== 'wait') return;
+      S.phase = 'ask'; S.typed = '';
+      ans.classList.remove('no', 'full'); ans.classList.add('empty'); ans.textContent = '؟';
+    }, api.reduced() ? 300 : 900);
+  }
+  // Confetti from the answer box when she is right: a quick burst of little paper pieces that fall away.
+  function burst(el, n) {
+    if (api.reduced()) return;
+    const r = el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const layer = document.createElement('div'); layer.className = 'mx-burst';
+    const colors = ['#FFC93C', '#5FD3A5', '#FF7EB0', '#A994F2', '#62B8F0', '#FF9A5C'];
+    for (let i = 0; i < n; i++) {
+      const p = document.createElement('i');
+      const a = Math.random() * Math.PI * 2, v = 120 + Math.random() * 230, size = 9 + Math.random() * 10;
+      const dx = Math.cos(a) * v, dy = Math.sin(a) * v - 70, fall = 160 + Math.random() * 140, spin = (Math.random() - .5) * 900;
+      p.style.cssText = `left:${cx}px;top:${cy}px;width:${size}px;height:${size * (Math.random() < .5 ? .45 : 1)}px;` +
+        `background:${colors[i % colors.length]};border-radius:${Math.random() < .4 ? '50%' : '2px'}`;
+      layer.append(p);
+      p.animate([
+        { transform: 'translate(-50%,-50%) scale(.4)', opacity: 1 },
+        { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) rotate(${spin / 2}deg) scale(1)`, opacity: 1, offset: .45 },
+        { transform: `translate(calc(-50% + ${dx * 1.25}px), calc(-50% + ${dy + fall}px)) rotate(${spin}deg) scale(.9)`, opacity: 0 }
+      ], { duration: 1100 + Math.random() * 500, easing: 'cubic-bezier(.2,.7,.3,1)', fill: 'forwards' });
+    }
+    document.body.append(layer);
+    setTimeout(() => layer.remove(), 1800);
   }
   function flipToBack(res) {
     if (!S) return;
