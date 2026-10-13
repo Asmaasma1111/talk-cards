@@ -2,7 +2,7 @@
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
 // The same file serves both apps: Talk Cards registers sw.js, Prepositions registers sw.js?app=prepositions.
 const APP = new URL(location.href).searchParams.get('app') === 'prepositions' ? 'prepositions' : 'talk-cards';
-const VERSION = APP + '-v21';
+const VERSION = APP + '-v22';
 const FILES = APP === 'prepositions' ? [
   './',
   'index.html',
@@ -25,6 +25,8 @@ const FILES = APP === 'prepositions' ? [
   'garden.js',
   'maths.js',
   'stickerbook.js',
+  'library.js',
+  'stories.json',
   'stickers/stickers.json',
   'sets.json',
   'prepositions.json',
@@ -38,7 +40,19 @@ const FILES = APP === 'prepositions' ? [
   'fonts/atkinson-400.woff2',
   'fonts/atkinson-700.woff2',
   'fonts/tajawal-500.woff2',
-  'fonts/tajawal-800.woff2'
+  'fonts/tajawal-800.woff2',
+  'fonts/baloo-bhaijaan2-arabic.woff2',
+  'fonts/baloo-bhaijaan2-latin.woff2',
+  'assets/audio/lib-slide.m4a',
+  'assets/audio/lib-open.m4a',
+  'assets/audio/lib-close.m4a',
+  'assets/audio/lib-place.m4a',
+  'assets/audio/lib-flip1.m4a',
+  'assets/audio/lib-flip2.m4a',
+  'assets/audio/lib-flip3.m4a',
+  'assets/audio/lib-creak.m4a',
+  'assets/audio/lib-chair.m4a',
+  'assets/audio/lib-room.m4a'
 ];
 
 // The recorded voice: audio/voice.json lists every clip; all of them are cached so the car works offline.
@@ -63,8 +77,18 @@ async function cacheStickers(cache) {
   } catch (e) { /* the book still opens when online */ }
 }
 
+// مكتبتي: the story pictures that exist so far (listed in stories.json), so the books open offline with their pictures.
+async function cacheStories(cache) {
+  if (APP !== 'talk-cards') return;
+  try {
+    const d = await (await fetch('stories.json', { cache: 'no-cache' })).json();
+    const files = d.stories.flatMap(s => s.images.map(k => `assets/stories/${s.id}/${k}.webp`));
+    for (let i = 0; i < files.length; i += 40) await cache.addAll(files.slice(i, i + 40));
+  } catch (e) { /* placeholders still show */ }
+}
+
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSION).then(async c => { await c.addAll(FILES); await cacheVoice(c); await cacheStickers(c); }).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(VERSION).then(async c => { await c.addAll(FILES); await cacheVoice(c); await cacheStickers(c); await cacheStories(c); }).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {

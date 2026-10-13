@@ -26,6 +26,7 @@ subs = [
     ('<script src="garden.js"></script>\n', ''),         # Maria's science garden,
     ('<script src="maths.js"></script>\n', ''),          # her times tables
     ('<script src="stickerbook.js"></script>\n', ''),    # and so does her sticker book
+    ('<script src="library.js"></script>\n', ''),       # and her story library
 ]
 for old, new in subs:
     if old not in page:

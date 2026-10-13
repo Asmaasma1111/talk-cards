@@ -1,0 +1,3595 @@
+{
+ "v": 1,
+ "shelves": [
+  {
+   "n": 1,
+   "days": [
+    1,
+    10
+   ]
+  },
+  {
+   "n": 2,
+   "days": [
+    11,
+    20
+   ]
+  },
+  {
+   "n": 3,
+   "days": [
+    21,
+    30
+   ]
+  }
+ ],
+ "stories": [
+  {
+   "id": "d01",
+   "day": 1,
+   "shelf": 1,
+   "stage": 1,
+   "title": "نقّار الخشب في الصفّ",
+   "skill_en": "saying what bothers me, calmly",
+   "value_tags": [
+    "assertive-dislike"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "مقصّ",
+    "emoji": "✂️"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "في حصّة القراءة، كان الصفّ هادئاً جداً... إلّا من صوت واحد.",
+     "scene": "a quiet classroom, girls reading, one girl drumming with two pencils."
+    },
+    {
+     "n": 2,
+     "text": "تَك. تَك. تَك تَك تَك. كانت نوف تطرق الطاولة بقلمَين، كأنّها تعزف على طبل.",
+     "scene": "close-up of Nouf drumming happily, eyes closed."
+    },
+    {
+     "n": 3,
+     "text": "حاولت لينا أن تقرأ قصّتها، لكنّ الكلمات بدأت تقفز مع الصوت. تخيّلت نقّار خشب صغيراً يسكن داخل الطاولة.",
+     "scene": "letters jumping off Lina's page; a tiny woodpecker peeking out of the desk."
+    },
+    {
+     "n": 4,
+     "text": "ثم تخيّلت فرقة كاملة: طبول، وصفّارات، وجملاً يرقص في آخر الصفّ! قرأت لينا السطر نفسه ثلاث مرّات، ولم تفهم منه شيئاً.",
+     "scene": "Lina's imagination bubble with a marching band and a dancing camel."
+    },
+    {
+     "n": 5,
+     "text": "همست لينا: \"نوف، صوت القلم يزعجني ولا أستطيع أن أقرأ. لكنّي أريد أن نكمل القصّة معاً بعد قليل.\"",
+     "scene": "Lina leaning over, whispering."
+    },
+    {
+     "n": 6,
+     "text": "نظرت نوف إلى يديها بدهشة: \"أنا أطرق؟ لم أنتبه أبداً! يداي ترقصان وحدهما عندما أملّ.\"",
+     "scene": "Nouf staring at her own hands as if they have little faces."
+    },
+    {
+     "n": 7,
+     "text": "فاتّفقتا على إشارة سرّية: إذا بدأت الطبول، تلمس لينا أنفها مرّتين.",
+     "scene": "both girls touching their noses, giggling."
+    },
+    {
+     "n": 8,
+     "text": "وفي اليوم التالي... بدأت لينا تدندن أغنية دون أن تشعر. فلمست نوف أنفها مرّتين!",
+     "scene": "musical notes floating from Lina; Nouf grinning and tapping her nose."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 4,
+     "prompt": "ماذا ستفعل لينا؟",
+     "options": [
+      {
+       "label": "تغطّي أذنيها وتسكت",
+       "result": "ظلّ الجمل يرقص في رأسها حتى رنّ الجرس، ولم تكمل قصّتها."
+      },
+      {
+       "label": "تخطف القلمَين من يد نوف",
+       "result": "صرخت نوف: \"هذا قلمي!\" فالتفت الصفّ كلّه إليهما."
+      },
+      {
+       "label": "تقول لنوف بهدوء ما يزعجها",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى حصّة القراءة..."
+    }
+   ],
+   "other_side": "لينا لم تنتبه أنّها تدندن. هل يمكن أن تفعلي أنتِ شيئاً يزعج غيركِ دون أن تعرفي؟",
+   "magic_sentence": "هذا يزعجني، لكنّي أريد أن نكمل معاً.",
+   "feeling_word": "الانزعاج",
+   "mission": {
+    "text": "قولي لماما: ماذا ستقولين لصديقة تفعل شيئاً يزعجكِ؟",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d02",
+   "day": 2,
+   "shelf": 1,
+   "stage": 1,
+   "title": "نهر الضفائر",
+   "skill_en": "listening to my body and waiting for the crowd",
+   "value_tags": [
+    "body-signals"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "صمغ",
+    "emoji": "🧴"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "رنّ جرس نهاية الفسحة: ترررررن! وفجأة، ركضت كلّ البنات نحو الباب في وقت واحد.",
+     "scene": "the school yard, girls rushing towards one door."
+    },
+    {
+     "n": 2,
+     "text": "صار الممرّ مثل نهر كبير من الضفائر والحقائب والأحذية.",
+     "scene": "a corridor drawn like a river, full of ponytails and backpacks."
+    },
+    {
+     "n": 3,
+     "text": "وجدت لينا نفسها في المنتصف. هذه تدفعها من اليمين، وتلك من اليسار. شعرت أنّها سمكة سردين محشورة في علبة!",
+     "scene": "Lina squeezed, drawn as a little sardine in a tin full of girls."
+    },
+    {
+     "n": 4,
+     "text": "دقّ قلبها بسرعة: دُم دُم دُم. وضاق صدرها.",
+     "scene": "a big drum where Lina's heart is."
+    },
+    {
+     "n": 5,
+     "text": "تراجعت لينا خطوة، ووقفت بجانب لوحة الإعلانات. تنفّست ببطء، وعدّت حتى عشرة.",
+     "scene": "Lina calm by a noticeboard, the river of girls flowing past."
+    },
+    {
+     "n": 6,
+     "text": "بعد دقيقة واحدة، صار الممرّ فارغاً تقريباً. مشت لينا بهدوء، كأنّها ملكة في قصرها.",
+     "scene": "an empty corridor, Lina walking tall with an imaginary crown."
+    },
+    {
+     "n": 7,
+     "text": "دخلت الصفّ قبل المعلّمة هيفاء بثوانٍ. لم يفُتها شيء أبداً.",
+     "scene": "Lina sitting down as the teacher enters."
+    },
+    {
+     "n": 8,
+     "text": "أمّا نوف، فكانت قد وصلت أوّلاً... لكن بحذاء واحد!",
+     "scene": "Nouf proudly in her seat, one shoe missing."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 4,
+     "prompt": "ماذا ستفعل لينا؟",
+     "options": [
+      {
+       "label": "تدفع البنات لتخرج بسرعة",
+       "result": "دفعت، فدفعوها أقوى... وطار حذاؤها، ووصل إلى الصفّ قبلها!"
+      },
+      {
+       "label": "تبقى في مكانها وتبكي",
+       "result": "بقيت في وسط النهر، والنهر يجرّها حيث يريد."
+      },
+      {
+       "label": "تخرج من النهر وتقف جانباً",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى الممرّ..."
+    }
+   ],
+   "other_side": "هل تظنّين أنّ البنات أردن دفع لينا؟ أم كنّ خائفات من التأخّر مثلها؟",
+   "magic_sentence": "لستُ مستعجلة. سأنتظر قليلاً.",
+   "feeling_word": "الضِّيق",
+   "mission": {
+    "text": "أخبري ماما: أين ستقفين غداً عندما يرنّ الجرس؟",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d03",
+   "day": 3,
+   "shelf": 1,
+   "stage": 1,
+   "title": "خطة ب",
+   "skill_en": "being flexible when plans change",
+   "value_tags": [
+    "flexibility"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "أقلام تلوين",
+    "emoji": "🖍️"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "كانت لينا قد خطّطت لكلّ شيء: نزهة في الحديقة يوم الجمعة، مع سلّة طعام وطائرة ورقية.",
+     "scene": "Lina ticking a list, a picnic basket and a kite beside her."
+    },
+    {
+     "n": 2,
+     "text": "لكن صباح الجمعة... جاء الغبار! صارت السماء برتقالية، واختفت الشمس كأنّها نامت.",
+     "scene": "an orange dusty sky outside the window; the sun with a sleeping cap."
+    },
+    {
+     "n": 3,
+     "text": "قال بابا: \"لا نزهة اليوم.\"",
+     "scene": "Baba by the window shaking his head gently."
+    },
+    {
+     "n": 4,
+     "text": "وقفت لينا أمام النافذة وذراعاها متشابكتان: \"أريد الحديقة. الحديقة فقط!\"",
+     "scene": "Lina with crossed arms and a stormy cloud over her head."
+    },
+    {
+     "n": 5,
+     "text": "فكّرت لينا: \"ما الذي أحبّه في النزهة؟ الأكل على الأرض، واللعب، والضحك.\"",
+     "scene": "thought bubbles with a blanket, a ball and laughing faces."
+    },
+    {
+     "n": 6,
+     "text": "فرشت البطانية على سجّادة الصالة، ووضعت الوسائد حولها مثل أشجار. ثم علّقت الطائرة الورقية على المروحة!",
+     "scene": "a living-room picnic; pillows as trees; a kite tied to the ceiling fan."
+    },
+    {
+     "n": 7,
+     "text": "دارت المروحة، فطارت الطائرة الورقية داخل البيت. ضحكت جود حتى سقطت على الوسادة.",
+     "scene": "the kite circling; Jood rolling on a pillow laughing."
+    },
+    {
+     "n": 8,
+     "text": "قالت لينا وفمها مليء بالسندويش: \"خطة ب... أطرف من خطة أ!\"",
+     "scene": "the family on the blanket, Lina with puffed cheeks."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 4,
+     "prompt": "ماذا ستفعل لينا؟",
+     "options": [
+      {
+       "label": "تبقى غاضبة طوال اليوم",
+       "result": "مرّ اليوم كلّه، ولم تأكل شيئاً من السلّة، ولم تلعب أبداً."
+      },
+      {
+       "label": "تخرج رغم الغبار",
+       "result": "عادت بعد دقيقة، وشعرها مثل عشّ عصفور مليء بالرمل!"
+      },
+      {
+       "label": "تبحث عن خطة ب",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى النافذة..."
+    }
+   ],
+   "other_side": "بابا أيضاً كان يريد النزهة. كيف شعر هو عندما ألغاها؟",
+   "magic_sentence": "إذا لم تنجح خطة أ، عندي خطة ب.",
+   "feeling_word": "خيبة الأمل",
+   "mission": {
+    "text": "فكّري مع ماما: إذا أُلغي شيء تحبّينه، ما خطّتكِ ب؟",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d04",
+   "day": 4,
+   "shelf": 1,
+   "stage": 1,
+   "title": "صوت الراديو",
+   "skill_en": "speaking clearly and looking at the face",
+   "value_tags": [
+    "clear-voice"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "ورق ملوّن",
+    "emoji": "📄"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "في المقصف، وقفت لينا في الطابور وفي يدها ريالان.",
+     "scene": "the school canteen queue, Lina holding two coins."
+    },
+    {
+     "n": 2,
+     "text": "قالت بصوت صغير جداً: \"عصير برتقال، لو سمحتِ.\" فأعطتها العاملة... حليباً بالموز!",
+     "scene": "tiny speech bubble from Lina; the worker handing banana milk."
+    },
+    {
+     "n": 3,
+     "text": "في اليوم التالي، قالت بصوت أصغر: \"عصير برتقال...\" فأعطتها العاملة... بسكويتاً بالتمر!",
+     "scene": "an even tinier bubble; date biscuits instead of juice."
+    },
+    {
+     "n": 4,
+     "text": "سألت لينا نوف: \"لماذا لا يسمعني أحد؟\"",
+     "scene": "Lina holding milk and biscuits, puzzled."
+    },
+    {
+     "n": 5,
+     "text": "شرحت نوف: \"صوت الراديو ليس همساً، وليس صراخاً. صوت واضح، والعينان تنظران إلى الوجه.\"",
+     "scene": "Nouf drawing a volume dial with three levels: whisper, radio, shout."
+    },
+    {
+     "n": 6,
+     "text": "تدرّبت لينا في البيت أمام المرآة، وأمام جود، وحتى أمام قطّة الجيران.",
+     "scene": "Lina practising to a mirror, Jood, and an unimpressed cat."
+    },
+    {
+     "n": 7,
+     "text": "في الغد، رفعت لينا رأسها، ونظرت إلى وجه العاملة، وقالت بصوت الراديو: \"عصير برتقال، لو سمحتِ.\"",
+     "scene": "Lina standing tall at the counter."
+    },
+    {
+     "n": 8,
+     "text": "\"تفضّلي يا حلوة!\" عصير برتقال... أخيراً! شربته لينا كأنّه كأس بطولة.",
+     "scene": "Lina raising the juice box like a trophy."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 4,
+     "prompt": "ماذا تقترح نوف؟",
+     "options": [
+      {
+       "label": "أن تصرخ لينا بأعلى صوتها",
+       "result": "صرخت لينا: \"عصيييير!\" فقفزت العاملة، وطارت علبة المناديل."
+      },
+      {
+       "label": "أن تكتب طلبها على ورقة",
+       "result": "كتبت طلبها، لكنّ الورقة طارت مع الهواء إلى سلّة المهملات."
+      },
+      {
+       "label": "أن تتكلّم بصوت الراديو",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى المقصف..."
+    }
+   ],
+   "other_side": "العاملة تسمع أصوات بنات كثيرات في الفسحة. كيف يكون يومها في المقصف المزدحم؟",
+   "magic_sentence": "صوت الراديو: واضح، وعيناي على الوجه.",
+   "feeling_word": "الإحراج",
+   "mission": {
+    "text": "اطلبي من ماما شيئاً بصوت الراديو، وانظري إلى وجهها.",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d05",
+   "day": 5,
+   "shelf": 1,
+   "stage": 1,
+   "title": "فيل أم نملة؟",
+   "skill_en": "sizing a problem before reacting",
+   "value_tags": [
+    "problem-size"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "فرشاة",
+    "emoji": "🖌️"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "كانت لينا ترسم وردة لمسابقة الصفّ. وفجأة... طَق! انكسر رأس القلم الوردي.",
+     "scene": "Lina drawing a flower; a tiny pencil tip flying off."
+    },
+    {
+     "n": 2,
+     "text": "صرخت لينا: \"كارثة! انتهى كلّ شيء!\" ووضعت رأسها على الطاولة.",
+     "scene": "Lina dramatically flopped on the desk."
+    },
+    {
+     "n": 3,
+     "text": "رفعت المعلّمة هيفاء حاجبها وقالت: \"هل هذه مشكلة بحجم فيل... أم بحجم نملة؟\"",
+     "scene": "the teacher with one raised eyebrow, smiling."
+    },
+    {
+     "n": 4,
+     "text": "تخيّلت لينا فيلاً ضخماً يجلس على طاولتها. ثم تخيّلت نملة صغيرة تحمل قلماً مكسوراً.",
+     "scene": "a huge elephant squashing a desk next to an ant carrying a pencil."
+    },
+    {
+     "n": 5,
+     "text": "ضحكت لينا. كانت المشكلة نملة، والنملة تحتاج... مبراة فقط!",
+     "scene": "Lina sharpening the pencil, an ant waving."
+    },
+    {
+     "n": 6,
+     "text": "برت القلم وأكملت الوردة. ومن الرأس المكسور، صنعت نقطة صغيرة صارت دعسوقة على الورقة.",
+     "scene": "the finished flower with a tiny ladybird."
+    },
+    {
+     "n": 7,
+     "text": "لم تفز لينا بالمسابقة. لكنّ الدعسوقة الصغيرة جعلت الصفّ كلّه يبتسم.",
+     "scene": "classmates pointing at the ladybird."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 4,
+     "prompt": "لو كانت مشكلة لينا حيواناً، فأيّ حيوان تكون؟",
+     "options": [
+      {
+       "label": "فيل",
+       "result": "لو كانت فيلاً، فماذا نسمّي سقوط سقف المدرسة؟ ديناصوراً؟"
+      },
+      {
+       "label": "قطّة",
+       "result": "قطّة؟ لكنّ القطّة لا تُحلّ بمبراة!"
+      },
+      {
+       "label": "نملة",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى الوردة..."
+    }
+   ],
+   "other_side": "المعلّمة هيفاء سمعت لينا تصرخ: \"كارثة!\" ماذا ظنّت أنّه حدث؟",
+   "magic_sentence": "هل هي فيل أم نملة؟",
+   "feeling_word": "التوتّر",
+   "mission": {
+    "text": "احكي لماما عن مشكلة صغيرة حدثت اليوم. هل كانت فيلاً أم نملة؟",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d06",
+   "day": 6,
+   "shelf": 1,
+   "stage": 1,
+   "title": "الكعكة المثقوبة",
+   "skill_en": "patience, filling the waiting time",
+   "value_tags": [
+    "patience"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "خيوط صوف",
+    "emoji": "🧶"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "صنعت لينا وماما كعكة شوكولاتة. قالت ماما: \"تحتاج نصف ساعة في الفرن.\"",
+     "scene": "Lina and Mama with flour on their noses, sliding a cake into the oven."
+    },
+    {
+     "n": 2,
+     "text": "نصف ساعة؟! جلست لينا أمام الفرن، ونظرت إلى الساعة. مرّت... دقيقة واحدة.",
+     "scene": "Lina staring at the oven; a wall clock barely moving."
+    },
+    {
+     "n": 3,
+     "text": "فتحت باب الفرن لترى. ثم فتحته مرّة ثانية. ثم ثالثة.",
+     "scene": "three small Linas opening the oven door in a row."
+    },
+    {
+     "n": 4,
+     "text": "في كلّ مرّة، كانت الكعكة تنزل قليلاً، مثل بالون يفقد هواءه: فِسسسس.",
+     "scene": "the cake sinking, a deflating balloon beside it."
+    },
+    {
+     "n": 5,
+     "text": "أخذت لينا دفتر الرسم، ورسمت الكعكة التي تتمنّاها: طبقات، وفراولة، وشمعة.",
+     "scene": "Lina sketching a tall dream cake."
+    },
+    {
+     "n": 6,
+     "text": "ثم لعبت مع جود لعبة الغمّيضة. وجدت جود خلف الستارة... كالعادة.",
+     "scene": "Jood \"hiding\" with her feet showing under a curtain."
+    },
+    {
+     "n": 7,
+     "text": "دِنغ! رنّ الفرن. خرجت كعكة منتفخة... فيها حفرة صغيرة في الوسط، من المرّات التي فُتح فيها الباب!",
+     "scene": "a puffy cake with one dip in the middle."
+    },
+    {
+     "n": 8,
+     "text": "ملأت لينا الحفرة بالفراولة. قالت ماما: \"أجمل حفرة رأيتها في حياتي!\"",
+     "scene": "strawberries piled in the dip; Mama laughing."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 4,
+     "prompt": "ماذا ستفعل لينا حتى تمرّ نصف الساعة؟",
+     "options": [
+      {
+       "label": "تبقى أمام الفرن",
+       "result": "ظلّت تحدّق في الكعكة، حتى شعرت أنّ الكعكة تحدّق فيها أيضاً!"
+      },
+      {
+       "label": "تطلب أن ترفع ماما الحرارة",
+       "result": "صارت الكعكة سوداء من الخارج، وطريّة مثل الحساء من الداخل."
+      },
+      {
+       "label": "تبحث عن شيء تفعله",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى المطبخ..."
+    }
+   ],
+   "other_side": "ماما أيضاً كانت تنتظر الكعكة. ماذا كانت تفعل هي حتى تمرّ نصف الساعة؟",
+   "magic_sentence": "الانتظار أسهل عندما أشغل نفسي.",
+   "feeling_word": "الملل",
+   "mission": {
+    "text": "اسألي ماما: ماذا تفعلين عندما تنتظرين؟ ثم أخبريها بفكرتكِ أنتِ.",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d07",
+   "day": 7,
+   "shelf": 1,
+   "stage": 1,
+   "title": "المحقّقتان",
+   "skill_en": "understanding what the teacher expects",
+   "value_tags": [
+    "expectations"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "أزرار",
+    "emoji": "🔘"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "في الصفّ بنت اسمها ريم. كانت المعلّمة هيفاء تبتسم لها كلّ يوم.",
+     "scene": "the teacher smiling at a neat girl in the front row."
+    },
+    {
+     "n": 2,
+     "text": "همست لينا لنوف: \"ريم عندها سرّ! ربما تعطي المعلّمة حلوى كلّ صباح.\"",
+     "scene": "Lina and Nouf whispering behind a book."
+    },
+    {
+     "n": 3,
+     "text": "قرّرت الصديقتان أن تصبحا محقّقتين، ولبستا نظّارات سوداء... داخل الصفّ!",
+     "scene": "both girls in big sunglasses, holding a tiny notebook."
+    },
+    {
+     "n": 4,
+     "text": "راقبتا ريم يوماً كاملاً، وكتبتا: تكتب اسمها في أعلى الورقة. ترفع يدها قبل أن تتكلّم. تبدأ الواجب فور أن تقول المعلّمة: \"ابدأن\".",
+     "scene": "the detective notebook with three ticked lines."
+    },
+    {
+     "n": 5,
+     "text": "قالت لينا: \"سرّ ريم ليس سرّاً! كلّ معلّمة عندها قائمة بما تحبّ أن تراه.\"",
+     "scene": "a lightbulb over Lina's sunglasses."
+    },
+    {
+     "n": 6,
+     "text": "في اليوم التالي، كتبت لينا اسمها في أعلى الورقة، ورفعت يدها. فابتسمت لها المعلّمة.",
+     "scene": "Lina's hand up; the teacher smiling."
+    },
+    {
+     "n": 7,
+     "text": "ثم ابتسمت لنوف... ثم قالت: \"يا محقّقتان، انزعا النظّارات من فضلكما!\"",
+     "scene": "the whole class laughing; the girls sliding their sunglasses down."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 4,
+     "prompt": "ما سرّ ريم برأيكِ؟",
+     "options": [
+      {
+       "label": "حلوى للمعلّمة",
+       "result": "فتّشتا الصفّ كلّه، فلم تجدا في حقيبة ريم إلّا تفّاحة وممحاة."
+      },
+      {
+       "label": "سحر",
+       "result": "قالت نوف: \"لا يوجد سحر يجعل الخطّ مرتّباً هكذا!\""
+      },
+      {
+       "label": "تعرف ما تحبّ المعلّمة أن تراه، وتفعله",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى دفتر المحقّقتين..."
+    }
+   ],
+   "other_side": "المعلّمة تعلّم بنات كثيرات. ماذا يجعل يومها أسهل؟",
+   "magic_sentence": "ماذا تحبّ المعلّمة أن ترى؟",
+   "feeling_word": "الفضول",
+   "mission": {
+    "text": "اكتبي مع ماما ثلاثة أشياء تحبّ معلّمتكِ أن تراها.",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d08",
+   "day": 8,
+   "shelf": 1,
+   "stage": 1,
+   "title": "العصير الدافئ",
+   "skill_en": "\"she started it\" doesn't make it right",
+   "value_tags": [
+    "no-excuse"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "ألوان مائية",
+    "emoji": "🎨"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "في الفسحة، أخذت هند كرة لينا، ولم تُرجعها.",
+     "scene": "a girl running off with Lina's ball."
+    },
+    {
+     "n": 2,
+     "text": "غضبت لينا، فأخذت عصير هند وخبّأته خلف ظهرها.",
+     "scene": "Lina hiding a juice box behind her back, cheeks red."
+    },
+    {
+     "n": 3,
+     "text": "صرخت هند: \"عصيري!\" وصرخت لينا: \"كرتي!\" وتجمّعت البنات حولهما مثل جمهور مباراة.",
+     "scene": "a crowd of girls watching like football fans."
+    },
+    {
+     "n": 4,
+     "text": "جاءت المشرفة وسألت: \"ماذا حدث؟\" قالت لينا بسرعة: \"هي بدأت!\"",
+     "scene": "the supervisor arriving, hands on hips."
+    },
+    {
+     "n": 5,
+     "text": "نظرت المشرفة إلى هند: \"أخذتِ الكرة؟\" ثم إلى لينا: \"وأنتِ أخذتِ العصير؟\"",
+     "scene": "the supervisor looking from one girl to the other."
+    },
+    {
+     "n": 6,
+     "text": "قالت لينا بصوت منخفض: \"نعم... لكنّها بدأت.\" فقالت المشرفة: \"صار عندنا خطآن بدل خطأ واحد... وعصير دافئ!\"",
+     "scene": "the juice box steaming slightly in Lina's hand."
+    },
+    {
+     "n": 7,
+     "text": "أرجعت هند الكرة، وأرجعت لينا العصير. شربت هند رشفة وقالت: \"عصير دافئ؟ هذا شاي!\"",
+     "scene": "Hind pulling a face; Lina giggling."
+    },
+    {
+     "n": 8,
+     "text": "ضحكت الاثنتان. ثم لعبتا بالكرة معاً حتى رنّ الجرس.",
+     "scene": "both girls kicking the ball together."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 4,
+     "prompt": "ماذا ستفعل المشرفة برأيكِ؟",
+     "options": [
+      {
+       "label": "تحاسب هند وحدها",
+       "result": "لكن... من سيُرجع العصير إذن؟"
+      },
+      {
+       "label": "تحاسب لينا وحدها",
+       "result": "لكن... من سيُرجع الكرة إذن؟"
+      },
+      {
+       "label": "تسأل كلّ واحدة عمّا فعلت",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى الفسحة..."
+    }
+   ],
+   "other_side": "هند أخذت الكرة. هل تظنّين أنّها كانت تريد أن تلعب مع لينا، ولم تعرف كيف تطلب؟",
+   "magic_sentence": "خطأ غيري لا يجعل خطئي صحيحاً.",
+   "feeling_word": "الغضب",
+   "mission": {
+    "text": "أخبري ماما: ماذا كان يمكن أن تفعل لينا بدل أن تأخذ العصير؟",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d09",
+   "day": 9,
+   "shelf": 1,
+   "stage": 1,
+   "title": "الجوع المتنكّر",
+   "skill_en": "working out what I really feel",
+   "value_tags": [
+    "body-signals"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "قطن للحشو",
+    "emoji": "☁️"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "عادت لينا من المدرسة، ورمت حقيبتها على الأرض.",
+     "scene": "a backpack landing with a thump."
+    },
+    {
+     "n": 2,
+     "text": "كان كلّ شيء يزعجها: صوت التلفاز، وضحكة جود، وحتى القطّة النائمة بهدوء!",
+     "scene": "Lina glaring at the TV, Jood and a sleeping cat."
+    },
+    {
+     "n": 3,
+     "text": "قالت لجود: \"ابتعدي!\" وقالت للقطّة: \"توقّفي عن النوم!\"",
+     "scene": "the cat opening one surprised eye."
+    },
+    {
+     "n": 4,
+     "text": "ضحكت ماما: \"القطّة؟ ماذا بكِ يا لينا؟\" فقالت: \"لا أعرف! أنا فقط... غاضبة!\"",
+     "scene": "Lina with a grumpy cloud; Mama amused."
+    },
+    {
+     "n": 5,
+     "text": "فكّرت لينا: متى أكلتُ آخر مرّة؟ ... في السادسة صباحاً!",
+     "scene": "a clock with an arrow pointing back to 6."
+    },
+    {
+     "n": 6,
+     "text": "أكلت صحن أرز ودجاج. وبعد آخر لقمة، صار التلفاز لطيفاً، وضحكة جود جميلة، والقطّة ظريفة جداً.",
+     "scene": "Lina full and smiling; the world drawn in brighter colours."
+    },
+    {
+     "n": 7,
+     "text": "قالت لينا: \"لم أكن غاضبة... كنتُ جائعة! الجوع لبس قناع الغضب.\"",
+     "scene": "a funny tummy character taking off an angry mask."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 4,
+     "prompt": "لماذا تظنّين أنّ لينا غاضبة؟",
+     "options": [
+      {
+       "label": "جود أزعجتها",
+       "result": "لكنّ جود كانت تلعب وحدها بجملها الصغير..."
+      },
+      {
+       "label": "حدث شيء في المدرسة",
+       "result": "تذكّرت لينا يومها... كان يوماً عاديّاً تماماً."
+      },
+      {
+       "label": "هي جائعة",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى الصالة..."
+    }
+   ],
+   "other_side": "جود سمعت لينا تقول لها: \"ابتعدي!\" ولم تكن قد فعلت شيئاً. كيف شعرت؟",
+   "magic_sentence": "هل أنا غاضبة... أم جائعة أم متعبة؟",
+   "feeling_word": "العصبيّة",
+   "mission": {
+    "text": "العبي مع أختكِ خمس دقائق، أو قولي لها كلمة لطيفة.",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d10",
+   "day": 10,
+   "shelf": 1,
+   "stage": 1,
+   "title": "شغل بابا المخفي",
+   "skill_en": "noticing what others do for me (Baba 1)",
+   "value_tags": [
+    "baba"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "شريط لاصق ملوّن",
+    "emoji": "🎀"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "قالت المعلّمة: \"واجب اليوم: راقبي شخصاً في بيتكِ، واكتبي كلّ ما يفعله.\"",
+     "scene": "the teacher writing the task on the board."
+    },
+    {
+     "n": 2,
+     "text": "اختارت لينا بابا. \"سهل! بابا يشرب الشاي، ويقرأ الأخبار، وينام على الكنبة.\"",
+     "scene": "Lina's notebook with three short lines."
+    },
+    {
+     "n": 3,
+     "text": "في الصباح، استيقظت لينا قبل الفجر لتبدأ المراقبة. لكنّ بابا كان مستيقظاً قبلها!",
+     "scene": "dark window, Lina in pyjamas surprised to see Baba already up."
+    },
+    {
+     "n": 4,
+     "text": "كتبت: الخامسة والنصف: بابا يكوي ثوبه. السادسة: بابا يوصلني إلى المدرسة.",
+     "scene": "Baba ironing; the silver car at dawn."
+    },
+    {
+     "n": 5,
+     "text": "الحادية عشرة: بابا ينتظرني عند البوّابة تحت الشمس. الثالثة: بابا يصلح صنبور المطبخ.",
+     "scene": "Baba waiting in the heat; Baba under the sink with a spanner."
+    },
+    {
+     "n": 6,
+     "text": "في المساء، كانت قائمة بابا قد ملأت صفحتين كاملتين.",
+     "scene": "a long list spilling off the notebook."
+    },
+    {
+     "n": 7,
+     "text": "وجدت لينا بابا نائماً على الكنبة، وقدماه خارجها. فوضعت عليه البطانية بهدوء.",
+     "scene": "Baba asleep, feet dangling; Lina tucking a blanket."
+    },
+    {
+     "n": 8,
+     "text": "وفي الصباح، عند باب المدرسة، قالت لينا: \"شكراً بابا.\" فنظر إليها بدهشة... ورأته في المرآة يبتسم طوال الطريق.",
+     "scene": "Lina waving from the school gate; Baba smiling in the car mirror."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 5,
+     "prompt": "لماذا ينام بابا على الكنبة كلّ مساء برأيكِ؟",
+     "options": [
+      {
+       "label": "لأنّه كسول",
+       "result": "نظرت لينا إلى قائمتها الطويلة... وحكّت رأسها."
+      },
+      {
+       "label": "لأنّه يحبّ الكنبة",
+       "result": "ربما! لكنّ الكنبة صغيرة جداً على رجليه الطويلتين."
+      },
+      {
+       "label": "لأنّه متعب من يوم طويل",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى الدفتر..."
+    }
+   ],
+   "other_side": "بابا لا يخبر أحداً بما يفعله. هل تفعلين أنتِ أشياء لا يراها أحد؟",
+   "magic_sentence": "شكراً بابا.",
+   "feeling_word": "الامتنان",
+   "mission": {
+    "text": "عند باب المدرسة غداً، قولي: شكراً بابا.",
+    "choices": []
+   },
+   "unlocks_baba_message": true,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d11",
+   "day": 11,
+   "shelf": 2,
+   "stage": 2,
+   "title": "ربما هناك سبب لا أراه",
+   "skill_en": "not judging; thinking of reasons I can't see",
+   "value_tags": [
+    "no-judging"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "خرز",
+    "emoji": "📿"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "في حصّة لغتي، قالت المعلّمة هيفاء: \"جنى، اكتبي كلمة (مدرسة) على السبّورة.\"",
+     "scene": "the teacher holding out a marker; Jana standing slowly."
+    },
+    {
+     "n": 2,
+     "text": "مشت جنى ببطء، وأمسكت القلم، ثم كتبت: (مدرصة).",
+     "scene": "the misspelt word on the board, the ص a little bigger than the rest."
+    },
+    {
+     "n": 3,
+     "text": "فتحت لينا فمها من الدهشة. \"مدرصة؟! هذه كلمة سهلة جداً. كيف لا تعرفها؟\"",
+     "scene": "Lina's jaw dropping comically to the desk."
+    },
+    {
+     "n": 4,
+     "text": "كادت الكلمات تقفز من فم لينا إلى الصفّ كلّه. لكنّها أغلقت فمها في آخر لحظة.",
+     "scene": "little word-creatures trying to escape Lina's mouth; her hand clapping over it."
+    },
+    {
+     "n": 5,
+     "text": "في حصّة الفنّ، كان على كلّ بنت أن تصنع بيتاً من الكرتون.",
+     "scene": "tables covered in cardboard, glue and scissors."
+    },
+    {
+     "n": 6,
+     "text": "انهار بيت لينا ثلاث مرّات. السقف يسقط، ثم الجدار، ثم الباب... ثم السقف مرّة أخرى.",
+     "scene": "Lina's house collapsing like a sad pancake."
+    },
+    {
+     "n": 7,
+     "text": "أمّا بيت جنى، فكان له نوافذ تُفتح، وباب يدور، ومدخنة صغيرة!",
+     "scene": "Jana's impressive cardboard house; classmates gathering to look."
+    },
+    {
+     "n": 8,
+     "text": "جلست جنى بجانب لينا بهدوء، وقالت: \"ضعي هنا عموداً من الورق المطويّ. هكذا.\" فوقف البيت أخيراً!",
+     "scene": "Jana folding a paper pillar; Lina's house standing straight."
+    },
+    {
+     "n": 9,
+     "text": "نظرت لينا إلى جنى، وفكّرت: \"أنا سريعة في الإملاء. وجنى سريعة في البناء. كلّ واحدة سريعة في شيء، وبطيئة في شيء.\"",
+     "scene": "a split picture, Lina with a pencil, Jana with a hammer."
+    },
+    {
+     "n": 10,
+     "text": "بعد أسابيع، كتبت جنى على السبّورة: (مدرسة). بالسين! صفّق لها الصفّ كلّه، وصفّقت لينا أقوى من الجميع.",
+     "scene": "the correct word; the class clapping."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 4,
+     "prompt": "لماذا تظنّين أنّ جنى أخطأت؟",
+     "options": [
+      {
+       "label": "الحروف تتبادل أماكنها عندما تقرأ",
+       "result": "تخيّلت لينا الحروف ترقص على ورقة جنى، والسين تلبس ثوب الصاد!"
+      },
+      {
+       "label": "كانت مريضة وغابت كثيراً",
+       "result": "تذكّرت لينا أنّ مقعد جنى كان فارغاً أسابيع في العام الماضي."
+      },
+      {
+       "label": "لا أحد يجلس معها في البيت للواجب",
+       "result": "تخيّلت لينا جنى وحدها أمام دفترها، والبيت كلّه مشغول."
+      }
+     ],
+     "back_line": "لا تعرف لينا أيّ سبب هو الصحيح. لنرجع إلى الصفّ...",
+     "all_continue": true
+    },
+    {
+     "after_page": 7,
+     "prompt": "ماذا ستفعل جنى عندما ترى بيت لينا المنهار؟",
+     "options": [
+      {
+       "label": "تضحك عليها",
+       "result": "تخيّلت لينا ذلك... وتذكّرت أنّها هي كادت تضحك على جنى صباحاً."
+      },
+      {
+       "label": "تتجاهلها",
+       "result": "ربما... لكنّ جنى كانت تنظر إلى بيت لينا باهتمام."
+      },
+      {
+       "label": "تساعدها",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى حصّة الفنّ..."
+    }
+   ],
+   "other_side": "جنى كانت تخاف أن يضحك عليها أحد وهي تكتب. كيف كان شعورها وهي تمشي إلى السبّورة؟",
+   "magic_sentence": "لا أعرف قصّتها كاملة.",
+   "feeling_word": "الاستغراب",
+   "mission": {
+    "text": "أخبري ماما عن شيء صعب عليكِ وسهل على غيركِ.",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d12",
+   "day": 12,
+   "shelf": 2,
+   "stage": 2,
+   "title": "المقعد الذي لا يجيب",
+   "skill_en": "joining a game",
+   "value_tags": [
+    "joining"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "ريش",
+    "emoji": "🪶"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "في الفسحة، كانت ثلاث بنات يلعبن الحجلة. يقفزن، ويضحكن، ويرمين الحجر.",
+     "scene": "three girls playing hopscotch drawn in chalk."
+    },
+    {
+     "n": 2,
+     "text": "وقفت لينا بعيداً تراقب. كانت تريد أن تلعب... كثيراً جداً.",
+     "scene": "Lina behind a pillar, peeking."
+    },
+    {
+     "n": 3,
+     "text": "قالت في نفسها: \"سأتدرّب أوّلاً.\" والتفتت إلى مقعد الحديقة وقالت: \"ممكن ألعب معكم؟\"",
+     "scene": "Lina politely addressing an empty bench."
+    },
+    {
+     "n": 4,
+     "text": "لم يُجب المقعد. طبعاً.",
+     "scene": "the bench with a blank, unbothered face."
+    },
+    {
+     "n": 5,
+     "text": "مرّت نوف وسألتها: \"مع من تتكلّمين؟\" قالت لينا: \"مع المقعد. أتدرّب لأدخل اللعبة.\"",
+     "scene": "Nouf looking at Lina, then at the bench, then at Lina."
+    },
+    {
+     "n": 6,
+     "text": "قالت نوف: \"انتظري حتى تنتهي الجولة. ثم اقتربي وابتسمي، واسألي.\"",
+     "scene": "Nouf holding up three fingers: wait, come close, ask."
+    },
+    {
+     "n": 7,
+     "text": "انتهت الجولة. اقتربت لينا، ونظرت إلى وجه البنت التي تمسك الحجر، وقالت بصوت الراديو: \"ممكن ألعب معكنّ؟\"",
+     "scene": "Lina standing tall near the hopscotch."
+    },
+    {
+     "n": 8,
+     "text": "قالت البنت: \"تعالي! أنتِ بعد سلمى.\"",
+     "scene": "the girls making space in the line."
+    },
+    {
+     "n": 9,
+     "text": "قفزت لينا بقدم واحدة. تمايلت، وتمايلت... ثم سقطت على مؤخّرتها. ضحكت البنات، وضحكت لينا معهنّ.",
+     "scene": "Lina wobbling like a flamingo, then sitting with a bump."
+    },
+    {
+     "n": 10,
+     "text": "عند الجرس، قالت البنت: \"العبي معنا غداً أيضاً.\" وفي طريق العودة، لوّحت لينا للمقعد: \"شكراً على التدريب!\"",
+     "scene": "Lina waving at the bench, which now looks a tiny bit proud."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 5,
+     "prompt": "ماذا تنصحها نوف؟",
+     "options": [
+      {
+       "label": "أن تقفز في اللعبة فجأة",
+       "result": "قفزت لينا في المربّع... فوق الحجر، وسط اللعبة! توقّفت البنات ونظرن إليها."
+      },
+      {
+       "label": "أن تنتظر حتى يدعوها أحد",
+       "result": "انتظرت لينا... وانتظرت... حتى رنّ الجرس."
+      },
+      {
+       "label": "أن تراقب، ثم تسأل في الوقت المناسب",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى الفسحة..."
+    },
+    {
+     "after_page": 7,
+     "prompt": "ماذا ستقول البنات برأيكِ؟",
+     "options": [
+      {
+       "label": "\"لا!\"",
+       "result": "هذا ممكن أحياناً. وماذا تفعل لينا عندها؟ تذهب إلى لعبة أخرى، فالفسحة مليئة باللعب."
+      },
+      {
+       "label": "\"اللعبة ممتلئة\"",
+       "result": "عندها تسأل لينا: \"هل أستطيع أن ألعب الجولة القادمة؟\""
+      },
+      {
+       "label": "\"تعالي!\"",
+       "result": null
+      }
+     ],
+     "back_line": "هذه المرّة..."
+    }
+   ],
+   "other_side": "البنات لم يعرفن أنّ لينا تريد أن تلعب. كيف يعرف الناس ما نريده إذا لم نقُله؟",
+   "magic_sentence": "ممكن ألعب معكنّ؟",
+   "feeling_word": "التردّد",
+   "mission": {
+    "text": "قولي لجود أو لماما: \"ممكن ألعب معكِ؟\" وادخلي لعبتهما.",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d13",
+   "day": 13,
+   "shelf": 2,
+   "stage": 2,
+   "title": "واخا!",
+   "skill_en": "walking in the new girl's shoes",
+   "value_tags": [
+    "newcomer-empathy"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "عيون متحرّكة",
+    "emoji": "👀"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "دخلت المعلّمة هيفاء ومعها بنت جديدة. \"هذه مريم، جاءت من المغرب.\"",
+     "scene": "Maryam at the door clutching her backpack straps."
+    },
+    {
+     "n": 2,
+     "text": "جلست مريم بجانب لينا. كانت تنظر إلى الأرض، وأصابعها تلعب بمشبك شعرها الأصفر.",
+     "scene": "Maryam twisting her yellow hair clip."
+    },
+    {
+     "n": 3,
+     "text": "سألتها لينا: \"هل تريدين أن نتشارك الألوان؟\" فقالت مريم: \"واخا.\"",
+     "scene": "Lina offering crayons; a speech bubble saying \"واخا\"."
+    },
+    {
+     "n": 4,
+     "text": "واخا؟! ظنّت لينا أنّها عطست. فقالت لها: \"يرحمكِ الله!\"",
+     "scene": "Lina politely saying bless you; Maryam very confused."
+    },
+    {
+     "n": 5,
+     "text": "ضحكت مريم أخيراً: \"واخا تعني: حسناً، موافقة!\"",
+     "scene": "Maryam laughing with her hand over her mouth."
+    },
+    {
+     "n": 6,
+     "text": "في الفسحة، جلست مريم وحدها. لم تكن تعرف أين المقصف، ولا أين الحمّام، ولا أسماء البنات.",
+     "scene": "Maryam alone on a big bench, a map with question marks above her head."
+    },
+    {
+     "n": 7,
+     "text": "تخيّلت لينا نفسها في مدرسة في بلد بعيد. لا تعرف أحداً، والكلمات تختلف، وكلّ شيء جديد.",
+     "scene": "Lina imagining herself small in a huge strange school."
+    },
+    {
+     "n": 8,
+     "text": "قالت لينا: \"تعالي، سأريكِ المقصف.\" ومشتا معاً، ونوف خلفهما.",
+     "scene": "three girls walking together, Lina pointing."
+    },
+    {
+     "n": 9,
+     "text": "علّمت مريمُ لينا ونوف كلمات من بلدها: \"بزّاف\" تعني كثيراً، و\"واخا\" تعني حسناً.",
+     "scene": "Maryam teaching; Lina writing words in a little notebook."
+    },
+    {
+     "n": 10,
+     "text": "وفي آخر اليوم، سألت المعلّمة: \"هل فهمتنّ الدرس؟\" فصاحت لينا ونوف معاً: \"واخا! بزّاف!\" وضحك الصفّ كلّه، وأكثر واحدة ضحكت كانت مريم.",
+     "scene": "the class laughing; Maryam beaming."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 4,
+     "prompt": "ماذا تعني \"واخا\" برأيكِ؟",
+     "options": [
+      {
+       "label": "عطسة",
+       "result": "لو كانت عطسة، لكانت مريم أكثر بنت تعطس في العالم، فقد قالتها خمس مرّات!"
+      },
+      {
+       "label": "كلمة سيّئة",
+       "result": "لكنّ مريم قالتها وهي تبتسم..."
+      },
+      {
+       "label": "كلمة من بلدها",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى الصفّ..."
+    },
+    {
+     "after_page": 7,
+     "prompt": "ماذا ستفعل لينا؟",
+     "options": [
+      {
+       "label": "تتركها حتى تتعوّد وحدها",
+       "result": "مرّت الفسحة، ومريم ما زالت وحدها على المقعد الكبير."
+      },
+      {
+       "label": "تسألها أسئلة كثيرة مرّة واحدة",
+       "result": "\"من أين؟ لماذا؟ متى؟ كم أخاً عندكِ؟\" فاختبأت مريم خلف شعرها!"
+      },
+      {
+       "label": "تريها المكان وتعرّفها بنوف",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى الفسحة..."
+    }
+   ],
+   "other_side": "مريم تركت صديقاتها وبيتها في المغرب. ماذا تشتاق إليه برأيكِ؟",
+   "magic_sentence": "تعالي، سأريكِ المكان.",
+   "feeling_word": "الوحدة",
+   "mission": {
+    "text": "اطلبي من ماما أن تعلّمكِ كلمة من بلدها، واستعمليها اليوم.",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d14",
+   "day": 14,
+   "shelf": 2,
+   "stage": 2,
+   "title": "الفاصل الطائر",
+   "skill_en": "a gift belongs to the receiver; I choose what I give",
+   "value_tags": [
+    "gift-ownership"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "لمّاع",
+    "emoji": "✨"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "قضت لينا المساء كلّه تصنع فاصلاً للكتب لنوف. قصّت، ولصقت، ولوّنت، ووضعت عليه لمّاعاً ذهبيّاً.",
+     "scene": "Lina at her desk, glitter everywhere, even on her nose."
+    },
+    {
+     "n": 2,
+     "text": "كان الفاصل جميلاً جداً، حتى إنّ القطّة حاولت أن تأخذه.",
+     "scene": "the cat's paw sneaking towards the sparkly bookmark."
+    },
+    {
+     "n": 3,
+     "text": "في الصباح، أعطته لنوف. صرخت نوف: \"واااو! شكراً!\"",
+     "scene": "Nouf holding it up as if it were treasure."
+    },
+    {
+     "n": 4,
+     "text": "لكن في الفسحة، كان الجوّ حارّاً جداً. فرأت لينا نوف تستعمل الفاصل... مروحة!",
+     "scene": "Nouf fanning herself with the bookmark, glitter flying."
+    },
+    {
+     "n": 5,
+     "text": "طار اللمّاع في كلّ مكان. ثم سقط الفاصل في كأس العصير. بلوب!",
+     "scene": "the bookmark diving into a cup of juice."
+    },
+    {
+     "n": 6,
+     "text": "سألتها لينا: \"نوف، لماذا جعلتِ الفاصل مروحة؟\"",
+     "scene": "Lina asking calmly; Nouf holding the soggy bookmark."
+    },
+    {
+     "n": 7,
+     "text": "قالت نوف: \"أحببته جداً، فأخذته معي لأريه للبنات. ثم صار الجوّ حارّاً، ونسيت!\"",
+     "scene": "Nouf looking sheepish, cheeks pink."
+    },
+    {
+     "n": 8,
+     "text": "فهمت لينا: عندما أعطي هديّة، تصير لصاحبتها. وهي تقرّر ماذا تفعل بها.",
+     "scene": "a gift box with a tiny label moving from Lina's hand to Nouf's."
+    },
+    {
+     "n": 9,
+     "text": "وفهمت شيئاً آخر: أنا أيضاً أقرّر. أصنع عندما أريد، ولمن أريد، ولا أحد يجبرني.",
+     "scene": "Lina at her desk choosing between materials, confident."
+    },
+    {
+     "n": 10,
+     "text": "في المساء، صنعت لينا فاصلين. واحداً لها، تحتفظ به في كتابها. وواحداً لنوف... على شكل مروحة!",
+     "scene": "two bookmarks, one shaped like a fan."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 5,
+     "prompt": "ماذا ستفعل لينا؟",
+     "options": [
+      {
+       "label": "تقرّر ألّا تصنع شيئاً لأحد أبداً",
+       "result": "جلست لينا مكتئبة، ويداها اللتان تحبّان الصنع حزينتان أيضاً."
+      },
+      {
+       "label": "تصرخ: \"خرّبتِ هديّتي!\"",
+       "result": "شهقت نوف، وأمسكت الفاصل المبلول وكادت تبكي."
+      },
+      {
+       "label": "تسأل نوف لماذا فعلت ذلك",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى الفسحة..."
+    },
+    {
+     "after_page": 7,
+     "prompt": "هل هديّة لينا ما زالت لها، أم صارت لنوف؟",
+     "options": [
+      {
+       "label": "ما زالت للينا",
+       "result": "لكنّ لينا أعطتها لنوف... فهل تُستردّ الهديّة؟"
+      },
+      {
+       "label": "صارت لنوف",
+       "result": null
+      },
+      {
+       "label": "لا أعرف",
+       "result": "فكّرت لينا طويلاً... ثم وجدت الجواب."
+      }
+     ],
+     "back_line": "فكّرت لينا..."
+    }
+   ],
+   "other_side": "نوف لم تقصد أن تخرّب الهديّة. ماذا أرادت أن تفعل بها في البداية؟",
+   "magic_sentence": "أصنع عندما أريد، ولمن أريد.",
+   "feeling_word": "خيبة الأمل",
+   "mission": {
+    "text": "أخبري ماما: ماذا تريدين أن تصنعي لنفسكِ هذا الأسبوع؟",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d15",
+   "day": 15,
+   "shelf": 2,
+   "stage": 2,
+   "title": "مقبرة الأغطية",
+   "skill_en": "saying no politely and offering another way",
+   "value_tags": [
+    "assertive-dislike"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "شرائط",
+    "emoji": "🎗️"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "اشترت ماما للينا أقلاماً ملوّنة جديدة. ستّة ألوان لامعة، ولكلّ قلم غطاء صغير.",
+     "scene": "a shiny pack of six gel pens."
+    },
+    {
+     "n": 2,
+     "text": "في الصفّ، رأت نوف الأقلام. \"واااو! أعطيني الوردي والأخضر والأصفر، أرجوكِ!\"",
+     "scene": "Nouf's eyes turning into hearts."
+    },
+    {
+     "n": 3,
+     "text": "نظرت لينا إلى مقلمة نوف. كانت مليئة بأقلام بلا أغطية. كأنّها مقبرة أغطية!",
+     "scene": "Nouf's pencil case drawn as a tiny graveyard of lost caps."
+    },
+    {
+     "n": 4,
+     "text": "شعرت لينا بشيء ثقيل في بطنها. لا تريد أن تُعير أقلامها الجديدة. لكنّها لا تريد أن تزعل نوف أيضاً.",
+     "scene": "Lina hugging her pens, a little rock in her tummy."
+    },
+    {
+     "n": 5,
+     "text": "قالت لينا: \"هذه أقلام جديدة، ولا أحبّ أن أُعيرها. لكن تعالي، نلوّن معاً بها على طاولتي.\"",
+     "scene": "Lina sliding her chair to make space."
+    },
+    {
+     "n": 6,
+     "text": "فكّرت نوف لحظة، ثم قالت: \"اتّفقنا! بشرط: أنا أختار الألوان.\"",
+     "scene": "Nouf shaking Lina's hand like a business deal."
+    },
+    {
+     "n": 7,
+     "text": "لوّنتا معاً لوحة كبيرة. ولم يضِع غطاء واحد.",
+     "scene": "two heads over one big colourful drawing."
+    },
+    {
+     "n": 8,
+     "text": "في آخر الحصّة، فتحت نوف مقلمتها وقالت: \"أظنّ أنّني أحتاج أن أبحث عن أغطيتي.\"",
+     "scene": "Nouf peering into her pencil-case graveyard with a torch."
+    },
+    {
+     "n": 9,
+     "text": "وجدت تحت الطاولة سبعة أغطية، وممحاة، وحبّة تمر! (لا أحد يعرف من أين جاءت حبّة التمر.)",
+     "scene": "a pile under the desk with one mysterious date."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 4,
+     "prompt": "ماذا ستفعل لينا؟",
+     "options": [
+      {
+       "label": "تعطيها الأقلام وهي غير راضية",
+       "result": "في آخر اليوم، رجع قلمان... بلا غطاء. وظلّت لينا منزعجة حتى المساء."
+      },
+      {
+       "label": "تقول: \"لا! أنتِ تضيّعين كلّ شيء!\"",
+       "result": "احمرّ وجه نوف، وأدارت ظهرها."
+      },
+      {
+       "label": "تقول \"لا\" بلطف، وتقترح طريقة أخرى",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى الصفّ..."
+    },
+    {
+     "after_page": 5,
+     "prompt": "كيف ستشعر نوف برأيكِ؟",
+     "options": [
+      {
+       "label": "ستزعل",
+       "result": "ربما قليلاً. لكنّها ستعرف ما تريده لينا بالضبط."
+      },
+      {
+       "label": "ستفرح",
+       "result": "ربما! فهي ستلوّن بالأقلام الجديدة دون أن تخاف أن تضيّعها."
+      },
+      {
+       "label": "لا أعرف",
+       "result": "لنرَ معاً..."
+      }
+     ],
+     "back_line": "لنرَ...",
+     "all_continue": true
+    }
+   ],
+   "other_side": "نوف طلبت الأقلام لأنّها أحبّتها. هل كان طلبها خطأ؟",
+   "magic_sentence": "لا أحبّ أن أعيرها، لكن تعالي نستعملها معاً.",
+   "feeling_word": "الحيرة",
+   "mission": {
+    "text": "العبي مع ماما: تطلب منكِ شيئاً، وتقولين \"لا\" بلطف وتقترحين طريقة أخرى.",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d16",
+   "day": 16,
+   "shelf": 2,
+   "stage": 2,
+   "title": "تجربة صباح الخير",
+   "skill_en": "starting the morning with warmth (Baba 2)",
+   "value_tags": [
+    "baba"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "ختم",
+    "emoji": "🔖"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "في الصباح، كان البيت مثل محطّة قطار. ماما تبحث عن المفاتيح، وبابا يشرب الشاي واقفاً، وجود تبحث عن جملها الصغير.",
+     "scene": "a busy kitchen; everyone moving in different directions."
+    },
+    {
+     "n": 2,
+     "text": "لاحظت لينا شيئاً غريباً: لم يقُل أحد \"صباح الخير\" لأحد.",
+     "scene": "Lina in the middle, with a little scientist's clipboard."
+    },
+    {
+     "n": 3,
+     "text": "قرّرت لينا أن تقوم بتجربة علمية. لبست نظّارة السباحة لأنّها تشبه نظّارة العلماء.",
+     "scene": "Lina wearing swimming goggles, very serious."
+    },
+    {
+     "n": 4,
+     "text": "التجربة: أقول \"صباح الخير\" بابتسامة لكلّ من في البيت، وأسجّل ماذا يحدث.",
+     "scene": "a chart with columns for Mama, Jood, the cat, Baba."
+    },
+    {
+     "n": 5,
+     "text": "ماما: ابتسمت وقالت: \"صباح النور يا قلبي!\" جود: قالت \"صباح الخيييير\" ثلاث مرّات. القطّة: تثاءبت.",
+     "scene": "three ticks on the chart; a yawning cat."
+    },
+    {
+     "n": 6,
+     "text": "وقفت لينا أمام بابا، وقالت بابتسامة: \"صباح الخير يا بابا.\"",
+     "scene": "Lina in goggles in front of Baba holding his tea."
+    },
+    {
+     "n": 7,
+     "text": "رفع بابا عينيه من الهاتف. نظر إلى نظّارة السباحة... ثم ضحك ضحكة عالية، وقال: \"صباح الخير يا عالمتي الصغيرة!\"",
+     "scene": "Baba laughing, tea wobbling in his cup."
+    },
+    {
+     "n": 8,
+     "text": "ثم مسح على رأسها، وقال: \"هذا أجمل صباح الخير سمعته منذ زمن.\"",
+     "scene": "Baba's hand on Lina's head; Lina pretending to write calmly but grinning."
+    },
+    {
+     "n": 9,
+     "text": "كتبت لينا في دفترها: النتيجة: كلمتان صغيرتان تجعلان البيت كلّه يبتسم. إلّا القطّة.",
+     "scene": "the finished chart with smiley faces and one sleepy cat face."
+    },
+    {
+     "n": 10,
+     "text": "وفي الصباح التالي، سبقها بابا وقال: \"صباح الخير يا عالمتي!\" لم تحتج لينا إلى النظّارة هذه المرّة.",
+     "scene": "Baba greeting Lina first at the breakfast table."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 5,
+     "prompt": "ماذا سيفعل بابا برأيكِ؟",
+     "options": [
+      {
+       "label": "لن ينتبه",
+       "result": "ربما... فهو يقرأ الأخبار على الهاتف."
+      },
+      {
+       "label": "سيقول \"صباح النور\" فقط",
+       "result": "هذا ممكن جداً."
+      },
+      {
+       "label": "سيفاجئها",
+       "result": null
+      }
+     ],
+     "back_line": "اقتربت لينا من بابا..."
+    },
+    {
+     "after_page": 8,
+     "prompt": "ماذا ستكتب لينا في نتيجة التجربة؟",
+     "options": [
+      {
+       "label": "\"صباح الخير لا تغيّر شيئاً\"",
+       "result": "نظرت لينا إلى الجدول... كلّ الخانات فيها ابتسامات!"
+      },
+      {
+       "label": "\"صباح الخير تجعل الناس يبتسمون\"",
+       "result": null
+      },
+      {
+       "label": "\"القطّة لا تحبّ الصباح\"",
+       "result": "صحيح أيضاً! لكنّ هذا ليس كلّ شيء."
+      }
+     ],
+     "back_line": "كتبت لينا..."
+    }
+   ],
+   "other_side": "بابا يستيقظ مبكراً ويبدأ يومه بسرعة. كيف يشعر عندما يسمع \"صباح الخير\" بابتسامة؟",
+   "magic_sentence": "صباح الخير يا بابا.",
+   "feeling_word": "الدفء",
+   "mission": {
+    "text": "قولي غداً لبابا \"صباح الخير\" بابتسامة، قبل أن يقولها هو.",
+    "choices": []
+   },
+   "unlocks_baba_message": true,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d17",
+   "day": 17,
+   "shelf": 2,
+   "stage": 2,
+   "title": "الجائزة الذهبية",
+   "skill_en": "handling jealousy",
+   "value_tags": [
+    "jealousy"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "صلصال",
+    "emoji": "🟣"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "أعلنت المعلّمة هيفاء: \"الفائزة في مسابقة الرسم هي... نوف!\"",
+     "scene": "the teacher holding a gold star certificate."
+    },
+    {
+     "n": 2,
+     "text": "صفّق الصفّ. وقفت نوف وأخذت الشهادة الذهبية، وابتسمت حتى ظهرت كلّ أسنانها.",
+     "scene": "Nouf beaming with the certificate."
+    },
+    {
+     "n": 3,
+     "text": "صفّقت لينا أيضاً... لكنّ يديها كانتا بطيئتين، وثقيلتين، كأنّهما من حجر.",
+     "scene": "Lina clapping with stone hands."
+    },
+    {
+     "n": 4,
+     "text": "شعرت بشيء أخضر يتسلّق داخلها. كانت تريد أن تفوز هي!",
+     "scene": "a little green vine climbing inside Lina's outline."
+    },
+    {
+     "n": 5,
+     "text": "همست لينا لنفسها: \"أنا أغار. هذا اسمه غيرة. لا بأس أن أشعر بها.\"",
+     "scene": "Lina naming the green vine; it shrinks a little."
+    },
+    {
+     "n": 6,
+     "text": "ثم نظرت إلى رسمة نوف عن قرب. كانت فيها سمكة ملوّنة، وفقاعات صغيرة، وكلّ فقاعة فيها وجه يضحك!",
+     "scene": "Nouf's drawing, fish and laughing bubbles."
+    },
+    {
+     "n": 7,
+     "text": "قالت لينا: \"مبروك يا نوف. كيف رسمتِ الفقاعات الضاحكة؟\"",
+     "scene": "Lina approaching Nouf's desk."
+    },
+    {
+     "n": 8,
+     "text": "فرحت نوف جداً: \"سأريكِ! السرّ في نقطة بيضاء صغيرة في كلّ عين.\"",
+     "scene": "Nouf demonstrating, tongue sticking out in concentration."
+    },
+    {
+     "n": 9,
+     "text": "رسمت لينا فقاعة بنقطة بيضاء... فصارت تضحك! واختفى الشيء الأخضر تماماً.",
+     "scene": "Lina's own laughing bubble; the vine gone."
+    },
+    {
+     "n": 10,
+     "text": "وفي المسابقة القادمة، لم تفُز لينا ولا نوف... فازت جنى ببيت الكرتون! وصفّقت لينا هذه المرّة بيدين خفيفتين جداً.",
+     "scene": "Jana with the certificate; Lina clapping with feather-light hands."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 4,
+     "prompt": "ماذا ستفعل لينا؟",
+     "options": [
+      {
+       "label": "تقول: \"رسمتها ليست جميلة أصلاً\"",
+       "result": "سمعتها جنى، ونظرت إليها باستغراب. وصار الشيء الأخضر أكبر."
+      },
+      {
+       "label": "تتجاهل نوف طوال اليوم",
+       "result": "جلست نوف تنتظر لينا لتفرحا معاً... ولم تأتِ."
+      },
+      {
+       "label": "تعترف لنفسها بما تشعر",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى الصفّ..."
+    },
+    {
+     "after_page": 6,
+     "prompt": "ماذا ستقول لينا لنوف؟",
+     "options": [
+      {
+       "label": "\"مبروك.\" وتمشي",
+       "result": "هذه بداية جيّدة. لكن هل تستطيع لينا أن تقول شيئاً أكثر؟"
+      },
+      {
+       "label": "\"كيف رسمتِ الفقاعات؟\"",
+       "result": null
+      },
+      {
+       "label": "لا شيء",
+       "result": "لكنّ الكلمات كانت تنتظر في فمها..."
+      }
+     ],
+     "back_line": "اقتربت لينا..."
+    }
+   ],
+   "other_side": "نوف كانت تتمنّى أن تفرح لينا لها. كيف شعرت عندما سألتها لينا عن الفقاعات؟",
+   "magic_sentence": "مبروك! كيف فعلتِها؟",
+   "feeling_word": "الغيرة",
+   "mission": {
+    "text": "هنّئي أحداً في البيت على شيء فعله جيّداً، واسأليه كيف فعله.",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d18",
+   "day": 18,
+   "shelf": 2,
+   "stage": 2,
+   "title": "البركان المستعجل",
+   "skill_en": "apologising in three steps",
+   "value_tags": [
+    "apology"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "قماش ملوّن",
+    "emoji": "🧵"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "صنعت نوف بركاناً لمشروع العلوم. كان أحمر وبرتقالياً، وفي داخله مفاجأة: خلّ وبيكربونات.",
+     "scene": "Nouf's papier-mâché volcano on a tray."
+    },
+    {
+     "n": 2,
+     "text": "قالت نوف: \"لا يلمسه أحد! سينفجر أمام المعلّمة فقط.\"",
+     "scene": "Nouf guarding the volcano like a soldier."
+    },
+    {
+     "n": 3,
+     "text": "مرّت لينا مسرعة بحقيبتها الكبيرة... وضربت الطاولة.",
+     "scene": "Lina's backpack swinging wide."
+    },
+    {
+     "n": 4,
+     "text": "اهتزّ البركان. سقط الخلّ في داخله. وفجأة: فوووووش! انفجر البركان قبل موعده!",
+     "scene": "red foam everywhere, on the desk, the floor, Nouf's shoes."
+    },
+    {
+     "n": 5,
+     "text": "وقفت نوف ورغوة حمراء على أنفها. وقفت لينا وفمها مفتوح.",
+     "scene": "Nouf with a foam moustache; Lina frozen."
+    },
+    {
+     "n": 6,
+     "text": "تذكّرت لينا ما قالته ماما: الاعتذار ثلاث خطوات. أقول آسفة. أقول ماذا فعلت. أعرض أن أصلح.",
+     "scene": "three steps drawn like stairs: sorry, what I did, how I fix it."
+    },
+    {
+     "n": 7,
+     "text": "قالت لينا: \"آسفة يا نوف. حقيبتي ضربت الطاولة فانفجر بركانكِ. هل أساعدكِ في صنعه من جديد؟\"",
+     "scene": "Lina speaking clearly, looking at Nouf's face."
+    },
+    {
+     "n": 8,
+     "text": "سكتت نوف لحظة، ومسحت الرغوة عن أنفها. ثم قالت: \"حسناً. لكن أنتِ تحملين الخلّ هذه المرّة.\"",
+     "scene": "Nouf wiping her nose, half smiling."
+    },
+    {
+     "n": 9,
+     "text": "صنعتا البركان من جديد في الفسحة. وكان أكبر وأجمل من الأوّل.",
+     "scene": "two girls painting a bigger volcano."
+    },
+    {
+     "n": 10,
+     "text": "وأمام المعلّمة، انفجر البركان في الوقت المناسب تماماً. أمّا حقيبة لينا، فكانت بعيدة جداً... في آخر الصفّ!",
+     "scene": "a perfect eruption; Lina's backpack on a far chair with a \"do not move\" sign."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 5,
+     "prompt": "ماذا ستفعل لينا؟",
+     "options": [
+      {
+       "label": "تقول: \"لم أقصد!\" وتهرب",
+       "result": "ركضت لينا... فانزلقت على الرغوة الحمراء!"
+      },
+      {
+       "label": "تقول: \"هو سقط وحده!\"",
+       "result": "نظرت نوف إلى الحقيبة الكبيرة، ثم إلى لينا. لم تصدّقها."
+      },
+      {
+       "label": "تعتذر بثلاث خطوات",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى البركان..."
+    },
+    {
+     "after_page": 7,
+     "prompt": "ماذا ستفعل نوف برأيكِ؟",
+     "options": [
+      {
+       "label": "ستغضب ولن تسامح",
+       "result": "ربما تحتاج وقتاً. والاعتذار لا يعني أنّ الآخر يجب أن يسامح فوراً."
+      },
+      {
+       "label": "ستسامح فوراً",
+       "result": "ربما..."
+      },
+      {
+       "label": "ستفكّر قليلاً",
+       "result": null
+      }
+     ],
+     "back_line": "سكتت نوف..."
+    }
+   ],
+   "other_side": "نوف تعبت أيّاماً في صنع البركان. كيف شعرت عندما انفجر قبل موعده؟",
+   "magic_sentence": "آسفة. فعلتُ كذا. هل أساعدكِ في إصلاحه؟",
+   "feeling_word": "الندم",
+   "mission": {
+    "text": "اعتذري لأحد في البيت عن شيء صغير، بالخطوات الثلاث.",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d19",
+   "day": 19,
+   "shelf": 2,
+   "stage": 2,
+   "title": "غابة علامات الاستفهام",
+   "skill_en": "asking the teacher for help",
+   "value_tags": [
+    "clear-voice"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "إسفنج",
+    "emoji": "🧽"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "في حصّة الرياضيات، شرحت المعلّمة هيفاء درساً جديداً: القسمة.",
+     "scene": "the board covered in division sums."
+    },
+    {
+     "n": 2,
+     "text": "فهمت لينا الخطوة الأولى. ثم الثانية... ثم ضاعت.",
+     "scene": "Lina following a path of numbers that suddenly disappears."
+    },
+    {
+     "n": 3,
+     "text": "رسمت في زاوية دفترها علامة استفهام صغيرة. ثم أخرى. ثم أخرى.",
+     "scene": "tiny question marks in the corner of her page."
+    },
+    {
+     "n": 4,
+     "text": "بعد قليل، صار في دفترها غابة كاملة من علامات الاستفهام، وبينها بومة تسأل: \"هاه؟\"",
+     "scene": "a forest of question-mark trees with a confused owl."
+    },
+    {
+     "n": 5,
+     "text": "فكّرت لينا: \"لا أحتاج أن أقول: لم أفهم شيئاً. أقول فقط أين ضعتُ بالضبط.\"",
+     "scene": "Lina pointing at one exact spot on the board."
+    },
+    {
+     "n": 6,
+     "text": "رفعت يدها، وقالت بصوت الراديو: \"أستاذة، فهمتُ الخطوة الأولى والثانية، لكن لم أفهم الثالثة.\"",
+     "scene": "Lina's hand up; the class turning."
+    },
+    {
+     "n": 7,
+     "text": "ابتسمت المعلّمة: \"سؤال ممتاز! من أيضاً لم تفهم الخطوة الثالثة؟\"",
+     "scene": "the teacher smiling, chalk in hand."
+    },
+    {
+     "n": 8,
+     "text": "ارتفعت يد... ثم يدان... ثم عشر أيادٍ! حتى نوف رفعت يديها الاثنتين.",
+     "scene": "hands shooting up like sprouts; Nouf with both arms up."
+    },
+    {
+     "n": 9,
+     "text": "شرحت المعلّمة الخطوة الثالثة من جديد. فهمتها لينا. وبدأت أشجار علامات الاستفهام تختفي واحدة بعد واحدة.",
+     "scene": "the question-mark trees fading; the owl giving a thumbs up."
+    },
+    {
+     "n": 10,
+     "text": "بعد الحصّة، قالت جنى بهدوء: \"شكراً لأنّكِ سألتِ. أنا أيضاً لم أفهم، لكنّي خفتُ أن أسأل.\"",
+     "scene": "Jana whispering to Lina by the door."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 4,
+     "prompt": "لماذا لا ترفع لينا يدها برأيكِ؟",
+     "options": [
+      {
+       "label": "تخاف أن تضحك البنات",
+       "result": "نظرت لينا حولها... كانت البنات مشغولات بدفاترهنّ."
+      },
+      {
+       "label": "تظنّ أنّ الكلّ فهم إلّا هي",
+       "result": "هل هذا صحيح؟ لا تعرف لينا بعد..."
+      },
+      {
+       "label": "لا تعرف ماذا تقول",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى الحصّة..."
+    },
+    {
+     "after_page": 6,
+     "prompt": "ماذا سيحدث برأيكِ؟",
+     "options": [
+      {
+       "label": "ستضحك البنات",
+       "result": "لم يضحك أحد. بل حدث شيء غريب..."
+      },
+      {
+       "label": "ستغضب المعلّمة",
+       "result": "لم تغضب. بل ابتسمت..."
+      },
+      {
+       "label": "ستشرح المعلّمة من جديد",
+       "result": null
+      }
+     ],
+     "back_line": "نظرت المعلّمة إلى الصفّ..."
+    }
+   ],
+   "other_side": "المعلّمة تريد أن تفهم كلّ البنات. كيف تعرف من لم تفهم إذا لم تسأل أحد؟",
+   "magic_sentence": "فهمتُ هذا، لكن لم أفهم هذا.",
+   "feeling_word": "الخجل",
+   "mission": {
+    "text": "اسألي معلّمتكِ غداً سؤالاً واحداً بصوت الراديو.",
+    "choices": [],
+    "note": "First school mission."
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d20",
+   "day": 20,
+   "shelf": 2,
+   "stage": 2,
+   "title": "برج المعكرونة",
+   "skill_en": "trying again after failure",
+   "value_tags": [
+    "retry"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "مِثقب ورق",
+    "emoji": "🕳️"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "في نادي العلوم، قالت المعلّمة: \"التحدّي: أطول برج من المعكرونة والصلصال. معكنّ عشرون دقيقة!\"",
+     "scene": "tables with dry spaghetti and clay balls."
+    },
+    {
+     "n": 2,
+     "text": "عملت لينا ونوف بسرعة. عود فوق عود، وكرة صلصال فوق كرة.",
+     "scene": "the two girls building fast, tongues out."
+    },
+    {
+     "n": 3,
+     "text": "صار البرج أطول من رأس لينا! ثم أطول من رأس نوف!",
+     "scene": "a wobbly tower taller than both girls."
+    },
+    {
+     "n": 4,
+     "text": "ثم... تمايل البرج يميناً. وتمايل يساراً. وسقط: طرطق طرطق طرطق!",
+     "scene": "the tower collapsing; spaghetti flying like fireworks."
+    },
+    {
+     "n": 5,
+     "text": "بقيت سبع دقائق فقط. وكلّ الفرق الأخرى أبراجها واقفة.",
+     "scene": "a clock showing seven minutes; tall towers on other tables."
+    },
+    {
+     "n": 6,
+     "text": "نظرت لينا إلى البرج المكسور. \"انظري! كان رفيعاً من الأسفل مثل عود. والأبراج لا تقف على عود واحد.\"",
+     "scene": "Lina holding a broken piece like a detective's clue."
+    },
+    {
+     "n": 7,
+     "text": "قالت نوف: \"مثل الهرم! عريض من الأسفل، ورفيع من الأعلى.\"",
+     "scene": "Nouf drawing a pyramid in the air."
+    },
+    {
+     "n": 8,
+     "text": "بنتا برجاً جديداً: قاعدة عريضة، ثم أضيق، ثم أضيق. في خمس دقائق فقط!",
+     "scene": "a sturdy pyramid-shaped tower."
+    },
+    {
+     "n": 9,
+     "text": "لم يكن البرج الأطول في الصفّ. لكنّه كان الوحيد الذي بقي واقفاً عندما فتحت المعلّمة النافذة وهبّ الهواء!",
+     "scene": "wind blowing; other towers toppling; theirs standing."
+    },
+    {
+     "n": 10,
+     "text": "قالت المعلّمة: \"البرج الذي سقط علّمكما كيف تبنيان البرج الذي وقف.\" ضحكت لينا وأكلت عود معكرونة نيّئاً. كان طعمه سيّئاً جداً.",
+     "scene": "Lina crunching raw spaghetti, pulling a face."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 5,
+     "prompt": "ماذا ستفعل لينا ونوف؟",
+     "options": [
+      {
+       "label": "تستسلمان",
+       "result": "جلستا تنظران إلى المعكرونة المكسورة حتى انتهى الوقت."
+      },
+      {
+       "label": "تلومان بعضهما",
+       "result": "\"أنتِ وضعتِ الصلصال خطأ!\" \"لا، أنتِ!\" ومرّت دقيقتان في الشجار."
+      },
+      {
+       "label": "تنظران لماذا سقط البرج",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى الطاولة..."
+    },
+    {
+     "after_page": 7,
+     "prompt": "هل سيكون البرج الجديد أطول من الأوّل؟",
+     "options": [
+      {
+       "label": "نعم",
+       "result": "ربما..."
+      },
+      {
+       "label": "لا",
+       "result": "ربما..."
+      },
+      {
+       "label": "المهمّ أن يقف",
+       "result": null
+      }
+     ],
+     "back_line": "بدأتا من جديد..."
+    }
+   ],
+   "other_side": "الفرق الأخرى سقطت أبراجها بسبب الهواء. ماذا يمكن أن تقول لهنّ لينا ونوف؟",
+   "magic_sentence": "لماذا لم ينجح؟ لنجرّب من جديد.",
+   "feeling_word": "الإحباط",
+   "mission": {
+    "text": "أخبري ماما عن شيء لم ينجح معكِ، وماذا ستجرّبين في المرّة القادمة.",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d21",
+   "day": 21,
+   "shelf": 3,
+   "stage": 3,
+   "title": "يد السمكة",
+   "skill_en": "greeting adults: face, hand, voice",
+   "value_tags": [
+    "clear-voice",
+    "greeting-adults"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "أعواد خشبية",
+    "emoji": "🪵"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "في يوم الجمعة، جاءت الخالة سلمى لزيارتهم، ومعها الجدّة.",
+     "scene": "the front door opening; Aunt Salma and Grandma with a box of sweets."
+    },
+    {
+     "n": 2,
+     "text": "ركضت جود وسلّمت على الجميع. أمّا لينا، فاختبأت خلف الباب.",
+     "scene": "Jood running with open arms; Lina's eye peeking from behind the door."
+    },
+    {
+     "n": 3,
+     "text": "قالت ماما: \"تعالي سلّمي يا لينا.\" فمشت لينا ببطء شديد، ومدّت يدها.",
+     "scene": "Lina walking like a snail towards the guests."
+    },
+    {
+     "n": 4,
+     "text": "كانت يدها رخوة، مثل سمكة نائمة. وقالت بصوت صغير وهي تنظر إلى السجّادة: \"السلام عليكم.\"",
+     "scene": "Lina's hand drawn as a sleepy fish; her eyes on the carpet."
+    },
+    {
+     "n": 5,
+     "text": "قالت الخالة سلمى: \"وعليكم السلام... أين أنتِ يا لينا؟ أسمع صوتكِ، ولا أرى عينيكِ!\"",
+     "scene": "Aunt Salma bending down, searching for Lina's face."
+    },
+    {
+     "n": 6,
+     "text": "في المساء، سألت لينا ماما: \"كيف أسلّم مثل الكبار؟\"",
+     "scene": "Lina and Mama on the sofa."
+    },
+    {
+     "n": 7,
+     "text": "قالت ماما: \"عندي ثلاثة أسرار. الأوّل: الوجه. إذا صعب عليكِ النظر إلى العينين، فانظري إلى المكان بينهما، فوق الأنف.\"",
+     "scene": "Mama pointing at the bridge of her own nose; a small star appears there."
+    },
+    {
+     "n": 8,
+     "text": "\"الثاني: اليد. أمسكيها كأنّكِ تحملين عصفوراً. لا رخوة فيطير، ولا قويّة فيتألّم. والثالث: صوت الراديو، مع ابتسامة.\"",
+     "scene": "two cupped hands holding a tiny bird; a radio with a smile."
+    },
+    {
+     "n": 9,
+     "text": "تدرّبت لينا مع جود عشر مرّات، حتى صارت جود تمدّ يدها لكلّ من يمرّ... حتى للقطّة!",
+     "scene": "Jood offering a handshake to a confused cat."
+    },
+    {
+     "n": 10,
+     "text": "ثم تدرّبت مع ماما، وأمسكت يدها بقوّة كبيرة. \"آي! هذا ليس عصفوراً، هذا سلطعون!\"",
+     "scene": "Lina's hand drawn as a crab claw; Mama laughing in pain."
+    },
+    {
+     "n": 11,
+     "text": "وفي الجمعة التالية، رنّ الجرس. كانت الجدّة عند الباب.",
+     "scene": "the doorbell ringing; Grandma's shadow behind the door."
+    },
+    {
+     "n": 12,
+     "text": "فتحت لينا الباب، ونظرت إلى المكان فوق أنف الجدّة، وأمسكت يدها كأنّها تحمل عصفوراً، وقالت بصوت الراديو: \"السلام عليكم يا جدّتي، كيف حالكِ؟\"",
+     "scene": "Lina standing tall, a tiny star on Grandma's nose bridge."
+    },
+    {
+     "n": 13,
+     "text": "سكتت الجدّة لحظة، ثم قالت: \"ما شاء الله! من هذه البنت الكبيرة؟ أين لينا الصغيرة؟\"",
+     "scene": "Grandma pretending to look around for \"little Lina\"."
+    },
+    {
+     "n": 14,
+     "text": "ضحكت لينا، وضحكت الجدّة، وأخرجت من حقيبتها حبّة حلوى... ثم حبّة أخرى لجود، وحبّة ثالثة للقطّة!",
+     "scene": "Grandma's handbag spilling sweets; the cat sniffing one."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 5,
+     "prompt": "لماذا تنظر لينا إلى السجّادة برأيكِ؟",
+     "options": [
+      {
+       "label": "لأنّ السجّادة جميلة",
+       "result": "صحيح، فيها وردة حمراء كبيرة... لكنّ الخالة ليست في السجّادة!"
+      },
+      {
+       "label": "لأنّها سقط منها شيء",
+       "result": "لم يسقط شيء... إلّا شجاعة لينا."
+      },
+      {
+       "label": "لأنّها تخجل",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى الصالة..."
+    },
+    {
+     "after_page": 8,
+     "prompt": "أيّ سرّ هو الأصعب على لينا برأيكِ؟",
+     "options": [
+      {
+       "label": "النظر إلى الوجه",
+       "result": "إذن ستبدأ به، وتتدرّب عليه أكثر."
+      },
+      {
+       "label": "اليد",
+       "result": "إذن ستتدرّب على العصفور كثيراً."
+      },
+      {
+       "label": "الصوت",
+       "result": "إذن ستشغّل الراديو كلّ يوم."
+      }
+     ],
+     "back_line": "بدأت لينا التدريب...",
+     "all_continue": true
+    },
+    {
+     "after_page": 11,
+     "prompt": "ماذا ستفعل لينا هذه المرّة؟",
+     "options": [
+      {
+       "label": "تختبئ خلف الباب",
+       "result": "اختبأت... لكنّ الأسرار الثلاثة كانت تنادي عليها من داخل رأسها."
+      },
+      {
+       "label": "ترسل جود بدلاً منها",
+       "result": "سلّمت جود على الجدّة، وعلى الخالة، وعلى كيس الخضار أيضاً!"
+      },
+      {
+       "label": "تقف عند الباب وتستعدّ",
+       "result": null
+      }
+     ],
+     "back_line": "وقفت لينا عند الباب..."
+    }
+   ],
+   "other_side": "الجدّة جاءت من مكان بعيد لترى أحفادها. كيف تشعر عندما يسلّم عليها أحد بوجه مبتسم؟",
+   "magic_sentence": "وجه، عصفور، راديو.",
+   "feeling_word": "الارتباك",
+   "mission": {
+    "text": "سلّمي على أوّل ضيف أو شخص كبير تقابلينه بالأسرار الثلاثة.",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d22",
+   "day": 22,
+   "shelf": 3,
+   "stage": 3,
+   "title": "سوبر بابا",
+   "skill_en": "showing care with an action, not long words (Baba 3)",
+   "value_tags": [
+    "baba"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "ملصقات نجوم",
+    "emoji": "⭐"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "في يوم الأربعاء، تأخّر بابا كثيراً. تعطّلت سيّارته في الطريق، وانتظر تحت الشمس ساعتين.",
+     "scene": "the silver car with its bonnet up on a hot road; Baba waiting."
+    },
+    {
+     "n": 2,
+     "text": "دخل البيت ووجهه أحمر من الحرّ، وثوبه مبلول. جلس على الكنبة، ولم يتكلّم.",
+     "scene": "Baba slumped on the sofa, staring at the ceiling."
+    },
+    {
+     "n": 3,
+     "text": "همست جود: \"بابا زعلان؟\" قالت لينا: \"لا أعرف...\"",
+     "scene": "the two sisters peeking from the hallway."
+    },
+    {
+     "n": 4,
+     "text": "فكّرت لينا: \"لا أحبّ الكلام الطويل. لكن عندي أقلام.\"",
+     "scene": "Lina eyeing her pencil case."
+    },
+    {
+     "n": 5,
+     "text": "أخذت ورقة كبيرة، ورسمت بابا بطلاً خارقاً، وعباءته من شماغه الأحمر.",
+     "scene": "Lina drawing; the drawing shows Baba with a red shemagh cape."
+    },
+    {
+     "n": 6,
+     "text": "في الرسمة، كان بابا يحمل السيّارة المعطّلة بيد واحدة، وكوب شاي باليد الأخرى. وكتبت تحتها: \"سوبر بابا: يصلح كلّ شيء... إلّا السيّارة اليوم.\"",
+     "scene": "close-up of the drawing: superhero Baba lifting the car, tea in the other hand."
+    },
+    {
+     "n": 7,
+     "text": "وقفت لينا أمام بابا، ومدّت الورقة، وقالت كلمتين فقط: \"هذه لك.\"",
+     "scene": "Lina holding out the drawing with both hands."
+    },
+    {
+     "n": 8,
+     "text": "نظر بابا إلى الرسمة طويلاً. ثم ضحك حتى اهتزّت الكنبة. \"سوبر بابا؟ أنا؟\"",
+     "scene": "Baba laughing; the sofa shaking with motion lines."
+    },
+    {
+     "n": 9,
+     "text": "قالت لينا: \"نعم. توصلنا، وتصلح الصنبور، وتنتظرني تحت الشمس.\"",
+     "scene": "Lina counting on her fingers."
+    },
+    {
+     "n": 10,
+     "text": "في الصباح، صعدت لينا إلى السيّارة بعد أن أُصلحت. ووجدت الرسمة ملصقة أمام بابا، فوق المقود!",
+     "scene": "the drawing stuck on the dashboard."
+    },
+    {
+     "n": 11,
+     "text": "قال بابا: \"إذا تعطّلت السيّارة مرّة أخرى، سوبر بابا معه رسمته.\"",
+     "scene": "Baba winking in the mirror."
+    },
+    {
+     "n": 12,
+     "text": "وعند باب المدرسة، رفع بابا يده. فرفعت لينا يدها، وضربت كفّها بكفّه: تشاك!",
+     "scene": "a big high five; little stars bursting."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 3,
+     "prompt": "كيف يشعر بابا برأيكِ؟",
+     "options": [
+      {
+       "label": "غاضب منّا",
+       "result": "لكنّ بابا لم ينظر إليهما بغضب... كان ينظر إلى السقف فقط."
+      },
+      {
+       "label": "جائع",
+       "result": "ربما! تذكّري الجوع المتنكّر... لكنّ بابا أكل في الطريق."
+      },
+      {
+       "label": "متعب جداً",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى الصالة..."
+    },
+    {
+     "after_page": 6,
+     "prompt": "كيف ستعطي لينا الرسمة لبابا؟",
+     "options": [
+      {
+       "label": "تضعها تحت الباب وتهرب",
+       "result": "وجدها بابا بعد يومين... ملتصقة بحذائه!"
+      },
+      {
+       "label": "ترسلها مع جود",
+       "result": "أكلت جود زاوية الورقة في الطريق!"
+      },
+      {
+       "label": "تعطيه إيّاها بنفسها",
+       "result": null
+      }
+     ],
+     "back_line": "مشت لينا إلى بابا..."
+    },
+    {
+     "after_page": 9,
+     "prompt": "ماذا سيفعل بابا بالرسمة برأيكِ؟",
+     "options": [
+      {
+       "label": "يضعها في الدرج",
+       "result": "ربما... لكن انظري إلى عينيه، إنّه يفكّر في مكان أفضل."
+      },
+      {
+       "label": "يرميها",
+       "result": "لا! انظري كيف يمسكها بحذر..."
+      },
+      {
+       "label": "يعلّقها في مكان مهمّ",
+       "result": null
+      }
+     ],
+     "back_line": "في الصباح التالي..."
+    }
+   ],
+   "other_side": "بابا لم يقُل إنّه متعب. كيف عرفت لينا؟",
+   "magic_sentence": "هذه لك.",
+   "feeling_word": "التعاطف",
+   "mission": {
+    "text": "ارسمي لبابا رسمة صغيرة، وأعطيه إيّاها بيدكِ، وقولي: \"هذه لك.\"",
+    "choices": []
+   },
+   "unlocks_baba_message": true,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d23",
+   "day": 23,
+   "shelf": 3,
+   "stage": 3,
+   "title": "بالون الأفكار",
+   "skill_en": "checking before assuming the worst",
+   "value_tags": [
+    "assumptions"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "خيط لامع",
+    "emoji": "🧵"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "في الفسحة، رأت لينا نوف ومريم وجنى يتهامسن في زاوية الساحة.",
+     "scene": "three girls huddled in a corner of the yard."
+    },
+    {
+     "n": 2,
+     "text": "عندما اقتربت لينا، سكتن فجأة، وخبّأت نوف شيئاً خلف ظهرها.",
+     "scene": "Nouf hiding something; everyone frozen like statues."
+    },
+    {
+     "n": 3,
+     "text": "قالت مريم بسرعة: \"لا شيء! لا شيء!\" وضحكت جنى.",
+     "scene": "Maryam waving her hands; Jana giggling."
+    },
+    {
+     "n": 4,
+     "text": "مشت لينا بعيداً، وفي رأسها بالون صغير من الأفكار.",
+     "scene": "a small balloon above Lina's head."
+    },
+    {
+     "n": 5,
+     "text": "\"ربما يتكلّمن عنّي.\" فكبر البالون. \"ربما لا يحببنني.\" فكبر أكثر. \"ربما صرن صديقات بدوني!\" فصار البالون بحجم الساحة كلّها!",
+     "scene": "a giant balloon pushing Lina across the yard."
+    },
+    {
+     "n": 6,
+     "text": "في الحصّة التالية، جلست لينا بعيداً عن نوف، ولم تنظر إليها أبداً.",
+     "scene": "Lina at the far end of the room, arms crossed."
+    },
+    {
+     "n": 7,
+     "text": "كتبت نوف ورقة صغيرة، ورمتها إلى لينا: \"لماذا أنتِ زعلانة؟\"",
+     "scene": "a folded note flying across the classroom."
+    },
+    {
+     "n": 8,
+     "text": "كتبت لينا: \"رأيتكنّ تتهامسن، وسكتّنّ عندما جئت. هل كنتنّ تتكلّمن عنّي؟\"",
+     "scene": "Lina writing carefully."
+    },
+    {
+     "n": 9,
+     "text": "قرأت نوف الورقة... وغطّت وجهها بيديها.",
+     "scene": "Nouf hiding her face; is it laughter or worry?"
+    },
+    {
+     "n": 10,
+     "text": "بعد الحصّة، أخرجت نوف الشيء الذي خبّأته: بطاقة كبيرة ملوّنة، مكتوب عليها: \"شكراً يا لينا!\"",
+     "scene": "a big colourful thank-you card covered in drawings."
+    },
+    {
+     "n": 11,
+     "text": "قالت مريم: \"أنتِ أريتِني المدرسة.\" وقالت جنى: \"وسألتِ المعلّمة عندما خفتُ أن أسأل.\" وقالت نوف: \"وساعدتِني في البركان... بعد أن فجّرتِه!\"",
+     "scene": "each girl pointing to her own drawing on the card."
+    },
+    {
+     "n": 12,
+     "text": "\"كنّا نريدها مفاجأة... لكنّكِ محقّقة جيّدة جداً!\"",
+     "scene": "the girls laughing; Lina's mouth open."
+    },
+    {
+     "n": 13,
+     "text": "نظرت لينا إلى البالون الضخم في رأسها... وفرقعته: بوووم! ولم يبقَ إلّا الضحك.",
+     "scene": "the balloon popping into confetti."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 5,
+     "prompt": "هل تعرف لينا حقّاً ماذا كنّ يقلن؟",
+     "options": [
+      {
+       "label": "نعم",
+       "result": "كيف؟ هل سمعت كلمة واحدة؟"
+      },
+      {
+       "label": "ربما",
+       "result": "ربما... لكنّ \"ربما\" ليست \"نعم\"."
+      },
+      {
+       "label": "لا",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى الصفّ..."
+    },
+    {
+     "after_page": 7,
+     "prompt": "ماذا ستفعل لينا؟",
+     "options": [
+      {
+       "label": "تمزّق الورقة",
+       "result": "تقطّعت الورقة قطعاً صغيرة... ونظرت نوف إليها بحزن."
+      },
+      {
+       "label": "تكتب: \"أنتِ تعرفين لماذا!\"",
+       "result": "لكنّ نوف لم تكن تعرف! فكتبت: \"لا أعرف!!!\" بثلاث علامات تعجّب."
+      },
+      {
+       "label": "تسأل بصراحة",
+       "result": null
+      }
+     ],
+     "back_line": "أمسكت لينا القلم..."
+    },
+    {
+     "after_page": 9,
+     "prompt": "ماذا ستقول نوف برأيكِ؟",
+     "options": [
+      {
+       "label": "\"نعم، كنّا نتكلّم عنكِ\"",
+       "result": "هذا صحيح! لكن... ماذا كنّ يقلن؟"
+      },
+      {
+       "label": "\"لا، لا شيء\"",
+       "result": "لكنّ الشيء ما زال خلف ظهرها..."
+      },
+      {
+       "label": "تريها ما خبّأته",
+       "result": null
+      }
+     ],
+     "back_line": "بعد الحصّة..."
+    }
+   ],
+   "other_side": "نوف ومريم وجنى تعبن في صنع البطاقة سرّاً. كيف شعرن عندما ظنّت لينا أنّهنّ ضدّها؟",
+   "magic_sentence": "لا أعرف بعد. سأسأل.",
+   "feeling_word": "الشكّ",
+   "mission": {
+    "text": "إذا ظننتِ اليوم شيئاً سيّئاً، اسألي قبل أن تصدّقيه. ثم أخبري ماما ماذا حدث.",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d24",
+   "day": 24,
+   "shelf": 3,
+   "stage": 3,
+   "title": "يوم الجوارب المختلفة",
+   "skill_en": "staying calm when someone laughs at me",
+   "value_tags": [
+    "problem-size",
+    "teasing"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "أكواب ورقية",
+    "emoji": "🥤"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "استيقظت لينا متأخّرة. لبست بسرعة، وأكلت بسرعة، وركضت إلى السيّارة بسرعة.",
+     "scene": "Lina zooming through the house, toast in her mouth."
+    },
+    {
+     "n": 2,
+     "text": "في الصفّ، نظرت إلى قدميها... جورب وردي بنقاط، وجورب أخضر بخطوط!",
+     "scene": "close-up of two very different socks."
+    },
+    {
+     "n": 3,
+     "text": "رأت هند الجوربين، وضحكت بصوت عالٍ: \"هاهاها! لينا لبست جوربين مختلفين!\"",
+     "scene": "Hind pointing and laughing."
+    },
+    {
+     "n": 4,
+     "text": "التفتت بنات كثيرات. وشعرت لينا أنّ وجهها صار حبّة طماطم ناضجة.",
+     "scene": "Lina's head drawn as a ripe tomato."
+    },
+    {
+     "n": 5,
+     "text": "أخذت لينا نفساً، وتذكّرت سؤالها: فيل أم نملة؟ جوربان مختلفان... نملة صغيرة جداً.",
+     "scene": "a tiny ant wearing two different socks."
+    },
+    {
+     "n": 6,
+     "text": "رفعت قدميها، ونظرت إليهما بجدّية، وقالت بصوت الراديو: \"نعم، جوربان مختلفان. هذه موضتي الجديدة.\"",
+     "scene": "Lina posing like a fashion model."
+    },
+    {
+     "n": 7,
+     "text": "سكتت هند. لم تعرف ماذا تقول. فالضحك لا يكون مضحكاً إذا لم تنزعج لينا.",
+     "scene": "Hind with a blank face and a tiny question mark."
+    },
+    {
+     "n": 8,
+     "text": "قالت نوف: \"موضة جميلة! سأجرّبها غداً.\"",
+     "scene": "Nouf giving a thumbs up."
+    },
+    {
+     "n": 9,
+     "text": "وفي اليوم التالي، جاءت نوف بجورب أزرق وجورب أصفر. وجاءت مريم بجورب فيه قطط، وجورب فيه نجوم.",
+     "scene": "a row of mismatched socks."
+    },
+    {
+     "n": 10,
+     "text": "وجاءت جنى بجورب طويل جداً، وآخر قصير جداً!",
+     "scene": "Jana with one knee sock and one ankle sock."
+    },
+    {
+     "n": 11,
+     "text": "في اليوم الثالث، جلست هند في مقعدها، ورفعت قدميها ببطء: جورب برتقالي، وجورب بنفسجي.",
+     "scene": "Hind shyly showing orange and purple socks."
+    },
+    {
+     "n": 12,
+     "text": "قالت هند بخجل: \"هل أستطيع أن أشارك في الموضة؟\" ابتسمت لينا: \"طبعاً. بشرط واحد: لا ضحك على أحد.\"",
+     "scene": "Lina and Hind shaking hands."
+    },
+    {
+     "n": 13,
+     "text": "ومنذ ذلك اليوم، صار يوم الخميس في الصفّ: يوم الجوارب المختلفة.",
+     "scene": "the whole class showing mismatched socks; the teacher too!"
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 4,
+     "prompt": "ماذا ستفعل لينا؟",
+     "options": [
+      {
+       "label": "تبكي",
+       "result": "دمعت عيناها، فضحكت هند أكثر."
+      },
+      {
+       "label": "تقول: \"وأنتِ شعركِ مثل المكنسة!\"",
+       "result": "شهقت البنات، وصارت المشكلة اثنتين."
+      },
+      {
+       "label": "تأخذ نفساً وتفكّر",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى الصفّ..."
+    },
+    {
+     "after_page": 6,
+     "prompt": "ماذا سيحدث برأيكِ؟",
+     "options": [
+      {
+       "label": "ستضحك هند أكثر",
+       "result": "حاولت... لكن لم يضحك معها أحد هذه المرّة."
+      },
+      {
+       "label": "ستقلّدها البنات",
+       "result": "هذا سيحدث... لكن ليس الآن!"
+      },
+      {
+       "label": "ستسكت هند",
+       "result": null
+      }
+     ],
+     "back_line": "نظرت هند إلى لينا..."
+    },
+    {
+     "after_page": 10,
+     "prompt": "ماذا ستلبس هند برأيكِ؟",
+     "options": [
+      {
+       "label": "جوربين متشابهين كالعادة",
+       "result": "في اليوم الأوّل، نعم..."
+      },
+      {
+       "label": "لن تأتي إلى المدرسة",
+       "result": "لا، جاءت. ولكن..."
+      },
+      {
+       "label": "جوربين مختلفين",
+       "result": null
+      }
+     ],
+     "back_line": "في اليوم الثالث..."
+    }
+   ],
+   "other_side": "هند ضحكت على لينا. هل تظنّين أنّها كانت تريد أن تكون مع الصديقات، ولم تعرف كيف؟",
+   "magic_sentence": "نعم، هذا صحيح. وأنا بخير.",
+   "feeling_word": "الثقة",
+   "mission": {
+    "text": "العبي مع ماما: تضحك على شيء فيكِ، وتجيبين بهدوء: \"نعم، هذا صحيح. وأنا بخير.\"",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d25",
+   "day": 25,
+   "shelf": 3,
+   "stage": 3,
+   "title": "أربع قائدات",
+   "skill_en": "sharing the lead by strengths",
+   "value_tags": [
+    "sharing-lead"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "مشابك ملوّنة",
+    "emoji": "📎"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "قالت المعلّمة هيفاء: \"مشروع المجموعات: مجسّم لمدينة المستقبل. كلّ مجموعة أربع بنات.\"",
+     "scene": "the teacher with a big sheet of card."
+    },
+    {
+     "n": 2,
+     "text": "كانت مجموعة لينا: لينا، ونوف، ومريم، وهند.",
+     "scene": "four girls around one table."
+    },
+    {
+     "n": 3,
+     "text": "قالت هند: \"أنا القائدة!\" قالت نوف: \"لا، أنا!\" قالت مريم: \"أنا!\" وقالت لينا أيضاً: \"أنا!\"",
+     "scene": "four hands shooting up, four crowns floating."
+    },
+    {
+     "n": 4,
+     "text": "أربع قائدات... ولا أحد يعمل. مرّ نصف الحصّة، والمدينة ما زالت ورقة فارغة.",
+     "scene": "a blank sheet; the clock moving."
+    },
+    {
+     "n": 5,
+     "text": "نظرت لينا إلى الساعة، ثم إلى الورقة. \"إذا استمرّينا هكذا، ستكون مدينة المستقبل فارغة في المستقبل أيضاً!\"",
+     "scene": "Lina imagining an empty future city with tumbleweed."
+    },
+    {
+     "n": 6,
+     "text": "قالت لينا: \"عندي فكرة. بدل قائدة واحدة، كلّ واحدة تقود الشيء الذي تتقنه.\"",
+     "scene": "Lina drawing four boxes on scrap paper."
+    },
+    {
+     "n": 7,
+     "text": "\"نوف ترسم. مريم تقصّ وتلصق بسرعة. هند صوتها قويّ، فتشرح أمام الصفّ. وأنا أكتب الخطّة.\"",
+     "scene": "four icons: a pencil, scissors, a microphone, a notebook."
+    },
+    {
+     "n": 8,
+     "text": "سؤال جيّد! قالت لينا: \"صحيح. لنصوّت.\" فرفعت ثلاث بنات أيديهنّ. ثم رفعت هند يدها أخيراً... رابعة.",
+     "scene": "four hands up, Hind's last and slowest."
+    },
+    {
+     "n": 9,
+     "text": "عملت المجموعة بسرعة. رسمت نوف أبراجاً تشبه أقلام التلوين، وقصّت مريم سيّارات طائرة، وكتبت لينا الخطّة.",
+     "scene": "a busy, happy table; a colourful city growing."
+    },
+    {
+     "n": 10,
+     "text": "وكانت هند تمرّ على الجميع: \"ممتاز! استمرّي! هذا جميل!\" فاكتشفت أنّها تتقن التشجيع أيضاً.",
+     "scene": "Hind as a cheerful cheerleader with pom-poms made of paper."
+    },
+    {
+     "n": 11,
+     "text": "يوم العرض، وقفت هند أمام الصفّ، وشرحت بصوتها القويّ: \"هذه مدينة المستقبل. فيها محطّة للسيّارات الطائرة، ومقصف بلا طوابير!\"",
+     "scene": "Hind presenting; the class cheering at \"no queues\"."
+    },
+    {
+     "n": 12,
+     "text": "سألت المعلّمة: \"من قائدة هذه المجموعة؟\" فنظرت البنات الأربع إلى بعضهنّ، وقلن معاً: \"كلّنا!\"",
+     "scene": "four girls pointing at each other, laughing."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 4,
+     "prompt": "ماذا يحدث لمجموعة فيها أربع قائدات؟",
+     "options": [
+      {
+       "label": "تبني أجمل مدينة",
+       "result": "لو كان هذا صحيحاً، لرأينا مدينة. لكنّ الورقة فارغة..."
+      },
+      {
+       "label": "تتشاجر",
+       "result": "نعم، وهذا ما يحدث الآن بالضبط!"
+      },
+      {
+       "label": "لا تبني شيئاً",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى الطاولة..."
+    },
+    {
+     "after_page": 7,
+     "prompt": "ماذا ستقول هند برأيكِ؟",
+     "options": [
+      {
+       "label": "\"لا! أنا القائدة الوحيدة!\"",
+       "result": "قالتها... ثم تخيّلت نفسها تبني المدينة كلّها وحدها، فسكتت."
+      },
+      {
+       "label": "\"حسناً\"",
+       "result": "ربما... لكنّ هند عندها سؤال أوّلاً."
+      },
+      {
+       "label": "\"ولماذا أنتِ تقرّرين؟\"",
+       "result": null
+      }
+     ],
+     "back_line": "نظرت هند إلى لينا..."
+    },
+    {
+     "after_page": 10,
+     "prompt": "من القائدة الحقيقية في المجموعة برأيكِ؟",
+     "options": [
+      {
+       "label": "لينا",
+       "result": "لينا اقترحت الفكرة... لكنّها لم تبنِ وحدها."
+      },
+      {
+       "label": "هند",
+       "result": "هند شجّعت الجميع... لكنّها لم تبنِ وحدها."
+      },
+      {
+       "label": "كلّهنّ",
+       "result": null
+      }
+     ],
+     "back_line": "يوم العرض..."
+    }
+   ],
+   "other_side": "كلّ بنت أرادت أن تكون القائدة. لماذا تحبّ كلّ واحدة أن تقود برأيكِ؟",
+   "magic_sentence": "كلّ واحدة تقود ما تتقنه.",
+   "feeling_word": "العِناد",
+   "mission": {
+    "text": "وزّعي مع ماما وأختكِ مهمّة في البيت (مثل ترتيب الغرفة)، حسب ما تتقنه كلّ واحدة.",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d26",
+   "day": 26,
+   "shelf": 3,
+   "stage": 3,
+   "title": "المساعِدة التي توقّفت",
+   "skill_en": "if my effort isn't appreciated, I can stop",
+   "value_tags": [
+    "unappreciated-stop"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "كرتون مقوّى",
+    "emoji": "📦"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "كانت هند تجلس أمام لينا. وكانت طاولتها دائماً فوضى: أقلام هنا، وأوراق هناك، وممحاة تحت الكرسي.",
+     "scene": "Hind's desk as a messy mountain."
+    },
+    {
+     "n": 2,
+     "text": "يوم الأحد، رتّبت لينا طاولة هند. ويوم الاثنين، حملت حقيبتها الثقيلة إلى الباب.",
+     "scene": "Lina tidying; Lina carrying a huge bag."
+    },
+    {
+     "n": 3,
+     "text": "ويوم الثلاثاء، برت أقلامها كلّها. ويوم الأربعاء، أعارتها مسطرتها.",
+     "scene": "a row of sharpened pencils; Lina handing over a ruler."
+    },
+    {
+     "n": 4,
+     "text": "لم تقُل هند \"شكراً\" ولا مرّة واحدة.",
+     "scene": "an empty speech bubble above Hind."
+    },
+    {
+     "n": 5,
+     "text": "يوم الخميس، دخلت هند الصفّ، ونظرت إلى طاولتها المرتّبة، وقالت بانزعاج: \"لينا! لماذا وضعتِ أقلامي هنا؟ لا أجد شيئاً!\"",
+     "scene": "Hind frowning at her tidy desk."
+    },
+    {
+     "n": 6,
+     "text": "وقفت لينا مكانها. شعرت بشيء ثقيل يجلس على قلبها.",
+     "scene": "Lina still, a small grey weight on her chest."
+    },
+    {
+     "n": 7,
+     "text": "جاء الحزن إليها مثل ضيف صغير معه حقيبة سفر. جلس، وفتح الحقيبة، وأخرج بيجامته... كأنّه سيبقى أسبوعاً!",
+     "scene": "a small grey guest unpacking pyjamas."
+    },
+    {
+     "n": 8,
+     "text": "قالت لينا للضيف: \"أهلاً. أعرف لماذا جئت. تعبتُ ولم يشكرني أحد. اجلس قليلاً.\"",
+     "scene": "Lina and the grey guest sitting side by side."
+    },
+    {
+     "n": 9,
+     "text": "جلس الحزن قليلاً، وشربت لينا كأس ماء. ثم قالت له: \"والآن، مع السلامة.\" فأغلق حقيبته ورحل.",
+     "scene": "the guest waving goodbye at the door with his suitcase."
+    },
+    {
+     "n": 10,
+     "text": "فكّرت لينا: \"لا أحد يجبرني على المساعدة. أنا اخترتها. ومن لا يقدّر تعبي، لا أتعب له.\"",
+     "scene": "Lina standing straight, hands on hips."
+    },
+    {
+     "n": 11,
+     "text": "في اليوم التالي، لم ترتّب لينا طاولة هند. ولم تحمل حقيبتها. ولم تقل لها شيئاً. فقط... توقّفت.",
+     "scene": "Hind's messy desk again; Lina reading her own book calmly."
+    },
+    {
+     "n": 12,
+     "text": "ساعدت جنى في قصّ الأشكال، فقالت جنى: \"شكراً، أنتِ أسرع منّي بكثير!\" وساعدت مريم في حمل الكتب، فقالت: \"شكراً بزّاف!\"",
+     "scene": "Lina helping Jana and Maryam; big thank-you bubbles."
+    },
+    {
+     "n": 13,
+     "text": "أمّا هند، فقضت الحصّة الأولى تبحث عن ممحاتها تحت الكرسي. ثم رفعت رأسها، ونظرت إلى لينا... وفكّرت.",
+     "scene": "Hind under her chair, then looking up thoughtfully."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 4,
+     "prompt": "لماذا لا تقول هند \"شكراً\" برأيكِ؟",
+     "options": [
+      {
+       "label": "لم تنتبه",
+       "result": "ربما... لكن أربعة أيّام؟"
+      },
+      {
+       "label": "لا تعرف كلمة \"شكراً\"",
+       "result": "بل تعرفها جيّداً، فقد قالتها للمشرفة أمس!"
+      },
+      {
+       "label": "تظنّ أنّ هذا واجب لينا",
+       "result": null
+      }
+     ],
+     "back_line": "يوم الخميس..."
+    },
+    {
+     "after_page": 7,
+     "prompt": "ماذا ستفعل لينا مع ضيف الحزن؟",
+     "options": [
+      {
+       "label": "تتركه يبقى أسبوعاً",
+       "result": "بقي الضيف، وأكل كلّ حلوى لينا، ولم تلعب طوال الأسبوع!"
+      },
+      {
+       "label": "تطرده فوراً وتقول: لستُ حزينة",
+       "result": "خرج من الباب... ورجع من النافذة!"
+      },
+      {
+       "label": "تسمح له بالجلوس قليلاً، ثم تودّعه",
+       "result": null
+      }
+     ],
+     "back_line": "نظرت لينا إلى ضيفها..."
+    },
+    {
+     "after_page": 11,
+     "prompt": "لمن ستعطي لينا مساعدتها الآن؟",
+     "options": [
+      {
+       "label": "لا أحد أبداً",
+       "result": "لكنّ لينا تحبّ المساعدة... هل تتركها كلّها بسبب شخص واحد؟"
+      },
+      {
+       "label": "لهند من جديد",
+       "result": "ربما يوماً ما، إذا تغيّرت هند."
+      },
+      {
+       "label": "لمن يقدّرها",
+       "result": null
+      }
+     ],
+     "back_line": "نظرت لينا حولها..."
+    }
+   ],
+   "other_side": "هند تعوّدت أن تجد كلّ شيء جاهزاً. ماذا ستتعلّم الآن بعد أن توقّفت لينا؟",
+   "magic_sentence": "من لا يقدّر تعبي، لا أتعب له.",
+   "feeling_word": "الحزن",
+   "mission": {
+    "text": "أخبري ماما عن شيء تفعلينه ولا ينتبه له أحد. هل ستستمرّين فيه؟",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d27",
+   "day": 27,
+   "shelf": 3,
+   "stage": 3,
+   "title": "زعفرانة",
+   "skill_en": "getting to know Baba with one question a day (Baba 4)",
+   "value_tags": [
+    "baba"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "قوالب أشكال",
+    "emoji": "🔷"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "في طريق المدرسة، كان بابا يقود بصمت، ولينا تنظر من النافذة. مثل كلّ يوم.",
+     "scene": "dawn road; Baba driving, Lina gazing out."
+    },
+    {
+     "n": 2,
+     "text": "فكّرت لينا: \"أعرف كلّ شيء عن نوف، ومريم، وحتى عن قطّة الجيران. لكن ماذا أعرف عن بابا؟\"",
+     "scene": "thought bubbles full of friends, and one bubble with a question mark over Baba."
+    },
+    {
+     "n": 3,
+     "text": "قرّرت أن تسأله سؤالاً واحداً كلّ صباح.",
+     "scene": "Lina holding up one finger, determined."
+    },
+    {
+     "n": 4,
+     "text": "سألت: \"بابا، كيف كنتَ وأنت في عمري؟\"",
+     "scene": "Lina leaning forward from the back seat."
+    },
+    {
+     "n": 5,
+     "text": "ضحك بابا: \"كنتُ أخاف من الماعز!\" \"الماعز؟!\" \"نعم. كان عند جدّكِ ماعز اسمها زعفرانة، تركض خلفي كلّ صباح!\"",
+     "scene": "Baba laughing at the wheel."
+    },
+    {
+     "n": 6,
+     "text": "تخيّلت لينا بابا صغيراً بثوب قصير، يركض في الحوش، وخلفه زعفرانة تمضغ طرف ثوبه.",
+     "scene": "little Baba running from a cheeky goat chewing his thobe."
+    },
+    {
+     "n": 7,
+     "text": "في الصباح التالي، سألته لينا: \"هل كنتَ خجولاً؟\" قال بابا: \"جدّاً. كنتُ أتكلّم بصوت صغير، ولا أنظر إلى أحد.\"",
+     "scene": "Baba glancing at Lina in the mirror."
+    },
+    {
+     "n": 8,
+     "text": "فتحت لينا عينيها: \"مثلي!\" قال بابا: \"مثلكِ تماماً. ثم تعلّمتُ شيئاً فشيئاً.\"",
+     "scene": "a split image: little shy Baba and Lina, side by side."
+    },
+    {
+     "n": 9,
+     "text": "وصارت الرحلة إلى المدرسة أقصر. كلّ صباح سؤال: ما اسم صديقكَ؟ ماذا كنتَ تشتري من المقصف؟",
+     "scene": "a calendar of mornings, each with a question bubble."
+    },
+    {
+     "n": 10,
+     "text": "\"مقصفنا كان فيه سمبوسة بنصف ريال!\" \"نصف ريال؟!\" ضحكت لينا حتى نسيت أن تشرب حليبها.",
+     "scene": "a tiny coin and a giant samosa."
+    },
+    {
+     "n": 11,
+     "text": "سألت عن زعفرانة. قال بابا: \"صارت صديقتي في النهاية. كنتُ أعطيها خبزاً، فتتركني أمرّ.\"",
+     "scene": "little Baba feeding bread to the goat."
+    },
+    {
+     "n": 12,
+     "text": "وفي آخر يوم من الأسبوع، قال بابا عند باب المدرسة: \"وأنا عندي سؤال لكِ: ماذا صنعتِ هذا الأسبوع في المرسم؟\"",
+     "scene": "Baba turning round in his seat, curious."
+    },
+    {
+     "n": 13,
+     "text": "وتكلّمت لينا... وتكلّمت... حتى نسيت أن تنزل من السيّارة!",
+     "scene": "Lina talking excitedly; the school gate waiting."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 3,
+     "prompt": "ماذا ستسأل لينا بابا أوّلاً؟",
+     "options": [
+      {
+       "label": "\"ما لونك المفضّل؟\"",
+       "result": "قال بابا: \"الأزرق.\" ولم يقل شيئاً آخر. سؤال قصير، وجواب قصير."
+      },
+      {
+       "label": "\"كم عمرك؟\"",
+       "result": "قال بابا: \"كبير بما يكفي!\" وضحك."
+      },
+      {
+       "label": "\"كيف كنتَ وأنت في عمري؟\"",
+       "result": null
+      }
+     ],
+     "back_line": "سألت لينا..."
+    },
+    {
+     "after_page": 6,
+     "prompt": "هل تظنّين أنّ بابا كان خجولاً وهو صغير؟",
+     "options": [
+      {
+       "label": "لا، بابا لا يخجل أبداً",
+       "result": "لنرَ ماذا قال بابا..."
+      },
+      {
+       "label": "نعم",
+       "result": "لنرَ ماذا قال بابا..."
+      },
+      {
+       "label": "لا أعرف، سأسأله",
+       "result": null
+      }
+     ],
+     "back_line": "في الصباح التالي..."
+    },
+    {
+     "after_page": 10,
+     "prompt": "ماذا ستسأل لينا بابا غداً؟",
+     "options": [
+      {
+       "label": "عن صديقه",
+       "result": "اسمه سعد، وكانا يتسابقان كلّ يوم إلى المدرسة!"
+      },
+      {
+       "label": "عن مدرسته",
+       "result": "كانت صغيرة، وفيها شجرة سدر كبيرة في الوسط."
+      },
+      {
+       "label": "عن زعفرانة",
+       "result": null
+      }
+     ],
+     "back_line": "سألت لينا..."
+    }
+   ],
+   "other_side": "بابا كان طفلاً مثلكِ يوماً. هل كان يحبّ أن يسأله أحد عن يومه؟",
+   "magic_sentence": "بابا، كيف كنتَ وأنت صغير؟",
+   "feeling_word": "القُرب",
+   "mission": {
+    "text": "اسألي بابا سؤالاً واحداً عن طفولته، في السيّارة أو على الغداء.",
+    "choices": []
+   },
+   "unlocks_baba_message": true,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d28",
+   "day": 28,
+   "shelf": 3,
+   "stage": 3,
+   "title": "الطماطم الغاضبة",
+   "skill_en": "losing well",
+   "value_tags": [
+    "problem-size",
+    "losing-well"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "ورق كريب",
+    "emoji": "🎉"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "في يوم الرياضة، كان السباق الكبير: من أوّل الساحة إلى آخرها.",
+     "scene": "a sports day yard with a finish line ribbon."
+    },
+    {
+     "n": 2,
+     "text": "لينا تحبّ الفوز. تحبّه كثيراً جداً. وتدرّبت أسبوعاً كاملاً في البيت.",
+     "scene": "Lina sprinting down the hallway at home; Jood timing her with a toy clock."
+    },
+    {
+     "n": 3,
+     "text": "صفّرت المعلّمة: فريييت! وانطلقت لينا كالصاروخ.",
+     "scene": "Lina blasting off with rocket flames at her heels."
+    },
+    {
+     "n": 4,
+     "text": "كانت الأولى... الأولى... ثم مرّت بجانبها مريم مثل الريح. وفازت مريم.",
+     "scene": "Maryam whooshing past; wind lines everywhere."
+    },
+    {
+     "n": 5,
+     "text": "وقفت لينا عند خطّ النهاية، ووجهها أحمر... ليس من الركض فقط. صار مثل طماطم غاضبة على وشك أن تنفجر.",
+     "scene": "Lina as an angry tomato with steam."
+    },
+    {
+     "n": 6,
+     "text": "أخذت لينا نفساً طويلاً، فهدأت الطماطم الغاضبة قليلاً، وصارت طماطم منزعجة فقط.",
+     "scene": "the tomato cooling down, steam fading."
+    },
+    {
+     "n": 7,
+     "text": "فكّرت: \"خسرتُ سباقاً واحداً. فيل أم نملة؟ ... نملة. لكنّها نملة كبيرة قليلاً.\"",
+     "scene": "a slightly chubby ant."
+    },
+    {
+     "n": 8,
+     "text": "مدّت لينا يدها، وأمسكت يد مريم كأنّها تحمل عصفوراً، وقالت: \"مبروك. سباق حلو.\"",
+     "scene": "a sporty handshake at the finish line."
+    },
+    {
+     "n": 9,
+     "text": "قالت مريم وهي تلهث: \"شكراً! كنتِ سريعة جداً. خفتُ أن تسبقيني!\"",
+     "scene": "Maryam panting, hands on knees."
+    },
+    {
+     "n": 10,
+     "text": "سألت لينا: \"كيف تركضين بهذه السرعة؟\" قالت مريم: \"في المغرب، كنتُ أركض كلّ يوم خلف الحافلة!\" فضحكتا.",
+     "scene": "a flashback of Maryam chasing a bus."
+    },
+    {
+     "n": 11,
+     "text": "صارت لينا ومريم تتسابقان كلّ فسحة. مرّة تفوز لينا، ومرّة تفوز مريم، ومرّة تصلان في اللحظة نفسها.",
+     "scene": "the two girls crossing the line together."
+    },
+    {
+     "n": 12,
+     "text": "قالت لينا لنفسها: \"الفوز جميل. لكنّ السباق مع صديقة أجمل من الفوز وحدي.\"",
+     "scene": "Lina and Maryam lying on the grass, laughing."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 5,
+     "prompt": "ماذا ستفعل لينا؟",
+     "options": [
+      {
+       "label": "تقول: \"مريم غشّت!\"",
+       "result": "لكنّ الجميع رأوا مريم تركض بعدل..."
+      },
+      {
+       "label": "ترمي قارورة الماء",
+       "result": "طارت القارورة... وبلّلت حذاء المعلّمة!"
+      },
+      {
+       "label": "تأخذ نفساً طويلاً",
+       "result": null
+      }
+     ],
+     "back_line": "لنرجع إلى خطّ النهاية..."
+    },
+    {
+     "after_page": 7,
+     "prompt": "ماذا ستقول لينا لمريم؟",
+     "options": [
+      {
+       "label": "لا شيء",
+       "result": "مرّت مريم بجانبها، ونظرت إليها تنتظر..."
+      },
+      {
+       "label": "\"سأهزمكِ في المرّة القادمة!\"",
+       "result": "ضحكت مريم: \"واخا! سنرى!\" هذا ممكن أيضاً، لكن..."
+      },
+      {
+       "label": "\"مبروك. سباق حلو.\"",
+       "result": null
+      }
+     ],
+     "back_line": "مشت لينا إلى مريم..."
+    },
+    {
+     "after_page": 10,
+     "prompt": "ماذا ستفعل لينا في الأسبوع القادم؟",
+     "options": [
+      {
+       "label": "تترك الركض",
+       "result": "لكنّها تحبّه... هل تتركه بسبب سباق واحد؟"
+      },
+      {
+       "label": "تتدرّب وحدها سرّاً",
+       "result": "ممكن! لكنّ التدريب مع صديقة أمتع."
+      },
+      {
+       "label": "تتدرّب مع مريم",
+       "result": null
+      }
+     ],
+     "back_line": "في الأسبوع القادم..."
+    }
+   ],
+   "other_side": "مريم كانت جديدة وخائفة في أوّل يوم. كيف شعرت عندما فازت أمام الجميع؟",
+   "magic_sentence": "مبروك. لعبة حلوة.",
+   "feeling_word": "الغيظ",
+   "mission": {
+    "text": "بعد أيّ لعبة اليوم، فوزاً أو خسارة، قولي: \"لعبة حلوة.\"",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d29",
+   "day": 29,
+   "shelf": 3,
+   "stage": 3,
+   "title": "لولو المفقودة",
+   "skill_en": "helping a sad friend in a practical way",
+   "value_tags": [
+    "comforting"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "ملصقات حيوانات",
+    "emoji": "🐾"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "جاءت نوف إلى المدرسة، وعيناها حمراوان.",
+     "scene": "Nouf at her desk, eyes puffy."
+    },
+    {
+     "n": 2,
+     "text": "لم تطرق الطاولة بقلمَين. لم تضحك. لم تتكلّم أبداً.",
+     "scene": "two pencils lying still; a silent desk."
+    },
+    {
+     "n": 3,
+     "text": "جلست لينا بجانبها، وسألت: \"تريدين أن تتكلّمي، أم نجلس فقط؟\"",
+     "scene": "Lina sitting quietly beside Nouf."
+    },
+    {
+     "n": 4,
+     "text": "قالت نوف بصوت صغير: \"قطّتي لولو ضاعت. خرجت أمس ولم ترجع.\"",
+     "scene": "a small photo of a white cat with one black ear."
+    },
+    {
+     "n": 5,
+     "text": "لم تعرف لينا ماذا تقول. فهي لا تحبّ الكلام الطويل.",
+     "scene": "Lina's empty thought bubble."
+    },
+    {
+     "n": 6,
+     "text": "فكّرت لينا: \"لا أعرف كلاماً كثيراً. لكنّي أعرف أن أرسم!\"",
+     "scene": "a lightbulb shaped like a crayon."
+    },
+    {
+     "n": 7,
+     "text": "قالت: \"نرسم لوحات: قطّة مفقودة! ونعلّقها في الحيّ.\"",
+     "scene": "Lina holding up a blank poster."
+    },
+    {
+     "n": 8,
+     "text": "في الفسحة، رسمتا لولو: بيضاء، بأذن سوداء واحدة، وذيل يشبه علامة استفهام.",
+     "scene": "two girls drawing; a cat with a question-mark tail."
+    },
+    {
+     "n": 9,
+     "text": "ساعدتهما مريم في الكتابة، وجنى في القصّ... وحتى هند أعطتهما شريطاً لاصقاً!",
+     "scene": "the whole group working; Hind handing over tape."
+    },
+    {
+     "n": 10,
+     "text": "بعد المدرسة، علّقت نوف وأمّها اللوحات في الحيّ. وفي المساء، رنّ الهاتف.",
+     "scene": "posters on lamp posts; a phone ringing at night."
+    },
+    {
+     "n": 11,
+     "text": "كانت الجارة: \"وجدنا قطّة بأذن سوداء... نائمة في سلّة الغسيل، فوق ثياب زوجي!\"",
+     "scene": "Lulu curled up in a laundry basket on a big thobe."
+    },
+    {
+     "n": 12,
+     "text": "وفي الصباح، جاءت نوف إلى المدرسة وهي تطرق الطاولة بقلمَين: تَك. تَك. تَك تَك تَك. ولم تنزعج لينا هذه المرّة أبداً.",
+     "scene": "Nouf drumming happily; Lina smiling and touching her nose twice as a joke."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 2,
+     "prompt": "ماذا ستفعل لينا؟",
+     "options": [
+      {
+       "label": "تسألها عشرين سؤالاً",
+       "result": "\"ماذا حدث؟ لماذا؟ متى؟ من؟\" فوضعت نوف رأسها على الطاولة."
+      },
+      {
+       "label": "تتركها وحدها",
+       "result": "ربما تريد نوف أن تبقى وحدها... لكن ربما لا."
+      },
+      {
+       "label": "تجلس بجانبها وتسأل سؤالاً واحداً",
+       "result": null
+      }
+     ],
+     "back_line": "اقتربت لينا..."
+    },
+    {
+     "after_page": 5,
+     "prompt": "ما الذي يساعد نوف أكثر برأيكِ؟",
+     "options": [
+      {
+       "label": "أن تقول لينا: \"لا تحزني!\"",
+       "result": "قالتها... لكنّ الحزن لا يسمع كلمة \"لا\"."
+      },
+      {
+       "label": "أن تقول: \"سأشتري لكِ قطّة غيرها\"",
+       "result": "قالت نوف: \"لا أريد غيرها، أريد لولو!\""
+      },
+      {
+       "label": "أن تقدّم مساعدة عمليّة",
+       "result": null
+      }
+     ],
+     "back_line": "فكّرت لينا..."
+    },
+    {
+     "after_page": 9,
+     "prompt": "أين تظنّين أنّ لولو موجودة؟",
+     "options": [
+      {
+       "label": "في بيت الجيران",
+       "result": "ربما..."
+      },
+      {
+       "label": "فوق شجرة",
+       "result": "ربما..."
+      },
+      {
+       "label": "في مكان غريب جداً",
+       "result": null
+      }
+     ],
+     "back_line": "بعد المدرسة..."
+    }
+   ],
+   "other_side": "نوف لم تقُل إنّها تحتاج مساعدة. كيف عرفت لينا؟",
+   "magic_sentence": "تريدين أن تتكلّمي، أم نجلس فقط؟",
+   "feeling_word": "القلق",
+   "mission": {
+    "text": "إذا رأيتِ اليوم أحداً حزيناً (أختكِ، أو صديقتكِ، أو ماما)، اسأليه: \"هل تحتاج مساعدة؟\"",
+    "choices": []
+   },
+   "unlocks_baba_message": false,
+   "locked_until_shelf_done": false,
+   "images": []
+  },
+  {
+   "id": "d30",
+   "day": 30,
+   "shelf": 3,
+   "stage": 3,
+   "title": "صندوق لينا",
+   "skill_en": "my toolbox, and a morning greeting I choose (Baba 5)",
+   "value_tags": [
+    "baba",
+    "affection-choice"
+   ],
+   "revisits": [],
+   "tool": {
+    "name": "عجينة الإسكويشي",
+    "emoji": "🧸",
+    "note": "final studio project unlocks"
+   },
+   "pages": [
+    {
+     "n": 1,
+     "text": "في آخر يوم من الشهر، أخرجت لينا صندوقاً صغيراً من تحت سريرها.",
+     "scene": "Lina pulling a decorated box from under her bed."
+    },
+    {
+     "n": 2,
+     "text": "كان فيه كلّ الجمل السحريّة التي جمعتها، مكتوبة على أوراق ملوّنة.",
+     "scene": "colourful folded notes spilling out."
+    },
+    {
+     "n": 3,
+     "text": "قرأت: \"هذا يزعجني، لكنّي أريد أن نكمل معاً.\" فتذكّرت نقّار الخشب في الطاولة، وضحكت.",
+     "scene": "a ghostly little woodpecker waving from the note."
+    },
+    {
+     "n": 4,
+     "text": "\"فيل أم نملة؟\" تذكّرت الدعسوقة. \"لا أعرف قصّتها كاملة.\" تذكّرت جنى وبيت الكرتون.",
+     "scene": "memories floating as bubbles: the ladybird, the cardboard house."
+    },
+    {
+     "n": 5,
+     "text": "في قاع الصندوق، وجدت لينا ورقة فارغة. \"لماذا هذه فارغة؟\"",
+     "scene": "one blank pink note at the bottom of the box."
+    },
+    {
+     "n": 6,
+     "text": "فكّرت: \"ربما لأنّ آخر جملة... لم أقلها بعد.\"",
+     "scene": "Lina holding the blank note up to the window light."
+    },
+    {
+     "n": 7,
+     "text": "في الصباح، استيقظت لينا قبل الجميع. وسمعت بابا في المطبخ يصبّ الشاي.",
+     "scene": "a dark early morning; light from the kitchen door."
+    },
+    {
+     "n": 8,
+     "text": "كان بابا في المطبخ بثوبه الأبيض، يقرأ الأخبار على هاتفه.",
+     "scene": "Baba with tea and phone."
+    },
+    {
+     "n": 9,
+     "text": "قالت لينا: \"صباح الخير يا بابا.\" فقال: \"صباح الخير يا عالمتي!\"",
+     "scene": "Baba looking up, smiling."
+    },
+    {
+     "n": 10,
+     "text": "وقفت لينا لحظة. وتذكّرت كلّ ما عرفته عنه هذا الشهر: الشاي، والسيّارة، والبوّابة تحت الشمس، وزعفرانة.",
+     "scene": "memory bubbles: the car, the gate, the goat, the drawing."
+    },
+    {
+     "n": 11,
+     "text": "قال بابا بصوت هادئ: \"أتعرفين؟ هذا أحلى صباح في الشهر كلّه.\"",
+     "scene": "Baba and Lina in the morning light."
+    },
+    {
+     "n": 12,
+     "text": "رجعت لينا إلى غرفتها، وكتبت على الورقة الفارغة: \"صباح الخير يا بابا... وأنا أختار كيف أسلّم.\"",
+     "scene": "Lina writing on the pink note."
+    },
+    {
+     "n": 13,
+     "text": "وضعتها في الصندوق وأغلقته. كان الصندوق ممتلئاً. وعرفت لينا أنّ الشهر القادم سيحتاج... صندوقاً أكبر!",
+     "scene": "an overflowing box; Lina grinning at a much bigger empty box."
+    }
+   ],
+   "questions": [
+    {
+     "after_page": 4,
+     "prompt": "أيّ جملة سحرية تحبّينها أنتِ أكثر؟",
+     "options": [
+      {
+       "label": "\"صوت الراديو\"",
+       "result": "اختيار جميل! هذه الجملة ستبقى في صندوقكِ."
+      },
+      {
+       "label": "\"إذا لم تنجح خطة أ، عندي خطة ب\"",
+       "result": "اختيار جميل! هذه الجملة ستبقى في صندوقكِ."
+      },
+      {
+       "label": "\"من لا يقدّر تعبي، لا أتعب له\"",
+       "result": "اختيار جميل! هذه الجملة ستبقى في صندوقكِ."
+      }
+     ],
+     "back_line": "ثم وجدت لينا شيئاً غريباً...",
+     "all_continue": true
+    },
+    {
+     "after_page": 7,
+     "prompt": "ماذا ستفعل لينا؟",
+     "options": [
+      {
+       "label": "ترجع إلى السرير",
+       "result": "البطانية دافئة... لكنّ الورقة الفارغة تنتظر."
+      },
+      {
+       "label": "توقظ جود أوّلاً",
+       "result": "فتحت جود عيناً واحدة، وقالت: \"زززز\"، ونامت من جديد!"
+      },
+      {
+       "label": "تذهب لترى بابا",
+       "result": null
+      }
+     ],
+     "back_line": "مشت لينا إلى المطبخ..."
+    },
+    {
+     "after_page": 10,
+     "prompt": "كيف ستسلّم لينا على بابا اليوم؟",
+     "options": [
+      {
+       "label": "عناق",
+       "result": "عانقته لينا، فوضع بابا الكوب جانباً، وعانقها بذراعيه الاثنتين."
+      },
+      {
+       "label": "قبلة على رأسه",
+       "result": "قبّلت لينا رأس بابا كما يفعل الكبار مع آبائهم. فسكت بابا من الدهشة... ثم ابتسم."
+      },
+      {
+       "label": "كفّ بكفّ",
+       "result": "رفعت يدها: تشاك! فضحك بابا وقال: \"هذه أقوى كفّ في البيت!\""
+      }
+     ],
+     "back_line": "",
+     "note": "Every option is a full, happy path. She chooses.",
+     "all_continue": true
+    }
+   ],
+   "other_side": "بابا أيضاً جمع ذكريات معكِ هذا الشهر. ماذا تظنّين أنّه يتذكّر؟",
+   "magic_sentence": "صباح الخير يا بابا... وأنا أختار كيف أسلّم.",
+   "feeling_word": "الفخر",
+   "mission": {
+    "text": "سلّمي على بابا غداً صباحاً: عناق، أو قبلة على رأسه، أو كفّ بكفّ. أنتِ تختارين.",
+    "choices": []
+   },
+   "unlocks_baba_message": true,
+   "locked_until_shelf_done": true,
+   "images": []
+  }
+ ]
+}

@@ -66,6 +66,26 @@ Always use the Home Screen icon. The icon and a Safari tab keep separate progres
 - **Code:** `garden.js`, with styles at the end of `style.css`. The drawings are SVG inside `garden.js`. The sounds are Web Audio. Progress is `garden.done` in `tc:maria:math`, so the backup file carries it.
 - **Tests:** `node scripts/test_garden.js`.
 
+## مكتبتي (Maria's story library)
+
+- A green «مكتبتي» chip on both Homes opens a reading room. It has a wooden bookcase with three shelves of ten books, a reading path of 30 circles, and a lamp and window. Dust floats in the lamp light, and a quiet room tone plays (the sound button turns it off).
+- **Opening a book:** any book on the open shelf, in any order, but only one new book a day ("كتاب جديد غداً!"). Rereading is always allowed and gives nothing new. Day 30 opens after the other nine on its shelf. The next shelf's glass door swings open when a shelf is finished.
+- **Picking a book:** it slides out, turns to its cover, floats to the middle and opens on its right-hand hinge.
+- **Reading:** pages turn like an Arabic book. Swipe to the right (or tap the left side) for the next page. The page follows the finger. Sideways iPad shows two pages; upright shows one.
+- **In the book:**
+  - Pause questions have three buttons and nothing right or wrong.
+  - The five end pages: من الجهة الأخرى، جملة سحرية (into her notebook), كلمة الشعور (into her feelings dictionary), أداة جديدة للمرسم (into the studio), and مهمّة اليوم («فعلتها!» with a feeling, or «لاحقاً»).
+  - The book then goes back on its shelf with a gold ribbon and a «قرأتُه ✓» seal, and the next circle on the path fills with its tool.
+  - At 10, 20 and 30 books there is a bigger celebration.
+- **Stories:** `stories.json`, built by `python3 scripts/build_stories.py` from the story files in `content/stories/`. Those files and the roadmap are kept off GitHub (`.gitignore`). Every word is copied exactly, tashkeel included; the script prints a validation report.
+  - To add stories later, follow section 7 of the roadmap: add the new file, rebuild, and never reorder.
+- **Pictures:** `assets/stories/dXX/pYY.webp` and `cover.webp`. Soft placeholders show until they exist; `?dev=1` shows each page's scene note. Rebuild `stories.json` after adding pictures so they are listed and cached offline.
+- **Sounds:** real CC0 recordings in `assets/audio/` (sources in `assets/audio/CREDITS.md`). The glass chime and the celebrations are made in code.
+- **Fonts:** Noto Naskh Arabic for the story text, Baloo Bhaijaan 2 for titles and buttons (OFL, in `fonts/`).
+- **Code:** `library.js`, with styles at the end of `style.css`. Progress is in `tc:maria:lib` and goes in the same backup file.
+- **Tests:** `node scripts/test_library.js`.
+- **Next phases:** the studio (مرسمي) with its shelves, notebook, dictionary and mission board; the parent area on the lamp with a PIN; Baba's messages; the craft projects; voice recording; the reading-path design from her reference.
+
 ## Changing the cards
 
 - Maria's cards are in `sets.json`; add new sets at the end. Mama's are in `prepositions.json` (keep each card `id` unchanged, because progress is stored by `id`), then run the export script for the Prepositions app.
