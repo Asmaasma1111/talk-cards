@@ -494,9 +494,11 @@ function mount(api) {
     const lf = R.L[i], s = R.s;
     if (lf.kind === 'page' || lf.kind === 'q') {
       const key = 'p' + String(lf.page.n).padStart(2, '0');
-      const img = s.images.includes(key) ? `<img src="assets/stories/${s.id}/${key}.webp" alt="" draggable="false">` : placeholderSVG(s.id + key, s.day);
+      const src = `assets/stories/${s.id}/${key}.webp`;
+      const has = s.images.includes(key);
+      const img = has ? `<img class="lb-pic" src="${src}" alt="" draggable="false">` : placeholderSVG(s.id + key, s.day);
       const sceneNote = api.DEV ? `<span class="lb-scene">${esc(lf.page.scene)}</span>` : '';
-      return `<div class="lb-art${lf.kind === 'q' ? ' dim' : ''}">${img}${sceneNote}${lf.kind === 'q' ? '<span class="lb-qmark">؟</span>' : ''}</div>`;
+      return `<div class="lb-art${has ? ' pic' : ''}${lf.kind === 'q' ? ' dim' : ''}">${img}${sceneNote}${lf.kind === 'q' ? '<span class="lb-qmark">؟</span>' : ''}</div>`;
     }
     const ic = { other: '🔄', magic: '✨', feeling: '💬', tool: s.tool.emoji, mission: '🎯' }[lf.kind];
     return `<div class="lb-art end ${lf.kind}"><span class="lb-end-ic">${ic}</span></div>`;

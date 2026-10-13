@@ -1426,6 +1426,9 @@ body[data-profile="mama"] .deck-lib { display: none; }
 .pg-art { position: relative; flex: none; height: 47%; }
 .pg-s .lb-art { inset: 14px 18px 4px 14px; border-radius: 14px; }
 .lb-art img, .lb-art .lb-ph { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; -webkit-user-drag: none; }
+/* a picture on its own page of a spread: the whole picture, set on the page like a print in a picture book */
+.pg-r .lb-art.pic { display: flex; align-items: center; justify-content: center; overflow: visible; }
+.pg-r .lb-art.pic img.lb-pic { position: relative; inset: auto; width: 100%; height: auto; max-height: 100%; border-radius: 14px; box-shadow: 0 8px 18px rgba(70, 40, 18, .2), 0 0 0 6px #FFFFFF; transform: rotate(-.8deg); }
 .lb-art.dim .lb-ph, .lb-art.dim img { filter: saturate(.6) brightness(1.08); opacity: .55; }
 .lb-qmark { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 120px; height: 120px; display: grid; place-items: center; font-size: 86px; font-weight: 800; line-height: 1; padding-top: 10px; color: #fff; background: var(--gum); border: 4px solid #fff; border-radius: 50%; box-shadow: 0 8px 20px rgba(255, 111, 168, .45); }
 .lb-scene { position: absolute; left: 8px; right: 8px; bottom: 8px; padding: 4px 8px; font: 12px/1.35 var(--en); color: #777; background: rgba(255, 255, 255, .85); border-radius: 6px; direction: ltr; text-align: left; }
