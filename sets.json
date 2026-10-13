@@ -66,66 +66,66 @@
       "cues": [["🎲", "هل تلعبين؟"], ["🙌", "هيا نلعب"], ["🏁", "استعداد، انطلاق"], ["👉", "دوري"], ["🏆", "من فاز؟"]],
       "a": "Do you want to play? Let's play! Ready, set, go! It's my turn. I won!" }},
     { "id": 9, "stage": 2, "title": "Things", "cards": [
-      { "q": "What's this?", "a": "It's a pencil.", "hint": "", "ask": "this?" },
-      { "q": "What color is it?", "a": "It's yellow.", "hint": "", "ask": "color?" },
-      { "q": "Is it big or small?", "a": "It's small.", "hint": "", "ask": "big or small?" },
-      { "q": "Whose is it?", "a": "It's mine.", "hint": "لمن هذا؟", "ask": "whose?" }
+      { "q": "What's this?", "a": "It's a pencil.", "hint": "", "ask": "this?", "do": "Ask about the thing.", "do_ar": "اسألي عن الشيء" },
+      { "q": "What color is it?", "a": "It's yellow.", "hint": "", "ask": "color?", "do": "Ask about the color.", "do_ar": "اسألي عن اللون" },
+      { "q": "Is it big or small?", "a": "It's small.", "hint": "", "ask": "big or small?", "do": "Ask about the size.", "do_ar": "اسألي عن الحجم" },
+      { "q": "Whose is it?", "a": "It's mine.", "hint": "لمن هذا؟", "ask": "whose?", "do": "Ask who it belongs to.", "do_ar": "اسألي لمن هذا الشيء" }
     ], "talk": { "chain": "things", "prompt": "Tell me about your pencil!",
       "cues": [["✏️", "this?"], ["🎨", "color?"], ["📏", "big or small?"], ["🙋", "whose?"]],
       "a": "This is my pencil. It's yellow. It's small. It's mine." }},
     { "id": 10, "stage": 2, "title": "Where is it?", "cards": [
-      { "q": "Where's your bag?", "a": "It's on the chair.", "hint": "أين حقيبتكِ؟", "ask": "bag?" },
-      { "q": "Is it in the box?", "a": "Yes, it is. / No, it isn't.", "hint": "هل هو في الصندوق؟", "ask": "in the box?" },
-      { "q": "Where's Zaineb?", "a": "She's in the kitchen.", "hint": "", "ask": "Zaineb?" },
-      { "q": "Where are my keys?", "a": "They're under the table.", "hint": "تحت = under", "ask": "keys?" }
+      { "q": "Where's your bag?", "a": "It's on the chair.", "hint": "أين حقيبتكِ؟", "ask": "bag?", "do": "Ask about the place.", "do_ar": "اسألي عن المكان" },
+      { "q": "Is it in the box?", "a": "Yes, it is. / No, it isn't.", "hint": "هل هو في الصندوق؟", "ask": "in the box?", "do": "Ask a yes or no question.", "do_ar": "اسألي سؤالًا جوابه نعم أو لا" },
+      { "q": "Where's Zaineb?", "a": "She's in the kitchen.", "hint": "", "ask": "Zaineb?", "do": "Ask about the place.", "do_ar": "اسألي عن المكان" },
+      { "q": "Where are my keys?", "a": "They're under the table.", "hint": "تحت = under", "ask": "keys?", "do": "Ask about the place.", "do_ar": "اسألي عن المكان" }
     ], "talk": { "chain": "things", "prompt": "Tell me about your pencil and your bag!",
       "cues": [["✏️", "this?"], ["🎨", "color?"], ["📏", "big or small?"], ["🙋", "whose?"], ["🎒", "where?"], ["🪑", "bag?"]],
       "a": "This is my pencil. It's yellow. It's small. It's mine. It's in my bag. My bag is on the chair." }},
     { "id": 11, "stage": 2, "title": "Numbers and time", "cards": [
-      { "q": "How many pencils do you have?", "a": "I have three pencils.", "hint": "كم قلمًا لديكِ؟", "ask": "how many?" },
-      { "q": "What time is it, please?", "a": "It's seven o'clock.", "hint": "كم الساعة من فضلك؟", "ask": "time?" },
-      { "q": "When do you go to school?", "a": "At six o'clock.", "hint": "", "ask": "school? when?" },
-      { "q": "How old is Zaineb?", "a": "She's three.", "hint": "", "ask": "Zaineb? old?" }
+      { "q": "How many pencils do you have?", "a": "I have three pencils.", "hint": "كم قلمًا لديكِ؟", "ask": "how many?", "do": "Ask about the number.", "do_ar": "اسألي عن العدد" },
+      { "q": "What time is it, please?", "a": "It's seven o'clock.", "hint": "كم الساعة من فضلك؟", "ask": "time?", "do": "Ask about the time.", "do_ar": "اسألي عن الوقت" },
+      { "q": "When do you go to school?", "a": "At six o'clock.", "hint": "", "ask": "school? when?", "do": "Ask about the time.", "do_ar": "اسألي عن الوقت" },
+      { "q": "How old is Zaineb?", "a": "She's three.", "hint": "", "ask": "Zaineb? old?", "do": "Ask about the age.", "do_ar": "اسألي عن العمر" }
     ], "talk": { "chain": "numbers", "prompt": "Tell me some numbers!",
       "cues": [["✏️", "pencils?"], ["👧", "Zaineb's age?"], ["🏫", "school time?"]],
       "a": "I have three pencils. My sister Zaineb is three. I go to school at six o'clock." }},
     { "id": 12, "stage": 2, "title": "My day", "cards": [
-      { "q": "What time do you wake up?", "a": "I wake up at five.", "hint": "متى تستيقظين؟", "ask": "wake up?" },
-      { "q": "What do you eat for breakfast?", "a": "I eat ___.", "hint": "الفطور = breakfast", "ask": "breakfast?" },
-      { "q": "How do you go to school?", "a": "I go by car.", "hint": "", "ask": "how? school?" },
-      { "q": "What do you do after school?", "a": "I go to the gym.", "hint": "بعد المدرسة", "ask": "after school?" }
+      { "q": "What time do you wake up?", "a": "I wake up at five.", "hint": "متى تستيقظين؟", "ask": "wake up?", "do": "Ask about the time.", "do_ar": "اسألي عن الوقت" },
+      { "q": "What do you eat for breakfast?", "a": "I eat ___.", "hint": "الفطور = breakfast", "ask": "breakfast?", "do": "Ask about the food.", "do_ar": "اسألي عن الطعام" },
+      { "q": "How do you go to school?", "a": "I go by car.", "hint": "", "ask": "how? school?", "do": "Ask about the way.", "do_ar": "اسألي عن الطريقة" },
+      { "q": "What do you do after school?", "a": "I go to the gym.", "hint": "بعد المدرسة", "ask": "after school?", "do": "Ask what Mom does.", "do_ar": "اسألي ماذا تفعل ماما" }
     ], "talk": { "chain": "day", "prompt": "Tell me about your morning!",
       "cues": [["⏰", "wake up?"], ["🍳", "breakfast?"], ["🚗", "school?"], ["🏋️", "after school?"]],
       "a": "I wake up at five. I eat ___ for breakfast. I go to school by car at six o'clock. After school, I go to the gym." }},
     { "id": 13, "stage": 2, "title": "School", "cards": [
-      { "q": "What's your favorite subject?", "a": "My favorite subject is Arabic.", "hint": "المادّة المفضّلة", "ask": "subject?" },
-      { "q": "Who's your teacher?", "a": "My teacher is Ms. ___.", "hint": "", "ask": "teacher?" },
-      { "q": "What do you do in class?", "a": "I read and write.", "hint": "", "ask": "class?" },
-      { "q": "Do you like your school?", "a": "Yes, I do.", "hint": "", "ask": "like school?" }
+      { "q": "What's your favorite subject?", "a": "My favorite subject is Arabic.", "hint": "المادّة المفضّلة", "ask": "subject?", "do": "Ask about Mom's favorite.", "do_ar": "اسألي عن الشيء المفضّل عند ماما" },
+      { "q": "Who's your teacher?", "a": "My teacher is Ms. ___.", "hint": "", "ask": "teacher?", "do": "Ask about the person.", "do_ar": "اسألي عن الشخص" },
+      { "q": "What do you do in class?", "a": "I read and write.", "hint": "", "ask": "class?", "do": "Ask what Mom does.", "do_ar": "اسألي ماذا تفعل ماما" },
+      { "q": "Do you like your school?", "a": "Yes, I do.", "hint": "", "ask": "like school?", "do": "Ask a yes or no question.", "do_ar": "اسألي سؤالًا جوابه نعم أو لا" }
     ], "talk": { "chain": "day", "prompt": "Tell me about your morning and your school!",
       "cues": [["⏰", "wake up?"], ["🍳", "breakfast?"], ["🚗", "school?"], ["🏋️", "after school?"], ["📚", "subject?"], ["👩‍🏫", "teacher?"], ["✍️", "class?"], ["❤️", "like school?"]],
       "a": "I wake up at five. I eat ___ for breakfast. I go to school by car at six o'clock. After school, I go to the gym. My favorite subject is Arabic. My teacher is Ms. ___. In class, I read and write. I like my school." }},
     { "id": 14, "stage": 2, "title": "I can", "cards": [
-      { "q": "Can you swim?", "a": "Yes, I can! I'm a great swimmer.", "hint": "هل تستطيعين السباحة؟", "ask": "swim?" },
-      { "q": "What can you do?", "a": "I can draw and jump.", "hint": "", "ask": "can do?" },
-      { "q": "Can you draw a cat?", "a": "Yes, I can!", "hint": "", "ask": "draw a cat?" },
-      { "q": "Can I play with you, please?", "a": "Yes, you can!", "hint": "هل ألعب معكِ من فضلك؟", "ask": "play with you?" }
+      { "q": "Can you swim?", "a": "Yes, I can! I'm a great swimmer.", "hint": "هل تستطيعين السباحة؟", "ask": "swim?", "do": "Ask if Mom can do it.", "do_ar": "اسألي هل تستطيع ماما ذلك" },
+      { "q": "What can you do?", "a": "I can draw and jump.", "hint": "", "ask": "can do?", "do": "Ask what Mom can do.", "do_ar": "اسألي ماذا تستطيع ماما أن تفعل" },
+      { "q": "Can you draw a cat?", "a": "Yes, I can!", "hint": "", "ask": "draw a cat?", "do": "Ask if Mom can do it.", "do_ar": "اسألي هل تستطيع ماما ذلك" },
+      { "q": "Can I play with you, please?", "a": "Yes, you can!", "hint": "هل ألعب معكِ من فضلك؟", "ask": "play with you?", "do": "Ask politely.", "do_ar": "اسألي بأدب" }
     ], "talk": { "chain": "can", "prompt": "What can you do?",
       "cues": [["🏊", "swim?"], ["🥇", "great swimmer?"], ["🤸", "draw and jump?"], ["🐱", "draw a cat?"]],
       "a": "I can swim. I'm a great swimmer! I can draw and jump. I can draw a cat!" }},
     { "id": 15, "stage": 2, "title": "Right now", "cards": [
-      { "q": "What are you doing?", "a": "I'm drawing.", "hint": "ماذا تفعلين الآن؟", "ask": "doing?" },
-      { "q": "What's Zaineb doing?", "a": "She's sleeping.", "hint": "", "ask": "Zaineb doing?" },
-      { "q": "Are you listening?", "a": "Yes, I am.", "hint": "", "ask": "listening?" },
-      { "q": "What are we doing today?", "a": "We're going to ___.", "hint": "", "ask": "today?" }
+      { "q": "What are you doing?", "a": "I'm drawing.", "hint": "ماذا تفعلين الآن؟", "ask": "doing?", "do": "Ask what Mom is doing now.", "do_ar": "اسألي ماذا تفعل ماما الآن" },
+      { "q": "What's Zaineb doing?", "a": "She's sleeping.", "hint": "", "ask": "Zaineb doing?", "do": "Ask what Zaineb is doing now.", "do_ar": "اسألي ماذا تفعل زينب الآن" },
+      { "q": "Are you listening?", "a": "Yes, I am.", "hint": "", "ask": "listening?", "do": "Ask a yes or no question.", "do_ar": "اسألي سؤالًا جوابه نعم أو لا" },
+      { "q": "What are we doing today?", "a": "We're going to ___.", "hint": "", "ask": "today?", "do": "Ask about today's plan.", "do_ar": "اسألي عن خطة اليوم" }
     ], "talk": { "chain": "can", "prompt": "What can you do, and what's happening now?",
       "cues": [["🏊", "swim?"], ["🥇", "great swimmer?"], ["🤸", "draw and jump?"], ["🎨", "now?"], ["😴", "Zaineb?"], ["📅", "today?"]],
       "a": "I can swim. I'm a great swimmer! I can draw and jump. Right now, I'm drawing. Zaineb is sleeping. Today, we're going to ___." }},
     { "id": 16, "stage": 2, "title": "Food", "cards": [
-      { "q": "What's your favorite food?", "a": "My favorite food is ___.", "hint": "", "ask": "food?" },
-      { "q": "Do you like vegetables?", "a": "Yes, I do. / Not really.", "hint": "الخضار = vegetables", "ask": "vegetables?" },
-      { "q": "What do you want for lunch?", "a": "I want ___, please.", "hint": "الغداء = lunch", "ask": "lunch?" },
-      { "q": "Is it good?", "a": "Yes, it's yummy!", "hint": "", "ask": "good?" }
+      { "q": "What's your favorite food?", "a": "My favorite food is ___.", "hint": "", "ask": "food?", "do": "Ask about Mom's favorite.", "do_ar": "اسألي عن الشيء المفضّل عند ماما" },
+      { "q": "Do you like vegetables?", "a": "Yes, I do. / Not really.", "hint": "الخضار = vegetables", "ask": "vegetables?", "do": "Ask a yes or no question.", "do_ar": "اسألي سؤالًا جوابه نعم أو لا" },
+      { "q": "What do you want for lunch?", "a": "I want ___, please.", "hint": "الغداء = lunch", "ask": "lunch?", "do": "Ask what Mom wants.", "do_ar": "اسألي ماذا تريد ماما" },
+      { "q": "Is it good?", "a": "Yes, it's yummy!", "hint": "", "ask": "good?", "do": "Ask a yes or no question.", "do_ar": "اسألي سؤالًا جوابه نعم أو لا" }
     ], "talk": { "chain": "food", "prompt": "Tell me about food!",
       "cues": [["🍽️", "favorite food?"], ["🥦", "vegetables?"], ["🥪", "lunch?"], ["😋", "good?"]],
       "a": "My favorite food is ___. I like vegetables. For lunch, I want ___. It's yummy!" }},

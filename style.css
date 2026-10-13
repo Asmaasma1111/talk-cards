@@ -253,6 +253,15 @@ button.badge:active { transform: scale(.9); }
   background: rgba(255, 255, 255, .55);
   unicode-bidi: plaintext;
 }
+.do {
+  margin-bottom: .45em;
+  padding: 4px 18px;
+  font-size: 32px;
+  line-height: 1.3;
+  font-weight: 700;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .55);
+}
 .foot { display: flex; align-items: center; justify-content: space-between; min-height: 64px; gap: 12px; }
 .foot .spacer { width: 64px; height: 64px; }
 .round {
@@ -380,6 +389,7 @@ button.badge:active { transform: scale(.9); }
   .foot .spacer { width: 56px; height: 56px; }
   .hint-btn { min-height: 50px; font-size: 22px; }
   .hint { font-size: 32px; }
+  .do { font-size: 26px; }
   .cel-badge { width: 140px; height: 140px; font-size: 68px; }
   .cel-badge svg { width: 80px; height: 80px; }
 }

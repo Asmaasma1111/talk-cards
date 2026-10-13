@@ -46,7 +46,8 @@ function buildCatalog(json) {
       const a = { id: `a${s.id}.${i}`, kind: 'ans', set: s.id, stage: s.stage, q: c.q, a: c.a, hint: c.hint || '', order: n++ };
       CARD[a.id] = a; set.ans.push(a.id);
       if (c.ask) {
-        const k = { id: `k${s.id}.${i}`, kind: 'ask', set: s.id, stage: s.stage, q: c.q, cue: c.ask, order: n++ };
+        const k = { id: `k${s.id}.${i}`, kind: 'ask', set: s.id, stage: s.stage, q: c.q, cue: c.ask,
+                    do: c.do || '', doAr: c.do_ar || '', order: n++ };
         CARD[k.id] = k; set.ask.push(k.id);
       }
     });
@@ -795,6 +796,8 @@ function renderCard(c) {
   label.className = 'label' + (c.kind === 'ask' ? ' ask' : c.kind === 'talk' ? ' talk' : '');
   label.textContent = c.kind === 'ask' ? 'Your turn to ask!' : c.kind === 'talk' ? 'Talk time!' : warm ? 'Remember?' : 'Answer!';
   const fArea = document.createElement('div'); fArea.className = 'text-area';
+  // A short ask cue ("bag?") gets a plain English instruction above it ("Ask about the place."); its Arabic is behind help.
+  if (c.kind === 'ask' && c.do) fArea.append(Object.assign(document.createElement('div'), { className: 'do', textContent: c.do }));
   const fTxt = document.createElement('div'); fTxt.className = 'txt'; fArea.append(fTxt);
   const frontText = c.kind === 'ask' ? c.cue : c.kind === 'talk' ? c.prompt : c.q;
   const speakFront = c.kind === 'ans' || c.kind === 'talk' || (c.stage === 3 && !ARABIC.test(c.cue));
@@ -821,14 +824,15 @@ function renderCard(c) {
     });
     if (c.stage < 3) fArea.append(cues);
   }
-  if ((c.kind === 'ans' && c.hint) || (cues && c.stage >= 3)) {
+  if ((c.kind === 'ans' && c.hint) || (c.kind === 'ask' && c.doAr) || (cues && c.stage >= 3)) {
     const hb = document.createElement('button');
     hb.className = 'hint-btn'; hb.lang = 'ar'; hb.dir = 'rtl'; hb.textContent = 'مساعدة';
     hb.addEventListener('click', e => {
       e.stopPropagation();
+      if (hb.classList.contains('used')) return;   // help shows once
       if (cues) fArea.append(cues);
       else {
-        const h = document.createElement('div'); h.className = 'hint'; h.lang = 'ar'; h.dir = 'rtl'; h.textContent = c.hint;
+        const h = document.createElement('div'); h.className = 'hint'; h.lang = 'ar'; h.dir = 'rtl'; h.textContent = c.kind === 'ask' ? c.doAr : c.hint;
         fArea.append(h);
       }
       hb.classList.add('used');
