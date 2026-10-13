@@ -82,7 +82,8 @@ async function cacheStories(cache) {
   if (APP !== 'talk-cards') return;
   try {
     const d = await (await fetch('stories.json', { cache: 'no-cache' })).json();
-    const files = d.stories.flatMap(s => s.images.map(k => `assets/stories/${s.id}/${k}.webp`));
+    // 'no-cache' asks the server each time, so a redone picture (same file name) is not taken from the browser's own cache
+    const files = d.stories.flatMap(s => s.images.map(k => new Request(`assets/stories/${s.id}/${k}.webp`, { cache: 'no-cache' })));
     for (let i = 0; i < files.length; i += 40) await cache.addAll(files.slice(i, i + 40));
   } catch (e) { /* placeholders still show */ }
 }
