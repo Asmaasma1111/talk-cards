@@ -1246,6 +1246,7 @@ button.cal-d:active { transform: scale(.94); }
   unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC; }
 @font-face { font-family: 'Baloo Bhaijaan 2'; src: url(fonts/baloo-bhaijaan2-latin.woff2) format('woff2'); font-weight: 400 800; font-display: swap;
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Marhey'; src: url(fonts/marhey-700-arabic.woff2) format('woff2'); font-weight: 700; font-display: swap; unicode-range: U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFC, U+200C-200E; }
 .lb { --baloo: 'Baloo Bhaijaan 2', 'Tajawal', 'Geeza Pro', sans-serif; --naskh: 'Noto Naskh Arabic', 'Geeza Pro', serif;
   --oak: #A9774C; --oak2: #8C5E39; --oak3: #6E4528; --paper: #FFFDF6; --cream: #FFF7EB;
   padding: 0; overflow: hidden; font-family: var(--baloo); color: var(--ink); background: #DCEBF4; user-select: none; -webkit-user-select: none; }
@@ -1429,11 +1430,11 @@ body[data-profile="mama"] .deck-lib { display: none; }
 .lb-f-spine .lb-sp-t { font-size: calc(var(--D) * .3); } .lb-f-spine .lb-sp-n { width: calc(var(--D) * .44); height: calc(var(--D) * .44); font-size: calc(var(--D) * .24); }
 .lb-f-edge { top: 1%; height: 98%; width: var(--D); left: calc(50% - var(--D) / 2); transform: rotateY(-90deg) translateZ(calc(var(--w) / 2 - 4px)); background: repeating-linear-gradient(90deg, #FFFDF6 0 2px, #EFE6D6 2px 3px); }
 .lb-f-top { left: 1%; width: 98%; height: var(--D); top: calc(50% - var(--D) / 2); transform: rotateX(90deg) translateZ(calc(var(--h) / 2 - 3px)); background: repeating-linear-gradient(0deg, #FFFDF6 0 2px, #EFE6D6 2px 3px); }
-.lb-cover { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; background: linear-gradient(135deg, var(--c), var(--c2)); box-shadow: inset 10px 0 18px -10px rgba(0, 0, 0, .35), inset -4px 0 0 rgba(0, 0, 0, .12); }
+.lb-cover { position: absolute; inset: 0; container-type: inline-size; overflow: hidden; border-radius: inherit; background: linear-gradient(135deg, var(--c), var(--c2)); box-shadow: inset 10px 0 18px -10px rgba(0, 0, 0, .35), inset -4px 0 0 rgba(0, 0, 0, .12); }
 .lb-cover-art { position: absolute; inset: 6% 7% 6% 7%; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 0 rgba(0, 0, 0, .12); }
 .lb-cover-art img, .lb-cover-art svg { width: 100%; height: 100%; object-fit: cover; display: block; }
-.lb-cover h2 { position: absolute; top: 9%; left: 10%; right: 10%; margin: 0; padding: 8px 14px; text-align: center; font-size: clamp(26px, 4.4vw, 46px); line-height: 1.35; font-weight: 800; color: var(--ink);
-  background: rgba(255, 253, 246, .92); border-radius: 18px; box-shadow: 0 3px 0 rgba(43, 35, 64, .25); }
+.lb-cover h2 { position: absolute; top: 8.5%; left: 8%; right: 8%; margin: 0; text-align: center; font-family: 'Marhey', var(--baloo); font-size: clamp(34px, 5.6vw, 64px); font-size: clamp(30px, 9.6cqi, 84px); line-height: 1.3; font-weight: 700; color: #2F4E44;
+  -webkit-text-stroke: .2em #fff; paint-order: stroke fill; text-shadow: 0 .12em .3em rgba(40, 70, 90, .25); }
 
 /* the reader: an open book on a warm desk */
 .lb-reader { background: radial-gradient(ellipse at 50% 35%, #F3F8FB, #DDEBF3 75%, #CFE1EC); }

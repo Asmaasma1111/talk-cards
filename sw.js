@@ -43,6 +43,7 @@ const FILES = APP === 'prepositions' ? [
   'fonts/tajawal-800.woff2',
   'fonts/baloo-bhaijaan2-arabic.woff2',
   'fonts/baloo-bhaijaan2-latin.woff2',
+  'fonts/marhey-700-arabic.woff2',
   'assets/audio/lib-slide.m4a',
   'assets/audio/lib-open.m4a',
   'assets/audio/lib-close.m4a',
