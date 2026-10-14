@@ -676,6 +676,7 @@ button.mx-sticker:active { transform: scale(.9); }
   animation: mxagain .35s cubic-bezier(.3, 1.6, .5, 1);
 }
 @keyframes mxagain { from { transform: scale(.4); opacity: 0; } }
+.mx-right { padding: 6px 30px 8px; font-size: 38px; background: var(--mint); }
 .mx-burst { position: fixed; inset: 0; z-index: 60; pointer-events: none; }
 .mx-burst i { position: absolute; display: block; }
 .label.mx-new { background: var(--gum); }

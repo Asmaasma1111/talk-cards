@@ -615,8 +615,14 @@ function mount(api) {
     renderBack(f, correct, res, S.missed);
     const ans = $('#mxAns');
     $('#mxAgain')?.remove();
-    if (correct) { ans.classList.add('ok'); api.SFX.good(); burst(ans, res.grade === 'easy' ? 64 : 46); }
-    setTimeout(() => flipToBack(res), correct ? 720 : 160);
+    if (correct) { ans.classList.add('ok'); api.SFX.good(); burst(ans, res.grade === 'easy' ? 90 : 70); rightBadge(); }
+    setTimeout(() => flipToBack(res), correct ? 1250 : 160);
+  }
+  // A right answer: a big green «✓ صح!» under the sum before the card turns, so she sees it was right.
+  function rightBadge() {
+    const q = $('#mxFront .mx-q');
+    q.append(Object.assign(document.createElement('div'), { className: 'mx-again mx-right', textContent: '✓ صح!' }));
+    layout();
   }
   // A wrong first answer: the box shakes, a soft "uh-oh", and «حاولي مرّة أخرى» until she types again.
   function tryAgain() {
@@ -636,8 +642,8 @@ function mount(api) {
     }, api.reduced() ? 300 : 900);
   }
   // Confetti from the answer box when she is right: a quick burst of little paper pieces that fall away.
+  // It shows even when the iPad's Reduce Motion is on: her mother asked for it as Maria's sign that she was right.
   function burst(el, n) {
-    if (api.reduced()) return;
     const r = el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
     const layer = document.createElement('div'); layer.className = 'mx-burst';
     const colors = ['#FFC93C', '#5FD3A5', '#FF7EB0', '#A994F2', '#62B8F0', '#FF9A5C'];
