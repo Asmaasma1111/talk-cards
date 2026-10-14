@@ -581,7 +581,7 @@ function mount(api) {
   }
   function content(i) {
     const lf = R.L[i], s = R.s;
-    if (lf.kind === 'page') return `<div class="lb-txt"><p>${esc(lf.page.text)}</p></div><span class="lb-pno">${AR(lf.page.n)}</span>`;
+    if (lf.kind === 'page') return `<div class="lb-txt t${lf.page.n % 4}"><p>${esc(lf.page.text)}</p></div><span class="lb-pno">${AR(lf.page.n)}</span>`;
     if (lf.kind === 'q') {
       return `<div class="lb-q" data-qi="${lf.qi}"><h2>${esc(lf.q.prompt)}</h2>
         <div class="lb-opts">${lf.q.options.map((o, k) => `<button class="lb-opt" data-k="${k}">${esc(o.label)}</button>`).join('')}</div>

@@ -1548,6 +1548,15 @@ body[data-profile="mama"] .deck-lib { display: none; }
 .pg-body .lb-txt { padding: 4% 8% 6%; }
 .lb-txt p { margin: 0; font-family: var(--naskh); font-size: clamp(24px, 2.7vw, 34px); line-height: 2.05; text-align: center; color: #2B2340; }
 .pg-s .lb-txt p { font-size: clamp(26px, 4.1vw, 38px); }
+/* the words sit on a soft coloured card (her request: the plain page felt monotonous); the colour changes from page to page */
+.lb-txt { --tint: #FFF3D2; --edge: rgba(222, 170, 52, .38); --spark: #E8B33C; }
+.lb-txt.t1 { --tint: #FFE9F1; --edge: rgba(226, 112, 156, .32); --spark: #E77FA8; }
+.lb-txt.t2 { --tint: #E7F6EC; --edge: rgba(88, 172, 118, .34); --spark: #5DB37F; }
+.lb-txt.t3 { --tint: #E6F1FB; --edge: rgba(98, 152, 205, .34); --spark: #6FA3D6; }
+.lb-txt p { position: relative; padding: .55em 1.05em .7em; background: var(--tint); border-radius: 28px;
+  box-shadow: 0 12px 24px -14px rgba(110, 70, 30, .38), 0 2px 0 rgba(255, 255, 255, .9) inset; text-shadow: 0 1px 0 rgba(255, 255, 255, .85); }
+.lb-txt p::before { content: ''; position: absolute; inset: 9px; border: 2.5px dashed var(--edge); border-radius: 21px; pointer-events: none; }
+.lb-txt p::after { content: '✦'; position: absolute; top: -.62em; right: 1.1em; font-size: .7em; line-height: 1; color: var(--spark); text-shadow: -1.3em .25em 0 var(--spark); opacity: .9; }
 .lb-pno { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); min-width: 38px; height: 38px; padding: 4px 8px 0; display: grid; place-items: center;
   font-family: var(--baloo); font-size: 20px; font-weight: 800; line-height: 1; color: #3F6E5C; background: #EAF5EE; border-radius: 99px; box-shadow: inset 0 0 0 1.5px rgba(63, 110, 92, .18); }
 /* the closed book waits in the middle: she opens the cover herself */
