@@ -707,7 +707,7 @@ button.mx-sticker:active { transform: scale(.9); }
   display: grid; gap: clamp(8px, 1.3vh, 14px);
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(4, 1fr) 1.15fr;
-  grid-template-areas: "k1 k2 k3" "k4 k5 k6" "k7 k8 k9" "del k0 k0" "ok ok ok";
+  grid-template-areas: "k1 k2 k3" "k4 k5 k6" "k7 k8 k9" "del k0 mic" "ok ok ok";
   padding-bottom: 6px;
 }
 .mx-key {
@@ -723,6 +723,12 @@ button.mx-sticker:active { transform: scale(.9); }
 .mx-key:not(.mx-del) { padding-top: .26em; }
 .mx-del { background: var(--lilac); }
 .mx-del svg { width: clamp(30px, 4.6vh, 46px); height: clamp(30px, 4.6vh, 46px); }
+.mx-mic { background: var(--gum); color: var(--ink); }
+.mx-mic svg { width: clamp(30px, 4.8vh, 48px); height: clamp(30px, 4.8vh, 48px); }
+.mx-mic.on { background: #FF7EB0; color: var(--white); animation: mxmic 1.1s ease-in-out infinite; }
+@keyframes mxmic { 50% { transform: scale(1.06); box-shadow: 0 5px 0 var(--ink), 0 0 0 12px rgba(255, 126, 176, .35); } }
+.mx-voice { font-size: 24px; background: #FFF4D6; }
+.mx-voice-in { position: fixed; left: 0; bottom: 0; width: 2px; height: 2px; opacity: .01; border: 0; padding: 0; font-size: 16px; pointer-events: none; }
 .btn.mx-check { min-height: 0; height: 100%; font-size: clamp(30px, 4.8vh, 44px); }
 .btn.mx-check:disabled { opacity: .45; transform: none; box-shadow: 0 6px 0 var(--ink); }
 .mx-after { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 18px; padding-bottom: 6px; }
@@ -787,7 +793,7 @@ button.mx-sticker:active { transform: scale(.9); }
   .mx-stickers { max-width: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .mx-ans.empty, .mx-ans.ok, .mx-ans.no, .mx-again, .back .mx-line, .mx-reward.pop .star, .mx-sticker.current, .mx-cardbox.enter { animation: none; }
+  .mx-ans.empty, .mx-ans.ok, .mx-ans.no, .mx-again, .mx-mic.on, .back .mx-line, .mx-reward.pop .star, .mx-sticker.current, .mx-cardbox.enter { animation: none; }
 }
 
 /* Home footer (both decks): the credit, and under it a one-tap backup of all progress */

@@ -11,6 +11,44 @@ const toAr = v => String(v).replace(/[0-9]/g, d => AR_DIGITS[d]);
 const toWestern = s => String(s).replace(/[٠-٩]/g, ch => String(ch.charCodeAt(0) - 0x660)).replace(/[۰-۹]/g, ch => String(ch.charCodeAt(0) - 0x6F0));
 const parseAnswer = s => { const w = toWestern(s).replace(/\D/g, ''); return w ? parseInt(w, 10) : NaN; };
 
+/* ---------- a spoken answer: "ستة وثلاثين", "اثنعش", "مية", "٣٦", "36", "thirty six" -> a number ---------- */
+const NUM_WORDS = {
+  'صفر': 0, 'واحد': 1, 'واحده': 1, 'احد': 1, 'اثنين': 2, 'اثنان': 2, 'اثنتين': 2, 'اثنتان': 2, 'اثنا': 2, 'اثني': 2, 'ثنين': 2, 'اتنين': 2, 'ثنتين': 2,
+  'ثلاثه': 3, 'ثلاث': 3, 'تلاته': 3, 'تلات': 3, 'اربعه': 4, 'اربع': 4, 'خمسه': 5, 'خمس': 5, 'سته': 6, 'ست': 6, 'سبعه': 7, 'سبع': 7,
+  'ثمانيه': 8, 'ثماني': 8, 'ثمان': 8, 'ثمنيه': 8, 'تمانيه': 8, 'تمنيه': 8, 'تسعه': 9, 'تسع': 9, 'عشره': 10, 'عشر': 10,
+  'عشرين': 20, 'عشرون': 20, 'ثلاثين': 30, 'ثلاثون': 30, 'تلاتين': 30, 'اربعين': 40, 'اربعون': 40, 'خمسين': 50, 'خمسون': 50,
+  'ستين': 60, 'ستون': 60, 'سبعين': 70, 'سبعون': 70, 'ثمانين': 80, 'ثمانون': 80, 'ثمنين': 80, 'تمانين': 80, 'تسعين': 90, 'تسعون': 90,
+  'ميه': 100, 'مئه': 100, 'مائه': 100, 'ميت': 100,
+  zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12,
+  thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, thirty: 30,
+  forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90, hundred: 100
+};
+// Saudi teens said as one word: احدعش, اثنعش, ثلطعش, اربعتعش, خمستاش, سطعش, سبعطعش, ثمنطعش, تسعتعش ...
+const TEEN_HEADS = [['احد', 1], ['حد', 1], ['اثن', 2], ['اطن', 2], ['اتن', 2], ['ثن', 2], ['ثل', 3], ['تل', 3], ['ارب', 4], ['خم', 5],
+  ['سب', 7], ['س', 6], ['ثم', 8], ['تم', 8], ['تس', 9]];
+function teenWord(w) {
+  const m = w.match(/^(.+?)(طعش|تعش|تاش|طاش|عش)$/); if (!m) return undefined;
+  const h = TEEN_HEADS.find(([p]) => m[1].startsWith(p)); return h ? 10 + h[1] : undefined;
+}
+const normSpoken = t => toWestern(t).toLowerCase().replace(/[ً-ٰٟـ]/g, '')
+  .replace(/[أإآٱ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي');
+function parseSpoken(text) {
+  let s = normSpoken(text || '');
+  const parts = s.split(/=|يساوي|تساوي|\bequals\b|\bis\b/); s = parts[parts.length - 1];   // she may say the whole sum
+  const digits = s.match(/\d+/g); if (digits) return parseInt(digits[digits.length - 1], 10);
+  let total = 0, any = false;
+  for (const w of s.split(/[\s,،.؟?!\-–]+/)) {
+    if (!w) continue;
+    let v = NUM_WORDS[w];
+    if (v === undefined && w.length > 2 && w[0] === 'و') v = NUM_WORDS[w.slice(1)] ?? teenWord(w.slice(1));   // "و" = and
+    if (v === undefined && w.startsWith('ال')) v = NUM_WORDS[w.slice(2)];
+    if (v === undefined) v = teenWord(w);
+    if (v === undefined) continue;
+    total = v === 100 ? (total || 1) * 100 : total + v; any = true;
+  }
+  return any ? total : NaN;
+}
+
 /* ---------- the 100 facts, in teaching order: tables 1, 10, 2, 5, 3, 4, 9, 6, 7, 8; ×1 to ×10 in each ---------- */
 const TABLES = [1, 10, 2, 5, 3, 4, 9, 6, 7, 8];
 const FACTS = [], FACT = {};
@@ -275,7 +313,7 @@ function weakest(m, k = 10) {
     .sort((a, b) => b.w - a.w).slice(0, k);
 }
 
-const core = { toAr, toWestern, parseAnswer, TABLES, FACTS, FACT, twinOf, addDays, INTERVAL, TOP_BOX, KNOWN_BOX, MASTER_BOX,
+const core = { toAr, toWestern, parseAnswer, parseSpoken, TABLES, FACTS, FACT, twinOf, addDays, INTERVAL, TOP_BOX, KNOWN_BOX, MASTER_BOX,
   MIN_SESSION, MAX_VIEWS, DEFAULT_SETTINGS, blank, clean, valid, peek, rec, batchesFor, nextBatch, batchReady, introducedOn,
   canRelease, release, weakness, dueIds, buildSession, gradeOf, schedule, answer, requeue, tableIds, tableMastered,
   streakNow, addActive, activeOn, practisedDays, CARD_CAP, twinKnown, trickyIds, tablePracticeIds, currentTable, tableStats, weakest };
@@ -344,6 +382,7 @@ function mount(api) {
         ${keys}
         <button class="mx-key mx-del" data-k="del" style="grid-area:del" aria-label="امسحي"><svg aria-hidden="true"><use href="#i-bksp"/></svg></button>
         <button class="mx-key" data-k="0" style="grid-area:k0">٠</button>
+        <button class="mx-key mx-mic" data-k="mic" style="grid-area:mic" aria-label="قولي الجواب"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8.6" y="2.5" width="6.8" height="11.5" rx="3.4" fill="currentColor"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5v3.5M8.5 21h7" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg></button>
         <button class="btn btn-good mx-check" id="mxCheck" style="grid-area:ok" dir="rtl" disabled><svg class="ic-tick" aria-hidden="true"><use href="#i-tick"/></svg>تحقّق</button>
       </div>
       <div class="mx-after" id="mxAfter" hidden>
@@ -472,7 +511,7 @@ function mount(api) {
     if (!S) return;
     if (!S.queue.length) return endRound();
     S.item = S.queue.shift();
-    S.typed = ''; S.phase = 'ask'; S.missed = false;
+    stopListening(); S.typed = ''; S.phase = 'ask'; S.missed = false;
     S.helped = S.item.step === 'show';            // a new fact comes with its dot picture
     renderFront();
     progress();
@@ -583,13 +622,78 @@ function mount(api) {
   /* ---------- typing and checking ---------- */
   function press(k) {
     if (!S || S.phase !== 'ask') return;
+    if (k === 'mic') return listen();
     if (k === 'del') S.typed = S.typed.slice(0, -1);
     else if (S.typed.length < 3) S.typed = (S.typed === '0' ? '' : S.typed) + k;
+    showTyped();
+    if (api.SFX.ready()) api.SFX.tone(k === 'del' ? 520 : 760, 0, 0.05, 0.06, 'triangle', 0.004);
+  }
+  function showTyped() {
     const el = $('#mxAns');
     el.textContent = S.typed ? toAr(S.typed) : '؟';
     el.classList.toggle('empty', !S.typed);
     $('#mxCheck').disabled = !S.typed;
-    if (api.SFX.ready()) api.SFX.tone(k === 'del' ? 520 : 760, 0, 0.05, 0.06, 'triangle', 0.004);
+  }
+
+  /* ---------- saying the answer: the microphone key ----------
+     The browser's own speech recognition listens in Arabic and the number goes into the box; she still taps تحقّق, so a
+     misheard number is never marked wrong by itself. Where the browser cannot listen (some iPad home-screen apps), the
+     key opens the iPad keyboard instead, and she taps the keyboard's own microphone. */
+  const SpeechRec = root.SpeechRecognition || root.webkitSpeechRecognition;
+  let listening = null, srBroken = false;
+  function voiceTip(text) {
+    $('#mxVoiceTip')?.remove();
+    if (!text) return;
+    $('#mxAgain')?.remove();
+    $('#mxFront .mx-q').append(Object.assign(document.createElement('div'), { className: 'mx-again mx-voice', id: 'mxVoiceTip', textContent: text }));
+    layout();
+  }
+  function heard(text, item) {
+    if (!S || S.item !== item || S.phase !== 'ask') return false;
+    const n = parseSpoken(text);
+    if (!Number.isFinite(n) || n > 999) return false;
+    S.typed = String(n); showTyped(); voiceTip('');
+    if (api.SFX.ready()) api.SFX.tone(880, 0, 0.08, 0.08, 'triangle', 0.004);
+    return true;
+  }
+  function stopListening() { if (listening) { try { listening.abort(); } catch (e) {} listening = null; } $('#mxPad [data-k="mic"]')?.classList.remove('on'); }
+  function listen() {
+    if (listening) { stopListening(); voiceTip(''); return; }          // a second tap stops
+    if (!SpeechRec || srBroken) return keyboardVoice();
+    const item = S.item, r = listening = new SpeechRec();
+    r.lang = 'ar-SA'; r.interimResults = false; r.continuous = false; r.maxAlternatives = 5;
+    const key = $('#mxPad [data-k="mic"]'); key.classList.add('on');
+    voiceTip('🎤 قولي الجواب');
+    let got = false;
+    r.onresult = e => {
+      const alts = [...e.results[e.results.length - 1]].map(a => a.transcript);
+      got = alts.some(t => heard(t, item));
+      if (!got) voiceTip('ما سمعتُ رقماً، اضغطي 🎤 وقوليه مرّة أخرى');
+    };
+    r.onerror = e => {
+      if (['not-allowed', 'service-not-allowed', 'audio-capture', 'language-not-supported'].includes(e.error)) { srBroken = true; voiceTip('اضغطي 🎤 مرّة أخرى'); }
+    };
+    r.onend = () => {
+      if (listening === r) listening = null;
+      key.classList.remove('on');
+      if (!got && !srBroken && $('#mxVoiceTip')?.textContent === '🎤 قولي الجواب') voiceTip('ما سمعتُ شيئاً، اضغطي 🎤 وقولي الجواب');
+    };
+    try { r.start(); } catch (e) { listening = null; key.classList.remove('on'); srBroken = true; keyboardVoice(); }
+  }
+  // The fallback: a hidden text box opens the iPad keyboard; whatever she dictates into it becomes the answer.
+  function keyboardVoice() {
+    let inp = $('#mxVoiceIn');
+    if (!inp) {
+      inp = Object.assign(document.createElement('input'), { id: 'mxVoiceIn', type: 'text', className: 'mx-voice-in', autocomplete: 'off' });
+      inp.setAttribute('aria-label', 'قولي الجواب'); inp.setAttribute('autocorrect', 'off'); inp.setAttribute('enterkeyhint', 'done');
+      document.body.append(inp);
+      let t = 0;
+      inp.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => { if (S && heard(inp.value, S.item)) { inp.value = ''; inp.blur(); } }, 700); });
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') inp.blur(); });
+      inp.addEventListener('blur', () => { inp.value = ''; if ($('#mxVoiceTip')?.textContent.includes('لوحة')) voiceTip(''); });
+    }
+    inp.value = ''; inp.focus();
+    voiceTip('اضغطي 🎤 في لوحة المفاتيح وقولي الجواب');
   }
   function hint() {
     if (!S || S.phase !== 'ask' || S.helped) return;
@@ -601,6 +705,7 @@ function mount(api) {
   function activeMs() { return performance.now() - S.shownAt - (S.hiddenAt ? performance.now() - S.hiddenAt : 0); }
   function check() {
     if (!S || S.phase !== 'ask' || !S.typed) return;
+    stopListening(); voiceTip(''); $('#mxVoiceIn')?.blur();
     const f = FACT[S.item.id];
     const correct = parseAnswer(S.typed) === f.ans;
     if (!correct && !S.missed) { S.missed = true; tryAgain(); return; }   // the first miss: one more go

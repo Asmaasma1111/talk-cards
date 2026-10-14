@@ -23,6 +23,19 @@ eq(C.parseAnswer('56'), 56, 'parse Western');
 eq(C.parseAnswer('۵۶'), 56, 'parse Persian digits too');
 ok(Number.isNaN(C.parseAnswer('')), 'empty answer is NaN');
 
+/* ---------- spoken answers (the microphone key) ---------- */
+const SPOKEN = [
+  ['٣٦', 36], ['36', 36], ['ستة وثلاثين', 36], ['ستّة وثلاثون', 36], ['ستة و ثلاثين', 36], ['اثنعش', 12], ['اثنا عشر', 12],
+  ['اثني عشر', 12], ['ثلاثة عشر', 13], ['ثلطعش', 13], ['اربعتعش', 14], ['خمستاش', 15], ['سطعش', 16], ['سبعطعش', 17], ['ثمنطعش', 18],
+  ['تسعتعش', 19], ['احدعش', 11], ['حدعش', 11], ['مية', 100], ['مئة', 100], ['مائة', 100], ['عشرة', 10], ['عشر', 10], ['واحد', 1],
+  ['صفر', 0], ['ثمانية', 8], ['ثمانين', 80], ['اثنين وسبعين', 72], ['أربعة وعشرين', 24], ['خمسة وأربعين', 45], ['تسعة وتسعين', 99],
+  ['الجواب ستة وخمسين', 56], ['ثلاثة في أربعة يساوي اثنا عشر', 12], ['3 × 4 = 12', 12], ['sixty three', 63], ['one hundred', 100],
+  ['forty-two', 42], ['twelve', 12], ['سبعة', 7], ['ستّ', 6], ['ثنتين', 2], ['تلاتين', 30]
+];
+SPOKEN.forEach(([said, want]) => eq(C.parseSpoken(said), want, `spoken «${said}»`));
+ok(Number.isNaN(C.parseSpoken('مرحبا')), 'no number in the words is NaN');
+ok(Number.isNaN(C.parseSpoken('')), 'nothing said is NaN');
+
 /* ---------- the facts, in teaching order ---------- */
 eq(C.FACTS.length, 100, '100 facts');
 eq(new Set(C.FACTS.map(f => `${f.a}x${f.b}`)).size, 100, 'all different');
