@@ -297,7 +297,8 @@ function mount(api) {
   }
   function bookHTML(s) {
     const L = look(s), st = status(lib, ST, s, t()), read = !!lib.read[s.id], going = !read && lib.place[s.id] != null;
-    const long = s.title.length > 15 ? ' long' : s.title.length > 11 ? ' mid' : '';
+    const n = s.title.replace(/[\u064B-\u065F\u0670]/g, '').length;           // letters only: the tashkeel marks take no room
+    const long = n > 15 ? ' long' : n > 11 ? ' mid' : '';
     return `<button class="lb-bk ${st}${going ? ' going' : ''}${L.band ? ' band' : ''}${long}" data-id="${s.id}" style="--w:${L.w}px; --h:${L.h}%; --c:${L.c}; --c2:${L.c2}; --tx:${L.ink}" aria-label="${s.title}">
       <span class="lb-sp"><span class="lb-sp-t">${s.title}</span><span class="lb-sp-n">${AR(s.day)}</span></span>
       ${st === 'last' ? '<svg class="lb-sp-lock" aria-hidden="true"><use href="#lb-i-lock"/></svg>' : ''}

@@ -119,6 +119,17 @@ def main():
             stories.append(parse_story(int(m.group(1)), m.group(2).strip(), body))
     for s in stories:
         s['images'] = images_for(s['id'])
+    # full tashkeel (content/stories/tashkeel/dXX.json, see scripts/tashkeel.py): used only where the letters are exactly the author's
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import tashkeel
+    marked = 0
+    for s in stories:
+        f = os.path.join(tashkeel.DIR, f"{s['id']}.json")
+        if not os.path.exists(f): continue
+        bad = tashkeel.apply(s, json.load(open(f, encoding='utf-8')))
+        marked += 1
+        if bad: print(f"Day {s['day']}: tashkeel left out where the letters differ: {', '.join(bad)}")
+    print(f'Tashkeel: {marked} stories')
 
     # validation report
     problems, opinion = [], []
