@@ -154,7 +154,7 @@ function mount(api) {
 
 <section id="lstudio" class="screen lb lb-studio" dir="rtl" lang="ar" hidden>
   <div class="st-scroll" id="stScroll" dir="ltr"><div class="st-stage" id="stStage"><img class="st-room" src="assets/library/studio.webp" alt="">
-    <div id="stSpots"></div></div></div>
+    <div id="stShelf"></div><div id="stBoard"></div><div id="stSpots"></div></div></div>
   <div class="lb-top"><button class="st-back" id="stBack">مكتبتي ←</button><h1 class="st-title">مرسمي</h1></div>
   <div class="st-swipe" id="stSwipe">↔ اسحبي لتري المرسم كلّه</div>
   <div class="st-panel" id="stPanel" hidden><div class="st-pbox"><button class="st-px" id="stPx" aria-label="إغلاق">×</button><div id="stPbody"></div></div></div>
@@ -576,8 +576,8 @@ function mount(api) {
       const sceneNote = api.DEV ? `<span class="lb-scene">${esc(lf.page.scene)}</span>` : '';
       return `<div class="lb-art${has ? ' pic' : ''}${lf.kind === 'q' ? ' dim' : ''}">${img}${sceneNote}${lf.kind === 'q' ? '<span class="lb-qmark">؟</span>' : ''}</div>`;
     }
-    const ic = { other: '🔄', magic: '✨', feeling: '💬', tool: s.tool.emoji, mission: '🎯' }[lf.kind];
-    return `<div class="lb-art end ${lf.kind}"><span class="lb-end-ic">${ic}</span></div>`;
+    // the pages after the story: one picture for each kind, the same in every book (her request)
+    return `<div class="lb-art pic end ${lf.kind}"><img class="lb-pic" src="assets/library/end/${lf.kind}.webp" alt="" draggable="false"></div>`;
   }
   function content(i) {
     const lf = R.L[i], s = R.s;
@@ -594,7 +594,7 @@ function mount(api) {
       <div class="lb-keep"><span class="lb-pot" id="lbDict">📖<b>${AR(lib.feelings.length)}</b></span><small>قاموس مشاعري</small></div><button class="btn lb-next">التالي</button></div>`;
     if (lf.kind === 'tool') {
       const have = lib.tools.includes(s.id);
-      return `<div class="lb-endc"><h3>🎨 أداة جديدة للمرسم</h3><div class="lb-tool" id="lbTool"><span>${s.tool.emoji}</span></div><p class="lb-tname">${esc(s.tool.name)}</p>
+      return `<div class="lb-endc"><h3>🎨 أداة جديدة للمرسم</h3><div class="lb-tool" id="lbTool"><img src="assets/library/tools/${s.id}.webp" alt="" draggable="false"></div><p class="lb-tname">${esc(s.tool.name)}</p>
         <div class="lb-keep"><span class="lb-pot" id="lbStudio">🏠<b>${AR(lib.tools.length)}</b></span><small>مرسمي</small></div>
         <button class="btn btn-good lb-put">${have ? 'التالي' : 'ضعيها في المرسم'}</button></div>`;
     }
@@ -856,26 +856,53 @@ function mount(api) {
   /* ---------- مرسمي: the craft studio, a big painted room with places she taps ---------- */
   // each place: where it is on the painting (percent of its width and height) and its label
   const SPOTS = [
-    { id: 'tools', x: 34, y: 9, w: 27, h: 48, label: 'أدواتي', lx: 47.5, ly: 6 },
-    { id: 'gallery', x: 63, y: 12, w: 35, h: 29, label: 'معرضي', lx: 80.5, ly: 9 },
-    { id: 'missions', x: 63, y: 42.5, w: 11, h: 12.5, label: 'لوحة المهام', lx: 68.5, ly: 57 },
+    { id: 'tools', x: 35, y: 11, w: 25.5, h: 47, label: 'أدواتي', lx: 47.6, ly: 7 },
+    { id: 'gallery', x: 63, y: 12.5, w: 35, h: 29, label: 'معرضي', lx: 80.5, ly: 9 },
+    { id: 'missions', x: 63.3, y: 42.5, w: 10.7, h: 12.6, label: 'لوحة المهام', lx: 68.6, ly: 57 },
     { id: 'voice', x: 76, y: 42, w: 15, h: 10, label: 'صوتي', lx: 83.5, ly: 39 },
     { id: 'mail', x: 93, y: 44, w: 6.5, h: 12, label: 'رسائل بابا', lx: 90, ly: 59.5 },
     { id: 'corner', x: 0, y: 41, w: 28, h: 36, label: 'ركن الكلمات', lx: 15, ly: 37 },
     { id: 'table', x: 28, y: 58, w: 55, h: 34, label: 'طاولة الأعمال', lx: 55.5, ly: 93 }
   ];
   const PROJECTS = ['تلوين سكويشي', 'تصميم ملصقة', 'تزيين صندوق', 'تصميم سوار الصداقة', 'تصميم فاصل كتاب', 'صنع سكويشي بنفسكِ'];
+  // The room starts empty (her design, 14 Oct 2026): every tool has its own place on the five bare shelves, six to a shelf, in book
+  // order. A tool she has not earned yet shows only as a soft shade inside a dashed outline; when she earns it, it stands there.
+  // [bottom of the shelf, height of the space above it], in percent of the painting; the shelves run from SHELF_X0 to SHELF_X1.
+  const SHELF_ROWS = [[21.1, 6.1], [30.3, 6.5], [39.6, 6.8], [48.4, 6.6], [56.4, 5.7]], SHELF_X0 = 35.7, SHELF_X1 = 59.6;
+  // the big cork board: one dashed frame for each of the six projects; the small board: the missions she kept for «لاحقاً»
+  const FRAMES = [[65.1, 15.6], [76.2, 15.6], [87.3, 15.6], [65.1, 28.3], [76.2, 28.3], [87.3, 28.3]];
+  const SEEN_KEY = 'tc:maria:studioSeen';   // how many tools she has already seen in the room (so a new one arrives with a pop)
+  function shelfHTML(fresh) {
+    const step = (SHELF_X1 - SHELF_X0) / 6;
+    return ST.map((s, i) => {
+      const [base, h] = SHELF_ROWS[Math.floor(i / 6)] || SHELF_ROWS[4], got = lib.tools.includes(s.id);
+      return `<div class="st-slot${got ? ' got' : ''}${got && fresh.has(s.id) ? ' new' : ''}" data-id="${s.id}" style="left:${(SHELF_X0 + step * (i % 6) + step * 0.06).toFixed(2)}%;top:${(base - h).toFixed(2)}%;width:${(step * 0.88).toFixed(2)}%;height:${h}%"><img src="assets/library/tools/${s.id}.webp" alt="" draggable="false"></div>`;
+    }).join('');
+  }
+  function boardHTML() {
+    const n = lib.tools.length;
+    const frames = FRAMES.map(([x, y], i) => `<div class="st-frame${n >= (i + 1) * 5 ? ' open' : ''}" style="left:${x}%;top:${y}%"><i></i><span>${AR(i + 1)}</span></div>`).join('');
+    const later = Object.values(lib.missions).filter(m => m.state === 'later').length;
+    const notes = Array.from({ length: Math.min(later, 4) }, (_, k) => `<div class="st-stick c${k}" style="left:${64.4 + (k % 2) * 4.6}%;top:${43.9 + Math.floor(k / 2) * 5.2}%"></div>`).join('');
+    return frames + notes;
+  }
   function openStudio() {
     leaveRoom();
+    let seen = 0; try { seen = Number(localStorage.getItem(SEEN_KEY)) || 0; } catch (e) {}
+    const fresh = new Set(lib.tools.slice(seen));
+    $('#stShelf').innerHTML = shelfHTML(fresh);
+    try { localStorage.setItem(SEEN_KEY, String(lib.tools.length)); } catch (e) {}
     renderSpots();
     api.show('lstudio');
     const sc = $('#stScroll'); sc.scrollLeft = (sc.scrollWidth - sc.clientWidth) / 2;
     const sw = $('#stSwipe'); sw.hidden = sc.scrollWidth - sc.clientWidth < 120;     // the room is wider than the screen: show how to see it all
     sc.addEventListener('scroll', () => { sw.hidden = true; }, { once: true, passive: true });
+    if (fresh.size) setTimeout(() => { document.querySelectorAll('#stShelf .st-slot.new').forEach(el => sparkle(el)); SND.chime(0.05, 0.5); }, 650);
   }
   function renderSpots() {
     const later = Object.values(lib.missions).filter(m => m.state === 'later').length;
     const badge = { tools: `${AR(lib.tools.length)}/${AR(ST.length)}`, missions: later ? AR(later) : '', corner: lib.notebook.length + lib.feelings.length ? AR(lib.notebook.length + lib.feelings.length) : '' };
+    $('#stBoard').innerHTML = boardHTML();
     $('#stSpots').innerHTML = SPOTS.map(p => `<button class="st-spot" data-a="${p.id}" style="left:${p.x}%;top:${p.y}%;width:${p.w}%;height:${p.h}%" aria-label="${p.label}"></button>
       <span class="st-label" dir="rtl" style="left:${p.lx}%;top:${p.ly}%">${p.label}${badge[p.id] ? `<b dir="ltr">${badge[p.id]}</b>` : ''}</span>`).join('');
   }
@@ -884,7 +911,7 @@ function mount(api) {
     const n = lib.tools.length;
     if (id === 'tools') {
       panel(`<h2>أدواتي</h2><p>جمعتِ ${AR(n)} من ${AR(ST.length)} أداة. كلّ كتاب تُكملينه يضع أداة جديدة هنا.</p>
-        <div class="st-tools">${ST.map(s => lib.tools.includes(s.id) ? `<div class="st-tool got"><span>${s.tool.emoji}</span><small>${esc(s.tool.name)}</small></div>`
+        <div class="st-tools">${ST.map(s => lib.tools.includes(s.id) ? `<div class="st-tool got"><img src="assets/library/tools/${s.id}.webp" alt=""><small>${esc(s.tool.name)}</small></div>`
           : `<div class="st-tool"><span>؟</span><small>الكتاب ${AR(s.day)}</small></div>`).join('')}</div>`);
     } else if (id === 'corner') {
       const nb = lib.notebook.map(i => byId[i]).filter(Boolean), fl = lib.feelings.map(i => byId[i]).filter(Boolean);
