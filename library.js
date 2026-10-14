@@ -187,8 +187,9 @@ function mount(api) {
 
   /* ---------- sounds: real CC0 recordings (assets/audio, see CREDITS.md); chimes in code ---------- */
   const SND = {
-    files: { slide: 'lib-slide', open: 'lib-open', close: 'lib-close', place: 'lib-place', flip1: 'lib-flip1', flip2: 'lib-flip2',
-      flip3: 'lib-flip3', creak: 'lib-creak', room: 'lib-room', chair: 'lib-chair' },
+    // one real hardcover page (her choice, 14 Oct 2026); flip() still varies its pitch a little each time
+    files: { slide: 'lib-slide', open: 'lib-open', close: 'lib-close', place: 'lib-place', flip1: 'lib-flip1', flip2: 'lib-flip1',
+      flip3: 'lib-flip1', creak: 'lib-creak', room: 'lib-room', chair: 'lib-chair' },
     buf: {}, out: null, roomSrc: null, roomGain: null, extraT: 0,
     ctx() { api.SFX.init(); const c = api.SFX.ctx; if (c && !this.out) { this.out = c.createGain(); this.out.gain.value = 0.9; this.out.connect(c.destination); } return c; },
     async get(name) {
