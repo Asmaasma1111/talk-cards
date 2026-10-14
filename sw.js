@@ -59,6 +59,7 @@ const FILES = APP === 'prepositions' ? [
   'assets/library/trailing.webp',
   'assets/library/leaves.webp',
   'assets/library/medal.webp',
+  'assets/library/studio.webp',
   'assets/library/deco/frame.webp',
   'assets/library/deco/plant.webp',
   'assets/library/deco/camel.webp',

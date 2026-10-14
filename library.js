@@ -152,6 +152,14 @@ function mount(api) {
   <div class="lb-cel" id="lbCel" hidden><div class="lb-cel-box"><div class="lb-cel-burst" id="lbCelIc"></div><h2 id="lbCelTitle"></h2><p id="lbCelSub"></p><button class="btn btn-good" id="lbCelOk">رائع!</button></div></div>
 </section>
 
+<section id="lstudio" class="screen lb lb-studio" dir="rtl" lang="ar" hidden>
+  <div class="st-scroll" id="stScroll" dir="ltr"><div class="st-stage" id="stStage"><img class="st-room" src="assets/library/studio.webp" alt="">
+    <div id="stSpots"></div></div></div>
+  <div class="lb-top"><button class="st-back" id="stBack">مكتبتي ←</button><h1 class="st-title">مرسمي</h1></div>
+  <div class="st-swipe" id="stSwipe">↔ اسحبي لتري المرسم كلّه</div>
+  <div class="st-panel" id="stPanel" hidden><div class="st-pbox"><button class="st-px" id="stPx" aria-label="إغلاق">×</button><div id="stPbody"></div></div></div>
+</section>
+
 <section id="lbook" class="screen lb lb-reader" dir="rtl" lang="ar" hidden>
   <div class="lb-desk"></div>
   <div class="lb-rtop"><button class="lb-x" id="lbClose" aria-label="أغلقي الكتاب"><svg aria-hidden="true"><use href="#i-close"/></svg></button><div class="lb-prog"><i id="lbProg"></i></div></div>
@@ -170,9 +178,10 @@ function mount(api) {
   }
   row($('#home'), $('#toMaths'));
   row($('#mhome'), $('#mxToTalk'));
-  $('#lbDecks').innerHTML = '<button class="deck-chip deck-talk" lang="en" dir="ltr" data-go="talk">Talk Cards</button><button class="deck-chip deck-math" lang="ar" dir="rtl" data-go="math"><span class="x" aria-hidden="true">×</span>جدول الضرب</button>';
+  $('#lbDecks').innerHTML = '<button class="deck-chip deck-talk" lang="en" dir="ltr" data-go="talk">Talk Cards</button><button class="deck-chip deck-math" lang="ar" dir="rtl" data-go="math"><span class="x" aria-hidden="true">×</span>جدول الضرب</button><button class="deck-chip deck-studio" lang="ar" dir="rtl" data-go="studio">🎨 مرسمي</button>';
   $('#lbDecks').addEventListener('click', e => {
     const b = e.target.closest('[data-go]'); if (!b) return;
+    if (b.dataset.go === 'studio') { if (!busy) openStudio(); return; }
     leaveRoom(); b.dataset.go === 'talk' ? api.english() : api.maths();
   });
 
@@ -843,6 +852,76 @@ function mount(api) {
     };
   }
 
+  /* ---------- مرسمي: the craft studio, a big painted room with places she taps ---------- */
+  // each place: where it is on the painting (percent of its width and height) and its label
+  const SPOTS = [
+    { id: 'tools', x: 34, y: 9, w: 27, h: 48, label: 'أدواتي', lx: 47.5, ly: 6 },
+    { id: 'gallery', x: 63, y: 12, w: 35, h: 29, label: 'معرضي', lx: 80.5, ly: 9 },
+    { id: 'missions', x: 63, y: 42.5, w: 11, h: 12.5, label: 'لوحة المهام', lx: 68.5, ly: 57 },
+    { id: 'voice', x: 76, y: 42, w: 15, h: 10, label: 'صوتي', lx: 83.5, ly: 39 },
+    { id: 'mail', x: 93, y: 44, w: 6.5, h: 12, label: 'رسائل بابا', lx: 90, ly: 59.5 },
+    { id: 'corner', x: 0, y: 41, w: 28, h: 36, label: 'ركن الكلمات', lx: 15, ly: 37 },
+    { id: 'table', x: 28, y: 58, w: 55, h: 34, label: 'طاولة الأعمال', lx: 55.5, ly: 93 }
+  ];
+  const PROJECTS = ['تلوين سكويشي', 'تصميم ملصقة', 'تزيين صندوق', 'تصميم سوار الصداقة', 'تصميم فاصل كتاب', 'صنع سكويشي بنفسكِ'];
+  function openStudio() {
+    leaveRoom();
+    renderSpots();
+    api.show('lstudio');
+    const sc = $('#stScroll'); sc.scrollLeft = (sc.scrollWidth - sc.clientWidth) / 2;
+    const sw = $('#stSwipe'); sw.hidden = sc.scrollWidth - sc.clientWidth < 120;     // the room is wider than the screen: show how to see it all
+    sc.addEventListener('scroll', () => { sw.hidden = true; }, { once: true, passive: true });
+  }
+  function renderSpots() {
+    const later = Object.values(lib.missions).filter(m => m.state === 'later').length;
+    const badge = { tools: `${AR(lib.tools.length)}/${AR(ST.length)}`, missions: later ? AR(later) : '', corner: lib.notebook.length + lib.feelings.length ? AR(lib.notebook.length + lib.feelings.length) : '' };
+    $('#stSpots').innerHTML = SPOTS.map(p => `<button class="st-spot" data-a="${p.id}" style="left:${p.x}%;top:${p.y}%;width:${p.w}%;height:${p.h}%" aria-label="${p.label}"></button>
+      <span class="st-label" dir="rtl" style="left:${p.lx}%;top:${p.ly}%">${p.label}${badge[p.id] ? `<b dir="ltr">${badge[p.id]}</b>` : ''}</span>`).join('');
+  }
+  function panel(html) { $('#stPbody').innerHTML = html; const b = $('#stPanel'); b.hidden = false; b.classList.remove('play'); void b.offsetWidth; b.classList.add('play'); }
+  function studioPlace(id) {
+    const n = lib.tools.length;
+    if (id === 'tools') {
+      panel(`<h2>أدواتي</h2><p>جمعتِ ${AR(n)} من ${AR(ST.length)} أداة. كلّ كتاب تُكملينه يضع أداة جديدة هنا.</p>
+        <div class="st-tools">${ST.map(s => lib.tools.includes(s.id) ? `<div class="st-tool got"><span>${s.tool.emoji}</span><small>${esc(s.tool.name)}</small></div>`
+          : `<div class="st-tool"><span>؟</span><small>الكتاب ${AR(s.day)}</small></div>`).join('')}</div>`);
+    } else if (id === 'corner') {
+      const nb = lib.notebook.map(i => byId[i]).filter(Boolean), fl = lib.feelings.map(i => byId[i]).filter(Boolean);
+      panel(`<h2>ركن الكلمات</h2>
+        <h3>📒 دفتر الجمل السحرية</h3>${nb.length ? `<ul class="st-list">${nb.map(s => `<li><b>${esc(s.magic_sentence)}</b><small>${esc(s.title)}</small></li>`).join('')}</ul>` : '<p class="st-empty">تظهر هنا الجملة السحرية من كلّ كتاب تُكملينه.</p>'}
+        <h3>📖 قاموس مشاعري</h3>${fl.length ? `<div class="st-words">${fl.map(s => `<span>${esc(s.feeling_word)}</span>`).join('')}</div>` : '<p class="st-empty">تظهر هنا كلمة الشعور من كلّ كتاب.</p>'}`);
+    } else if (id === 'missions') {
+      const later = Object.entries(lib.missions).filter(([, m]) => m.state === 'later').map(([i]) => byId[i]).filter(Boolean);
+      const done = Object.values(lib.missions).filter(m => m.state === 'done').length;
+      panel(`<h2>لوحة المهام</h2>${later.length ? `<div class="st-notes">${later.map(s => `<div class="st-note" data-m="${s.id}"><p>${esc(s.mission.text)}</p><small>${esc(s.title)}</small>
+          <button class="st-did">فعلتها!</button><div class="st-feel" hidden>${['😊', '😐', '😬', '💪'].map(f => `<button data-f="${f}">${f}</button>`).join('')}</div></div>`).join('')}</div>`
+        : '<p class="st-empty">لا مهامّ تنتظر. المهامّ التي تختارين لها «لاحقاً» تُعلَّق هنا.</p>'}${done ? `<p class="st-done">أنجزتِ ${AR(done)} ${done === 1 ? 'مهمّة' : 'مهامّ'} 🌟</p>` : ''}`);
+    } else if (id === 'gallery') {
+      panel(`<h2>معرضي</h2><p class="st-empty">هنا تُعلَّق أعمالكِ اليدوية التي تصنعينها في المرسم.</p><p>${n >= 5 ? 'أوّل مشروع جاهز على طاولة الأعمال!' : `يُفتح أوّل مشروع عندما تجمعين ٥ أدوات. معكِ الآن ${AR(n)}.`}</p>`);
+    } else if (id === 'table') {
+      panel(`<h2>طاولة الأعمال</h2><p>كلّ ٥ أدوات تفتح مشروعاً جديداً تصنعينه هنا.</p>
+        <div class="st-projects">${PROJECTS.map((t, i) => `<div class="st-proj${n >= (i + 1) * 5 ? ' open' : ''}"><b>${AR(i + 1)}</b><span>${t}</span><small>${n >= (i + 1) * 5 ? 'قريباً على الطاولة' : `عند ${AR((i + 1) * 5)} أدوات`}</small></div>`).join('')}</div>`);
+    } else if (id === 'voice') {
+      panel(`<h2>صوتي</h2><p class="st-empty">هنا ستسمعين صوتكِ وأنتِ تقرئين قصصكِ، إن أحببتِ أن تسجّليه. قريباً!</p>`);
+    } else if (id === 'mail') {
+      panel(`<h2>رسائل بابا</h2><p class="st-empty">في هذا الصندوق تصل رسائل من بابا. قريباً!</p>`);
+    }
+  }
+  $('#stSpots').addEventListener('click', e => { const b = e.target.closest('.st-spot'); if (b) { api.SFX.init(); studioPlace(b.dataset.a); } });
+  $('#stPx').addEventListener('click', () => { $('#stPanel').hidden = true; renderSpots(); });
+  $('#stPanel').addEventListener('click', e => {
+    if (e.target.id === 'stPanel') { $('#stPanel').hidden = true; renderSpots(); return; }
+    const did = e.target.closest('.st-did');
+    if (did) { did.hidden = true; did.parentElement.querySelector('.st-feel').hidden = false; return; }
+    const f = e.target.closest('[data-f]');
+    if (f) {
+      const card = f.closest('.st-note'); setMission(lib, card.dataset.m, 'done', t(), f.dataset.f); save();
+      SND.chime(0.05, 0.6); sparkle(card);
+      card.classList.add('gone'); setTimeout(() => studioPlace('missions'), motion() ? 500 : 0);
+    }
+  });
+  $('#stBack').addEventListener('click', () => { $('#stPanel').hidden = true; home(); });
+
   /* ---------- decorating a finished shelf: a back colour, one thing to stand on it, and a garland if she likes ---------- */
   function openDeco(k, then, edit) {
     const box = $('#lbDec'), cur = lib.deco[k] || {};
@@ -896,7 +975,7 @@ function mount(api) {
 
   return {
     home, ready,
-    isOn: () => !$('#lhome').hidden || !$('#lbook').hidden,
+    isOn: () => !$('#lhome').hidden || !$('#lbook').hidden || !$('#lstudio').hidden,
     busy: () => !$('#lbook').hidden || busy || !$('#lbCel').hidden || !$('#lbDec').hidden,
     reload() { lib = load(); },
     snapshot() { return JSON.parse(JSON.stringify(lib)); },
@@ -904,7 +983,7 @@ function mount(api) {
     replace(obj) { lib = clean(obj); save(); },
     leave: leaveRoom,
     // for tests (?dev=1)
-    get state() { return lib; }, get reader() { return R; }, get stories() { return ST; }, turn, core, openDeco, milestone
+    get state() { return lib; }, get reader() { return R; }, get stories() { return ST; }, turn, core, openDeco, milestone, openStudio, studioPlace
   };
 }
 
