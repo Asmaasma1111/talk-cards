@@ -162,7 +162,7 @@ function mount(api) {
 
 <section id="lbook" class="screen lb lb-reader" dir="rtl" lang="ar" hidden>
   <div class="lb-desk"></div>
-  <div class="lb-rtop"><button class="lb-x" id="lbClose" aria-label="أغلقي الكتاب"><svg aria-hidden="true"><use href="#i-close"/></svg></button><div class="lb-prog"><i id="lbProg"></i></div></div>
+  <div class="lb-rtop"><button class="lb-x" id="lbClose" aria-label="أغلقي الكتاب"><svg aria-hidden="true"><use href="#i-close"/></svg></button><div class="lb-prog"><i id="lbProg"></i></div><button class="lb-rec" id="lbRec" hidden><i></i><span>أسجّل صوتي</span><b>إيقاف</b></button></div>
   <div class="lb-wrap" id="lbWrap"><div class="lb-book" id="lbBook"></div></div>
 </section>
 <div class="lb-fly" id="lbFly" aria-hidden="true"></div>`);
@@ -472,7 +472,7 @@ function mount(api) {
     F.front.style.transform = F.shut;                // the book arrives closed in the middle: she sees its cover first
     fly.insertAdjacentHTML('afterbegin', '<i class="lb-dim"></i>');
     await a1.finished.catch(() => {});
-    await coverWait();                               // and opens it herself with a tap
+    await coverWait(s);                              // and opens it herself with a tap (or first starts recording her voice)
     SND.play('open', 0.9);
     const om = 760 * dur;
     F.mover.animate([{ transform: F.mid }, { transform: F.there }], { duration: om, easing: 'ease-in-out', fill: 'forwards' });   // in a spread it moves onto the left page
@@ -483,15 +483,66 @@ function mount(api) {
     busy = false;
   }
   // the closed book in the middle of the screen: one tap anywhere opens its cover
-  function coverWait() {
+  function coverWait(s) {
     return new Promise(done => {
       const catcher = Object.assign(document.createElement('button'), { className: 'lb-open-catch' }), tip = Object.assign(document.createElement('button'), { className: 'lb-open-tip', textContent: 'اضغطي لتفتحي الكتاب' });
+      const recB = Object.assign(document.createElement('button'), { className: 'lb-open-rec', textContent: '🎙️ اقرئي بصوتكِ وسجّلي' });
       catcher.setAttribute('aria-label', 'افتحي الكتاب');
-      fly.append(catcher, tip); fly.classList.add('wait'); fly.removeAttribute('aria-hidden');
-      const go = () => { catcher.remove(); tip.remove(); fly.classList.remove('wait'); fly.setAttribute('aria-hidden', 'true'); done(); };
+      fly.append(catcher, tip); if (canRecord()) fly.append(recB);
+      fly.classList.add('wait'); fly.removeAttribute('aria-hidden');
+      const go = () => { catcher.remove(); tip.remove(); recB.remove(); fly.classList.remove('wait'); fly.setAttribute('aria-hidden', 'true'); done(); };
       catcher.onclick = go; tip.onclick = go;
+      recB.onclick = async () => { recB.disabled = true; await startVoice(s); go(); };   // the microphone is asked for inside her tap
     });
   }
+
+  /* ---------- her voice: an optional recording while she reads (her request) ----------
+     It stays on this iPad only (IndexedDB, never uploaded) and she listens to it in the studio, on the radio «صوتي». */
+  const VOICE_DB = 'maktabati-voice', VOICE_MAX = 20 * 60 * 1000;
+  const canRecord = () => !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && root.MediaRecorder && root.indexedDB);
+  function voiceDB() {
+    return new Promise((ok, bad) => {
+      const r = indexedDB.open(VOICE_DB, 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('clips', { keyPath: 'id' });
+      r.onsuccess = () => ok(r.result); r.onerror = () => bad(r.error);
+    });
+  }
+  async function voicePut(clip) {
+    const db = await voiceDB();
+    return new Promise((ok, bad) => { const tx = db.transaction('clips', 'readwrite'); tx.objectStore('clips').put(clip); tx.oncomplete = () => ok(); tx.onerror = () => bad(tx.error); });
+  }
+  async function voiceAll() {
+    const db = await voiceDB();
+    return new Promise((ok, bad) => { const q = db.transaction('clips').objectStore('clips').getAll(); q.onsuccess = () => ok(q.result || []); q.onerror = () => bad(q.error); });
+  }
+  let rec = null;
+  async function startVoice(s) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const type = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm'].find(x => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(x)) || '';
+      const mr = new MediaRecorder(stream, type ? { mimeType: type } : undefined);
+      const r = rec = { mr, chunks: [], s, t0: Date.now(), stream, type: mr.mimeType || type };
+      mr.ondataavailable = e => { if (e.data && e.data.size) r.chunks.push(e.data); };
+      mr.start(1000);
+      r.cap = setTimeout(() => stopVoice(), VOICE_MAX);
+      recBar(true);
+      return true;
+    } catch (e) { rec = null; api.toast && api.toast('لم يفتح الميكروفون، نقرأ بدون تسجيل'); return false; }
+  }
+  function stopVoice() {
+    const r = rec; if (!r) return; rec = null; clearTimeout(r.cap); recBar(false);
+    r.mr.onstop = async () => {
+      r.stream.getTracks().forEach(x => x.stop());
+      const blob = new Blob(r.chunks, { type: r.type || 'audio/mp4' });
+      if (blob.size < 1500) return;
+      try {
+        await voicePut({ id: r.s.id + '-' + r.t0, story: r.s.id, title: r.s.title, day: r.s.day, at: r.t0, ms: Date.now() - r.t0, type: blob.type, blob });
+        api.toast && api.toast('حُفِظ صوتكِ في المرسم 🎙️ «صوتي»');
+      } catch (e) { api.toast && api.toast('لم يُحفظ التسجيل'); }
+    };
+    try { r.mr.stop(); } catch (e) {}
+  }
+  function recBar(on) { const b = $('#lbRec'); if (b) b.hidden = !on; }
   // closing: the cover shuts, the book turns its spine to us and slides back into its place
   async function shelveBook(s, then) {
     busy = true;
@@ -540,7 +591,8 @@ function mount(api) {
     layoutReader(); paint();
   }
   function closeReaderNow() { R = null; $('#lbBook').innerHTML = ''; }
-  function leaveReader() { R = null; }
+  function leaveReader() { stopVoice(); R = null; }
+  $('#lbRec').addEventListener('click', () => stopVoice());
   $('#lbClose').addEventListener('click', () => {
     if (!R || R.turning) return;
     const s = R.s;
@@ -744,11 +796,11 @@ function mount(api) {
   const endDrag = async e => {
     if (!drag || (e && e.pointerId !== drag.id)) return;
     const d = drag; drag = null;
-    if (!d.T) {                                   // a tap: the left side turns forward, the right edge goes back
+    if (!d.T) {                                   // a tap anywhere turns the page forward (her request); only the thin right edge goes back
       if (!e || e.type === 'pointercancel') return;
       const r = book.getBoundingClientRect(), x = (e.clientX - r.left) / r.width;
       if (Math.abs(e.clientX - d.x) < 12 && Math.abs(e.clientY - d.y) < 12) {
-        if (x < (R.single ? 0.42 : 0.4)) turn(1); else if (x > (R.single ? 0.8 : 0.6)) turn(-1);
+        if (x > (R.single ? 0.9 : 0.93)) turn(-1); else turn(1);
       }
       return;
     }
@@ -906,7 +958,11 @@ function mount(api) {
     $('#stSpots').innerHTML = SPOTS.map(p => `<button class="st-spot" data-a="${p.id}" style="left:${p.x}%;top:${p.y}%;width:${p.w}%;height:${p.h}%" aria-label="${p.label}"></button>
       <span class="st-label" dir="rtl" style="left:${p.lx}%;top:${p.ly}%">${p.label}${badge[p.id] ? `<b dir="ltr">${badge[p.id]}</b>` : ''}</span>`).join('');
   }
-  function panel(html) { $('#stPbody').innerHTML = html; const b = $('#stPanel'); b.hidden = false; b.classList.remove('play'); void b.offsetWidth; b.classList.add('play'); }
+  let studioAudio = null;
+  function panel(html) {
+    if (studioAudio) { studioAudio.pause(); studioAudio = null; }
+    $('#stPbody').innerHTML = html; const b = $('#stPanel'); b.hidden = false; b.classList.remove('play'); void b.offsetWidth; b.classList.add('play');
+  }
   function studioPlace(id) {
     const n = lib.tools.length;
     if (id === 'tools') {
@@ -930,15 +986,33 @@ function mount(api) {
       panel(`<h2>طاولة الأعمال</h2><p>كلّ ٥ أدوات تفتح مشروعاً جديداً تصنعينه هنا.</p>
         <div class="st-projects">${PROJECTS.map((t, i) => `<div class="st-proj${n >= (i + 1) * 5 ? ' open' : ''}"><b>${AR(i + 1)}</b><span>${t}</span><small>${n >= (i + 1) * 5 ? 'قريباً على الطاولة' : `عند ${AR((i + 1) * 5)} أدوات`}</small></div>`).join('')}</div>`);
     } else if (id === 'voice') {
-      panel(`<h2>صوتي</h2><p class="st-empty">هنا ستسمعين صوتكِ وأنتِ تقرئين قصصكِ، إن أحببتِ أن تسجّليه. قريباً!</p>`);
+      panel(`<h2>صوتي</h2><div id="stVoice"><p class="st-empty">…</p></div>`);
+      const box = () => $('#stVoice');
+      (canRecord() ? voiceAll() : Promise.resolve([])).then(list => {
+        if (!box()) return;
+        list.sort((a, b) => b.at - a.at);
+        const mmss = ms => { const t = Math.round(ms / 1000); return AR(Math.floor(t / 60)) + ':' + AR(String(t % 60).padStart(2, '0')); };
+        box().innerHTML = list.length ? `<div class="st-clips">${list.map(c => `<div class="st-clip"><button class="st-play" data-clip="${c.id}" aria-label="استمعي">▶</button>
+            <div><b>${esc(c.title)}</b><small>الكتاب ${AR(c.day)} · ${mmss(c.ms)}</small></div></div>`).join('')}</div>`
+          : '<p class="st-empty">هنا تسمعين صوتكِ وأنتِ تقرئين. قبل أن تفتحي أيّ كتاب، اضغطي «🎙️ اقرئي بصوتكِ وسجّلي».</p>';
+        box().onclick = e => {
+          const b = e.target.closest('.st-play'); if (!b) return;
+          const c = list.find(x => x.id === b.dataset.clip); if (!c) return;
+          if (studioAudio) { studioAudio.pause(); URL.revokeObjectURL(studioAudio.src); const was = studioAudio.dataset.clip; studioAudio = null; box().querySelectorAll('.st-play').forEach(x => { x.textContent = '▶'; }); if (was === c.id) return; }
+          const a = studioAudio = new Audio(URL.createObjectURL(c.blob)); a.dataset.clip = c.id;
+          b.textContent = '■'; a.onended = () => { b.textContent = '▶'; studioAudio = null; };
+          a.play().catch(() => { b.textContent = '▶'; studioAudio = null; });
+        };
+      }).catch(() => { if (box()) box().innerHTML = '<p class="st-empty">لا نستطيع فتح التسجيلات على هذا الجهاز.</p>'; });
     } else if (id === 'mail') {
       panel(`<h2>رسائل بابا</h2><p class="st-empty">في هذا الصندوق تصل رسائل من بابا. قريباً!</p>`);
     }
   }
   $('#stSpots').addEventListener('click', e => { const b = e.target.closest('.st-spot'); if (b) { api.SFX.init(); studioPlace(b.dataset.a); } });
-  $('#stPx').addEventListener('click', () => { $('#stPanel').hidden = true; renderSpots(); });
+  const stopClip = () => { if (studioAudio) { studioAudio.pause(); studioAudio = null; } };
+  $('#stPx').addEventListener('click', () => { stopClip(); $('#stPanel').hidden = true; renderSpots(); });
   $('#stPanel').addEventListener('click', e => {
-    if (e.target.id === 'stPanel') { $('#stPanel').hidden = true; renderSpots(); return; }
+    if (e.target.id === 'stPanel') { stopClip(); $('#stPanel').hidden = true; renderSpots(); return; }
     const did = e.target.closest('.st-did');
     if (did) { did.hidden = true; did.parentElement.querySelector('.st-feel').hidden = false; return; }
     const f = e.target.closest('[data-f]');

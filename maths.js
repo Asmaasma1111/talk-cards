@@ -657,43 +657,67 @@ function mount(api) {
     return true;
   }
   function stopListening() { if (listening) { try { listening.abort(); } catch (e) {} listening = null; } $('#mxPad [data-k="mic"]')?.classList.remove('on'); }
+  // what the browser heard: every alternative of every result, read by index (some browsers' lists cannot be spread)
+  function heardTexts(e) {
+    const out = []; let final = false;
+    const L = e.results || [];
+    for (let i = 0; i < L.length; i++) {
+      const res = L[i]; if (!res) continue;
+      if (res.isFinal) final = true;
+      for (let k = 0; k < (res.length || 0); k++) { const a = res[k] || (res.item && res.item(k)); if (a && a.transcript && a.transcript.trim()) out.push(a.transcript.trim()); }
+    }
+    if (L.length > 1) { let all = ''; for (let i = 0; i < L.length; i++) { const a = L[i] && (L[i][0] || (L[i].item && L[i].item(0))); if (a && a.transcript) all += ' ' + a.transcript; } if (all.trim()) out.push(all.trim()); }
+    return { texts: out, final };
+  }
   function listen() {
     if (listening) { stopListening(); voiceTip(''); return; }          // a second tap stops
     if (!SpeechRec || srBroken) return keyboardVoice();
     const item = S.item, r = listening = new SpeechRec();
-    r.lang = 'ar-SA'; r.interimResults = false; r.continuous = false; r.maxAlternatives = 5;
+    r.lang = 'ar-SA'; r.interimResults = true; r.continuous = false; r.maxAlternatives = 5;
     const key = $('#mxPad [data-k="mic"]'); key.classList.add('on');
-    voiceTip('🎤 قولي الجواب');
-    let got = false;
+    voiceTip('🎤 أسمعكِ… قولي الجواب');
+    let got = false, last = [];
+    const settle = () => {                                    // try every text she was heard saying; say what was heard if no number came out
+      if (got || !last.length) return;
+      got = last.some(t => heard(t, item));
+      if (!got) voiceTip('سمعتُ «' + last[0].slice(0, 24) + '»، قولي الرقم مرّة أخرى');
+    };
     r.onresult = e => {
-      const alts = [...e.results[e.results.length - 1]].map(a => a.transcript);
-      got = alts.some(t => heard(t, item));
-      if (!got) voiceTip('ما سمعتُ رقماً، اضغطي 🎤 وقوليه مرّة أخرى');
+      const { texts, final } = heardTexts(e);
+      if (!texts.length) return;
+      last = texts;
+      if (!got) voiceTip('🎤 ' + texts[0].slice(0, 24));
+      if (final) { settle(); try { r.stop(); } catch (err) {} }
     };
     r.onerror = e => {
-      if (['not-allowed', 'service-not-allowed', 'audio-capture', 'language-not-supported'].includes(e.error)) { srBroken = true; voiceTip('اضغطي 🎤 مرّة أخرى'); }
+      if (['not-allowed', 'service-not-allowed', 'audio-capture', 'language-not-supported', 'network'].includes(e.error)) {
+        srBroken = true; voiceTip('لا أستطيع الاستماع هنا، اضغطي 🎤 مرّة أخرى لتستعملي إملاء لوحة المفاتيح');
+      } else if (e.error === 'no-speech') voiceTip('ما سمعتُ شيئاً، اضغطي 🎤 وقولي الجواب');
     };
     r.onend = () => {
       if (listening === r) listening = null;
       key.classList.remove('on');
-      if (!got && !srBroken && $('#mxVoiceTip')?.textContent === '🎤 قولي الجواب') voiceTip('ما سمعتُ شيئاً، اضغطي 🎤 وقولي الجواب');
+      settle();
+      if (!got && !srBroken && !last.length && /أسمعكِ/.test($('#mxVoiceTip')?.textContent || '')) voiceTip('ما سمعتُ شيئاً، اضغطي 🎤 وقولي الجواب');
     };
     try { r.start(); } catch (e) { listening = null; key.classList.remove('on'); srBroken = true; keyboardVoice(); }
   }
-  // The fallback: a hidden text box opens the iPad keyboard; whatever she dictates into it becomes the answer.
+  // The fallback where the browser cannot listen: a visible answer box on the card opens the iPad keyboard; she taps the
+  // keyboard's own 🎤 and says the number (or types it); whatever comes in becomes the answer.
   function keyboardVoice() {
-    let inp = $('#mxVoiceIn');
-    if (!inp) {
-      inp = Object.assign(document.createElement('input'), { id: 'mxVoiceIn', type: 'text', className: 'mx-voice-in', autocomplete: 'off' });
-      inp.setAttribute('aria-label', 'قولي الجواب'); inp.setAttribute('autocorrect', 'off'); inp.setAttribute('enterkeyhint', 'done');
-      document.body.append(inp);
-      let t = 0;
-      inp.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => { if (S && heard(inp.value, S.item)) { inp.value = ''; inp.blur(); } }, 700); });
-      inp.addEventListener('keydown', e => { if (e.key === 'Enter') inp.blur(); });
-      inp.addEventListener('blur', () => { inp.value = ''; if ($('#mxVoiceTip')?.textContent.includes('لوحة')) voiceTip(''); });
-    }
-    inp.value = ''; inp.focus();
-    voiceTip('اضغطي 🎤 في لوحة المفاتيح وقولي الجواب');
+    $('#mxVoiceIn')?.remove();
+    const item = S.item;
+    const inp = Object.assign(document.createElement('input'), { id: 'mxVoiceIn', type: 'text', className: 'mx-dict', autocomplete: 'off', placeholder: 'اضغطي 🎤 في لوحة المفاتيح' });
+    inp.setAttribute('dir', 'rtl'); inp.setAttribute('autocorrect', 'off'); inp.setAttribute('enterkeyhint', 'done'); inp.setAttribute('aria-label', 'قولي الجواب');
+    voiceTip('');
+    $('#mxFront .mx-q').append(inp);
+    layout();
+    inp.focus();
+    let t = 0;
+    const take = () => { if (S && S.item === item && heard(inp.value, item)) { inp.blur(); } };
+    inp.addEventListener('input', () => { clearTimeout(t); t = setTimeout(take, 700); });
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { take(); inp.blur(); } });
+    inp.addEventListener('blur', () => { setTimeout(() => { inp.remove(); layout(); }, 150); });
   }
   function hint() {
     if (!S || S.phase !== 'ask' || S.helped) return;
@@ -980,6 +1004,7 @@ function mount(api) {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     if (!$('#mxCel').hidden) { if (e.key === 'Enter' && !$('#mxCelBtn').disabled) { e.preventDefault(); $('#mxCelBtn').click(); } return; }
     if ($('#msession').hidden || !S) return;
+    if (e.target && e.target.tagName === 'INPUT') return;          // typing in the dictation box
     const k = toWestern(e.key);
     if (/^[0-9]$/.test(k)) { e.preventDefault(); press(k); }
     else if (e.key === 'Backspace') { e.preventDefault(); press('del'); }
