@@ -79,7 +79,7 @@ const KNOWN_BOX = 2;      // a set of new facts is "mostly mastered" when its fa
 const MASTER_BOX = 4;     // a table's sticker: all ten facts in box 4 or higher (a week or more apart)
 const MIN_SESSION = 5;    // short sessions are topped up with learned facts ("تذكّري")
 const MAX_VIEWS = 3;      // a card is shown at most three times in one session
-const DEFAULT_SETTINGS = { perSession: 8, batchSize: 4, newPerDay: 10, goalMin: 5, fastSec: 4, dir: 'rtl' };
+const DEFAULT_SETTINGS = { perSession: 8, batchSize: 4, newPerDay: 10, goalMin: 5, fastSec: 4, dir: 'rtl', read: true };
 const CARD_CAP = 120;     // daily goal: active seconds counted per card, at most (as in the English cards)
 const isDay = x => typeof x === 'string' && /^\d{4}-\d\d-\d\d$/.test(x);
 
@@ -365,6 +365,7 @@ function mount(api) {
     <button id="mxQuit" class="quit" aria-label="الرئيسية"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
     <div class="progress"><div class="fill" id="mxProg"></div></div>
     <div class="mini-goal" id="mxMini"><svg class="ring" viewBox="0 0 64 64" aria-hidden="true"><circle class="ring-bg" cx="32" cy="32" r="25"/><circle class="ring-fg" id="mxSessRing" cx="32" cy="32" r="25"/></svg><span id="mxSessMins"></span></div>
+    <button class="mx-speak" id="mxSpeak" aria-label="اقرئي السؤال بصوت"></button>
     <div class="star-count" id="mxStarCount"><svg class="star" aria-hidden="true"><use href="#i-star"/></svg><span id="mxStarNum"></span></div>
   </div>
   <div class="mx-main">
@@ -475,8 +476,31 @@ function mount(api) {
     api.show('mhome');
   }
 
+  /* ---------- the sum read aloud (Maria's request): the iPad's Arabic voice says «ثلاثة في أربعة» as each card appears ---------- */
+  const AR_WORDS = ['صفر', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة', 'عشرة'];
+  const canSpeak = () => 'speechSynthesis' in root && 'SpeechSynthesisUtterance' in root;
+  function arVoice() {
+    try { const vs = speechSynthesis.getVoices(); return vs.find(v => /^ar[-_]SA/i.test(v.lang)) || vs.find(v => /^ar/i.test(v.lang)) || null; } catch (e) { return null; }
+  }
+  // said once inside her tap on «ابدئي», so the iPad then lets each new card speak by itself
+  function unlockSpeech() { if (!canSpeak()) return; try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } catch (e) {} }
+  function stopReading() { if (canSpeak()) { try { speechSynthesis.cancel(); } catch (e) {} } }
+  function readSum(f) {
+    if (!canSpeak() || !m.settings.read || !f) return;
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(`${AR_WORDS[f.a]} في ${f.b === 2 ? 'اثنين' : AR_WORDS[f.b]}`);   // after «في»: اثنين
+      u.lang = 'ar-SA'; const v = arVoice(); if (v) { try { u.voice = v; } catch (err) { /* the language alone picks an Arabic voice */ } }
+      u.rate = 1; u.pitch = 1.05;
+      speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+  function speakIcon() { const b = $('#mxSpeak'); if (!b) return; b.textContent = m.settings.read ? '🔊' : '🔇'; b.classList.toggle('off', !m.settings.read); b.hidden = !canSpeak(); }
+  if (canSpeak()) { try { speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = () => {}; } catch (e) {} }
+
   /* ---------- a round ---------- */
   function stopRound() {
+    stopReading();
     S = null;
     clock.stop(); clearInterval(tick);
     $('#mxCel').hidden = true;
@@ -484,7 +508,7 @@ function mount(api) {
     if (garden) garden.dismiss();                  // the garden's "50 stars" moment, if it was still open
   }
   function startNormal() {
-    api.SFX.init();
+    api.SFX.init(); unlockSpeech();
     if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
     const items = buildSession(m, today());
     save();                                        // a new set may have been released
@@ -492,7 +516,7 @@ function mount(api) {
     startRound('normal', items);
   }
   function startPractice(ids) {
-    api.SFX.init();
+    api.SFX.init(); unlockSpeech();
     if (ids.length) startRound('practice', ids.map(id => ({ id, step: 'practice' })));
   }
   function startRound(mode, items) {
@@ -515,6 +539,7 @@ function mount(api) {
     S.helped = S.item.step === 'show';            // a new fact comes with its dot picture
     renderFront();
     progress();
+    const item = S.item; setTimeout(() => { if (S && S.item === item && S.phase === 'ask') readSum(FACT[item.id]); }, 380);
     S.shownAt = performance.now(); S.hiddenAt = 0;
     clock.start(); clearInterval(tick); tick = setInterval(sessRing, 1000); sessRing();
   }
@@ -671,6 +696,7 @@ function mount(api) {
   }
   function listen() {
     if (listening) { stopListening(); voiceTip(''); return; }          // a second tap stops
+    stopReading();
     if (!SpeechRec || srBroken) return keyboardVoice();
     const item = S.item, r = listening = new SpeechRec();
     r.lang = 'ar-SA'; r.interimResults = true; r.continuous = false; r.maxAlternatives = 5;
@@ -988,6 +1014,11 @@ function mount(api) {
   $('#mxToTalk').addEventListener('click', () => { stopRound(); api.english(); });
   api.holdToOpen($('#mxGear'), 2000, openParent);
   $('#mxStart').addEventListener('click', startNormal);
+  speakIcon();
+  $('#mxSpeak').addEventListener('click', () => {
+    m.settings.read = !m.settings.read; save(); speakIcon();
+    if (m.settings.read && S && S.phase === 'ask') readSum(FACT[S.item.id]); else stopReading();
+  });
   $('#mxStickers').addEventListener('click', e => { const b = e.target.closest('[data-table]'); if (b) startPractice(tablePracticeIds(m, Number(b.dataset.table))); });
   $('#mxQuit').addEventListener('click', home);
   $('#mxPad').addEventListener('click', e => { const k = e.target.closest('[data-k]'); if (k) press(k.dataset.k); });

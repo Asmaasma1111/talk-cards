@@ -147,6 +147,8 @@ button.badge:active { transform: scale(.9); }
 .star-count { display: flex; align-items: center; gap: 6px; font-size: 24px; font-weight: 700; min-width: 64px; justify-content: flex-end; }
 .star-count .star { width: 30px; height: 30px; }
 .star-count.bump { animation: bump .35s ease; }
+.mx-speak { flex: none; width: 52px; height: 52px; margin-inline-start: 8px; padding: 0; font-size: 26px; line-height: 1; border: 2.5px solid var(--ink); border-radius: 50%; background: var(--white); box-shadow: 0 3px 0 var(--ink); cursor: pointer; }
+.mx-speak.off { background: #EEE8F5; }
 @keyframes bump { 40% { transform: scale(1.3); } }
 .practice .star-count { visibility: hidden; }
 .practice .progress .fill { background: var(--ink); }
