@@ -482,11 +482,32 @@ function mount(api) {
   function arVoice() {
     try { const vs = speechSynthesis.getVoices(); return vs.find(v => /^ar[-_]SA/i.test(v.lang)) || vs.find(v => /^ar/i.test(v.lang)) || null; } catch (e) { return null; }
   }
-  // said once inside her tap on «ابدئي», so the iPad then lets each new card speak by itself
-  function unlockSpeech() { if (!canSpeak()) return; try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } catch (e) {} }
-  function stopReading() { if (canSpeak()) { try { speechSynthesis.cancel(); } catch (e) {} } }
+  // The recorded human voice (scripts/maths_voice.py → the 'maths' deck of audio/voice.json, cached offline by the
+  // service worker); the iPad's own Arabic voice reads any question that has no clip yet.
+  let mxClips = null;
+  const mxAudio = new Audio(); mxAudio.preload = 'auto';
+  fetch('audio/voice.json').then(r => (r.ok ? r.json() : null)).then(j => { mxClips = (j && j.decks && j.decks.maths && j.decks.maths.clips) || null; }).catch(() => {});
+  // inside her tap on «ابدئي», so the iPad then lets each new card speak by itself
+  function unlockSpeech() {
+    try { mxAudio.src = 'audio/_unlock.m4a'; mxAudio.play().catch(() => {}); } catch (e) {}
+    if (!canSpeak()) return; try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } catch (e) {}
+  }
+  function stopReading() {
+    try { mxAudio.pause(); } catch (e) {}
+    if (canSpeak()) { try { speechSynthesis.cancel(); } catch (e) {} }
+  }
   function readSum(f) {
-    if (!canSpeak() || !m.settings.read || !f) return;
+    if (!m.settings.read || !f) return;
+    const c = mxClips && mxClips[f.id];
+    if (c) {
+      stopReading();
+      try { mxAudio.src = 'audio/' + c.f; mxAudio.currentTime = 0; mxAudio.play().catch(() => sayWithDevice(f)); } catch (e) { sayWithDevice(f); }
+      return;
+    }
+    sayWithDevice(f);
+  }
+  function sayWithDevice(f) {
+    if (!canSpeak()) return;
     try {
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(`${AR_WORDS[f.a]} في ${f.b === 2 ? 'اثنين' : AR_WORDS[f.b]}`);   // after «في»: اثنين
@@ -495,7 +516,7 @@ function mount(api) {
       speechSynthesis.speak(u);
     } catch (e) {}
   }
-  function speakIcon() { const b = $('#mxSpeak'); if (!b) return; b.textContent = m.settings.read ? '🔊' : '🔇'; b.classList.toggle('off', !m.settings.read); b.hidden = !canSpeak(); }
+  function speakIcon() { const b = $('#mxSpeak'); if (!b) return; b.textContent = m.settings.read ? '🔊' : '🔇'; b.classList.toggle('off', !m.settings.read); }
   if (canSpeak()) { try { speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = () => {}; } catch (e) {} }
 
   /* ---------- a round ---------- */
