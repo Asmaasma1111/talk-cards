@@ -2,7 +2,7 @@
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
 // The same file serves both apps: Talk Cards registers sw.js, Prepositions registers sw.js?app=prepositions.
 const APP = new URL(location.href).searchParams.get('app') === 'prepositions' ? 'prepositions' : 'talk-cards';
-const VERSION = APP + '-v46';
+const VERSION = APP + '-v47';
 const FILES = APP === 'prepositions' ? [
   './',
   'index.html',
@@ -94,6 +94,14 @@ async function cacheVoice(cache) {
 }
 
 // Maria's sticker book: every picture listed in stickers/stickers.json, so the book opens offline too.
+// مرسمي: the colouring pictures (same ids as PICS in library.js), one by one, so a picture not drawn yet never stops the install
+const COLOUR = ['glitter-balls', 'mega-dumpling', 'squishy-stickers', 'butter-stick', 'peanut', 'cheese', 'banana', 'noodles', 'paper-squishy',
+  'butter-toast', 'bunny', 'cat', 'rainbow', 'treasure', 'bracelet', 'bookmark'];
+async function cacheColour(cache) {
+  if (APP !== 'talk-cards') return;
+  await Promise.all(COLOUR.map(id => cache.add(`assets/library/color/${id}.webp`).catch(() => {})));
+}
+
 async function cacheStickers(cache) {
   if (APP !== 'talk-cards') return;
   try {
@@ -114,7 +122,7 @@ async function cacheStories(cache) {
 }
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSION).then(async c => { await c.addAll(FILES); await cacheVoice(c); await cacheStickers(c); await cacheStories(c); }).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(VERSION).then(async c => { await c.addAll(FILES); await cacheVoice(c); await cacheStickers(c); await cacheStories(c); await cacheColour(c); }).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {

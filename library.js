@@ -25,6 +25,7 @@ function blank() {
     doors: {},                         // shelf -> the day its glass door swung open (shown once)
     seen: {},                          // milestone celebrations already shown (10, 20, 30)
     deco: {},                          // shelf -> {color, item, garland, photo}: how she decorated a finished shelf
+    art: {},                           // project number (1-6) -> her coloured picture (a small JPEG data URL), hung in the studio gallery
     sound: true
   };
 }
@@ -35,7 +36,7 @@ function clean(s) {
   const arr = x => (Array.isArray(x) ? x.filter(v => typeof v === 'string') : []);
   return { ...d, ...s, read: obj(s.read), order: arr(s.order), today: { ...d.today, ...obj(s.today) }, place: obj(s.place),
     missions: obj(s.missions), tools: arr(s.tools), notebook: arr(s.notebook), feelings: arr(s.feelings),
-    doors: obj(s.doors), seen: obj(s.seen), deco: obj(s.deco), sound: s.sound !== false };
+    doors: obj(s.doors), seen: obj(s.seen), deco: obj(s.deco), art: obj(s.art), sound: s.sound !== false };
 }
 const valid = s => !!(s && typeof s === 'object' && s.read && typeof s.read === 'object' && Array.isArray(s.order));
 const onShelf = (stories, n) => stories.filter(s => s.shelf === n);
@@ -152,6 +153,13 @@ function mount(api) {
   <div class="lb-cel" id="lbCel" hidden><div class="lb-cel-box"><div class="lb-cel-burst" id="lbCelIc"></div><h2 id="lbCelTitle"></h2><p id="lbCelSub"></p><button class="btn btn-good" id="lbCelOk">رائع!</button></div></div>
 </section>
 
+<section id="lcolor" class="screen lb lb-color" dir="rtl" lang="ar" hidden>
+  <div class="cl-top"><button class="st-back" id="clBack">مرسمي ←</button><h1 class="cl-title" id="clTitle"></h1>
+    <div class="cl-tools"><button class="cl-btn" id="clUndo" aria-label="تراجعي">↶</button><button class="cl-btn" id="clClear" aria-label="ابدئي من جديد">🧽</button>
+    <button class="btn btn-good cl-done" id="clDone">علّقيها في المعرض ✓</button></div></div>
+  <div class="cl-main"><div class="cl-paper"><canvas id="clCanvas" width="1024" height="1024"></canvas><div class="cl-twinkle" id="clTwinkle"></div><p class="cl-wait" id="clWait">…</p></div>
+    <div class="cl-palette" id="clPalette"></div></div>
+</section>
 <section id="lstudio" class="screen lb lb-studio" dir="rtl" lang="ar" hidden>
   <div class="st-scroll" id="stScroll" dir="ltr"><div class="st-stage" id="stStage"><img class="st-room" src="assets/library/studio.webp" alt="">
     <div id="stShelf"></div><div id="stBoard"></div><div id="stSpots"></div></div></div>
@@ -226,6 +234,18 @@ function mount(api) {
       });
     },
     fanfare() { [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => this.chime(i * 0.13, 0.8)); },
+    squish(soft = 1) {                        // a soft rubbery squish, made in code: a low tone that sinks, and a breath of air
+      const c = this.ctx(); if (!c || !lib.sound) return;
+      const t0 = c.currentTime, o = c.createOscillator(), g = c.createGain();
+      o.type = 'sine'; o.frequency.setValueAtTime(380 + Math.random() * 60, t0); o.frequency.exponentialRampToValueAtTime(140, t0 + 0.2);
+      g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.16 * soft, t0 + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.26);
+      o.connect(g); g.connect(this.out); o.start(t0); o.stop(t0 + 0.3);
+      const n = c.createBuffer(1, c.sampleRate * 0.2 | 0, c.sampleRate), d = n.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+      const ns = c.createBufferSource(), f = c.createBiquadFilter(), ng = c.createGain();
+      ns.buffer = n; f.type = 'lowpass'; f.frequency.value = 900; ng.gain.value = 0.05 * soft;
+      ns.connect(f); f.connect(ng); ng.connect(this.out); ns.start(t0);
+    },
     async roomOn() {
       if (!lib.sound || this.roomSrc) return;
       const b = await this.get('room'), c = this.ctx(); if (!b || !c || this.roomSrc || !lib.sound || $('#lhome').hidden) return;
@@ -848,7 +868,9 @@ function mount(api) {
   }
   function keepTool() {
     const s = R.s, tl = $('#lbTool'), pot = $('#lbStudio');
+    const before = lib.tools.length;
     lib.tools.includes(s.id) || lib.tools.push(s.id); save();
+    if (opened(lib.tools.length) > opened(before)) setTimeout(() => api.toast && api.toast('🎨 صورة جديدة للتلوين تنتظركِ في مرسمي'), 1400);
     const ra = tl.getBoundingClientRect(), rb = pot.getBoundingClientRect();
     const g = tl.cloneNode(true); g.removeAttribute('id'); g.classList.add('lb-ghost');
     Object.assign(g.style, { left: ra.left + 'px', top: ra.top + 'px', width: ra.width + 'px', height: ra.height + 'px' });
@@ -916,12 +938,159 @@ function mount(api) {
     { id: 'corner', x: 0, y: 41, w: 28, h: 36, label: 'ركن الكلمات', lx: 15, ly: 37 },
     { id: 'table', x: 28, y: 58, w: 55, h: 34, label: 'طاولة الأعمال', lx: 55.5, ly: 93 }
   ];
-  const PROJECTS = ['تلوين سكويشي', 'تصميم ملصقة', 'تزيين صندوق', 'تصميم سوار الصداقة', 'تصميم فاصل كتاب', 'صنع سكويشي بنفسكِ'];
+  // The colouring pictures, in the order they open (assets/library/color/<id>.webp). Squishies first, which she loves: the glitter
+  // ones like hers, a girl hugging a mega one, many kinds, then the butter, peanut, cheese, banana, noodle and paper ones she
+  // asked for (17 Oct 2026), then the rest.
+  const PICS = [
+    { id: 'glitter-balls', t: 'كُرات السكويشي اللامعة' }, { id: 'mega-dumpling', t: 'سكويشي عملاق' }, { id: 'squishy-stickers', t: 'ملصقات سكويشي' },
+    { id: 'butter-stick', t: 'سكويشي الزبدة' }, { id: 'peanut', t: 'سكويشي الفول السوداني' }, { id: 'cheese', t: 'سكويشي الجبن' },
+    { id: 'banana', t: 'سكويشي الموزة' }, { id: 'noodles', t: 'سكويشي النودلز' }, { id: 'paper-squishy', t: 'سكويشي من ورق' }, { id: 'butter-toast', t: 'زبدة على خبز محمّص' }, { id: 'bunny', t: 'أرنب سكويشي' }, { id: 'cat', t: 'قطّة سكويشي' },
+    { id: 'rainbow', t: 'ملصقة قوس قزح' }, { id: 'treasure', t: 'صندوق الكنز' }, { id: 'bracelet', t: 'سوار الصداقة' },
+    { id: 'bookmark', t: 'فاصل كتاب' }];
+  const PIC = Object.fromEntries(PICS.map(p => [p.id, p]));
+
+  /* ---------- colouring pictures (her request, 17 Oct 2026) ----------
+     Her tools open the pictures one by one, spread evenly over the 30 books (openAt). She picks a colour and taps an
+     area: it fills up to the black lines (the areas are found once, when the picture opens). Her picture in progress is
+     remembered on this iPad; «علّقيها في المعرض» keeps a small copy in her progress and hangs it in its frame on the cork board. */
+  const COLOURS = ['#FF6B8A', '#FFA3B8', '#FFA94D', '#FFD93D', '#FFF0A0', '#6BCB77', '#B5E8A8', '#4D96FF', '#A9CBFF', '#9B6BFF',
+    '#D8C2FF', '#8B5A3C', '#F3CBA5', '#FFFFFF', '#B8B8B8', '#3A3A3A'];
+  // glitter (her request, 17 Oct 2026: «she loves squishy… and some glitter to colour»): a glitter fills its area with a sparkly
+  // speckle of its colour, and a few stars twinkle on top. 'g:rainbow' runs through the rainbow across the picture.
+  // The colours are those of the glitter squishies she showed (17 Oct 2026): blue, gold, pink, purple, orange and green.
+  const GLITTER = { 'g:gold': [236, 182, 38], 'g:pink': [255, 96, 168], 'g:purple': [158, 96, 242], 'g:blue': [64, 148, 255],
+    'g:green': [70, 196, 96], 'g:orange': [255, 140, 50], 'g:silver': [178, 188, 204], 'g:rainbow': null };
+  const GLITTER_NAME = { 'g:gold': 'لمعة ذهبية', 'g:pink': 'لمعة وردية', 'g:purple': 'لمعة بنفسجية', 'g:blue': 'لمعة زرقاء',
+    'g:green': 'لمعة خضراء', 'g:orange': 'لمعة برتقالية', 'g:silver': 'لمعة فضية', 'g:rainbow': 'لمعة قوس قزح' };
+  let SPARK = null, HUES = null;
+  function glitterGrain(W) {                     // the glitter grain: one random value for every 2×2 block, made once
+    if (SPARK && SPARK.W === W) return SPARK;
+    const n = new Uint8Array(W * W), h = W >> 1;
+    for (let cy = 0; cy < h; cy++) for (let cx = 0; cx < h; cx++) {
+      const v = (Math.random() * 256) | 0, i = cy * 2 * W + cx * 2;
+      n[i] = n[i + 1] = n[i + W] = n[i + W + 1] = v;
+    }
+    HUES = Array.from({ length: 360 }, (_, d) => {   // the rainbow, one colour per degree
+      const f = k => { const t = (k + d / 30) % 12; return 0.62 - 0.36 * Math.max(-1, Math.min(t - 3, 9 - t, 1)); };
+      return [f(0) * 255, f(8) * 255, f(4) * 255];
+    });
+    return (SPARK = { W, n });
+  }
+  const openAt = i => Math.round((i + 1) * ST.length / PICS.length);          // how many tools open picture i (from 0)
+  const opened = tools => PICS.filter((p, i) => tools >= openAt(i)).length;
+  const artOpen = id => PICS.findIndex(p => p.id === id) < opened(lib.tools.length);
+  const WIP = n => 'tc:maria:colour:' + n;
+  let CL = null;
+  function openColour(n) {                      // n: the picture's id
+    const W = 1024, cv = $('#clCanvas'), ctx = cv.getContext('2d', { willReadFrequently: true });
+    if (!PIC[n]) return;
+    $('#clTitle').textContent = PIC[n].t;
+    $('#clWait').hidden = false; $('#clWait').textContent = '…';
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, W);
+    api.show('lcolor');
+    const img = new Image();
+    img.onload = () => {
+      const off = document.createElement('canvas'); off.width = off.height = W;
+      const oc = off.getContext('2d', { willReadFrequently: true });
+      oc.fillStyle = '#fff'; oc.fillRect(0, 0, W, W); oc.drawImage(img, 0, 0, W, W);
+      const src = oc.getImageData(0, 0, W, W).data, N = W * W;
+      const lum = new Uint8Array(N), labels = new Int32Array(N);
+      for (let i = 0; i < N; i++) { const v = (src[i * 4] * 0.3 + src[i * 4 + 1] * 0.59 + src[i * 4 + 2] * 0.11) | 0; lum[i] = v; labels[i] = v < 150 ? -1 : 0; }
+      // the areas: every group of light pixels joined to each other, walled in by the dark lines
+      const stack = new Int32Array(N); let next = 0;
+      for (let i = 0; i < N; i++) {
+        if (labels[i] !== 0) continue;
+        next++; let top = 0; stack[top++] = i; labels[i] = next;
+        while (top) {
+          const p = stack[--top], x = p % W;
+          if (x > 0 && labels[p - 1] === 0) { labels[p - 1] = next; stack[top++] = p - 1; }
+          if (x < W - 1 && labels[p + 1] === 0) { labels[p + 1] = next; stack[top++] = p + 1; }
+          if (p >= W && labels[p - W] === 0) { labels[p - W] = next; stack[top++] = p - W; }
+          if (p < N - W && labels[p + W] === 0) { labels[p + W] = next; stack[top++] = p + W; }
+        }
+      }
+      let fills = new Map();
+      try { const w = JSON.parse(localStorage.getItem(WIP(n)) || 'null'); if (w && w.v === 1) fills = new Map(w.f); } catch (e) {}
+      CL = { n, W, ctx, lum, labels, fills, history: [], colour: CL ? CL.colour : COLOURS[0], out: ctx.createImageData(W, W) };
+      $('#clWait').hidden = true;
+      paintColour(); palette();
+    };
+    img.onerror = () => { $('#clWait').textContent = 'هذه الصورة تصل قريباً 🎨'; };
+    img.src = `assets/library/color/${n}.webp`;
+  }
+  function paintColour() {
+    const { W, lum, labels, fills, out, ctx } = CL, d = out.data, rgb = {}, glit = {};
+    fills.forEach((c, k) => {
+      if (c in GLITTER) glit[k] = GLITTER[c] || 'rainbow';
+      else rgb[k] = [parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)];
+    });
+    const sp = Object.keys(glit).length ? glitterGrain(W).n : null;
+    for (let i = 0, N = W * W; i < N; i++) {
+      let f = rgb[labels[i]];
+      const l = lum[i] / 255, j = i * 4;                          // the colour under the line drawing (multiply), so the lines stay crisp
+      const g = sp && glit[labels[i]];
+      if (g) {                                                    // glitter: the base colour, lit or shaded grain by grain
+        const b = g === 'rainbow' ? HUES[(((i % W) + ((i / W) | 0)) * 360 / (W * 0.9) | 0) % 360] : g, v = sp[i];
+        const w = v > 244 ? 0.88 : v > 205 ? 0.42 : 0, m = v < 46 ? 0.7 : 0.9 + v / 1700;
+        f = [Math.min(255, b[0] * m + (255 - b[0] * m) * w), Math.min(255, b[1] * m + (255 - b[1] * m) * w), Math.min(255, b[2] * m + (255 - b[2] * m) * w)];
+      }
+      if (f) { d[j] = f[0] * l; d[j + 1] = f[1] * l; d[j + 2] = f[2] * l; } else { d[j] = d[j + 1] = d[j + 2] = lum[i]; }
+      d[j + 3] = 255;
+    }
+    ctx.putImageData(out, 0, 0);
+    twinkle(glit);
+  }
+  function twinkle(glit) {                       // a few stars that twinkle over the glitter areas
+    const box = $('#clTwinkle'), { W, labels } = CL, at = [];
+    if (Object.keys(glit).length) for (let t = 0; t < 6000 && at.length < 16; t++) {
+      const i = (Math.random() * W * W) | 0;
+      if (glit[labels[i]] && CL.lum[i] > 200) at.push(i);
+    }
+    box.innerHTML = at.map((i, k) => `<i style="left:${(i % W) / W * 100}%;top:${((i / W) | 0) / W * 100}%;animation-delay:${(k * 0.37) % 2.4}s"></i>`).join('');
+  }
+  function palette() {
+    const dot = c => `<button class="cl-dot${c === CL.colour ? ' on' : ''}" data-c="${c}" style="background:${c}" aria-label="${c}"></button>`;
+    const glit = c => `<button class="cl-dot glit ${c.slice(2)}${c === CL.colour ? ' on' : ''}" data-c="${c}" aria-label="${GLITTER_NAME[c]}"></button>`;
+    $('#clPalette').innerHTML = `<div class="cl-cols">${COLOURS.map(dot).join('')}</div>
+      <div class="cl-glit"><span class="cl-glit-t">✨</span>${Object.keys(GLITTER).map(glit).join('')}</div>`;
+  }
+  function keepWip() { try { localStorage.setItem(WIP(CL.n), JSON.stringify({ v: 1, f: [...CL.fills] })); } catch (e) {} }
+  function fillAt(ev) {
+    if (!CL) return;
+    const cv = $('#clCanvas'), r = cv.getBoundingClientRect(), W = CL.W;
+    let x = Math.round((ev.clientX - r.left) / r.width * W), y = Math.round((ev.clientY - r.top) / r.height * W);
+    if (x < 0 || y < 0 || x >= W || y >= W) return;
+    let k = CL.labels[y * W + x];
+    for (let rad = 1; k < 1 && rad < 14; rad++) {                  // a tap on a line: the nearest area
+      for (let dy = -rad; dy <= rad && k < 1; dy++) for (let dx = -rad; dx <= rad && k < 1; dx++) {
+        const xx = x + dx, yy = y + dy; if (xx >= 0 && yy >= 0 && xx < W && yy < W) k = CL.labels[yy * W + xx];
+      }
+    }
+    if (k < 1 || CL.fills.get(k) === CL.colour) return;
+    CL.history.push([k, CL.fills.get(k)]);
+    CL.fills.set(k, CL.colour); paintColour(); keepWip();
+    squish($('#lcolor .cl-paper')); SND.squish(0.8);
+    if (CL.colour in GLITTER) {                                   // a little burst of sparkles where she tapped
+      const b = document.createElement('div'); b.className = 'cl-burst';
+      b.style.left = (x / W * 100) + '%'; b.style.top = (y / W * 100) + '%';
+      b.innerHTML = '<i></i><i></i><i></i><i></i><i></i><i></i>';
+      $('#clTwinkle').appendChild(b); setTimeout(() => b.remove(), 900);
+    }
+  }
+  function squish(el) {                         // squash and bounce back, like a squishy toy in her hand
+    if (!el) return;
+    el.classList.remove('squish'); void el.offsetWidth; el.classList.add('squish');
+  }
+  function shrinkArt() {
+    const c = document.createElement('canvas'); c.width = c.height = 480;
+    c.getContext('2d').drawImage($('#clCanvas'), 0, 0, 480, 480);
+    return c.toDataURL('image/jpeg', 0.84);
+  }
   // The room starts empty (her design, 14 Oct 2026): every tool has its own place on the five bare shelves, six to a shelf, in book
   // order. A tool she has not earned yet shows only as a soft shade inside a dashed outline; when she earns it, it stands there.
   // [bottom of the shelf, height of the space above it], in percent of the painting; the shelves run from SHELF_X0 to SHELF_X1.
   const SHELF_ROWS = [[21.1, 6.1], [30.3, 6.5], [39.6, 6.8], [48.4, 6.6], [56.4, 5.7]], SHELF_X0 = 35.7, SHELF_X1 = 59.6;
-  // the big cork board: one dashed frame for each of the six projects; the small board: the missions she kept for «لاحقاً»
+  // the big cork board: six dashed frames that show the newest pictures she coloured; the small board: the missions she kept for «لاحقاً»
   const FRAMES = [[65.1, 15.6], [76.2, 15.6], [87.3, 15.6], [65.1, 28.3], [76.2, 28.3], [87.3, 28.3]];
   const SEEN_KEY = 'tc:maria:studioSeen';   // how many tools she has already seen in the room (so a new one arrives with a pop)
   function shelfHTML(fresh) {
@@ -933,7 +1102,9 @@ function mount(api) {
   }
   function boardHTML() {
     const n = lib.tools.length;
-    const frames = FRAMES.map(([x, y], i) => `<div class="st-frame${n >= (i + 1) * 5 ? ' open' : ''}" style="left:${x}%;top:${y}%"><i></i><span>${AR(i + 1)}</span></div>`).join('');
+    const hung = PICS.filter(p => lib.art[p.id]).slice(-FRAMES.length), wait = PICS.filter(p => artOpen(p.id) && !lib.art[p.id]).length;
+    const frames = FRAMES.map(([x, y], i) => { const p = hung[i];
+      return `<div class="st-frame${p || i < hung.length + wait ? ' open' : ''}${p ? ' hung' : ''}" data-pic="${p ? p.id : ''}" style="left:${x}%;top:${y}%"><i></i>${p ? `<img src="${lib.art[p.id]}" alt="">` : `<span>${AR(i + 1)}</span>`}</div>`; }).join('');
     const later = Object.values(lib.missions).filter(m => m.state === 'later').length;
     const notes = Array.from({ length: Math.min(later, 4) }, (_, k) => `<div class="st-stick c${k}" style="left:${64.4 + (k % 2) * 4.6}%;top:${43.9 + Math.floor(k / 2) * 5.2}%"></div>`).join('');
     return frames + notes;
@@ -953,7 +1124,8 @@ function mount(api) {
   }
   function renderSpots() {
     const later = Object.values(lib.missions).filter(m => m.state === 'later').length;
-    const badge = { tools: `${AR(lib.tools.length)}/${AR(ST.length)}`, missions: later ? AR(later) : '', corner: lib.notebook.length + lib.feelings.length ? AR(lib.notebook.length + lib.feelings.length) : '' };
+    const toColour = PICS.filter(p => artOpen(p.id) && !lib.art[p.id]).length;
+    const badge = { table: toColour ? AR(toColour) : '', tools: `${AR(lib.tools.length)}/${AR(ST.length)}`, missions: later ? AR(later) : '', corner: lib.notebook.length + lib.feelings.length ? AR(lib.notebook.length + lib.feelings.length) : '' };
     $('#stBoard').innerHTML = boardHTML();
     $('#stSpots').innerHTML = SPOTS.map(p => `<button class="st-spot" data-a="${p.id}" style="left:${p.x}%;top:${p.y}%;width:${p.w}%;height:${p.h}%" aria-label="${p.label}"></button>
       <span class="st-label" dir="rtl" style="left:${p.lx}%;top:${p.ly}%">${p.label}${badge[p.id] ? `<b dir="ltr">${badge[p.id]}</b>` : ''}</span>`).join('');
@@ -981,10 +1153,15 @@ function mount(api) {
           <button class="st-did">فعلتها!</button><div class="st-feel" hidden>${['😊', '😐', '😬', '💪'].map(f => `<button data-f="${f}">${f}</button>`).join('')}</div></div>`).join('')}</div>`
         : '<p class="st-empty">لا مهامّ تنتظر. المهامّ التي تختارين لها «لاحقاً» تُعلَّق هنا.</p>'}${done ? `<p class="st-done">أنجزتِ ${AR(done)} ${done === 1 ? 'مهمّة' : 'مهامّ'} 🌟</p>` : ''}`);
     } else if (id === 'gallery') {
-      panel(`<h2>معرضي</h2><p class="st-empty">هنا تُعلَّق أعمالكِ اليدوية التي تصنعينها في المرسم.</p><p>${n >= 5 ? 'أوّل مشروع جاهز على طاولة الأعمال!' : `يُفتح أوّل مشروع عندما تجمعين ٥ أدوات. معكِ الآن ${AR(n)}.`}</p>`);
+      const hung = PICS.map(p => lib.art[p.id] ? `<figure class="st-art"><img src="${lib.art[p.id]}" alt=""><figcaption>${p.t}</figcaption></figure>` : '').join('');
+      panel(`<h2>معرضي</h2>${hung ? `<div class="st-arts">${hung}</div>` : '<p class="st-empty">هنا تُعلَّق الصور التي تلوّنينها على طاولة الأعمال.</p>'}
+        <p>${opened(n) ? (hung ? '' : 'صورتكِ الأولى تنتظركِ على طاولة الأعمال!') : `تُفتح أوّل صورة للتلوين عندما تجمعين ${AR(openAt(0))} أدوات. معكِ الآن ${AR(n)}.`}</p>`);
     } else if (id === 'table') {
-      panel(`<h2>طاولة الأعمال</h2><p>كلّ ٥ أدوات تفتح مشروعاً جديداً تصنعينه هنا.</p>
-        <div class="st-projects">${PROJECTS.map((t, i) => `<div class="st-proj${n >= (i + 1) * 5 ? ' open' : ''}"><b>${AR(i + 1)}</b><span>${t}</span><small>${n >= (i + 1) * 5 ? 'قريباً على الطاولة' : `عند ${AR((i + 1) * 5)} أدوات`}</small></div>`).join('')}</div>`);
+      panel(`<h2>طاولة الأعمال</h2><p>كلّما جمعتِ أدوات أكثر تُفتح صورة جديدة تلوّنينها، ثمّ تُعلَّق في معرضكِ.</p>
+        <div class="st-projects">${PICS.map((p, i) => { const open = artOpen(p.id);
+          return `<div class="st-proj${open ? ' open' : ''}${lib.art[p.id] ? ' done' : ''}"><b>${AR(i + 1)}</b><span>${p.t}</span>${open
+            ? `<button class="st-colour" data-art="${p.id}">${lib.art[p.id] ? '🖼️ في المعرض، لوّنيها من جديد' : '🎨 لوّني'}</button>`
+            : `<small>عند ${AR(openAt(i))} أدوات</small>`}</div>`; }).join('')}</div>`);
     } else if (id === 'voice') {
       panel(`<h2>صوتي</h2><div id="stVoice"><p class="st-empty">…</p></div>`);
       const box = () => $('#stVoice');
@@ -1010,8 +1187,23 @@ function mount(api) {
   }
   $('#stSpots').addEventListener('click', e => { const b = e.target.closest('.st-spot'); if (b) { api.SFX.init(); studioPlace(b.dataset.a); } });
   const stopClip = () => { if (studioAudio) { studioAudio.pause(); studioAudio = null; } };
+  $('#clCanvas').addEventListener('pointerup', fillAt);
+  $('#clPalette').addEventListener('click', e => { const b = e.target.closest('[data-c]'); if (b && CL) { CL.colour = b.dataset.c; palette(); } });
+  $('#clUndo').addEventListener('click', () => { if (!CL || !CL.history.length) return; const h = CL.history.pop();
+    if (h[0] === 'all') CL.fills = h[1]; else if (h[1]) CL.fills.set(h[0], h[1]); else CL.fills.delete(h[0]); paintColour(); keepWip(); });
+  $('#clClear').addEventListener('click', () => { if (!CL || !CL.fills.size) return; CL.history.push(['all', new Map(CL.fills)]); CL.fills = new Map(); paintColour(); keepWip(); });
+  $('#clDone').addEventListener('click', () => {
+    if (!CL) return;
+    const n = CL.n; lib.art[n] = shrinkArt(); save();
+    SND.chime(0, 0.6); api.SFX.good && api.SFX.good();
+    CL = null; openStudio();
+    setTimeout(() => { const fr = document.querySelector(`#stBoard .st-frame[data-pic="${n}"]`); if (fr) sparkle(fr); }, 700);
+  });
+  $('#clBack').addEventListener('click', () => { CL = null; openStudio(); });
   $('#stPx').addEventListener('click', () => { stopClip(); $('#stPanel').hidden = true; renderSpots(); });
   $('#stPanel').addEventListener('click', e => {
+    const col = e.target.closest('.st-colour'); if (col) { stopClip(); $('#stPanel').hidden = true; openColour(col.dataset.art); return; }
+    const art = e.target.closest('.st-art img'); if (art) { squish(art); SND.squish(); return; }
     if (e.target.id === 'stPanel') { stopClip(); $('#stPanel').hidden = true; renderSpots(); return; }
     const did = e.target.closest('.st-did');
     if (did) { did.hidden = true; did.parentElement.querySelector('.st-feel').hidden = false; return; }
@@ -1077,7 +1269,7 @@ function mount(api) {
 
   return {
     home, ready,
-    isOn: () => !$('#lhome').hidden || !$('#lbook').hidden || !$('#lstudio').hidden,
+    isOn: () => !$('#lhome').hidden || !$('#lbook').hidden || !$('#lstudio').hidden || !$('#lcolor').hidden,
     busy: () => !$('#lbook').hidden || busy || !$('#lbCel').hidden || !$('#lbDec').hidden,
     reload() { lib = load(); },
     snapshot() { return JSON.parse(JSON.stringify(lib)); },
@@ -1085,7 +1277,7 @@ function mount(api) {
     replace(obj) { lib = clean(obj); save(); },
     leave: leaveRoom,
     // for tests (?dev=1)
-    get state() { return lib; }, get reader() { return R; }, get stories() { return ST; }, turn, core, openDeco, milestone, openStudio, studioPlace
+    get state() { return lib; }, get reader() { return R; }, get stories() { return ST; }, turn, core, openDeco, milestone, openStudio, studioPlace, openColour
   };
 }
 
