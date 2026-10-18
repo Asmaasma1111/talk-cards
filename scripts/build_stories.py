@@ -8,7 +8,8 @@ import json, os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, 'content', 'stories')
-FILES = ['maria-stories-days-01-10.md', 'maria-stories-days-11-20.md', 'maria-stories-days-21-30.md']
+FILES = ['maria-stories-days-01-10.md', 'maria-stories-days-11-20.md', 'maria-stories-days-21-30.md',
+         'maria-stories-days-31-40.md', 'maria-stories-days-41-50.md', 'maria-stories-days-51-60.md']   # month 2 added 18 Oct 2026
 OUT = os.path.join(ROOT, 'stories.json')
 IMAGES = os.path.join(ROOT, 'assets', 'stories')
 
@@ -18,7 +19,17 @@ TAGS = {1: ['assertive-dislike'], 2: ['body-signals'], 3: ['flexibility'], 4: ['
         12: ['joining'], 13: ['newcomer-empathy'], 14: ['gift-ownership'], 15: ['assertive-dislike'], 16: ['baba'],
         17: ['jealousy'], 18: ['apology'], 19: ['clear-voice'], 20: ['retry'], 21: ['clear-voice', 'greeting-adults'],
         22: ['baba'], 23: ['assumptions'], 24: ['problem-size', 'teasing'], 25: ['sharing-lead'], 26: ['unappreciated-stop'],
-        27: ['baba'], 28: ['problem-size', 'losing-well'], 29: ['comforting'], 30: ['baba', 'affection-choice']}
+        27: ['baba'], 28: ['problem-size', 'losing-well'], 29: ['comforting'], 30: ['baba', 'affection-choice'],
+        # month 2 (section 3 of the roadmap)
+        31: ['worry', 'evidence'], 32: ['fear-of-dark'], 33: ['mixed-feelings'], 34: ['impulse-control'], 35: ['baba'],
+        36: ['self-coaching', 'yet'], 37: ['goal-steps'], 38: ['attention'], 39: ['kind-self-talk'], 40: ['strengths'],
+        41: ['baba'], 42: ['gratitude'], 43: ['reading-faces'], 44: ['conversation'], 45: ['liking-gap'], 46: ['sisters'],
+        47: ['baba', 'fear-ladder'], 48: ['english', 'making-friends'], 49: ['asking-before-helping'], 50: ['standing-with', 'telling-adult'],
+        51: ['saying-no'], 52: ['honesty'], 53: ['baba', 'promise'], 54: ['keeping-mine'], 55: ['not-getting'], 56: ['online-safety'],
+        57: ['sleeping-alone'], 58: ['secrets', 'body-safety'], 59: ['english', 'instructions'], 60: ['baba', 'affection-choice']}
+BABA_DAYS = [10, 16, 22, 27, 30, 35, 41, 47, 53, 60]
+PARENT_NOTE_DAYS = [32, 47, 51, 52, 56, 57, 58]
+HELD = [58]          # Mama reads it first: in the app it stays closed until she approves it in the parent area
 
 CONTINUES = '(تكمل القصّة)'
 NOTE = re.compile(r'\s*\*\(([^)]*)\)\*\s*$')          # an English note in italics at the end of a line
@@ -31,10 +42,12 @@ def split_note(s):
 
 def parse_story(day, title, body):
     lines = [l.rstrip() for l in body.split('\n')]
-    st = {'id': f'd{day:02d}', 'day': day, 'shelf': (day - 1) // 10 + 1, 'stage': (day - 1) // 10 + 1, 'title': title,
+    st = {'id': f'd{day:02d}', 'day': day, 'shelf': (day - 1) // 10 + 1, 'stage': (day - 1) // 10 + 1 if day <= 30 else 2, 'title': title,
           'skill_en': '', 'value_tags': TAGS.get(day, []), 'revisits': [], 'tool': None, 'pages': [], 'questions': [],
           'other_side': '', 'magic_sentence': '', 'feeling_word': '', 'mission': None,
-          'unlocks_baba_message': False, 'locked_until_shelf_done': day == 30}
+          'unlocks_baba_message': False, 'parent_note': None, 'locked_until_shelf_done': day in (30, 40, 50, 60)}
+    if day in HELD:
+        st['hidden_until_parent_approves'] = True
     q = None
     for l in lines:
         s = l.strip()
@@ -91,6 +104,9 @@ def parse_story(day, title, body):
             if note:
                 st['mission']['note'] = note
             continue
+        m = re.match(r'^\*Parent note:\s*(.+?)\*$', s)          # for Mama only: shown in the parent area, never to Maria
+        if m:
+            st['parent_note'] = m.group(1).strip(); continue
         m = re.match(r'^\*\*💌 Unlocks:\*\*\s*(.+)$', s)
         if m:
             st['unlocks_baba_message'] = 'رسالة من بابا' in m.group(1); continue
@@ -133,7 +149,7 @@ def main():
 
     # validation report
     problems, opinion = [], []
-    if [s['day'] for s in stories] != list(range(1, 31)):
+    if [s['day'] for s in stories] != list(range(1, 61)):
         problems.append(f"days found: {[s['day'] for s in stories]}")
     for s in stories:
         d = s['day']
@@ -143,7 +159,7 @@ def main():
             problems.append(f'Day {d}: page numbers out of order')
         if any(not p['scene'] for p in s['pages']):
             problems.append(f'Day {d}: a page has no scene note')
-        want = 1 if s['stage'] == 1 else 2 if s['stage'] == 2 else 3
+        want = (1 if s['stage'] == 1 else 2 if s['stage'] == 2 else 3) if d <= 30 else (3 if d % 10 == 0 else 2)
         if len(s['questions']) != want:
             problems.append(f"Day {d}: {len(s['questions'])} questions (stage {s['stage']} expects {want})")
         for i, q in enumerate(s['questions'], 1):
@@ -155,15 +171,19 @@ def main():
             elif cont != 1:
                 problems.append(f'Day {d} q{i}: {cont} continuing options')
     baba = [s['day'] for s in stories if s['unlocks_baba_message']]
-    if baba != [10, 16, 22, 27, 30]:
+    if baba != BABA_DAYS:
         problems.append(f'Baba messages on days {baba}')
+    notes = [s['day'] for s in stories if s['parent_note']]
+    if notes != PARENT_NOTE_DAYS:
+        problems.append(f'parent notes on days {notes}')
 
     print(f'Stories: {len(stories)} · pages: {sum(len(s["pages"]) for s in stories)} · questions: {sum(len(s["questions"]) for s in stories)}')
-    for sh in (1, 2, 3):
+    for sh in (1, 2, 3, 4, 5, 6):
         ss = [s for s in stories if s['shelf'] == sh]
         print(f'  Shelf {sh}: days {ss[0]["day"]}-{ss[-1]["day"]}, pages {min(len(s["pages"]) for s in ss)}-{max(len(s["pages"]) for s in ss)}, '
               f'{sum(len(s["questions"]) for s in ss)} questions, words {min(words(s) for s in ss)}-{max(words(s) for s in ss)}')
     print(f'Baba messages: days {", ".join(map(str, baba))}')
+    print(f'Parent notes (parent area only): days {", ".join(map(str, notes))} · held until Mama approves: {HELD}')
     print('Every question has exactly one option that goes on with the story, except these, where every answer goes on:')
     for o in opinion:
         print('  ' + o)
@@ -173,7 +193,7 @@ def main():
         sys.exit(1)
     print('All checks passed.')
     with open(OUT, 'w', encoding='utf-8') as f:
-        json.dump({'v': 1, 'shelves': [{'n': 1, 'days': [1, 10]}, {'n': 2, 'days': [11, 20]}, {'n': 3, 'days': [21, 30]}],
+        json.dump({'v': 1, 'shelves': [{'n': n, 'days': [n * 10 - 9, n * 10]} for n in range(1, 7)],
                    'stories': stories}, f, ensure_ascii=False, indent=1)
     print(f'Wrote {os.path.relpath(OUT, ROOT)}')
 

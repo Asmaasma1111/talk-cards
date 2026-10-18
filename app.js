@@ -1475,7 +1475,7 @@ async function boot() {
   }
   if (APP === 'talk-cards' && PROFILES.includes('maria') && window.Maktabati) {
     LIB = window.Maktabati.mount({
-      lsGet, lsSet, today, show, toast, SFX, confetti, stopConfetti, reduced, DEV,
+      lsGet, lsSet, today, show, toast, SFX, confetti, stopConfetti, reduced, DEV, holdToOpen, backup,
       setDeck: d => lsSet(DECK_KEY, d),
       stopEnglish: () => { Speech.stop(); S = null; },
       english: () => { Speech.stop(); S = null; renderHome(); },

@@ -4,7 +4,8 @@
    Each book: pages turned like an Arabic book, pause questions, then the five end pages
    (من الجهة الأخرى، جملة سحرية، كلمة الشعور، أداة جديدة للمرسم، مهمّة اليوم). A path of 30 circles fills as she reads.
    Loaded before app.js; app.js calls Maktabati.mount(api). Progress: localStorage tc:maria:lib (in the backup file).
-   Phase 1: library, reader, end pages, tracker. The studio, the parent area and Baba's messages come next. */
+   Month 2 (Days 31-60, 18 Oct 2026): shelves 4-6, Day 58 closed until Mama approves it in the parent area (a 3-second press on
+   the «مكتبتي» sign, then a PIN), parent notes and Baba's messages there, and the squishy maker in the studio (squishy.js). */
 (function (root) {
 'use strict';
 
@@ -25,7 +26,11 @@ function blank() {
     doors: {},                         // shelf -> the day its glass door swung open (shown once)
     seen: {},                          // milestone celebrations already shown (10, 20, 30)
     deco: {},                          // shelf -> {color, item, garland, photo}: how she decorated a finished shelf
-    art: {},                           // project number (1-6) -> her coloured picture (a small JPEG data URL), hung in the studio gallery
+    art: {},                           // picture id -> her coloured picture (a small JPEG data URL), hung in the studio gallery
+    approved: {},                      // book id -> the day Mama approved it (Day 58)
+    baba: {},                          // Baba story id -> {text, audio, at}: the message a parent left (its recording is in IndexedDB)
+    babaOpened: {},                    // Baba story id -> the day Maria opened its envelope
+    sq: { pieces: [], from: {}, made: [] },   // month 2: squishy pieces in the order earned, which book gave which, her squishies
     sound: true
   };
 }
@@ -36,16 +41,25 @@ function clean(s) {
   const arr = x => (Array.isArray(x) ? x.filter(v => typeof v === 'string') : []);
   return { ...d, ...s, read: obj(s.read), order: arr(s.order), today: { ...d.today, ...obj(s.today) }, place: obj(s.place),
     missions: obj(s.missions), tools: arr(s.tools), notebook: arr(s.notebook), feelings: arr(s.feelings),
-    doors: obj(s.doors), seen: obj(s.seen), deco: obj(s.deco), art: obj(s.art), sound: s.sound !== false };
+    doors: obj(s.doors), seen: obj(s.seen), deco: obj(s.deco), art: obj(s.art), approved: obj(s.approved), baba: obj(s.baba),
+    babaOpened: obj(s.babaOpened), sq: cleanSq(s.sq), sound: s.sound !== false };
+}
+function cleanSq(q) {
+  const o = q && typeof q === 'object' ? q : {};
+  return { pieces: Array.isArray(o.pieces) ? o.pieces.filter(v => typeof v === 'string') : [], from: o.from && typeof o.from === 'object' ? o.from : {},
+    made: Array.isArray(o.made) ? o.made.filter(m => m && typeof m === 'object') : [], ...(o.draft && typeof o.draft === 'object' ? { draft: o.draft } : {}),
+    ...(typeof o.seen === 'number' ? { seen: o.seen } : {}) };
 }
 const valid = s => !!(s && typeof s === 'object' && s.read && typeof s.read === 'object' && Array.isArray(s.order));
 const onShelf = (stories, n) => stories.filter(s => s.shelf === n);
+// Day 58 stays a closed book until Mama approves it in the parent area; the shelf goes on without it.
+const held = (lib, s) => !!(s.hidden_until_parent_approves && !(lib.approved && lib.approved[s.id]));
 const shelves = stories => [...new Set(stories.map(s => s.shelf))].sort((a, b) => a - b);
 function shelfOpen(lib, stories, n) {
-  return n === shelves(stories)[0] || onShelf(stories, n - 1).every(s => lib.read[s.id]);
+  return n === shelves(stories)[0] || onShelf(stories, n - 1).every(s => lib.read[s.id] || held(lib, s));
 }
 // The books are read in order (her request, 13 Oct 2026): the next book is the first unread one on the shelf.
-const nextOn = (lib, stories, n) => onShelf(stories, n).filter(s => !lib.read[s.id]).sort((a, b) => a.day - b.day)[0] || null;
+const nextOn = (lib, stories, n) => onShelf(stories, n).filter(s => !lib.read[s.id] && !held(lib, s)).sort((a, b) => a.day - b.day)[0] || null;
 // A new book finished today, in order (a book read out of order before this rule does not count).
 function newToday(lib, stories, t) {
   return stories.some(s => {
@@ -55,12 +69,14 @@ function newToday(lib, stories, t) {
   });
 }
 // What happens when she taps a book: 'read' (reread it), 'new' (the next book, today's), 'door' (its shelf is still behind
-// glass), 'last' (the shelf's last book, which opens after the other nine), 'later' (an earlier book comes first),
-// 'tomorrow' (she already finished a new book today). Opening a book without finishing it does not use up the day.
+// glass), 'held' (waiting for Mama's approval), 'last' (the shelf's last book, which opens after the other nine), 'later' (an
+// earlier book comes first), 'tomorrow' (she already finished a new book today). Opening a book without finishing it does not
+// use up the day.
 function status(lib, stories, story, t) {
   if (lib.read[story.id]) return 'read';
   if (!shelfOpen(lib, stories, story.shelf)) return 'door';
-  if (story.locked_until_shelf_done && onShelf(stories, story.shelf).some(s => s.id !== story.id && !lib.read[s.id])) return 'last';
+  if (held(lib, story)) return 'held';
+  if (story.locked_until_shelf_done && onShelf(stories, story.shelf).some(s => s.id !== story.id && !lib.read[s.id] && !held(lib, s))) return 'last';
   const nx = nextOn(lib, stories, story.shelf);
   if (nx && nx.id !== story.id) return 'later';
   if (newToday(lib, stories, t)) return 'tomorrow';
@@ -101,7 +117,8 @@ function leaves(story) {
   ['other', 'magic', 'feeling', 'tool', 'mission'].forEach(kind => out.push({ kind }));
   return out;
 }
-const core = { KEY, TRACK, blank, clean, valid, onShelf, shelves, shelfOpen, nextOn, newToday, status, start, finish, setMission, doorsWaiting, path, leaves };
+const MILESTONES = [10, 20, 30, 40, 50, 60];
+const core = { KEY, TRACK, MILESTONES, blank, clean, valid, onShelf, held, shelves, shelfOpen, nextOn, newToday, status, start, finish, setMission, doorsWaiting, path, leaves };
 
 /* =====================================================================================================
    The screens. api from app.js: lsGet, lsSet, today, show, toast, SFX, confetti, stopConfetti, reduced, DEV,
@@ -113,6 +130,11 @@ function mount(api) {
   let lib = load(), DATA = null, byId = {}, ST = [];
   const ready = fetch('stories.json').then(r => r.json()).then(d => { DATA = d; ST = d.stories; ST.forEach(s => { byId[s.id] = s; }); }).catch(() => {});
   function load() { try { return clean(JSON.parse(api.lsGet(KEY) || 'null')); } catch (e) { return blank(); } }
+  // Month 1's studio (tool shelves, colouring pictures) keeps its 30-book schedule; month 2 earns squishy pieces instead.
+  const M1N = 30;
+  const M1 = () => ST.filter(s => s.day <= M1N);
+  const tools1 = () => lib.tools.filter(id => byId[id] && byId[id].day <= M1N).length;
+  const SQ = root.Squishy;
   function save() { api.lsSet(KEY, JSON.stringify(lib)); }
   const motion = () => !api.reduced();
 
@@ -162,11 +184,25 @@ function mount(api) {
 </section>
 <section id="lstudio" class="screen lb lb-studio" dir="rtl" lang="ar" hidden>
   <div class="st-scroll" id="stScroll" dir="ltr"><div class="st-stage" id="stStage"><img class="st-room" src="assets/library/studio.webp" alt="">
-    <div id="stShelf"></div><div id="stBoard"></div><div id="stSpots"></div></div></div>
+    <div id="stShelf"></div><div id="stBoard"></div><div id="stJar"></div><div id="stSpots"></div></div></div>
   <div class="lb-top"><button class="st-back" id="stBack">مكتبتي ←</button><h1 class="st-title">مرسمي</h1></div>
   <div class="st-swipe" id="stSwipe">↔ اسحبي لتري المرسم كلّه</div>
   <div class="st-panel" id="stPanel" hidden><div class="st-pbox"><button class="st-px" id="stPx" aria-label="إغلاق">×</button><div id="stPbody"></div></div></div>
 </section>
+
+<section id="lsquish" class="screen lb lb-squish" dir="rtl" lang="ar" hidden>
+  <div class="sq-top"><button class="st-back" id="sqBack">مرسمي ←</button><div class="sq-title"><h1>صانعة السكويشي</h1><p id="sqSub"></p></div><span class="sq-sp"></span></div>
+  <div class="sq-main">
+    <div class="sq-stagewrap"><div class="sq-stage" id="sqStage"><div class="sq-big" id="sqBig"></div><button class="sq-light" id="sqLight" hidden>🌙 أطفئي الضوء</button></div>
+      <div class="sq-namebar"><label for="sqName">اسمها:</label><input id="sqName" maxlength="14" placeholder="مثلاً: زبدونة" autocomplete="off"><button class="btn btn-good sq-done" id="sqDone">ضعيها في البرطمان ✓</button></div></div>
+    <div class="sq-panel"><div class="sq-tabs" id="sqTabs"></div><div class="sq-grid" id="sqGrid"></div></div>
+  </div>
+</section>
+<section id="lparent" class="screen lb lb-parent" dir="rtl" lang="ar" hidden>
+  <div class="pa-top"><h1>مساحة الأهل · مكتبتي</h1><button class="pa-x" id="paClose">إغلاق</button></div>
+  <div class="pa-body" id="paBody"></div>
+</section>
+<div class="pa-pin" id="paPin" dir="rtl" lang="ar" hidden><div class="pa-pinbox"><h2 id="paPinT"></h2><p id="paPinS"></p><div class="pa-dots" id="paDots"></div><div class="pa-keys" id="paKeys"></div><button class="pa-cancel" id="paPinX">إلغاء</button></div></div>
 
 <section id="lbook" class="screen lb lb-reader" dir="rtl" lang="ar" hidden>
   <div class="lb-desk"></div>
@@ -315,7 +351,7 @@ function mount(api) {
   const ITEMS = [['frame', 'صورتي'], ['plant', 'نبتة'], ['camel', 'جمل صغير'], ['bear', 'دبدوب'], ['trophy', 'كأس ذهبية'], ['jar', 'برطمان حلوى'],
     ['globe', 'كرة أرضية'], ['butterfly', 'فراشة'], ['starlamp', 'مصباح نجمة'], ['books', 'كتب وكوب']];
   const GARLANDS = [['', 'بلا زينة'], ['lights', 'أضواء'], ['bunting', 'أعلام ملوّنة']];
-  const ORD = { 1: 'الأوّل', 2: 'الثاني', 3: 'الثالث' };
+  const ORD = { 1: 'الأوّل', 2: 'الثاني', 3: 'الثالث', 4: 'الرابع', 5: 'الخامس', 6: 'السادس' };
   // the fresh garden palette (her choice, 13 Oct 2026): leaf green, butter, powder blue, warm white, peach, sage
   const PAL = [['#8CC27A', '#6BA65A', '#fff'], ['#FBE08A', '#EBC458', '#2B2340'], ['#A9D0EF', '#7FB2DE', '#2B2340'], ['#FBF4E4', '#E9DCC2', '#2B2340'],
     ['#F7BE9E', '#E99A74', '#2B2340'], ['#B8D8B0', '#8FBB86', '#2B2340'], ['#7FB9E3', '#5797CC', '#fff'], ['#F3CD72', '#DCA941', '#2B2340'],
@@ -331,7 +367,7 @@ function mount(api) {
     const long = n > 15 ? ' long' : n > 11 ? ' mid' : '';
     return `<button class="lb-bk ${st}${going ? ' going' : ''}${L.band ? ' band' : ''}${long}" data-id="${s.id}" style="--w:${L.w}px; --h:${L.h}%; --c:${L.c}; --c2:${L.c2}; --tx:${L.ink}" aria-label="${s.title}">
       <span class="lb-sp"><span class="lb-sp-t">${s.title}</span><span class="lb-sp-n">${AR(s.day)}</span></span>
-      ${st === 'last' ? '<svg class="lb-sp-lock" aria-hidden="true"><use href="#lb-i-lock"/></svg>' : ''}
+      ${st === 'last' || st === 'held' ? '<svg class="lb-sp-lock" aria-hidden="true"><use href="#lb-i-lock"/></svg>' : ''}
       ${read || going ? '<svg class="lb-rib" aria-hidden="true"><use href="#lb-i-rib"/></svg>' : ''}${read ? '<img class="lb-medal" src="assets/library/medal.webp" alt="قرأتُه">' : ''}</button>`;
   }
   function renderCase() {
@@ -365,12 +401,16 @@ function mount(api) {
     });
     for (let k = 0; k < 14; k++) { sh.style.setProperty('--bs', bs.toFixed(3)); if (!overflow()) break; bs *= 0.96; }
   }
+  let trackMonth = null;              // the month shown on the path (null: the month she is reading)
   function renderTrack(fresh) {
-    const P = path(lib, byId), next = lib.order.length;
-    $('#lbTrack').innerHTML = `<h2>رحلتي مع الكتب</h2><div class="lb-path" id="lbPath">${P.slice(0, TRACK * Math.ceil((next + 1) / TRACK)).map(c =>
+    const P = path(lib, byId), next = lib.order.length, months = Math.max(1, Math.ceil(P.length / TRACK));
+    const cur = Math.min(months - 1, Math.floor(next / TRACK)), m = trackMonth == null ? cur : Math.min(trackMonth, months - 1);
+    const sw = months > 1 ? `<div class="lb-months">${Array.from({ length: months }, (_, k) => `<button class="lb-mo${k === m ? ' on' : ''}" data-mo="${k}">الشهر ${AR(k + 1)}</button>`).join('')}</div>` : '';
+    $('#lbTrack').innerHTML = `<h2>رحلتي مع الكتب</h2>${sw}<div class="lb-path" id="lbPath">${P.slice(m * TRACK, m * TRACK + TRACK).map(c =>
       `<div class="lb-dot${c.id ? ' got' : ''}${c.i === next ? ' next' : ''}${fresh && c.i === next - 1 ? ' fresh' : ''}" data-i="${c.i}"><b>${c.id ? (c.tool ? c.tool.emoji : '★') : AR(c.i + 1)}</b><small>اليوم ${AR(c.i + 1)}</small></div>`).join('')}<svg class="lb-trail" id="lbTrail" aria-hidden="true"></svg></div>`;
     placeTrackDots();
   }
+  $('#lbTrack').addEventListener('click', e => { const b = e.target.closest('[data-mo]'); if (b) { trackMonth = Number(b.dataset.mo); api.SFX.tap && api.SFX.tap(); renderTrack(); } });
   // a winding path: rows of six, back and forth, with a dashed trail behind the circles
   function placeTrackDots() {
     const box = $('#lbPath'); if (!box) return;
@@ -394,12 +434,18 @@ function mount(api) {
       if (!DATA) { api.toast('The library could not load. Please connect to the internet once.'); return; }
       renderCase(); soundIcon();
       api.show('lhome');
-      fitBooks(); renderTrack();
+      fitBooks(); renderTrack(); showShelf();
       dust.start(); SND.roomOn(); SND.warm();
       setTimeout(() => openDoors(), 500);
     });
   }
   function leaveRoom() { SND.roomOff(); dust.stop(); hideNote(); }
+  // with six shelves the bookcase scrolls: show the newest open shelf (the one she is reading)
+  function showShelf() {
+    const open = shelves(ST).filter(n => shelfOpen(lib, ST, n) && (n === shelves(ST)[0] || lib.doors[n])).pop();
+    const sh = open && $(`.lb-shelf[data-shelf="${open}"]`), box = $('#lbShelves');
+    if (sh && box) box.scrollTop = Math.max(0, sh.offsetTop - box.offsetTop - (box.clientHeight - sh.offsetHeight) / 2);
+  }
 
   /* ---------- tapping a book ---------- */
   let noteT = 0;
@@ -425,6 +471,7 @@ function mount(api) {
     api.SFX.init();
     if (st === 'tomorrow') { wiggle(b); note(b, 'كتاب جديد غداً! تستطيعين إعادة قراءة كتبكِ.'); return; }
     if (st === 'last') { wiggle(b); note(b, 'هذا الكتاب يُفتح بعد كتب الرفّ كلّها.'); return; }
+    if (st === 'held') { wiggle(b); note(b, 'هذا الكتاب يُفتح لاحقاً.'); return; }
     if (st === 'later') {
       const nx = nextOn(lib, ST, s.shelf), el = nx && $(`.lb-bk[data-id="${nx.id}"]`);
       wiggle(b); if (el) wiggle(el);
@@ -664,6 +711,12 @@ function mount(api) {
       <div class="lb-keep"><span class="lb-pot" id="lbNotebook">📒<b>${AR(lib.notebook.length)}</b></span><small>دفتر الجمل السحرية</small></div><button class="btn lb-next">التالي</button></div>`;
     if (lf.kind === 'feeling') return `<div class="lb-endc"><h3>💬 كلمة الشعور</h3><div class="lb-word" id="lbWord">${esc(s.feeling_word)}</div>
       <div class="lb-keep"><span class="lb-pot" id="lbDict">📖<b>${AR(lib.feelings.length)}</b></span><small>قاموس مشاعري</small></div><button class="btn lb-next">التالي</button></div>`;
+    if (lf.kind === 'tool' && s.day > M1N) {         // month 2: a new piece for the squishy maker
+      const have = lib.tools.includes(s.id), pc = pieceFor(s);
+      return `<div class="lb-endc"><h3>✨ قطعة جديدة للسكويشي</h3><div class="lb-tool lb-sqp" id="lbTool">${pc ? sqImg(SQ.preview(pc)) : ''}</div><p class="lb-tname">${pc ? esc(SQ.label(pc)) : ''}</p>
+        <div class="lb-keep"><span class="lb-pot" id="lbStudio">🫙<b>${AR(lib.sq.pieces.length)}</b></span><small>صانعة السكويشي</small></div>
+        <button class="btn btn-good lb-put">${have ? 'التالي' : 'ضعيها في البرطمان'}</button></div>`;
+    }
     if (lf.kind === 'tool') {
       const have = lib.tools.includes(s.id);
       return `<div class="lb-endc"><h3>🎨 أداة جديدة للمرسم</h3><div class="lb-tool" id="lbTool"><img src="assets/library/tools/${s.id}.webp" alt="" draggable="false"></div><p class="lb-tname">${esc(s.tool.name)}</p>
@@ -846,7 +899,8 @@ function mount(api) {
     if (b.classList.contains('lb-put')) {
       if (lib.tools.includes(s.id)) return turn(1);
       b.disabled = true;
-      keepTool(); return;
+      if (s.day > M1N) keepPiece(); else keepTool();
+      return;
     }
     if (b.classList.contains('lb-did-it')) { $('#lbMbtns').hidden = true; $('#lbFeels').hidden = false; return; }
     if (b.classList.contains('lb-feel')) { setMission(lib, s.id, 'done', t(), b.dataset.f); return closeBook(); }
@@ -868,9 +922,9 @@ function mount(api) {
   }
   function keepTool() {
     const s = R.s, tl = $('#lbTool'), pot = $('#lbStudio');
-    const before = lib.tools.length;
+    const before = tools1();
     lib.tools.includes(s.id) || lib.tools.push(s.id); save();
-    if (opened(lib.tools.length) > opened(before)) setTimeout(() => api.toast && api.toast('🎨 صورة جديدة للتلوين تنتظركِ في مرسمي'), 1400);
+    if (s.day <= M1N && opened(tools1()) > opened(before)) setTimeout(() => api.toast && api.toast('🎨 صورة جديدة للتلوين تنتظركِ في مرسمي'), 1400);
     const ra = tl.getBoundingClientRect(), rb = pot.getBoundingClientRect();
     const g = tl.cloneNode(true); g.removeAttribute('id'); g.classList.add('lb-ghost');
     Object.assign(g.style, { left: ra.left + 'px', top: ra.top + 'px', width: ra.width + 'px', height: ra.height + 'px' });
@@ -881,6 +935,36 @@ function mount(api) {
       { transform: `translate(${dx}px, ${dy}px) scale(.15) rotate(10deg)`, opacity: 0.3 }], { duration: motion() ? 950 : 10, easing: 'ease-in', fill: 'forwards' })
       .finished.then(() => {
         g.remove(); pot.querySelector('b').textContent = AR(lib.tools.length); pot.classList.remove('bump'); void pot.offsetWidth; pot.classList.add('bump');
+        api.SFX.good && api.SFX.good();
+        setTimeout(() => turn(1), motion() ? 500 : 0);
+      });
+  }
+  // month 2: the piece this book gives (the next one in the list; a reread shows the piece it gave the first time)
+  function pieceFor(s) { return lib.sq.from[s.id] || SQ.UNLOCKS[lib.sq.pieces.length] || null; }
+  const SQIMG = new Map();
+  // a squishy as a picture (a data URL), so it survives the page turns (which copy the page's HTML)
+  function sqImg(o, px = 360) {
+    const key = JSON.stringify(o) + px;
+    if (SQIMG.has(key)) return `<img class="sq-img" src="${SQIMG.get(key)}" alt="" draggable="false">`;
+    SQ.preload().then(() => SQ.image(o, px)).then(url => { SQIMG.set(key, url); document.querySelectorAll(`img.sq-img[data-k="${CSS.escape(key)}"]`).forEach(im => { im.src = url; }); });
+    return `<img class="sq-img" data-k="${esc(key)}" alt="" draggable="false">`;
+  }
+  function keepPiece() {
+    const s = R.s, pc = pieceFor(s), tl = $('#lbTool'), pot = $('#lbStudio');
+    if (pc && !lib.sq.from[s.id]) { lib.sq.pieces.push(pc); lib.sq.from[s.id] = pc; }
+    lib.tools.includes(s.id) || lib.tools.push(s.id); save();
+    const n = lib.sq.pieces.length;
+    if (n % SQ.PER === 0 && lib.sq.made.length < Math.min(SQ.MAX, n / SQ.PER)) setTimeout(() => api.toast && api.toast('🫙 سكويشي جديد ينتظركِ في مرسمي!'), 1400);
+    const ra = tl.getBoundingClientRect(), rb = pot.getBoundingClientRect();
+    const g = tl.cloneNode(true); g.removeAttribute('id'); g.classList.add('lb-ghost');
+    Object.assign(g.style, { left: ra.left + 'px', top: ra.top + 'px', width: ra.width + 'px', height: ra.height + 'px' });
+    document.body.append(g); tl.style.visibility = 'hidden';
+    const dx = rb.left + rb.width / 2 - (ra.left + ra.width / 2), dy = rb.top + rb.height / 2 - (ra.top + ra.height / 2);
+    SND.squish && SND.squish(0.7);
+    g.animate([{ transform: 'translate(0,0) scale(1)' }, { transform: `translate(${dx * 0.5}px, ${dy * 0.5 - 60}px) scale(.8, .7)`, offset: 0.5 },
+      { transform: `translate(${dx}px, ${dy}px) scale(.15)`, opacity: 0.3 }], { duration: motion() ? 950 : 10, easing: 'ease-in', fill: 'forwards' })
+      .finished.then(() => {
+        g.remove(); pot.querySelector('b').textContent = AR(n); pot.classList.remove('bump'); void pot.offsetWidth; pot.classList.add('bump');
         api.SFX.good && api.SFX.good();
         setTimeout(() => turn(1), motion() ? 500 : 0);
       });
@@ -896,7 +980,7 @@ function mount(api) {
       renderTrack(true);
       const dot = $(`.lb-dot[data-i="${res.n - 1}"]`); if (dot) sparkle(dot);
       setTimeout(() => {
-        if ([10, 20, 30].includes(res.n) && !lib.seen[res.n]) milestone(res.n, () => openDoors());
+        if (MILESTONES.includes(res.n) && !lib.seen[res.n]) milestone(res.n, () => openDoors());
         else openDoors();
       }, motion() ? 1300 : 50);
     });
@@ -917,7 +1001,7 @@ function mount(api) {
     lib.seen[n] = t(); save();
     $('#lbCelIc').innerHTML = `<b>${AR(n)}</b>`;
     $('#lbCelTitle').textContent = `${AR(n)} ${n === 10 ? 'كتب' : 'كتاباً'}!`;
-    $('#lbCelSub').textContent = n === 30 ? 'قرأتِ الكتب الثلاثين كلّها!' : 'أكملتِ رفّاً كاملاً من الكتب!';
+    $('#lbCelSub').textContent = n === 30 ? 'قرأتِ كتب الشهر الأوّل كلّها!' : n === 60 ? 'قرأتِ كتب الشهرين كلّها!' : 'أكملتِ رفّاً كاملاً من الكتب!';
     const c = $('#lbCel'); c.hidden = false; c.classList.remove('play'); void c.offsetWidth; c.classList.add('play');
     SND.fanfare(); api.confetti($('#lbConfetti'));
     $('#lbCelOk').onclick = () => {
@@ -936,7 +1020,8 @@ function mount(api) {
     { id: 'voice', x: 76, y: 42, w: 15, h: 10, label: 'صوتي', lx: 83.5, ly: 39 },
     { id: 'mail', x: 93, y: 44, w: 6.5, h: 12, label: 'رسائل بابا', lx: 90, ly: 59.5 },
     { id: 'corner', x: 0, y: 41, w: 28, h: 36, label: 'ركن الكلمات', lx: 15, ly: 37 },
-    { id: 'table', x: 28, y: 58, w: 55, h: 34, label: 'طاولة الأعمال', lx: 55.5, ly: 93 }
+    { id: 'table', x: 28, y: 58, w: 55, h: 34, label: 'طاولة الأعمال', lx: 55.5, ly: 93 },
+    { id: 'jar', x: 49.5, y: 43, w: 11, h: 26, label: 'برطمان السكويشي', lx: 54.9, ly: 40.5, m2: true }   // month 2, on the table
   ];
   // The colouring pictures, in the order they open (assets/library/color/<id>.webp). Squishies first, which she loves: the glitter
   // ones like hers, a girl hugging a mega one, many kinds, then the butter, peanut, cheese, banana, noodle and paper ones she
@@ -976,9 +1061,9 @@ function mount(api) {
     });
     return (SPARK = { W, n });
   }
-  const openAt = i => Math.round((i + 1) * ST.length / PICS.length);          // how many tools open picture i (from 0)
+  const openAt = i => Math.round((i + 1) * M1N / PICS.length);                // how many month-1 tools open picture i (from 0)
   const opened = tools => PICS.filter((p, i) => tools >= openAt(i)).length;
-  const artOpen = id => PICS.findIndex(p => p.id === id) < opened(lib.tools.length);
+  const artOpen = id => PICS.findIndex(p => p.id === id) < opened(tools1());
   const WIP = n => 'tc:maria:colour:' + n;
   let CL = null;
   function openColour(n) {                      // n: the picture's id
@@ -1095,7 +1180,7 @@ function mount(api) {
   const SEEN_KEY = 'tc:maria:studioSeen';   // how many tools she has already seen in the room (so a new one arrives with a pop)
   function shelfHTML(fresh) {
     const step = (SHELF_X1 - SHELF_X0) / 6;
-    return ST.map((s, i) => {
+    return M1().map((s, i) => {
       const [base, h] = SHELF_ROWS[Math.floor(i / 6)] || SHELF_ROWS[4], got = lib.tools.includes(s.id);
       return `<div class="st-slot${got ? ' got' : ''}${got && fresh.has(s.id) ? ' new' : ''}" data-id="${s.id}" style="left:${(SHELF_X0 + step * (i % 6) + step * 0.06).toFixed(2)}%;top:${(base - h).toFixed(2)}%;width:${(step * 0.88).toFixed(2)}%;height:${h}%"><img src="assets/library/tools/${s.id}.webp" alt="" draggable="false"></div>`;
     }).join('');
@@ -1125,9 +1210,12 @@ function mount(api) {
   function renderSpots() {
     const later = Object.values(lib.missions).filter(m => m.state === 'later').length;
     const toColour = PICS.filter(p => artOpen(p.id) && !lib.art[p.id]).length;
-    const badge = { table: toColour ? AR(toColour) : '', tools: `${AR(lib.tools.length)}/${AR(ST.length)}`, missions: later ? AR(later) : '', corner: lib.notebook.length + lib.feelings.length ? AR(lib.notebook.length + lib.feelings.length) : '' };
+    const badge = { table: toColour ? AR(toColour) : '', tools: `${AR(tools1())}/${AR(M1().length)}`, missions: later ? AR(later) : '', corner: lib.notebook.length + lib.feelings.length ? AR(lib.notebook.length + lib.feelings.length) : '' };
     $('#stBoard').innerHTML = boardHTML();
-    $('#stSpots').innerHTML = SPOTS.map(p => `<button class="st-spot" data-a="${p.id}" style="left:${p.x}%;top:${p.y}%;width:${p.w}%;height:${p.h}%" aria-label="${p.label}"></button>
+    badge.jar = sqWaiting() ? '✨' : '';
+    badge.mail = babaSealed().length ? AR(babaSealed().length) : '';
+    $('#stJar').innerHTML = m2Started() ? jarHTML() : ''; fillJar();
+    $('#stSpots').innerHTML = SPOTS.filter(p => !p.m2 || m2Started()).map(p => `<button class="st-spot" data-a="${p.id}" style="left:${p.x}%;top:${p.y}%;width:${p.w}%;height:${p.h}%" aria-label="${p.label}"></button>
       <span class="st-label" dir="rtl" style="left:${p.lx}%;top:${p.ly}%">${p.label}${badge[p.id] ? `<b dir="ltr">${badge[p.id]}</b>` : ''}</span>`).join('');
   }
   let studioAudio = null;
@@ -1136,10 +1224,10 @@ function mount(api) {
     $('#stPbody').innerHTML = html; const b = $('#stPanel'); b.hidden = false; b.classList.remove('play'); void b.offsetWidth; b.classList.add('play');
   }
   function studioPlace(id) {
-    const n = lib.tools.length;
+    const n = tools1();
     if (id === 'tools') {
-      panel(`<h2>أدواتي</h2><p>جمعتِ ${AR(n)} من ${AR(ST.length)} أداة. كلّ كتاب تُكملينه يضع أداة جديدة هنا.</p>
-        <div class="st-tools">${ST.map(s => lib.tools.includes(s.id) ? `<div class="st-tool got"><img src="assets/library/tools/${s.id}.webp" alt=""><small>${esc(s.tool.name)}</small></div>`
+      panel(`<h2>أدواتي</h2><p>جمعتِ ${AR(n)} من ${AR(M1().length)} أداة. كلّ كتاب من الشهر الأوّل يضع أداة جديدة هنا.</p>
+        <div class="st-tools">${M1().map(s => lib.tools.includes(s.id) ? `<div class="st-tool got"><img src="assets/library/tools/${s.id}.webp" alt=""><small>${esc(s.tool.name)}</small></div>`
           : `<div class="st-tool"><span>؟</span><small>الكتاب ${AR(s.day)}</small></div>`).join('')}</div>`);
     } else if (id === 'corner') {
       const nb = lib.notebook.map(i => byId[i]).filter(Boolean), fl = lib.feelings.map(i => byId[i]).filter(Boolean);
@@ -1182,7 +1270,19 @@ function mount(api) {
         };
       }).catch(() => { if (box()) box().innerHTML = '<p class="st-empty">لا نستطيع فتح التسجيلات على هذا الجهاز.</p>'; });
     } else if (id === 'mail') {
-      panel(`<h2>رسائل بابا</h2><p class="st-empty">في هذا الصندوق تصل رسائل من بابا. قريباً!</p>`);
+      const ready = babaReady();
+      panel(`<h2>رسائل بابا</h2>${ready.length ? `<div class="st-envs">${ready.map(s => `<button class="st-env${lib.babaOpened[s.id] ? ' open' : ''}" data-env="${s.id}">
+          <span class="st-env-ic">${lib.babaOpened[s.id] ? '📨' : '💌'}</span><b>رسالة من بابا</b><small>${esc(s.title)}</small></button>`).join('')}</div>`
+        : '<p class="st-empty">عندما تُنجزين مهمّة من قصص بابا، تصل هنا رسالة منه 💌</p>'}<div id="stEnv"></div>`);
+    } else if (id === 'jar') {
+      const n = lib.sq.pieces.length, w = sqWaiting(), next = (Math.floor(n / SQ.PER) + 1) * SQ.PER;
+      panel(`<h2>برطمان السكويشي</h2>
+        <p>${n ? `جمعتِ ${AR(n)} من ${AR(SQ.UNLOCKS.length)} قطعة. كلّ ${AR(SQ.PER)} قطع تصنعين سكويشي جديداً.` : `كلّ كتاب من الشهر الثاني يعطيكِ قطعة جديدة للسكويشي، وكلّ ${AR(SQ.PER)} قطع تصنعين سكويشي!`}</p>
+        ${w ? '<button class="btn btn-good st-make">✨ اصنعي سكويشي جديداً</button>' : lib.sq.made.length < SQ.MAX ? `<p class="st-empty">السكويشي القادم بعد ${AR(next - n)} ${next - n === 1 ? 'قطعة' : next - n === 2 ? 'قطعتين' : 'قطع'}.</p>` : ''}
+        <div class="st-sqs" id="stSqs"></div>`);
+      SQ.preload().then(() => { const box = $('#stSqs'); if (!box) return;
+        lib.sq.made.forEach((o, i) => { const f = document.createElement('figure'); f.className = 'st-sq'; f.dataset.i = i;
+          f.appendChild(SQ.make(o, 300)); f.insertAdjacentHTML('beforeend', `<figcaption>${esc(o.name || '')}</figcaption>`); box.appendChild(f); }); });
     }
   }
   $('#stSpots').addEventListener('click', e => { const b = e.target.closest('.st-spot'); if (b) { api.SFX.init(); studioPlace(b.dataset.a); } });
@@ -1204,6 +1304,9 @@ function mount(api) {
   $('#stPanel').addEventListener('click', e => {
     const col = e.target.closest('.st-colour'); if (col) { stopClip(); $('#stPanel').hidden = true; openColour(col.dataset.art); return; }
     const art = e.target.closest('.st-art img'); if (art) { squish(art); SND.squish(); return; }
+    if (e.target.closest('.st-make')) { stopClip(); $('#stPanel').hidden = true; openSquish(); return; }
+    const sqf = e.target.closest('.st-sq'); if (sqf) { squish(sqf.querySelector('.sqb')); SND.squish(); return; }
+    const env = e.target.closest('[data-env]'); if (env) { openEnvelope(env.dataset.env); return; }
     if (e.target.id === 'stPanel') { stopClip(); $('#stPanel').hidden = true; renderSpots(); return; }
     const did = e.target.closest('.st-did');
     if (did) { did.hidden = true; did.parentElement.querySelector('.st-feel').hidden = false; return; }
@@ -1267,17 +1370,234 @@ function mount(api) {
     });
   }
 
+  /* ---------- صانعة السكويشي (month 2): the glass jar on the studio table and the maker screen ---------- */
+  const m2Started = () => lib.sq.pieces.length > 0 || (M1().length > 0 && M1().every(s => lib.read[s.id]));
+  const sqSlots = () => Math.min(SQ.MAX, Math.floor(lib.sq.pieces.length / SQ.PER));
+  const sqWaiting = () => Math.max(0, sqSlots() - lib.sq.made.length);
+  // where her squishies sit inside the jar (percent of the jar), a little pile from the bottom up
+  const JAR_AT = [[2, 56], [46, 58], [24, 36], [54, 34], [4, 14], [44, 12]];
+  function jarHTML() { return `<div class="st-jar"><div class="st-jar-in" id="stJarIn"></div><img class="st-jar-glass" src="assets/library/squishy/jar.webp" alt="" draggable="false"></div>`; }
+  function fillJar() {
+    const box = $('#stJarIn'); if (!box) return;
+    SQ.preload().then(() => {
+      if (!$('#stJarIn')) return;
+      box.innerHTML = '';
+      lib.sq.made.slice(0, JAR_AT.length).forEach((o, i) => { const el = SQ.make(o, 180); el.style.left = JAR_AT[i][0] + '%'; el.style.top = JAR_AT[i][1] + '%'; box.appendChild(el); });
+    });
+  }
+  let SQD = null, sqTab = 'shape', sqTouched = false;
+  const SQ_TABS = [['shape', 'الشكل'], ['colour', 'اللون'], ['face', 'الوجه'], ['glitter', 'اللمعة'], ['top', 'الزينة']];
+  const sqList = k => ({ shape: SQ.SHAPES, face: SQ.FACES, glitter: SQ.GLITTER, top: SQ.TOPS })[k];
+  function openSquish() {
+    leaveRoom();
+    SQ.preload().then(() => {
+      const d = lib.sq.draft;
+      SQD = d && d.shape ? { ...d } : { shape: 'ball', colour: '#FFB3C7', face: 'happy', glitter: 'none', top: 'none' };
+      ['shape', 'face', 'glitter', 'top'].forEach(k => { if (!SQ.isOpen(lib.sq.pieces, `${k}:${SQD[k]}`)) SQD[k] = sqList(k)[0][0]; });
+      sqTab = 'shape'; sqTouched = !!(d && d.touched);
+      $('#sqName').value = (d && d.name) || '';
+      $('#sqSub').textContent = `السكويشي ${ORD[lib.sq.made.length + 1] || ''} · كلّ ${AR(SQ.PER)} قطع تصنعين سكويشي جديداً`;
+      $('#sqStage').classList.remove('dark');
+      api.show('lsquish'); drawSquish();
+    });
+  }
+  function drawSquish() {
+    const big = $('#sqBig'); big.innerHTML = ''; big.appendChild(SQ.make(SQD, 640));
+    $('#sqLight').hidden = SQD.top !== 'glow';
+    if (SQD.top !== 'glow') $('#sqStage').classList.remove('dark');
+    const fresh = new Set(lib.sq.pieces.slice(lib.sq.seen || 0));
+    $('#sqTabs').innerHTML = SQ_TABS.map(([k, name]) => {
+      const n = k === 'colour' ? 0 : sqList(k).filter(x => fresh.has(`${k}:${x[0]}`)).length;
+      return `<button class="sq-tab${k === sqTab ? ' on' : ''}" data-t="${k}">${name}${n ? `<b>${AR(n)}</b>` : ''}</button>`; }).join('');
+    const g = $('#sqGrid');
+    if (sqTab === 'colour') { g.innerHTML = SQ.COLOURS.map(c => `<button class="sq-opt${c === SQD.colour ? ' on' : ''}" data-v="${c}"><i class="sq-sw" style="background:${c}"></i></button>`).join(''); return; }
+    g.innerHTML = '';
+    sqList(sqTab).forEach(([v, name]) => {
+      const pc = `${sqTab}:${v}`, open = SQ.isOpen(lib.sq.pieces, pc), b = document.createElement('button');
+      b.className = `sq-opt${SQD[sqTab] === v ? ' on' : ''}${open ? '' : ' locked'}${fresh.has(pc) ? ' new' : ''}`; b.dataset.v = v; b.disabled = !open;
+      const prev = { ...SQD, [sqTab]: v };
+      if (sqTab === 'shape' && !sqTouched) prev.colour = (SQ.SHAPES.find(x => x[0] === v) || [])[2] || SQD.colour;
+      b.appendChild(SQ.make(prev, 160));
+      b.insertAdjacentHTML('beforeend', `<span>${open ? name : 'بعد الكتاب ' + AR(M1N + SQ.unlockedBy(pc))}</span>`);
+      g.appendChild(b);
+    });
+  }
+  function keepDraft() { lib.sq.draft = { ...SQD, name: $('#sqName').value.trim(), touched: sqTouched }; save(); }
+  $('#sqTabs').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (b) { sqTab = b.dataset.t; api.SFX.tap && api.SFX.tap(); drawSquish(); } });
+  $('#sqGrid').addEventListener('click', e => {
+    const b = e.target.closest('[data-v]'); if (!b || b.disabled || !SQD) return;
+    if (sqTab === 'colour') { SQD.colour = b.dataset.v; sqTouched = true; }
+    else { SQD[sqTab] = b.dataset.v; if (sqTab === 'shape' && !sqTouched) SQD.colour = (SQ.SHAPES.find(x => x[0] === b.dataset.v) || [])[2] || SQD.colour; }
+    keepDraft(); drawSquish(); squish($('#sqBig .sqb')); SND.squish(0.6);
+  });
+  $('#sqBig').addEventListener('click', () => { squish($('#sqBig .sqb')); SND.squish(); });
+  $('#sqName').addEventListener('input', keepDraft);
+  $('#sqLight').addEventListener('click', e => { e.stopPropagation(); const st = $('#sqStage'); st.classList.toggle('dark'); e.target.textContent = st.classList.contains('dark') ? '☀️ أشعلي الضوء' : '🌙 أطفئي الضوء'; });
+  $('#sqBack').addEventListener('click', () => { if (SQD) keepDraft(); lib.sq.seen = lib.sq.pieces.length; save(); SQD = null; openStudio(); });
+  $('#sqDone').addEventListener('click', () => {
+    if (!SQD) return;
+    if (!sqWaiting()) { api.toast && api.toast(`السكويشي القادم بعد ${AR(SQ.PER - lib.sq.pieces.length % SQ.PER)} قطع`); return; }
+    const name = $('#sqName').value.trim() || 'سكويشي';
+    lib.sq.made.push({ shape: SQD.shape, colour: SQD.colour, face: SQD.face, glitter: SQD.glitter, top: SQD.top, name, at: t() });
+    delete lib.sq.draft; lib.sq.seen = lib.sq.pieces.length; save();
+    SND.chime(0, 0.6); api.SFX.good && api.SFX.good(); SQD = null;
+    openStudio();
+    setTimeout(() => { const j = $('#stJar .st-jar'); if (j) { sparkle(j); squish(j); } api.toast && api.toast(`«${name}» في البرطمان الآن 🫙`); }, 600);
+  });
+
+  /* ---------- رسائل بابا: a parent writes or records them (parent area); each waits until Maria marks its mission «فعلتها!» ---------- */
+  const BABA_DB = 'maktabati-baba';
+  function babaDB() {
+    return new Promise((ok, bad) => { const r = indexedDB.open(BABA_DB, 1); r.onupgradeneeded = () => r.result.createObjectStore('audio', { keyPath: 'id' }); r.onsuccess = () => ok(r.result); r.onerror = () => bad(r.error); });
+  }
+  async function babaPut(rec) { const db = await babaDB(); return new Promise((ok, bad) => { const tx = db.transaction('audio', 'readwrite'); tx.objectStore('audio').put(rec); tx.oncomplete = () => ok(); tx.onerror = () => bad(tx.error); }); }
+  async function babaGet(id) { const db = await babaDB(); return new Promise((ok, bad) => { const q = db.transaction('audio').objectStore('audio').get(id); q.onsuccess = () => ok(q.result || null); q.onerror = () => bad(q.error); }); }
+  async function babaDel(id) { const db = await babaDB(); return new Promise((ok, bad) => { const tx = db.transaction('audio', 'readwrite'); tx.objectStore('audio').delete(id); tx.oncomplete = () => ok(); tx.onerror = () => bad(tx.error); }); }
+  const BABA = () => ST.filter(s => s.unlocks_baba_message);
+  const hasMsg = id => !!(lib.baba[id] && (lib.baba[id].text || lib.baba[id].audio));
+  const babaReady = () => BABA().filter(s => lib.missions[s.id] && lib.missions[s.id].state === 'done' && hasMsg(s.id));
+  const babaSealed = () => babaReady().filter(s => !lib.babaOpened[s.id]);
+  async function openEnvelope(id) {
+    const s = byId[id], m = lib.baba[id]; if (!s || !m) return;
+    const first = !lib.babaOpened[id];
+    if (first) { lib.babaOpened[id] = t(); save(); SND.chime(0, 0.6); }
+    const box = $('#stEnv'); if (!box) return;
+    box.innerHTML = `<div class="st-letter"><h3>💌 رسالة من بابا</h3><small>${esc(s.title)}</small>${m.text ? `<p>${esc(m.text)}</p>` : ''}${m.audio ? '<button class="btn st-letter-play" id="stLetterPlay">▶ اسمعي صوت بابا</button>' : ''}</div>`;
+    document.querySelectorAll(`[data-env="${id}"]`).forEach(b => { b.classList.add('open'); b.querySelector('.st-env-ic').textContent = '📨'; });
+    if (first) sparkle(box.firstElementChild);
+    const pl = $('#stLetterPlay');
+    if (pl) pl.onclick = async () => {
+      if (studioAudio) { stopClip(); pl.textContent = '▶ اسمعي صوت بابا'; return; }
+      const rec = await babaGet(id).catch(() => null); if (!rec || !rec.blob) { api.toast && api.toast('لم نجد التسجيل على هذا الجهاز'); return; }
+      const a = studioAudio = new Audio(URL.createObjectURL(rec.blob)); pl.textContent = '■ إيقاف';
+      a.onended = () => { pl.textContent = '▶ اسمعي صوت بابا'; studioAudio = null; };
+      a.play().catch(() => { pl.textContent = '▶ اسمعي صوت بابا'; studioAudio = null; });
+    };
+    renderSpots();
+  }
+
+  /* ---------- مساحة الأهل: a 3-second press on the «مكتبتي» sign, then a 4-digit PIN chosen on first use ---------- */
+  const PIN_KEY = 'tc:maria:libpin';
+  const pinGet = () => { try { return localStorage.getItem(PIN_KEY) || ''; } catch (e) { return ''; } };
+  let pinMode = 'check', pinFirst = '', pinVal = '';
+  function openPin(mode) {
+    pinMode = mode || (pinGet() ? 'check' : 'set1'); pinFirst = ''; pinVal = '';
+    drawPin(); $('#paPin').hidden = false;
+  }
+  function drawPin(shake) {
+    const T = { check: ['مساحة الأهل', 'اكتبي الرقم السرّي'], set1: ['رقم سرّي جديد', 'اختاري أربعة أرقام تحفظينها'], set2: ['رقم سرّي جديد', 'اكتبيه مرّة أخرى'] }[pinMode];
+    $('#paPinT').textContent = T[0]; $('#paPinS').textContent = T[1];
+    $('#paDots').innerHTML = [0, 1, 2, 3].map(i => `<i class="${i < pinVal.length ? 'on' : ''}"></i>`).join('');
+    $('#paKeys').innerHTML = [1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, '⌫'].map(k => k === '' ? '<span></span>' : `<button data-k="${k}">${k === '⌫' ? k : AR(k)}</button>`).join('');
+    if (shake) wiggle($('#paDots'));
+  }
+  $('#paKeys').addEventListener('click', e => {
+    const b = e.target.closest('[data-k]'); if (!b) return;
+    if (b.dataset.k === '⌫') { pinVal = pinVal.slice(0, -1); drawPin(); return; }
+    if (pinVal.length < 4) pinVal += b.dataset.k;
+    drawPin();
+    if (pinVal.length < 4) return;
+    setTimeout(() => {
+      if (pinMode === 'check') { if (pinVal === pinGet()) { $('#paPin').hidden = true; openParent(); } else { pinVal = ''; drawPin(true); } }
+      else if (pinMode === 'set1') { pinFirst = pinVal; pinVal = ''; pinMode = 'set2'; drawPin(); }
+      else if (pinVal === pinFirst) { try { localStorage.setItem(PIN_KEY, pinVal); } catch (err) {} $('#paPin').hidden = true; api.toast && api.toast('حُفظ الرقم السرّي'); openParent(); }
+      else { pinVal = ''; pinFirst = ''; pinMode = 'set1'; drawPin(true); }
+    }, 150);
+  });
+  $('#paPinX').addEventListener('click', () => { $('#paPin').hidden = true; });
+  if (api.holdToOpen) api.holdToOpen($('#lbCase .lb-crown'), 3000, () => { if (!busy) openPin(); });
+
+  let paOpen = {};            // which Baba message editors are open
+  let paRec = null;           // a Baba message being recorded
+  function openParent() { leaveRoom(); renderParent(); api.show('lparent'); $('#lparent').scrollTop = 0; }
+  function renderParent() {
+    const held58 = ST.filter(x => x.hidden_until_parent_approves);
+    const notes = ST.filter(x => x.parent_note);
+    const done = Object.values(lib.missions).filter(m => m.state === 'done').length;
+    const later = Object.entries(lib.missions).filter(([, m]) => m.state === 'later').map(([i]) => byId[i]).filter(Boolean);
+    const mission = s => lib.missions[s.id] && lib.missions[s.id].state === 'done' ? '<span class="pa-ok">✓ أنجزت ماريا المهمّة</span>' : '<span class="pa-wait">المهمّة لم تُنجز بعد</span>';
+    const msgState = s => { const m = lib.baba[s.id]; if (!hasMsg(s.id)) return '<span class="pa-wait">لا رسالة بعد</span>';
+      return `<span class="pa-ok">${m.text ? 'رسالة مكتوبة' : ''}${m.text && m.audio ? ' + ' : ''}${m.audio ? 'رسالة صوتية' : ''}</span>${lib.babaOpened[s.id] ? ' <span class="pa-ok">· فتحتها ماريا</span>' : ''}`; };
+    $('#paBody').innerHTML = `
+      ${held58.map(s => `<div class="pa-card pa-held"><h2>قصّة تنتظر موافقتكِ: اليوم ${AR(s.day)} «${esc(s.title)}»</h2>
+        ${lib.approved[s.id] ? `<p class="pa-ok">✓ وافقتِ عليها (${esc(lib.approved[s.id])}). تظهر لماريا في دورها على الرفّ.</p>${lib.read[s.id] ? '' : `<button class="pa-btn" data-unapprove="${s.id}">إلغاء الموافقة</button>`}`
+          : `<p>تبقى هذه القصّة كتاباً مغلقاً على الرفّ حتى توافقي عليها، ويكمل الرفّ من دونها.</p><div class="pa-row"><button class="pa-btn" data-readstory="${s.id}">اقرئي القصّة كاملة</button><button class="pa-btn primary" data-approve="${s.id}">✓ أوافق، افتحيها لماريا</button></div>`}
+        <div class="pa-story" id="paStory-${s.id}" hidden></div></div>`).join('')}
+      <div class="pa-card"><h2>💌 رسائل بابا</h2><p>اكتبوا أو سجّلوا رسالة لكلّ قصّة من قصص بابا. تبقى الرسالة مخفيّة حتى تضغط ماريا «فعلتها!» في مهمّة تلك القصّة، ثمّ تصلها ظرفاً مختوماً في صندوق «رسائل بابا» في المرسم.</p>
+        <div class="pa-list">${BABA().map(s => `<div class="pa-item${paOpen[s.id] ? ' open' : ''}" data-baba="${s.id}">
+          <button class="pa-head" data-toggle="${s.id}"><b>اليوم ${AR(s.day)}</b><span>${esc(s.title)}</span><small>${mission(s)} · ${msgState(s)}</small></button>
+          ${paOpen[s.id] ? `<div class="pa-edit"><textarea id="paText-${s.id}" rows="3" placeholder="اكتب رسالة قصيرة لماريا...">${esc((lib.baba[s.id] && lib.baba[s.id].text) || '')}</textarea>
+            <div class="pa-row"><button class="pa-btn primary" data-save="${s.id}">احفظ الرسالة</button>
+            ${canRecord() ? `<button class="pa-btn" data-rec="${s.id}">${paRec && paRec.id === s.id ? '■ أوقف التسجيل' : '🎙️ سجّل رسالة صوتية'}</button>` : ''}
+            ${lib.baba[s.id] && lib.baba[s.id].audio ? `<button class="pa-btn" data-play="${s.id}">▶ استمع</button><button class="pa-btn" data-delaudio="${s.id}">احذف الصوت</button>` : ''}</div></div>` : ''}
+        </div>`).join('')}</div></div>
+      <div class="pa-card"><h2>ملاحظات للأهل</h2><p>هذه الملاحظات للأهل فقط، ولا تراها ماريا أبداً.</p>
+        <div class="pa-notes">${notes.map(s => `<div class="pa-note"><b>اليوم ${AR(s.day)} «${esc(s.title)}»</b><p dir="ltr" lang="en">${esc(s.parent_note)}</p></div>`).join('')}</div></div>
+      <div class="pa-card"><h2>التقدّم</h2>
+        <p>قرأت ماريا ${AR(lib.order.length)} من ${AR(ST.length)} كتاباً · أنجزت ${AR(done)} ${done === 1 ? 'مهمّة' : 'مهامّ'} · صنعت ${AR(lib.sq.made.length)} سكويشي</p>
+        ${later.length ? `<p>مهامّ تركتها لـ«لاحقاً»: ${later.map(s => `«${esc(s.title)}»`).join('، ')}</p>` : ''}</div>
+      <div class="pa-card"><h2>حفظ التقدّم</h2>
+        <p>ليحفظ الآيباد تقدّم ماريا: من Safari اضغطوا «مشاركة» ثمّ «إضافة إلى الشاشة الرئيسية»، وافتحوا التطبيق دائماً من أيقونته.</p>
+        <div class="pa-row">${api.backup ? '<button class="pa-btn" data-act="backup">نسخة احتياطية (ملف)</button>' : ''}<button class="pa-btn" data-act="pin">تغيير الرقم السرّي</button></div>
+        <p class="pa-small">التسجيلات الصوتية (صوتي ورسائل بابا) تبقى في هذا الآيباد فقط، ولا تدخل في ملف النسخة الاحتياطية.</p></div>`;
+  }
+  async function toggleBabaRec(id) {
+    if (paRec) {                       // stop, and keep it
+      const r = paRec; paRec = null;
+      r.mr.onstop = async () => {
+        r.stream.getTracks().forEach(x => x.stop());
+        const blob = new Blob(r.chunks, { type: r.type || 'audio/mp4' });
+        if (blob.size > 1500) { await babaPut({ id: r.id, blob, type: blob.type, at: Date.now() }).catch(() => {}); lib.baba[r.id] = { ...(lib.baba[r.id] || {}), audio: true, at: t() }; save(); api.toast && api.toast('حُفظت الرسالة الصوتية'); }
+        renderParent();
+      };
+      try { r.mr.stop(); } catch (e) {}
+      if (r.id === id) return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const type = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm'].find(x => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(x)) || '';
+      const mr = new MediaRecorder(stream, type ? { mimeType: type } : undefined);
+      paRec = { id, mr, stream, chunks: [], type: mr.mimeType || type };
+      mr.ondataavailable = e => { if (e.data && e.data.size) paRec && paRec.chunks.push(e.data); };
+      mr.start(1000); renderParent();
+    } catch (e) { paRec = null; api.toast && api.toast('لم يفتح الميكروفون'); }
+  }
+  let paAudio = null;
+  $('#paBody').addEventListener('click', async e => {
+    const b = e.target.closest('button'); if (!b) return;
+    const d = b.dataset;
+    if (d.toggle) { paOpen[d.toggle] = !paOpen[d.toggle]; renderParent(); return; }
+    if (d.save) { const v = ($('#paText-' + d.save) || {}).value || ''; lib.baba[d.save] = { ...(lib.baba[d.save] || {}), text: v.trim(), at: t() }; save(); api.toast && api.toast('حُفظت الرسالة'); renderParent(); return; }
+    if (d.rec) { toggleBabaRec(d.rec); return; }
+    if (d.play) { if (paAudio) { paAudio.pause(); paAudio = null; return; } const r = await babaGet(d.play).catch(() => null); if (r && r.blob) { paAudio = new Audio(URL.createObjectURL(r.blob)); paAudio.onended = () => { paAudio = null; }; paAudio.play().catch(() => {}); } return; }
+    if (d.delaudio) { await babaDel(d.delaudio).catch(() => {}); if (lib.baba[d.delaudio]) lib.baba[d.delaudio].audio = false; save(); renderParent(); return; }
+    if (d.approve) { lib.approved[d.approve] = t(); save(); api.toast && api.toast('تمّت الموافقة: تظهر القصّة لماريا في دورها'); renderParent(); return; }
+    if (d.unapprove) { delete lib.approved[d.unapprove]; save(); renderParent(); return; }
+    if (d.readstory) {
+      const s = byId[d.readstory], box = $('#paStory-' + d.readstory); if (!s || !box) return;
+      box.hidden = !box.hidden;
+      box.innerHTML = s.pages.map(pg => `<p><b>${AR(pg.n)}</b> ${esc(pg.text)}</p>`).join('') +
+        s.questions.map(q => `<p class="pa-q">❓ ${esc(q.prompt)}<br>${q.options.map(o => `• ${esc(o.label)}${o.result ? ' ← ' + esc(o.result) : ''}`).join('<br>')}</p>`).join('') +
+        `<p>🔄 ${esc(s.other_side)}</p><p>✨ ${esc(s.magic_sentence)}</p><p>💬 ${esc(s.feeling_word)}</p><p>🎯 ${esc(s.mission.text)}</p>${s.parent_note ? `<p dir="ltr" lang="en">${esc(s.parent_note)}</p>` : ''}`;
+      return;
+    }
+    if (d.act === 'backup') { api.backup && api.backup(); return; }
+    if (d.act === 'pin') { openPin('set1'); return; }
+  });
+  $('#paClose').addEventListener('click', () => { if (paRec) toggleBabaRec(paRec.id); if (paAudio) { paAudio.pause(); paAudio = null; } paOpen = {}; home(); });
+
   return {
     home, ready,
-    isOn: () => !$('#lhome').hidden || !$('#lbook').hidden || !$('#lstudio').hidden || !$('#lcolor').hidden,
-    busy: () => !$('#lbook').hidden || busy || !$('#lbCel').hidden || !$('#lbDec').hidden,
+    isOn: () => ['lhome', 'lbook', 'lstudio', 'lcolor', 'lsquish', 'lparent'].some(id => !$('#' + id).hidden),
+    busy: () => !$('#lbook').hidden || busy || !$('#lbCel').hidden || !$('#lbDec').hidden || !$('#lsquish').hidden || !$('#lparent').hidden || !$('#paPin').hidden,
     reload() { lib = load(); },
     snapshot() { return JSON.parse(JSON.stringify(lib)); },
     valid,
     replace(obj) { lib = clean(obj); save(); },
     leave: leaveRoom,
     // for tests (?dev=1)
-    get state() { return lib; }, get reader() { return R; }, get stories() { return ST; }, turn, core, openDeco, milestone, openStudio, studioPlace, openColour
+    get state() { return lib; }, get reader() { return R; }, get stories() { return ST; }, turn, core, openDeco, milestone, openStudio, studioPlace, openColour,
+    openSquish, openParent, openPin
   };
 }
 

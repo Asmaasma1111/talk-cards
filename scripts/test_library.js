@@ -8,10 +8,15 @@ let fails = 0;
 const eq = (a, b, msg) => { const ok = JSON.stringify(a) === JSON.stringify(b); if (!ok) { fails++; console.log('FAIL', msg, '\n  got ', JSON.stringify(a), '\n  want', JSON.stringify(b)); } };
 const by = id => ST.find(s => s.id === id);
 
-eq(ST.length, 30, '30 stories'); eq(C.shelves(ST), [1, 2, 3], 'three shelves');
+eq(ST.length, 60, '60 stories (month 2 added 18 Oct 2026)'); eq(C.shelves(ST), [1, 2, 3, 4, 5, 6], 'six shelves');
 eq(ST.map(s => C.leaves(s).slice(-5).map(l => l.kind).join()).every(x => x === 'other,magic,feeling,tool,mission'), true, 'every book ends with the five end pages');
 eq(C.leaves(by('d01')).map(l => l.kind).join(), 'page,page,page,page,q,page,page,page,page,other,magic,feeling,tool,mission', 'Day 1: the question comes after page 4');
-eq(ST.filter(s => s.unlocks_baba_message).map(s => s.day), [10, 16, 22, 27, 30], 'Baba messages');
+eq(ST.filter(s => s.unlocks_baba_message).map(s => s.day), [10, 16, 22, 27, 30, 35, 41, 47, 53, 60], 'Baba messages');
+eq(ST.filter(s => s.parent_note).map(s => s.day), [32, 47, 51, 52, 56, 57, 58], 'parent notes (parent area only)');
+eq(ST.filter(s => s.hidden_until_parent_approves).map(s => s.day), [58], 'Day 58 waits for Mama');
+eq(ST.filter(s => s.locked_until_shelf_done).map(s => s.day), [30, 40, 50, 60], 'the last book of shelves 3 to 6 waits for the others');
+eq(ST.filter(s => s.day > 30).every(s => s.questions.length === (s.day % 10 ? 2 : 3)), true, 'month 2: 2 questions, 3 in a shelf finale');
+eq(ST.flatMap(s => s.questions.filter(q => q.all_continue).map(() => s.day)).filter(d => d > 30), [60], 'month 2: only Day 60 lets every answer go on');
 
 let L = C.blank(); const t = '2026-10-13', t2 = '2026-10-14';
 eq(C.status(L, ST, by('d01'), t), 'new', 'Day 1 is the next book'); eq(C.status(L, ST, by('d05'), t), 'later', 'the books come in order');
@@ -48,5 +53,22 @@ L.deco[1] = { color: 'sage', item: 'frame', garland: 'lights', photo: 'data:imag
 eq(C.clean(JSON.parse(JSON.stringify(L))).deco[1].garland, 'lights', 'clean keeps her shelf decoration'); eq(C.clean({ deco: 'x' }).deco, {}, 'bad decoration data is dropped');
 eq(C.clean(JSON.parse(JSON.stringify(L))).order.length, 29, 'clean keeps progress'); eq(C.clean(null).order, [], 'clean of nothing');
 eq(C.clean({ read: [], order: 'x', sound: false }).sound, false, 'clean keeps the sound choice'); eq(C.valid({ read: {}, order: [] }), true, 'valid backup'); eq(C.valid({}), false, 'invalid backup');
+// month 2: shelf 4 opens after Day 30; Day 58 stays closed until Mama approves it, and the shelf goes on without it
+const M = C.blank(); const day = k => `2026-11-${String(k).padStart(2, '0')}`;
+ST.filter(s => s.day <= 30).forEach(s => C.finish(M, s, '2026-10-30'));
+eq(C.shelfOpen(M, ST, 4), true, 'month 1 done: shelf 4 opens'); eq(C.doorsWaiting(M, ST).includes(4), true, 'its glass door swings open');
+eq(C.status(M, ST, by('d31'), day(1)), 'new', 'Day 31 is next');
+ST.filter(s => s.day > 30 && s.day <= 57).forEach((s, k) => C.finish(M, s, day(k + 1)));
+eq(C.status(M, ST, by('d58'), day(28)), 'held', 'Day 58 is a closed book'); eq(C.nextOn(M, ST, 6).id, 'd59', 'the shelf goes on with Day 59');
+C.finish(M, by('d59'), day(28));
+eq(C.status(M, ST, by('d60'), day(29)), 'new', 'Day 60 opens without Day 58');
+M.approved.d58 = day(29);
+eq(C.status(M, ST, by('d58'), day(30)), 'new', 'approved: Day 58 opens');
+eq(C.status(M, ST, by('d60'), day(30)), 'last', 'and Day 60 waits for it again');
+eq(C.MILESTONES, [10, 20, 30, 40, 50, 60], 'celebrations every ten books');
+M.sq.pieces.push('face:sleepy'); M.sq.made.push({ shape: 'cat', name: 'x' }); M.baba.d35 = { text: 'hi' };
+const M2 = C.clean(JSON.parse(JSON.stringify(M)));
+eq([M2.approved.d58, M2.sq.pieces, M2.sq.made.length, M2.baba.d35.text], [day(29), ['face:sleepy'], 1, 'hi'], 'clean keeps approvals, squishy pieces, squishies and Baba messages');
+eq(C.clean({ sq: 'x' }).sq, { pieces: [], from: {}, made: [] }, 'bad squishy data is dropped');
 console.log(fails ? `${fails} failed` : 'library core: all passed');
 process.exit(fails ? 1 : 0);

@@ -2,7 +2,7 @@
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
 // The same file serves both apps: Talk Cards registers sw.js, Prepositions registers sw.js?app=prepositions.
 const APP = new URL(location.href).searchParams.get('app') === 'prepositions' ? 'prepositions' : 'talk-cards';
-const VERSION = APP + '-v53';
+const VERSION = APP + '-v54';
 const FILES = APP === 'prepositions' ? [
   './',
   'index.html',
@@ -25,6 +25,7 @@ const FILES = APP === 'prepositions' ? [
   'garden.js',
   'maths.js',
   'stickerbook.js',
+  'squishy.js',
   'library.js',
   'stories.json',
   'stickers/stickers.json',
@@ -95,11 +96,14 @@ async function cacheVoice(cache) {
 
 // Maria's sticker book: every picture listed in stickers/stickers.json, so the book opens offline too.
 // مرسمي: the colouring pictures (same ids as PICS in library.js), one by one, so a picture not drawn yet never stops the install
+// صانعة السكويشي (month 2): the realistic squishy parts and the glass jar
+const SQUISHY = ['ball', 'butter', 'cat', 'peanut', 'cloud', 'cheese', 'banana', 'strawberry', 'noodles', 'star',
+  'top-bow', 'top-cherry', 'top-crown', 'top-flower', 'top-leaf', 'top-shades', 'jar'].map(n => `assets/library/squishy/${n}.webp`);
 const COLOUR = ['glitter-balls', 'mega-dumpling', 'squishy-stickers', 'butter-stick', 'peanut', 'cheese', 'banana', 'noodles', 'paper-squishy',
   'butter-toast', 'bunny', 'cat', 'rainbow', 'treasure', 'bracelet', 'bookmark'];
 async function cacheColour(cache) {
   if (APP !== 'talk-cards') return;
-  await Promise.all(COLOUR.map(id => cache.add(`assets/library/color/${id}.webp`).catch(() => {})));
+  await Promise.all([...COLOUR.map(id => `assets/library/color/${id}.webp`), ...SQUISHY].map(u => cache.add(u).catch(() => {})));
 }
 
 async function cacheStickers(cache) {
