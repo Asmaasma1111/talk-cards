@@ -4254,7 +4254,19 @@
    "unlocks_baba_message": false,
    "parent_note": "keep the game short and fun; let her choose how dark the room is. Never force it.",
    "locked_until_shelf_done": false,
-   "images": []
+   "images": [
+    "cover",
+    "p01",
+    "p02",
+    "p03",
+    "p04",
+    "p05",
+    "p06",
+    "p07",
+    "p08",
+    "p09",
+    "p10"
+   ]
   },
   {
    "id": "d33",
