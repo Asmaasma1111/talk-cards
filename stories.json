@@ -5316,7 +5316,20 @@
    "unlocks_baba_message": false,
    "parent_note": null,
    "locked_until_shelf_done": true,
-   "images": []
+   "images": [
+    "cover",
+    "p01",
+    "p02",
+    "p03",
+    "p04",
+    "p05",
+    "p06",
+    "p07",
+    "p08",
+    "p09",
+    "p10",
+    "p11"
+   ]
   },
   {
    "id": "d41",
