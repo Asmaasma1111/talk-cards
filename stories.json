@@ -7724,7 +7724,20 @@
    "parent_note": "please read this story yourself before it goes into the app. It follows the common elements of child body-safety education: body ownership, safe and unsafe secrets, saying no, and who to tell. It stays at that level, with no details of harm. Afterwards, tell her she can always come to you, even about something she promised to keep quiet.",
    "locked_until_shelf_done": false,
    "hidden_until_parent_approves": true,
-   "images": []
+   "images": [
+    "cover",
+    "p01",
+    "p02",
+    "p03",
+    "p04",
+    "p05",
+    "p06",
+    "p07",
+    "p08",
+    "p09",
+    "p10",
+    "p11"
+   ]
   },
   {
    "id": "d59",
