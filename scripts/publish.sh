@@ -6,7 +6,7 @@ set -eu
 cd "$(dirname "$0")/.."
 git push origin main
 if [ -f .cloudflare-deploy-hook ]; then
-  curl -s -X POST "$(cat .cloudflare-deploy-hook)" | grep -q '"success":true' && echo "Cloudflare build started" || echo "Cloudflare did not start a build" >&2
+  curl -s -X POST "$(cat .cloudflare-deploy-hook)" | grep -Eq '"success": *true' && echo "Cloudflare build started" || echo "Cloudflare did not start a build" >&2
 else
   echo "No .cloudflare-deploy-hook file: start the Cloudflare build from its dashboard" >&2
 fi
