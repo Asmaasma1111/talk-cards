@@ -1,0 +1,280 @@
+{
+ "_note": "which candidate becomes the photo: {\"i\": n, \"dir\": \"<concept>-p\"} (Pexels); chosen 20 Oct 2026 from the contact sheets",
+ "cat": {
+  "i": 2,
+  "dir": "cat-p"
+ },
+ "bat": {
+  "i": 1,
+  "dir": "bat-p"
+ },
+ "cab": {
+  "i": 1,
+  "dir": "cab-p"
+ },
+ "act": {
+  "i": 2,
+  "dir": "act-p"
+ },
+ "apple": {
+  "i": 3,
+  "dir": "apple-p"
+ },
+ "ant": {
+  "i": 1,
+  "dir": "ant-p"
+ },
+ "alligator": {
+  "i": 4,
+  "dir": "alligator-p"
+ },
+ "astronaut": {
+  "i": 1,
+  "dir": "astronaut-p"
+ },
+ "map": {
+  "i": 2,
+  "dir": "map-p"
+ },
+ "hat": {
+  "i": 2,
+  "dir": "hat-p"
+ },
+ "cap": {
+  "i": 1,
+  "dir": "cap-p"
+ },
+ "sad": {
+  "i": 0,
+  "dir": "sad-p"
+ },
+ "sun": {
+  "i": 0,
+  "dir": "sun-p"
+ },
+ "dog": {
+  "i": 4,
+  "dir": "dog-p"
+ },
+ "pen": {
+  "i": 0,
+  "dir": "pen-p"
+ },
+ "bus": {
+  "i": 0,
+  "dir": "bus-p"
+ },
+ "cup": {
+  "i": 1,
+  "dir": "cup-p"
+ },
+ "fish": {
+  "i": 4,
+  "dir": "fish-p"
+ },
+ "egg": {
+  "i": 2,
+  "dir": "egg-p"
+ },
+ "moon": {
+  "i": 4,
+  "dir": "moon-p"
+ },
+ "bed": {
+  "i": 3,
+  "dir": "bed-p"
+ },
+ "ball": {
+  "i": 1,
+  "dir": "ball-p",
+  "zoom": 1.9,
+  "fx": 0.48,
+  "fy": 0.6
+ },
+ "bee": {
+  "i": 1,
+  "dir": "bee-p"
+ },
+ "rabbit": {
+  "i": 4,
+  "dir": "rabbit-p"
+ },
+ "robot": {
+  "i": 1,
+  "dir": "robot-p"
+ },
+ "zebra": {
+  "i": 1,
+  "dir": "zebra-p"
+ },
+ "tub": {
+  "i": 1,
+  "dir": "tub-p",
+  "zoom": 1.5,
+  "fx": 0.25,
+  "fy": 0.85
+ },
+ "crab": {
+  "i": 0,
+  "dir": "crab-p"
+ },
+ "web": {
+  "i": 1,
+  "dir": "web-p"
+ },
+ "kite": {
+  "i": 1,
+  "dir": "kite-p"
+ },
+ "car": {
+  "i": 1,
+  "dir": "car-p"
+ },
+ "key": {
+  "i": 2,
+  "dir": "key-p"
+ },
+ "rocket": {
+  "i": 4,
+  "dir": "rocket-p"
+ },
+ "bucket": {
+  "i": 4,
+  "dir": "bucket-p"
+ },
+ "monkey": {
+  "i": 1,
+  "dir": "monkey-p"
+ },
+ "duck": {
+  "i": 1,
+  "dir": "duck-p"
+ },
+ "book": {
+  "i": 1,
+  "dir": "book-p"
+ },
+ "sock": {
+  "i": 2,
+  "dir": "sock-p"
+ },
+ "clock": {
+  "i": 2,
+  "dir": "clock-p"
+ },
+ "tea": {
+  "i": 2,
+  "dir": "tea-p"
+ },
+ "ten": {
+  "i": 2,
+  "dir": "ten-p"
+ },
+ "toy": {
+  "i": 3,
+  "dir": "toy-p"
+ },
+ "tent": {
+  "i": 3,
+  "dir": "tent-p"
+ },
+ "tiger": {
+  "i": 2,
+  "dir": "tiger-p"
+ },
+ "hotel": {
+  "i": 4,
+  "dir": "hotel-p"
+ },
+ "guitar": {
+  "i": 3,
+  "dir": "guitar-p"
+ },
+ "boat": {
+  "i": 2,
+  "dir": "boat-p"
+ },
+ "net": {
+  "i": 3,
+  "dir": "net-p"
+ },
+ "foot": {
+  "i": 2,
+  "dir": "foot-p"
+ },
+ "cut": {
+  "i": 1,
+  "dir": "cut-p"
+ },
+ "cub": {
+  "i": 2,
+  "dir": "cub-p"
+ },
+ "us": {
+  "i": 4,
+  "dir": "us-p"
+ },
+ "sat": {
+  "i": 0,
+  "dir": "sat-p"
+ },
+ "cats": {
+  "i": 2,
+  "dir": "cats-p"
+ },
+ "bats": {
+  "i": 1,
+  "dir": "bats-p",
+  "zoom": 1.6,
+  "fx": 0.4,
+  "fy": 0.6
+ },
+ "cubs": {
+  "i": 4,
+  "dir": "cubs-p"
+ },
+ "cuts": {
+  "i": 2,
+  "dir": "cuts-p"
+ },
+ "tubs": {
+  "i": 2,
+  "dir": "tubs-p"
+ },
+ "up": {
+  "i": 0,
+  "dir": "up-p"
+ },
+ "umbrella": {
+  "i": 1,
+  "dir": "umbrella-p"
+ },
+ "under": {
+  "i": 4,
+  "dir": "under-p"
+ },
+ "mud": {
+  "i": 3,
+  "dir": "mud-p"
+ },
+ "bug": {
+  "i": 3,
+  "dir": "bug-p"
+ },
+ "seal": {
+  "i": 2,
+  "dir": "seal-p"
+ },
+ "basket": {
+  "i": 3,
+  "dir": "basket-p"
+ },
+ "dress": {
+  "i": 4,
+  "dir": "dress-p"
+ },
+ "glass": {
+  "i": 1,
+  "dir": "glass-p"
+ }
+}

@@ -10033,13 +10033,29 @@
      "f": "rd/w-ba.m4a",
      "d": 0.6
     },
+    "w-back": {
+     "f": "rd/w-back.m4a",
+     "d": 0.54
+    },
     "w-ball": {
      "f": "rd/w-ball.m4a",
      "d": 0.6
     },
+    "w-basket": {
+     "f": "rd/w-basket.m4a",
+     "d": 0.93
+    },
     "w-bat": {
      "f": "rd/w-bat.m4a",
      "d": 0.86
+    },
+    "w-bats": {
+     "f": "rd/w-bats.m4a",
+     "d": 0.84
+    },
+    "w-bear": {
+     "f": "rd/w-bear.m4a",
+     "d": 0.56
     },
     "w-bed": {
      "f": "rd/w-bed.m4a",
@@ -10048,6 +10064,10 @@
     "w-bee": {
      "f": "rd/w-bee.m4a",
      "d": 0.56
+    },
+    "w-bin": {
+     "f": "rd/w-bin.m4a",
+     "d": 0.52
     },
     "w-boat": {
      "f": "rd/w-boat.m4a",
@@ -10061,9 +10081,17 @@
      "f": "rd/w-bucket.m4a",
      "d": 0.9
     },
+    "w-bug": {
+     "f": "rd/w-bug.m4a",
+     "d": 0.43
+    },
     "w-bus": {
      "f": "rd/w-bus.m4a",
      "d": 0.67
+    },
+    "w-but": {
+     "f": "rd/w-but.m4a",
+     "d": 0.53
     },
     "w-cab": {
      "f": "rd/w-cab.m4a",
@@ -10081,6 +10109,10 @@
      "f": "rd/w-cat.m4a",
      "d": 0.7
     },
+    "w-cats": {
+     "f": "rd/w-cats.m4a",
+     "d": 0.72
+    },
     "w-clock": {
      "f": "rd/w-clock.m4a",
      "d": 0.68
@@ -10089,13 +10121,33 @@
      "f": "rd/w-crab.m4a",
      "d": 0.79
     },
+    "w-cub": {
+     "f": "rd/w-cub.m4a",
+     "d": 0.47
+    },
+    "w-cubs": {
+     "f": "rd/w-cubs.m4a",
+     "d": 0.77
+    },
     "w-cup": {
      "f": "rd/w-cup.m4a",
      "d": 0.54
     },
+    "w-cut": {
+     "f": "rd/w-cut.m4a",
+     "d": 0.56
+    },
+    "w-cuts": {
+     "f": "rd/w-cuts.m4a",
+     "d": 0.69
+    },
     "w-dog": {
      "f": "rd/w-dog.m4a",
      "d": 0.77
+    },
+    "w-dress": {
+     "f": "rd/w-dress.m4a",
+     "d": 0.67
     },
     "w-duck": {
      "f": "rd/w-duck.m4a",
@@ -10112,6 +10164,10 @@
     "w-foot": {
      "f": "rd/w-foot.m4a",
      "d": 0.72
+    },
+    "w-glass": {
+     "f": "rd/w-glass.m4a",
+     "d": 0.81
     },
     "w-guitar": {
      "f": "rd/w-guitar.m4a",
@@ -10145,6 +10201,10 @@
      "f": "rd/w-moon.m4a",
      "d": 0.86
     },
+    "w-mud": {
+     "f": "rd/w-mud.m4a",
+     "d": 0.56
+    },
     "w-net": {
      "f": "rd/w-net.m4a",
      "d": 0.73
@@ -10168,6 +10228,14 @@
     "w-sad": {
      "f": "rd/w-sad.m4a",
      "d": 0.8
+    },
+    "w-sat": {
+     "f": "rd/w-sat.m4a",
+     "d": 0.71
+    },
+    "w-seal": {
+     "f": "rd/w-seal.m4a",
+     "d": 0.7
     },
     "w-sock": {
      "f": "rd/w-sock.m4a",
@@ -10204,6 +10272,26 @@
     "w-tub": {
      "f": "rd/w-tub.m4a",
      "d": 0.65
+    },
+    "w-tubs": {
+     "f": "rd/w-tubs.m4a",
+     "d": 0.71
+    },
+    "w-umbrella": {
+     "f": "rd/w-umbrella.m4a",
+     "d": 0.89
+    },
+    "w-under": {
+     "f": "rd/w-under.m4a",
+     "d": 0.71
+    },
+    "w-up": {
+     "f": "rd/w-up.m4a",
+     "d": 0.44
+    },
+    "w-us": {
+     "f": "rd/w-us.m4a",
+     "d": 0.59
     },
     "w-web": {
      "f": "rd/w-web.m4a",
@@ -10257,13 +10345,101 @@
      "f": "rd/snd-b.m4a",
      "d": 0.19
     },
+    "p-d": {
+     "f": "rd/snd-d.m4a",
+     "d": 0.24
+    },
+    "q-e": {
+     "f": "rd/snd-e-short.m4a",
+     "d": 0.5
+    },
+    "p-e": {
+     "f": "rd/snd-e.m4a",
+     "d": 0.9
+    },
+    "q-f": {
+     "f": "rd/snd-f-short.m4a",
+     "d": 0.5
+    },
+    "p-f": {
+     "f": "rd/snd-f.m4a",
+     "d": 0.71
+    },
+    "p-g": {
+     "f": "rd/snd-g.m4a",
+     "d": 0.24
+    },
+    "p-h": {
+     "f": "rd/snd-h.m4a",
+     "d": 0.19
+    },
+    "q-i": {
+     "f": "rd/snd-i-short.m4a",
+     "d": 0.5
+    },
+    "p-i": {
+     "f": "rd/snd-i.m4a",
+     "d": 1.07
+    },
     "p-k": {
      "f": "rd/snd-k.m4a",
      "d": 0.24
     },
+    "q-m": {
+     "f": "rd/snd-m-short.m4a",
+     "d": 0.5
+    },
+    "p-m": {
+     "f": "rd/snd-m.m4a",
+     "d": 0.58
+    },
+    "q-n": {
+     "f": "rd/snd-n-short.m4a",
+     "d": 0.5
+    },
+    "p-n": {
+     "f": "rd/snd-n.m4a",
+     "d": 0.63
+    },
+    "q-o": {
+     "f": "rd/snd-o-short.m4a",
+     "d": 0.5
+    },
+    "p-o": {
+     "f": "rd/snd-o.m4a",
+     "d": 0.97
+    },
+    "p-p": {
+     "f": "rd/snd-p.m4a",
+     "d": 0.26
+    },
+    "q-r": {
+     "f": "rd/snd-r-short.m4a",
+     "d": 0.5
+    },
+    "p-r": {
+     "f": "rd/snd-r.m4a",
+     "d": 0.52
+    },
+    "q-s": {
+     "f": "rd/snd-s-short.m4a",
+     "d": 0.5
+    },
+    "p-s": {
+     "f": "rd/snd-s.m4a",
+     "d": 0.83
+    },
     "p-t": {
      "f": "rd/snd-t.m4a",
      "d": 0.21
+    },
+    "q-u": {
+     "f": "rd/snd-u-short.m4a",
+     "d": 0.5
+    },
+    "p-u": {
+     "f": "rd/snd-u.m4a",
+     "d": 0.71
     }
    }
   }

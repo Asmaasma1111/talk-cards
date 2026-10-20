@@ -12,13 +12,17 @@ Single sounds are never made with TTS: Mama records them on the iPad (the Record
                                                    /k/ (the start of "key"), /b/ (the end of "aaab"); then run build
   python scripts/reads_voice.py build              audio/rd/*.m4a and the 'reads' deck in audio/voice.json (words that
                                                    passed, the stretchy models, and the built-in sounds)
+  python scripts/reads_voice.py rec words|lines [--upto N] [--max K]
+                                                   Phase 2: record what voice-work/reads/needs.json lists (written by
+                                                   make_reads.py), lesson by lesson up to lesson N, then cut and check
+  python scripts/reads_voice.py sounds2 [--upto N] the built-in sounds for lessons 9-24, cut from one stretchy take
 Voice: Kore on gemini-3.8-flash-tts with the clean ending (her choice, 20 Oct 2026).
 
 Run it with the venv that has google-genai: ~/Downloads/06_Projects_and_Code/maria-tenses/.venv/bin/python
 It reuses the helpers in voice.py (TTS call, wav tools, transcriber). The key is read from .env and never printed.
 Exit codes: 0 done, 10 GEMINI_API_KEY missing, 11 daily TTS quota used up, 1 error.
 """
-import argparse, glob, html, json, os, signal, subprocess, sys, time
+import argparse, base64, glob, html, json, os, signal, subprocess, sys, time
 import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import voice as V
@@ -36,9 +40,15 @@ WORDS_DIR = os.path.join(WORK, 'words')
 WPLAN = os.path.join(WORDS_DIR, 'plan.json')
 OUT = os.path.join(V.AUDIO, 'rd')
 SAY = {'ab': 'abb', 'ba': 'baa'}                    # pretend words, spelled so the voice reads them as one syllable
-HEARD_OK = {'ab': {'ab', 'abb', 'abe'}, 'ba': {'ba', 'baa', 'bah'}, 'bee': {'b'}, 'tea': {'t'}}   # bee and tea sound like the letter names
+HEARD_OK = {'ab': {'ab', 'abb', 'abe'}, 'ba': {'ba', 'baa', 'bah'}, 'bee': {'b'}, 'tea': {'t'}, 'bin': {'been'}, 'pea': {'p', 'pee'}}   # bee and tea sound like the letter names
 STRETCHY = ['at', 'cat', 'bat', 'tab', 'cab', 'ab', 'ba', 'act']   # from the approved test take (Voice A)
 BATCH = 18
+V.DECKS['readsx'] = {'voice': 'Kore', 'say_rate': 160,
+                     'style': 'a warm, clear American English teacher reading short, simple lines to a young English learner: '
+                              'natural and friendly, a little slow, each line said once'}
+LINES_DIR = os.path.join(WORK, 'lines')
+LPLAN = os.path.join(LINES_DIR, 'plan.json')
+NEEDS = os.path.join(WORK, 'needs.json')
 # what Maria sees, and what the voice is given (held letters written out, stop sounds written once)
 TEST = [('map', 'mmmaaap'), ('sun', 'sssuuunnn'), ('at', 'aaat'), ('cat', 'caaat'), ('bat', 'baaat'),
         ('tab', 'taaab'), ('cab', 'caaab'), ('ab', 'aaab'), ('ba', 'baaa'), ('act', 'aaact')]
@@ -346,11 +356,138 @@ def cmd_sounds(a):
         print(f, f'{V.duration(os.path.join(SOUNDS_DIR, f)):.2f} s')
 
 
+# ---------- Phase 2: words and lines from needs.json, in lesson order ----------
+def synth_once(client, text, deck, tries=3):
+    """One TTS take with a time limit on every attempt. The interactions API hangs (no error) once the day's quota is
+    gone, so a second time-out in a row is taken as the quota (20 Oct 2026: generate_content then answered 429)."""
+    cfg, outs = V.DECKS[deck], 0
+    for attempt in range(tries):
+        alarm(150)
+        try:
+            it = client.interactions.create(
+                model='gemini-3.8-flash-tts',
+                input=[{'type': 'user_input', 'content': [{'type': 'text', 'text': text, 'annotations': [{'type': 'speech_metadata', 'style': cfg['style']}]}]}],
+                response_format={'type': 'audio'}, generation_config={'speech_config': [{'voice': cfg['voice']}]})
+            signal.alarm(0)
+            data = it.output_audio.data
+            return base64.b64decode(data) if isinstance(data, str) else data
+        except TimeoutError:
+            outs += 1
+            if outs >= 2:
+                raise V.QuotaUsedUp('no answer twice: the daily quota is probably used up')
+        except Exception as e:
+            signal.alarm(0)
+            if V.is_daily_quota(str(e)) or 'RESOURCE_EXHAUSTED' in str(e):
+                raise V.QuotaUsedUp(str(e))
+            print(f'  TTS attempt {attempt + 1} failed ({type(e).__name__}); retrying', file=sys.stderr); time.sleep(20)
+        finally:
+            signal.alarm(0)
+    raise RuntimeError('TTS failed')
+
+
+def _record_batches(todo, plan, path_dir, deck, size, say):
+    from google import genai
+    V.MODEL = 'gemini-3.8-flash-tts'
+    client = genai.Client(api_key=V.api_key())
+    n = max([int(k[1:]) for k in plan['batches']] + [0])
+    for i in range(0, len(todo), size):
+        chunk = todo[i:i + size]
+        n += 1; bid = f'b{n:02d}'
+        try:
+            raw = synth_once(client, '\n<long pause>\n'.join(say(x) for x in chunk), deck)
+        except V.QuotaUsedUp:
+            V.dump(plan['_path'], {k: v for k, v in plan.items() if k != '_path'}); V.finish(11, 'daily quota used up for gemini-3.8-flash-tts')
+        wav = os.path.join(path_dir, 'batches', f'{bid}.wav'); V.save_take(raw, wav)
+        plan['batches'][bid] = {'ids': [x['id'] for x in chunk], 'texts': [x['text'] for x in chunk], 'recorded': time.strftime('%Y-%m-%d %H:%M')}
+        V.dump(plan['_path'], {k: v for k, v in plan.items() if k != '_path'})
+        print(f'{bid}: {len(chunk)} lines, {V.duration(wav):.1f} s', flush=True)
+        time.sleep(6)
+
+
+def cmd_rec(a):
+    needs = [x for x in V.load(NEEDS, []) if x['lesson'] <= a.upto and x['kind'] == ('word' if a.what == 'words' else 'line')]
+    reading = {w for w, d in json.load(open(os.path.join(V.ROOT, 'reads.json'), encoding='utf-8'))['words'].items() if not d.get('sight')}
+    if a.what == 'words':
+        path_dir, plan_path, deck, size = WORDS_DIR, WPLAN, 'readsw', 22
+        say = lambda x: SAY.get(x['text'], x['text']) + '.'
+    else:
+        path_dir, plan_path, deck, size = LINES_DIR, LPLAN, 'readsx', 14
+        say = lambda x: x['text']
+    os.makedirs(os.path.join(path_dir, 'batches'), exist_ok=True)
+    plan = V.load(plan_path, {'batches': {}, 'clips': {}}); plan['_path'] = plan_path
+    key = (lambda x: x['id'][2:]) if a.what == 'words' else (lambda x: x['id'])
+    have = {k for k, c in plan['clips'].items() if c.get('ok')} | {i for b in plan['batches'].values() if not b.get('split') for i in b['ids']}
+    todo = [x for x in needs if key(x) not in have and x['id'] not in have]
+    if a.redo:
+        todo = [x for x in needs if key(x) in a.redo.split(',') or x['id'] in a.redo.split(',')]
+    todo = todo[:a.max * size] if a.max else todo
+    if todo and not a.split_only:
+        print(len(todo), a.what, 'to record', flush=True)
+        _record_batches(todo, plan, path_dir, deck, size, say)
+    ear = V.Ear()
+    for bid, b in sorted(plan['batches'].items()):
+        if b.get('split'):
+            continue
+        x = V.read_wav(os.path.join(path_dir, 'batches', f'{bid}.wav'))
+        ps = MV.pieces(x, len(b['ids']))
+        if not ps:
+            print(f'{bid}: could not cut into {len(b["ids"])} pieces; they are recorded again next time'); b['split'] = True; continue
+        for cid, text, p in zip(b['ids'], b['texts'], ps):
+            k = cid[2:] if a.what == 'words' else cid
+            if a.what == 'words':
+                V.write_wav(os.path.join(path_dir, f'raw-{k}.wav'), p)
+                p = crisp(p, k, gentle=True) if k in reading and k not in SAY and k[-1] not in 'dg' else p   # the trim made MUD sound like 'much'
+                out = os.path.join(path_dir, f'w-{k}.wav')
+            else:
+                out = os.path.join(path_dir, f'{k}.wav')
+            V.write_wav(out, p)
+            heard = ear.hear(out); got = V.norm(heard)
+            ok = got == V.norm(text) or got in HEARD_OK.get(text, set())
+            plan['clips'][k] = {'batch': bid, 'seconds': round(len(p) / V.SR, 2), 'heard': heard, 'ok': ok, 'text': text}
+            print(f'  {k:12} {len(p) / V.SR:4.2f} s  {"ok" if ok else "MISS"}  heard: {heard}', flush=True)
+        b['split'] = True
+        V.dump(plan_path, {k: v for k, v in plan.items() if k != '_path'})
+    bad = [k for k, c in plan['clips'].items() if not c.get('ok')]
+    print(len(plan['clips']) - len(bad), 'ok;', len(bad), 'to redo:', ','.join(bad))
+    V.finish(0, a.what + ' recorded')
+
+
+# the built-in sounds for lessons 9-24: one stretchy take, each sound cut where it is clean
+SOUND_TAKE = [('u', 'uuup'), ('o', 'ooon'), ('i', 'iiit'), ('f', 'fffan'), ('r', 'rrrun'), ('e', 'eeegg'), ('d', 'saaad'),
+              ('g', 'baaag'), ('n', 'nnnet'), ('m', 'mmmom')]
+
+
+def cmd_sounds2(a):
+    os.makedirs(SOUNDS_DIR, exist_ok=True)
+    take = os.path.join(WORK, 'sounds', 'take2.wav')
+    if not os.path.exists(take):
+        from google import genai
+        V.MODEL = 'gemini-3.8-flash-tts'
+        client = genai.Client(api_key=V.api_key())
+        alarm(240)
+        try:
+            raw = V.synth_gemini(client, '\n<long pause>\n'.join(t + '.' for _, t in SOUND_TAKE), 'reads')
+        except V.QuotaUsedUp:
+            V.finish(11, 'daily quota used up for gemini-3.8-flash-tts')
+        finally:
+            signal.alarm(0)
+        V.save_take(raw, take)
+    x = V.read_wav(take); ps = MV.pieces(x, len(SOUND_TAKE))
+    if not ps:
+        V.finish(1, 'could not cut the sound take')
+    for (sid, text), p in zip(SOUND_TAKE, ps):
+        V.write_wav(os.path.join(WORK, 'sounds', f'src-{sid}-{text}.wav'), p)
+    print('take cut into', len(ps), 'pieces')
+
+
 if __name__ == '__main__':
     p = argparse.ArgumentParser(); sub = p.add_subparsers(dest='cmd', required=True)
     t = sub.add_parser('test'); t.add_argument('--model', default='gemini-3.8-flash-tts')
     sub.add_parser('compare')
     w = sub.add_parser('words'); w.add_argument('--max', type=int, default=0); w.add_argument('--only', default='')
-    sub.add_parser('build'); sub.add_parser('sounds')
+    sub.add_parser('build'); sub.add_parser('sounds'); sub.add_parser('sounds2')
+    r = sub.add_parser('rec'); r.add_argument('what', choices=['words', 'lines']); r.add_argument('--upto', type=int, default=24)
+    r.add_argument('--max', type=int, default=0); r.add_argument('--redo', default='')
+    r.add_argument('--split-only', action='store_true', help='cut and check takes already recorded; no TTS calls')
     a = p.parse_args()
-    {'test': cmd_test, 'compare': cmd_compare, 'words': cmd_words, 'build': cmd_build, 'sounds': cmd_sounds}[a.cmd](a)
+    {'test': cmd_test, 'compare': cmd_compare, 'words': cmd_words, 'build': cmd_build, 'sounds': cmd_sounds, 'sounds2': cmd_sounds2, 'rec': cmd_rec}[a.cmd](a)

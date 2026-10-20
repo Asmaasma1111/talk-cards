@@ -25,7 +25,7 @@ const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;
 const PIECE_ORDER = [1, 6, 3, 4, 0, 7, 2, 5];     // the order the 8 pieces arrive in (4 across, 2 down)
 function blank() {
   return { v: 1, current: 1, lessons: {}, placement: null, use: [], opened: [], stars: { total: 0, days: {} }, minutes: {},
-           log: [], stuck: {}, seen: {}, settings: { slots: ['13:30', '17:30'], bedtime: '19:30', cues: true } };
+           log: [], stuck: {}, seen: {}, speed: { best: 0, runs: [] }, settings: { slots: ['13:30', '17:30'], bedtime: '19:30', cues: true } };
 }
 function clean(o) {
   const b = blank();
@@ -36,6 +36,7 @@ function clean(o) {
   if (!r.stars.days || typeof r.stars.days !== 'object') r.stars.days = {};
   ['lessons', 'minutes', 'stuck', 'seen'].forEach(k => { if (!r[k] || typeof r[k] !== 'object') r[k] = {}; });
   ['use', 'opened', 'log'].forEach(k => { if (!Array.isArray(r[k])) r[k] = []; });
+  r.speed = { ...b.speed, ...(o.speed || {}) }; if (!Array.isArray(r.speed.runs)) r.speed.runs = [];
   r.current = Math.max(1, Math.min(65, Math.round(Number(r.current)) || 1));
   delete r.sounds;                                  // Mama's recordings in a backup go to IndexedDB, not here
   return r;
@@ -115,7 +116,22 @@ const STROKES = {
   A: ['M100 24 L38 216', 'M100 24 L162 216', 'M64 146 L136 146'],
   B: ['M56 24 L56 216', 'M56 24 L110 24 Q154 24 154 70 Q154 116 110 116 L56 116', 'M56 116 L116 116 Q164 116 164 166 Q164 216 116 216 L56 216'],
   C: ['M158 62 Q140 24 100 24 Q40 24 40 120 Q40 216 100 216 Q140 216 158 178'],
-  T: ['M34 26 L166 26', 'M100 26 L100 216']
+  T: ['M34 26 L166 26', 'M100 26 L100 216'],
+  U: ['M50 26 L50 150 Q50 216 100 216 Q150 216 150 150 L150 26'],
+  S: ['M154 62 Q140 24 100 24 Q50 24 50 70 Q50 112 100 120 Q150 128 150 172 Q150 216 100 216 Q58 216 44 180'],
+  P: ['M56 216 L56 24', 'M56 24 L112 24 Q160 24 160 74 Q160 124 112 124 L56 124'],
+  O: ['M100 24 Q36 24 36 120 Q36 216 100 216 Q164 216 164 120 Q164 24 100 24'],
+  H: ['M50 24 L50 216', 'M150 24 L150 216', 'M50 120 L150 120'],
+  N: ['M50 216 L50 24', 'M50 24 L150 216', 'M150 216 L150 24'],
+  G: ['M158 62 Q140 24 100 24 Q40 24 40 120 Q40 216 100 216 Q158 216 160 150 L160 128', 'M118 128 L160 128'],
+  D: ['M56 24 L56 216', 'M56 24 L100 24 Q164 24 164 120 Q164 216 100 216 L56 216'],
+  I: ['M100 24 L100 216', 'M62 24 L138 24', 'M62 216 L138 216'],
+  F: ['M56 24 L56 216', 'M56 24 L156 24', 'M56 116 L136 116'],
+  R: ['M56 216 L56 24', 'M56 24 L112 24 Q160 24 160 72 Q160 120 112 120 L56 120', 'M104 120 L162 216'],
+  M: ['M40 216 L40 24', 'M40 24 L100 150', 'M100 150 L160 24', 'M160 24 L160 216'],
+  E: ['M56 24 L56 216', 'M56 24 L152 24', 'M56 120 L140 120', 'M56 216 L152 216'],
+  J: ['M140 24 L140 160 Q140 216 92 216 Q54 216 46 178'],
+  K: ['M56 24 L56 216', 'M156 24 L56 132', 'M92 104 L160 216']
 };
 
 /* ---------- her short Arabic cue lines: shown the first three times a game appears (Mama can turn them off) ---------- */
@@ -126,7 +142,13 @@ const CUE = {
   where: 'أين الصوت: في البداية، الوسط، النهاية؟',
   read: 'المسي الحروف من اليسار، ثم اسحبي تحتها',
   swap: 'اختاري الحرف الذي يصنع الكلمة',
-  me: 'اسمعي، ثم سجّلي صوتكِ'
+  me: 'اسمعي، ثم سجّلي صوتكِ',
+  sight: 'كلمة نحفظها كما هي: اسمعيها ثم اقرئيها',
+  diff: 'ما الفرق؟ المسي الحرف المختلف',
+  spell: 'اسمعي الكلمة، ثم ابنيها بالحروف من اليسار',
+  sent: 'اقرئي كل كلمة، ثم اسحبي تحت الجملة',
+  story: 'قصة! اقرئي كل صفحة',
+  pair: 'أي صوت تسمعين؟'
 };
 
 /* =====================================================================================================
@@ -147,6 +169,20 @@ function mount(api) {
     loadSounds()
   ]).catch(e => { console.warn('Maria Reads could not load', e); });
   const grapheme = id => (SOUND[id] ? SOUND[id].g.split(' ')[0] : id.toUpperCase());
+  const TILE = { A: 'a', B: 'b', C: 'k', D: 'd', E: 'e', F: 'f', G: 'g', H: 'h', I: 'i', J: 'j', K: 'k', M: 'm', N: 'n', O: 'o', P: 'p', R: 'r', S: 's', T: 't', U: 'u',
+                 CK: 'k', FF: 'f', SS: 's', GG: 'g' };
+  const tileSound = c => TILE[c] || null;
+  // a real photo when there is one (her request: real photos, not emoji or drawings), else the old picture
+  const PHOTO = () => new Set((D && D.photos) || []);
+  const photoKey = w => { const P = PHOTO(); return P.has(w) ? w : w && w.endsWith('s') && P.has(w.slice(0, -1)) ? w.slice(0, -1) : null; };
+  const photoImg = (key, cls = 'rd-photo') => `<img class="${cls}" src="assets/reads/photos/${key}.webp" alt="">`;
+  function picFor(w, fallback) {
+    const k = photoKey(w); if (k) return photoImg(k);
+    const W = D.words[w];
+    if (W && W.pic) return `<img class="rd-pic" src="${W.pic}" alt="">`;
+    const e = (W && W.e) || D.emoji[w] || fallback;
+    return e ? `<span class="rd-emo">${e}</span>` : '<span class="rd-sparkle">⭐</span>';
+  }
 
   /* ---------- the voice: one audio element, clips from memory (blob URLs), as in the other apps ---------- */
   const au = new Audio(); au.preload = 'auto';
@@ -177,7 +213,8 @@ function mount(api) {
     return urls.get(id).catch(() => null);
   }
   const sayWord = (w, rate = 1) => clipUrl('w-' + w).then(u => play(u, rate));
-  const sayStretchy = (w, rate = 1) => clipUrl(CLIPS['s-' + w] ? 's-' + w : 'w-' + w).then(u => play(u, rate));
+  const sayStretchy = (w, rate = 1) => clipUrl(CLIPS['s-' + w] ? 's-' + w : 'w-' + w).then(u => play(u, CLIPS['s-' + w] ? rate : Math.max(0.6, rate * 0.62)));
+  const sayLine = id => clipUrl(id).then(u => play(u));
   const clipSecs = (id, rate = 1) => ((CLIPS[id] && CLIPS[id].d) || 0.7) / rate;
   const preloadWords = ws => ws.forEach(w => { clipUrl('w-' + w); if (CLIPS['s-' + w]) clipUrl('s-' + w); });
 
@@ -296,8 +333,10 @@ function mount(api) {
       <button id="rdGo" class="rd-go"></button>
       <p class="rd-gonote" id="rdGoNote"></p>
       <div class="rd-slots" id="rdSlots"></div>
+      <button class="rd-speedbtn" id="rdSpeedBtn" hidden>⚡ سباق الكلمات <i id="rdBest"></i></button>
     </div>
-    <button class="rd-boardbtn" id="rdBoardBtn" aria-label="لغز الأسبوع"><span class="rd-board" id="rdBoard" dir="ltr"></span><span class="rd-boardcap" id="rdBoardCap"></span></button>
+    <div class="rd-boardbox"><button class="rd-boardbtn" id="rdBoardBtn" aria-label="لغز الأسبوع"><span class="rd-board" id="rdBoard" dir="ltr"></span><span class="rd-boardcap" id="rdBoardCap"></span></button>
+      <button class="rd-bookbtn" id="rdBookBtn">📖 كتاب ألغازي <i id="rdBookN"></i></button></div>
   </div>
 </section>
 
@@ -312,6 +351,19 @@ function mount(api) {
 </section>
 
 <section id="rdone" class="screen rd rd-done" dir="rtl" lang="ar" hidden><div class="rd-donebox" id="rdDone"></div></section>
+<section id="rspeed" class="screen rd rd-speed" hidden>
+  <div class="rd-top" dir="ltr">
+    <button class="quit" id="rdSpQuit" aria-label="الرئيسية">${ic('i-close')}</button>
+    <div class="rd-timer" id="rdSpTimer"><svg viewBox="0 0 64 64" aria-hidden="true"><circle class="rd-ring-bg" cx="32" cy="32" r="26"/><circle class="rd-ring-fg" id="rdSpRing" cx="32" cy="32" r="26"/></svg></div>
+    <div class="rd-cue on" dir="rtl" lang="ar">⚡ اقرئي الكلمة بصوت عالٍ، ثم المسي ✓</div>
+    <span class="rd-spcount" id="rdSpCount">٠</span>
+  </div>
+  <div class="rd-stage" id="rdSpStage" dir="ltr"></div>
+</section>
+<section id="rbook" class="screen rd rd-book" dir="rtl" lang="ar" hidden>
+  <button class="quit rb-close" id="rbClose" aria-label="أغلقي الكتاب">${ic('i-close')}</button>
+  <div class="rb-stage" id="rbStage"></div>
+</section>
 <section id="rparent" class="screen rd rd-parent" dir="ltr" lang="en" hidden></section>
 <section id="rrec" class="screen rd rd-parent" dir="ltr" lang="en" hidden></section>
 <section id="rcheck" class="screen rd rd-check" dir="ltr" lang="en" hidden></section>
@@ -355,12 +407,15 @@ function mount(api) {
     renderPath();
     renderGo(t);
     renderBoard(t);
+    const pool = speedPool(), sb = $('#rdSpeedBtn');
+    sb.hidden = pool.length < 8 || bedtimeNow();
+    $('#rdBest').textContent = r.speed.best ? `أفضل نتيجة: ${AR(r.speed.best)}` : '';
     api.show('rhome');
-    requestAnimationFrame(() => {   // the current lesson in the middle of the path
+    const centre = () => {   // the current lesson in the middle of the path
       const cur = $('#rdPath .cur'), wrap = $('#rdPathWrap'); if (!cur) return;
-      const left = cur.offsetLeft + cur.offsetWidth / 2 - wrap.clientWidth / 2;
-      if (wrap.scrollTo) wrap.scrollTo({ left, behavior: lastLesson === null ? 'auto' : 'smooth' }); else wrap.scrollLeft = left;
-    });
+      wrap.scrollLeft = cur.offsetLeft + cur.offsetWidth / 2 - wrap.clientWidth / 2;
+    };
+    requestAnimationFrame(centre); setTimeout(centre, 150);
     if (moved || (lastLesson !== null && lastLesson !== r.current)) celebrate('lesson');
     lastLesson = r.current;
   }
@@ -409,24 +464,37 @@ function mount(api) {
       + `${edge(x1, y1, x0, y1, y === 1 ? 0 : H[c])} ${edge(x0, y1, x0, y0, c === 0 ? 0 : -V[y][c - 1])} Z`;
   }
   let boardN = 0;
-  function pieceCells(b) {
+  // the board: a faint picture of the whole puzzle behind (her idea: she sees where each piece belongs), the pieces she has
+  // won in full colour, outlines for the rest; tray = pieces waiting below the board for her to drag into place
+  const TRAY_S = 0.72, TRAY_Y = 1010;
+  const pieceBox = k => ({ cx: (k % 4) * 300 + 150, cy: Math.floor(k / 4) * 400 + 200 });
+  const trayAt = (j, n) => ({ x: n === 1 ? 600 : [380, 820][j], y: TRAY_Y });
+  const placeT = (k, x, y, sc) => { const { cx, cy } = pieceBox(k); return `translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${sc}) translate(${-cx} ${-cy})`; };
+  function pieceCells(b, tray = []) {
     const pz = D.puzzles[b.puzzle], have = new Set(PIECE_ORDER.slice(0, b.have)), id = 'pz' + (++boardN);
     const pieces = Array.from({ length: 8 }, (_, k) => {
       const d = piecePath(k, b.puzzle);
       return `<clipPath id="${id}-${k}"><path d="${d}"/></clipPath>`;
     }).join('');
-    const body = Array.from({ length: 8 }, (_, k) => {
+    const piece = (k, extra = '', tf = '') => {
       const d = piecePath(k, b.puzzle);
-      return `<g class="pc${have.has(k) ? ' on' : ''}" data-k="${k}"><path class="pc-empty" d="${d}"/>`
+      return `<g class="pc${extra}" data-k="${k}"${tf ? ` transform="${tf}"` : ''}><path class="pc-empty" d="${d}"/>`
         + `<g class="pc-img"><image href="${pz.img}" x="0" y="0" width="1200" height="800" preserveAspectRatio="none" clip-path="url(#${id}-${k})"/><path class="pc-line" d="${d}"/></g></g>`;
-    }).join('');
-    return `<svg class="rd-jig" viewBox="-14 -14 1228 828" aria-hidden="true"><defs>${pieces}</defs>${body}</svg>`;
+    };
+    const body = Array.from({ length: 8 }, (_, k) => piece(k, have.has(k) ? ' on' : '')).join('');
+    const loose = tray.map((k, j) => { const p = trayAt(j, tray.length); return piece(k, ' on loose', placeT(k, p.x, p.y, TRAY_S)); }).join('');
+    const vb = tray.length ? '-14 -14 1228 1200' : '-14 -14 1228 828';
+    return `<svg class="rd-jig${tray.length ? ' with-tray' : ''}" viewBox="${vb}" aria-hidden="true"><defs>${pieces}</defs>`
+      + `<image class="pc-ghost" href="${pz.img}" x="0" y="0" width="1200" height="800" preserveAspectRatio="none"/>${body}`
+      + (tray.length ? `<rect class="pc-tray" x="40" y="850" width="1120" height="330" rx="60"/>${loose}` : '') + '</svg>';
   }
   function renderBoard(t) {
     const P = D.puzzles.length, b = board(r, t, P);
     $('#rdBoard').innerHTML = pieceCells(b) + (b.pending ? '<span class="rd-gift">🎁</span>' : '');
     $('#rdBoard').classList.toggle('complete', !!b.complete);
     $('#rdBoardCap').textContent = b.pending ? 'افتحي هديّة اليوم!' : b.complete ? 'أكملتِ اللغز! 🎉' : b.fresh || !b.have ? 'لغز جديد: قطعة كل يوم' : `${AR(b.have)} من ٨ قطع`;
+    const done = finishedPuzzles().length;
+    $('#rdBookN').textContent = `${AR(done)} من ${AR(D.bookPages || 12)}`;
   }
 
   /* =====================================================================================================
@@ -440,12 +508,13 @@ function mount(api) {
     secs() { return (this.acc + (this.since != null ? performance.now() - this.since : 0)) / 1000; }
   };
   let ticker = null;
-  function startSession(n, mode) {
+  function startSession(n, mode, only) {   // only: chosen beats (tests, ?dev=1)
     const t = today(), L = D.lessons[n - 1];
-    if (!L || !L.ready || bedtimeNow() || missingFor(n).length) return;
+    if (!only && (!L || !L.ready || bedtimeNow() || missingFor(n).length)) return;
     api.SFX.init();
     let beats, base = 0;
-    if (mode === 'review') beats = reviewBeats(n);
+    if (only) beats = only;
+    else if (mode === 'review') beats = reviewBeats(n);
     else {
       const all = L.beats.map(b => b.slice());
       base = mode === 'lesson' ? Math.min(rec(r, n).next || 0, all.length - 1) : 0;
@@ -454,6 +523,7 @@ function mount(api) {
     }
     S = { n, mode, beats, bi: 0, base, timeUp: false, limit: minutesFor(D, n) * 60, items: [], startedDay: t, lessonLen: L.beats.length };
     preloadWords(Object.keys(D.words).concat(Object.keys(D.emoji)));
+    L.beats.forEach(b => { if (b[0] === 'sent') b.slice(1).forEach(x => clipUrl('x-' + x)); if (b[0] === 'story') { const st = D.stories[b[1]]; st.pages.forEach(x => clipUrl('x-' + x)); st.questions.concat([0]).forEach((_, i) => clipUrl(`qq-${b[1]}${i}`)); } });
     taught(D, n, true).forEach(id => { if (!SND[id]) { clipUrl('p-' + id); if (CLIPS['q-' + id]) clipUrl('q-' + id); } });
     clock.start();
     $('#rdStreak2').textContent = AR(streakOf(r, t));
@@ -489,6 +559,8 @@ function mount(api) {
     const words = [...new Set(D.lessons.slice(0, s.n).flatMap(x => x.words || []))].filter(w => D.words[w].says.every(x => known.includes(x)));
     const ear = known.filter(x => D.ear[x]);
     const out = [];
+    const sents = (L.beats || []).filter(b => b[0] === 'sent').flatMap(b => b.slice(1));
+    if (sents.length && Math.random() < 0.5) out.push(['sent', ...pick(sents, 1)]);
     if (words.length) out.push(['read', ...pick(words, 3)]);
     if (ear.length) out.push([Math.random() < 0.5 || !words.length ? 'hear' : 'where', ear[Math.floor(Math.random() * ear.length)]]);
     if (!out.length) out.push(['flash']);
@@ -590,8 +662,10 @@ function mount(api) {
   }
 
   /* ---------- ear games: is the sound in the word? where is it? (she only hears the words; a picture after) ---------- */
-  function feedback(ok, emoji, right) {
-    const f = document.createElement('div'); f.className = 'rd-fb ' + (ok ? 'good' : 'soft'); f.textContent = emoji || '';
+  function feedback(ok, emoji, right, word) {
+    const f = document.createElement('div'); f.className = 'rd-fb ' + (ok ? 'good' : 'soft');
+    const k = word && photoKey(word);
+    if (k) { f.classList.add('photo'); f.innerHTML = photoImg(k, 'rd-fbphoto'); } else f.textContent = emoji || '';
     stage.querySelector('.rd-game').append(f);
     if (right) right.classList.add('right');
     if (ok) api.SFX.good(); else api.SFX.again();
@@ -610,7 +684,7 @@ function mount(api) {
       await sleep(250); sayWord(w);
       const ans = await choice('.rd-choices button');
       const ok = (ans.dataset.a === '1') === has;
-      feedback(ok, D.emoji[w], ok ? null : stage.querySelector(`.rd-choices [data-a="${has ? 1 : 0}"]`));
+      feedback(ok, D.emoji[w], ok ? null : stage.querySelector(`.rd-choices [data-a="${has ? 1 : 0}"]`), w);
       if (!ok) { await sleep(500); await sayWord(w); }
       await sleep(1100);
     }
@@ -630,7 +704,7 @@ function mount(api) {
       const ans = await choice('.rd-car');
       const ok = ans.dataset.a === where;
       ans.innerHTML += `<em>${esc(grapheme(id))}</em>`;
-      feedback(ok, D.emoji[w], ok ? null : stage.querySelector(`.rd-car[data-a="${where}"]`));
+      feedback(ok, D.emoji[w], ok ? null : stage.querySelector(`.rd-car[data-a="${where}"]`), w);
       if (!ok) { await sleep(500); await sayWord(w); }
       await sleep(1100);
     }
@@ -645,16 +719,19 @@ function mount(api) {
   async function beatRead(s, words) {
     for (const w of words) { if (!alive(s)) return; if (D.words[w]) await readWord(s, w); }
   }
-  function readWord(s, w, pre = '') {
-    const W = D.words[w], n = W.tiles.length;
+  // opts: pre = markup above the word; quick = the swipe alone is enough (letters still sound when tapped); into = an
+  // element the word joins when read (sentences)
+  function readWord(s, w, pre = '', opts = {}) {
+    const W = D.words[w], n = W.tiles.length, sight = !!W.sight;
     stage.innerHTML = `<div class="rd-read">${pre}
-      <div class="rd-word" id="rdWord">${W.tiles.map((t, i) => `<button class="rd-tile" data-i="${i}">${esc(t)}</button>`).join('')}</div>
+      <div class="rd-word${sight ? ' sight' : ''}" id="rdWord">${W.tiles.map((t, i) => `<button class="rd-tile${sight ? ' wide' : ''}" data-i="${i}">${esc(t)}</button>`).join('')}</div>
       <div class="rd-ltr" id="rdLtr" aria-hidden="true"><i></i></div>
       <div class="rd-swipe" id="rdSwipe"><span class="rd-sw-hint">${'›'.repeat(3)}</span><i class="rd-thumb" id="rdThumb"></i></div>
       <div class="rd-after" id="rdAfter"></div>
       <div class="rd-mama" id="rdMama" hidden lang="ar" dir="rtl"><span>👩‍🦰 اسألي ماما</span><button id="rdMamaOk">ساعدتني ماما ✓</button></div></div>`;
     const tiles = [...stage.querySelectorAll('.rd-tile')], sw = $('#rdSwipe'), thumb = $('#rdThumb');
-    let next = 0, lv = 0, helped = false, finished = false;
+    let next = sight || opts.quick ? n : 0, lv = 0, helped = false, finished = false;
+    if (next === n) $('#rdSwipe').classList.add('ready');
     const ltr = () => { const a = $('#rdLtr'); a.classList.remove('go'); void a.offsetWidth; a.classList.add('go'); clearTimeout(a.t); a.t = setTimeout(() => a.classList.remove('go'), 1600); if (tiles[next]) { tiles[next].classList.remove('nudge'); void tiles[next].offsetWidth; tiles[next].classList.add('nudge'); } };
     const sweep = secs => tiles.forEach((t, i) => setTimeout(() => { t.classList.add('sing'); setTimeout(() => t.classList.remove('sing'), 380); }, (secs * 1000 / n) * i));
     return new Promise(done => {
@@ -662,8 +739,9 @@ function mount(api) {
       async function stuck() {
         if (finished || s !== S) return;
         helped = true;
-        if (lv === 0) {                                         // (a) the first sound
-          const i = Math.min(next, n - 1); tiles[i].classList.add('nudge'); await sayLetter(W.says[i]);
+        if (lv === 0) {                                         // (a) the first sound (a sight word: the word itself)
+          if (sight) { tiles[0].classList.add('nudge'); await sayWord(w); }
+          else { const i = opts.quick ? 0 : Math.min(next, n - 1); tiles[i].classList.add('nudge'); await sayLetter(W.says[i]); }
         } else if (lv <= 3) {                                   // (b) the stretchy model, shorter each time
           const rate = [1, 1.3, 1.65][lv - 1];
           sweep(clipSecs(CLIPS['s-' + w] ? 's-' + w : 'w-' + w, rate)); await sayStretchy(w, rate);
@@ -672,6 +750,8 @@ function mount(api) {
       }
       tiles.forEach((t, i) => t.addEventListener('click', () => {
         if (finished) return; api.SFX.init();
+        if (sight) { t.classList.add('lit'); sayWord(w); arm(); return; }
+        if (opts.quick) { t.classList.add('lit'); sayLetter(W.says[i]); arm(); return; }
         if (i === next) { t.classList.add('lit'); t.classList.remove('nudge'); sayLetter(W.says[i]); next++; if (next === n) sw.classList.add('ready'); }
         else if (i < next) sayLetter(W.says[i]);
         else ltr();
@@ -701,11 +781,11 @@ function mount(api) {
         sw.classList.add('done'); thumb.style.left = '94%'; tiles.forEach(t => t.classList.add('lit'));
         sweep(clipSecs('w-' + w)); await sayWord(w);
         if (s !== S) return;
-        $('#rdAfter').innerHTML = W.pic ? `<img class="rd-pic" src="${W.pic}" alt="">` : W.sound ? '<span class="rd-sparkle">✨</span>' : '<span class="rd-sparkle">⭐</span>';
-        api.SFX.good();
+        if (!opts.quiet) $('#rdAfter').innerHTML = W.sound ? '<span class="rd-sparkle">✨</span>' : picFor(w);
+        if (opts.quiet) api.SFX.star(); else api.SFX.good();
         s.items.push({ w, helped });
         if (helped) { const k = r.stuck[w] || (r.stuck[w] = { n: 0, last: null }); k.n++; k.last = today(); save(); }
-        await sleep(1500); done();
+        await sleep(opts.quiet ? 450 : 1500); done();
       }
       arm();
     });
@@ -734,7 +814,7 @@ function mount(api) {
       <button class="rd-replay" id="rdAgain" aria-label="اسمعي الكلمة">${ic('i-speaker')}</button>
       <div class="rd-tray">${tray.map(c => `<button class="rd-tile pick" data-c="${esc(c)}">${esc(c)}</button>`).join('')}</div></div>`;
     $('#rdAgain').addEventListener('click', () => sayWord(to));
-    const sid = c => taught(D, s.n, true).find(id => grapheme(id) === c);
+    const sid = tileSound;
     return new Promise(done => {
       (async () => { await sayWord(from); await sleep(450); await sayWord(to); })();
       let tries = 0;
@@ -793,7 +873,202 @@ function mount(api) {
     });
   }
 
-  const BEAT = { flash: beatFlash, newsound: beatNewSound, hear: beatHear, where: beatWhere, read: beatRead, swap: beatSwap, me: beatMe };
+
+  /* ---------- a sight word (THE, HE, NO ...): she learns it whole: hear it, tap it three times, then read it ---------- */
+  async function beatSight(s, words) {
+    for (const w of words) {
+      if (!alive(s) || !D.words[w]) continue;
+      stage.innerHTML = `<div class="rd-new"><button class="rd-big word enter" id="rdBig">${esc(D.words[w].tiles[0])}</button><p class="rd-star3" id="rdTaps">☆☆☆</p></div>`;
+      const big = $('#rdBig');
+      await sleep(300); big.classList.add('pulse'); await sayWord(w);
+      await new Promise(ok => {
+        let k = 0;
+        const tap = async () => {
+          api.SFX.init(); k++; $('#rdTaps').textContent = '★'.repeat(Math.min(3, k)) + '☆'.repeat(Math.max(0, 3 - k));
+          big.classList.remove('pulse'); void big.offsetWidth; big.classList.add('pulse');
+          await sayWord(w);
+          if (k >= 3) { big.removeEventListener('click', tap); await sleep(300); ok(); }
+        };
+        big.addEventListener('click', tap);
+      });
+      if (!alive(s)) return;
+      await readWord(s, w);
+    }
+  }
+
+  /* ---------- what's the difference? two words; she taps the letter that changed ---------- */
+  async function beatDiff(s, pairs) {
+    for (const pr of pairs) {
+      if (!alive(s)) return;
+      const [a, b] = pr.split('/'); if (!D.words[a] || !D.words[b]) continue;
+      const A = D.words[a].tiles, B = D.words[b].tiles;
+      let ia = -1, ib = -1;                                     // the tile that differs (or the extra one)
+      if (A.length === B.length) ia = ib = A.findIndex((t, i) => t !== B[i]);
+      else {
+        const longA = A.length > B.length, hi = longA ? A : B, lo = longA ? B : A;
+        let k = hi.findIndex((t, i) => t !== lo[i]); if (k < 0) k = hi.length - 1;
+        if (longA) ia = k; else ib = k;
+      }
+      const row = (T, id, w) => `<div class="rd-drow"><div class="rd-word">${T.map((t, i) => `<button class="rd-tile small" data-r="${id}" data-i="${i}">${esc(t)}</button>`).join('')}</div>
+        <button class="rd-replay small" data-say="${w}" aria-label="اسمعي">${ic('i-speaker')}</button></div>`;
+      stage.innerHTML = `<div class="rd-diff">${row(A, 'a', a)}${row(B, 'b', b)}</div>`;
+      stage.querySelectorAll('[data-say]').forEach(x => x.addEventListener('click', () => sayWord(x.dataset.say)));
+      const mark = cls => [['a', ia], ['b', ib]].forEach(([rr, k]) => { if (k >= 0) { const el = stage.querySelector(`[data-r="${rr}"][data-i="${k}"]`); if (el) el.classList.add(cls); } });
+      await sleep(250); await sayWord(a); await sleep(300); await sayWord(b);
+      await new Promise(ok => {
+        let tries = 0;
+        stage.querySelectorAll('.rd-tile').forEach(t => t.addEventListener('click', async () => {
+          if (t.disabled) return; api.SFX.init();
+          const i = Number(t.dataset.i);
+          if (t.dataset.r === 'a' ? i === ia : i === ib) {
+            stage.querySelectorAll('.rd-tile').forEach(x => { x.disabled = true; });
+            mark('diffy'); api.SFX.good();
+            await sayLetter(tileSound(t.textContent)); await sleep(350); await sayWord(a); await sleep(200); await sayWord(b); await sleep(600); ok();
+          } else {
+            tries++; t.classList.remove('shake'); void t.offsetWidth; t.classList.add('shake'); api.SFX.again();
+            if (tries >= 2) mark('nudge');
+          }
+        }));
+      });
+    }
+  }
+
+  /* ---------- spell from dictation: she hears a word and builds it with letter tiles, left to right ---------- */
+  async function beatSpell(s, words) {
+    for (const w of words) { if (!alive(s) || !D.words[w]) continue; await spellOne(s, w); }
+  }
+  function spellOne(s, w) {
+    const W = D.words[w], T = W.tiles;
+    const letters = [...new Set(taught(D, s.n, true).map(grapheme))].filter(c => !T.includes(c));
+    const tray = shuffle([...T, ...pick(letters, Math.min(2, letters.length))]);
+    stage.innerHTML = `<div class="rd-swap rd-spell">
+      <div class="rd-word">${T.map((_, i) => `<span class="rd-tile slot" data-slot="${i}"></span>`).join('')}</div>
+      <button class="rd-replay" id="rdAgain" aria-label="اسمعي الكلمة">${ic('i-speaker')}</button>
+      <div class="rd-tray">${tray.map(c => `<button class="rd-tile pick" data-c="${esc(c)}">${esc(c)}</button>`).join('')}</div>
+      <div class="rd-after" id="rdAfter"></div></div>`;
+    $('#rdAgain').addEventListener('click', () => sayWord(w));
+    return new Promise(done => {
+      (async () => { await sleep(250); await sayWord(w); })();
+      let i = 0, tries = 0;
+      stage.querySelectorAll('.rd-tray .pick').forEach(b => b.addEventListener('click', async () => {
+        if (b.disabled || i >= T.length) return; api.SFX.init();
+        if (b.dataset.c === T[i]) {
+          const sl = stage.querySelector(`[data-slot="${i}"]`); b.disabled = true; b.classList.add('used');
+          sl.textContent = b.dataset.c; sl.classList.remove('slot'); sl.classList.add('lit', 'pop');
+          sayLetter(tileSound(b.dataset.c)); i++; tries = 0;
+          if (i === T.length) {
+            stage.querySelectorAll('.rd-tray .pick').forEach(x => { x.disabled = true; });
+            await sleep(550); if (s !== S) return;
+            await sayWord(w); api.SFX.good();
+            $('#rdAfter').innerHTML = picFor(w);
+            await sleep(1300); done();
+          }
+        } else {
+          tries++; b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+          await sayLetter(tileSound(b.dataset.c)); await sleep(250);
+          await (tries > 1 ? sayStretchy(w) : sayWord(w));
+          if (tries > 2) { const want = [...stage.querySelectorAll('.rd-tray .pick')].find(x => !x.disabled && x.dataset.c === T[i]); if (want) want.classList.add('nudge'); }
+        }
+      }));
+    });
+  }
+
+  /* ---------- sentences, built one word at a time: read each word, then swipe under the whole sentence ---------- */
+  async function beatSent(s, ids) {
+    for (const id of ids) { if (!alive(s) || !D.sentences[id]) continue; await sentOne(s, id); }
+  }
+  async function sentOne(s, id, opts = {}) {
+    const X = D.sentences[id], toks = X.text.split(/\s+/);
+    const line = k => `${opts.page ? `<div class="rd-page">${esc(opts.page)}</div>` : ''}<div class="rd-line">${toks.map((t, i) => `<span class="rd-lw${i < k ? ' on' : i === k ? ' cur' : ''}">${esc(t)}</span>`).join(' ')}</div>`;
+    for (let k = 0; k < X.words.length; k++) {
+      if (s !== S) return;
+      await readWord(s, X.words[k], line(k), { quick: true, quiet: true });
+    }
+    if (s !== S) return;
+    stage.innerHTML = `<div class="rd-read rd-sentence">${opts.page ? `<div class="rd-page">${esc(opts.page)}</div>` : ''}
+      <div class="rd-line big">${toks.map(t => `<span class="rd-lw on">${esc(t)}</span>`).join(' ')}</div>
+      <div class="rd-swipe ready" id="rdSwipe"><span class="rd-sw-hint">›››</span><i class="rd-thumb" id="rdThumb"></i></div><div class="rd-after" id="rdAfter"></div></div>`;
+    await swipeOnce();
+    if (s !== S) return;
+    const ws = [...stage.querySelectorAll('.rd-lw')], secs = clipSecs('x-' + id), total = toks.reduce((a, t) => a + t.length + 2, 0);
+    let at = 0;
+    ws.forEach((el, i) => { const t0 = at; at += (toks[i].length + 2) / total * secs * 1000; setTimeout(() => { ws.forEach(x => x.classList.remove('say')); el.classList.add('say'); }, t0); });
+    await sayLine('x-' + id);
+    ws.forEach(x => x.classList.remove('say'));
+    if (s !== S) return;
+    $('#rdAfter').innerHTML = X.photo && PHOTO().has(X.photo) ? photoImg(X.photo) : X.e ? `<span class="rd-emo">${X.e}</span>` : '<span class="rd-sparkle">⭐</span>';
+    api.SFX.good(); await sleep(1400);
+  }
+  function swipeOnce() {    // a plain left-to-right swipe under a line
+    return new Promise(ok => {
+      const sw = $('#rdSwipe'), th = $('#rdThumb'); let x0 = null, maxP = 0, fin = false;
+      const nudge = setInterval(() => { if (fin) return clearInterval(nudge); const a = $('#rdLtr'); if (!a) { th.classList.remove('nudge'); void th.offsetWidth; th.classList.add('nudge'); } }, 6000);
+      sw.addEventListener('pointerdown', e => { const R = sw.getBoundingClientRect(), p = (e.clientX - R.left) / R.width; if (p > 0.45) return; x0 = e.clientX; maxP = p; try { sw.setPointerCapture(e.pointerId); } catch (err) {} });
+      sw.addEventListener('pointermove', e => {
+        if (x0 == null || fin) return;
+        const R = sw.getBoundingClientRect(), p = Math.max(0, Math.min(1, (e.clientX - R.left) / R.width));
+        maxP = Math.max(maxP, p); th.style.left = `${6 + p * 88}%`;
+        if (maxP >= 0.82) { fin = true; clearInterval(nudge); sw.classList.add('done'); th.style.left = '94%'; ok(); }
+      });
+      const up = () => { if (!fin) { x0 = null; th.style.left = ''; } };
+      sw.addEventListener('pointerup', up); sw.addEventListener('pointercancel', up);
+    });
+  }
+
+  /* ---------- a short story: its pages, two curiosity questions with picture answers, then "draw it" ---------- */
+  async function beatStory(s, [sid]) {
+    const st = D.stories[sid]; if (!st) return;
+    stage.innerHTML = `<div class="rd-storyt enter"><span>📖</span><b>${esc(st.title)}</b></div>`;
+    api.SFX.unlock(); await sleep(1500);
+    for (let i = 0; i < st.pages.length; i++) {
+      if (!alive(s)) return;
+      await sentOne(s, st.pages[i], { page: `${i + 1} / ${st.pages.length}` });
+    }
+    for (let q = 0; q < st.questions.length; q++) {
+      if (!alive(s)) return;
+      const Q = st.questions[q];
+      stage.innerHTML = `<div class="rd-game rd-q"><div class="rd-qrow"><p class="rd-qtext" lang="en">${esc(Q.q)}</p><button class="rd-replay small" id="rdAgain" aria-label="اسمعي">${ic('i-speaker')}</button></div>
+        <div class="rd-choices">${Q.opts.map((o, i) => { const k = Q.photos && Q.photos[i] && PHOTO().has(Q.photos[i]) ? Q.photos[i] : null; return `<button class="rd-opt${k ? ' ph' : ''}" data-i="${i}">${k ? photoImg(k, 'rd-optphoto') : o}</button>`; }).join('')}</div></div>`;
+      $('#rdAgain').addEventListener('click', () => sayLine(`qq-${sid}${q}`));
+      await sleep(250); sayLine(`qq-${sid}${q}`);
+      for (;;) {
+        const b = await choice('.rd-opt');
+        if (s !== S) return;
+        const ok = Number(b.dataset.i) === Q.ok;
+        feedback(ok, ok ? '🌟' : '🤔');
+        await sleep(1100);
+        if (ok) break;
+        stage.querySelectorAll('.rd-opt').forEach(x => { x.disabled = false; x.classList.remove('picked'); });
+        const fb = stage.querySelector('.rd-fb'); if (fb) fb.remove();
+      }
+    }
+    if (s !== S) return;
+    stage.innerHTML = `<div class="rd-draw enter"><span class="rd-drawic">🖍️</span><p class="rd-qtext" lang="en">${esc(st.draw)}</p>
+      <p class="rd-drawar" lang="ar" dir="rtl">${esc(st.drawAr)}</p><button class="rd-next" id="rdDrew">رسمتُ! ✓</button></div>`;
+    sayLine(`qq-${sid}${st.questions.length}`);
+    await new Promise(ok => $('#rdDrew').addEventListener('click', () => { api.SFX.good(); ok(); }, { once: true }));
+  }
+
+  /* ---------- which sound did she hear? /p/ or /b/ (lesson 11), /e/ or /i/ (lesson 23): sounds Arabic does not have ---------- */
+  async function beatPair(s, [gid]) {
+    const G = D.pairs && D.pairs[gid]; if (!G) return;
+    const items = shuffle(G.pairs.flatMap(pr => [[pr[0], G.a, pr], [pr[1], G.b, pr]])).slice(0, 8);
+    for (const [w, snd, pr] of items) {
+      if (!alive(s)) return;
+      stage.innerHTML = `<div class="rd-game rd-pairg"><button class="rd-replay" id="rdAgain" aria-label="اسمعي مرة أخرى">${ic('i-speaker')}</button>
+        <div class="rd-choices">${[G.a, G.b].map(x => `<button class="rd-yes" data-a="${x}"><b>${esc(grapheme(x))}</b><span lang="en">/${x}/</span></button>`).join('')}</div></div>`;
+      $('#rdAgain').addEventListener('click', () => sayWord(w));
+      await sleep(250); sayWord(w);
+      const b = await choice('.rd-choices button');
+      const ok = b.dataset.a === snd;
+      feedback(ok, D.emoji[w], ok ? null : stage.querySelector(`.rd-choices [data-a="${snd}"]`), w);
+      await sleep(700); await sayWord(pr[0]); await sleep(250); await sayWord(pr[1]);
+      await sleep(700);
+    }
+  }
+
+  const BEAT = { flash: beatFlash, newsound: beatNewSound, hear: beatHear, where: beatWhere, read: beatRead, swap: beatSwap, me: beatMe,
+                 sight: beatSight, diff: beatDiff, spell: beatSpell, sent: beatSent, story: beatStory, pair: beatPair };
 
   /* =====================================================================================================
      The end of a session: Mama's tap, the stars, and on the first session of the day a puzzle piece
@@ -851,17 +1126,93 @@ function mount(api) {
     await new Promise(ok => $('#rdWrap').addEventListener('click', ok, { once: true }));
     api.SFX.init(); $('#rdWrap').classList.add('open'); api.SFX.unlock();
     r.opened.push(t); if (r.opened.length > 60) r.opened = r.opened.slice(-60); save();
-    await sleep(500);
+    await sleep(550);
     const fresh = PIECE_ORDER.slice(b.have, b.get);
-    fresh.forEach((k, i) => setTimeout(() => { const c = $(`#rdBig .pc[data-k="${k}"]`); if (c) { c.classList.add('on', 'arrive'); api.SFX.star(); } }, i * 650));
-    await sleep(700 + fresh.length * 650);
     $('#rdWrap').remove();
+    $('#rdBig').innerHTML = pieceCells(b, fresh);
+    $('#rdCelCap').textContent = fresh.length > 1 ? 'اسحبي القطعتين إلى مكانهما!' : 'اسحبي القطعة إلى مكانها!';
+    await dragPieces(fresh);
+    const sv = $('#rdBig svg'), tr = sv && sv.querySelector('.pc-tray');   // the empty tray folds away
+    if (tr) { tr.style.transition = 'opacity .3s'; tr.style.opacity = '0'; await sleep(300); tr.remove(); sv.setAttribute('viewBox', '-14 -14 1228 828'); sv.classList.remove('with-tray'); }
     const complete = b.get === 8;
-    $('#rdCelCap').textContent = complete ? 'أكملتِ اللغز كلّه! 🎉' : `قطعة جديدة! ${AR(b.get)} من ٨`;
-    if (complete) { $('#rdBig').classList.add('complete'); api.confetti($('#rdConfetti')); api.SFX.unlock(); }
-    const btn = document.createElement('button'); btn.className = 'rd-homebtn'; btn.textContent = 'الرئيسية';
-    btn.addEventListener('click', () => { busy = false; cel.hidden = true; api.stopConfetti($('#rdConfetti')); home(); }, { once: true });
+    $('#rdCelCap').textContent = complete ? 'أكملتِ اللغز كلّه! 🎉' : `رائع! ${AR(b.get)} من ٨`;
+    if (complete) { await sleep(400); $('#rdBig').classList.add('complete'); api.confetti($('#rdConfetti')); api.SFX.unlock(); }
+    const btn = document.createElement('button'); btn.className = 'rd-homebtn'; btn.textContent = complete ? 'ضعيه في كتابي 📖' : 'الرئيسية';
+    btn.addEventListener('click', () => {
+      busy = false; cel.hidden = true; api.stopConfetti($('#rdConfetti'));
+      if (complete) openBook(finishedPuzzles().length - 1, true); else home();
+    }, { once: true });
     boxEl.append(btn);
+  }
+  // drag each loose piece into its place; near its place it clicks in (a snap, sparkles, a chime); anywhere else it slides back
+  function dragPieces(keys) {
+    const svg = $('#rdBig svg'); let left = keys.length;
+    const toSvg = e => { const m = svg.getScreenCTM().inverse(), pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; return pt.matrixTransform(m); };
+    const tween = (g, k, from, to, ms, done) => {
+      const t0 = performance.now();
+      const step = now => {
+        const f = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - f, 3);
+        g.setAttribute('transform', placeT(k, from.x + (to.x - from.x) * e, from.y + (to.y - from.y) * e, from.s + (to.s - from.s) * e));
+        if (f < 1) requestAnimationFrame(step); else done && done();
+      };
+      requestAnimationFrame(step);
+    };
+    return new Promise(finish => {
+      svg.querySelectorAll('.pc.loose').forEach((g, j) => {
+        const k = Number(g.dataset.k), home0 = trayAt(j, keys.length), home = { x: home0.x, y: home0.y, s: TRAY_S }, goal = { ...pieceBox(k) };
+        let drag = null, at = { ...home }, hintT = null;
+        const slot = svg.querySelector(`.pc:not(.loose)[data-k="${k}"]`);
+        tween(g, k, { x: home.x, y: home.y + 60, s: 0.08 }, home, 520 + j * 160);   // it pops out of the gift box (an SVG transform, not CSS)
+        setTimeout(() => api.SFX.star(), 200 + j * 160);
+        const hint = () => { clearTimeout(hintT); hintT = setTimeout(() => { if (slot && !g.classList.contains('placed')) { slot.classList.remove('target'); void slot.getBBox(); slot.classList.add('target'); } }, 5000); };
+        hint();
+        g.addEventListener('pointerdown', e => {
+          if (g.classList.contains('placed')) return;
+          api.SFX.init(); e.preventDefault();
+          const q = toSvg(e); drag = { dx: at.x - q.x, dy: at.y - q.y };
+          try { g.setPointerCapture(e.pointerId); } catch (err) {}
+          g.parentNode.appendChild(g); g.classList.add('lift'); slot && slot.classList.remove('target');
+          at = { x: at.x, y: at.y, s: 1 }; g.setAttribute('transform', placeT(k, at.x, at.y, 1));
+          api.SFX.flip && api.SFX.flip();
+        });
+        g.addEventListener('pointermove', e => {
+          if (!drag) return;
+          const q = toSvg(e); at = { x: q.x + drag.dx, y: q.y + drag.dy, s: 1 };
+          g.setAttribute('transform', placeT(k, at.x, at.y, 1));
+          if (slot) slot.classList.toggle('near', Math.hypot(at.x - goal.cx, at.y - goal.cy) < 120);
+        });
+        const drop = () => {
+          if (!drag) return; drag = null; g.classList.remove('lift'); slot && slot.classList.remove('near');
+          if (Math.hypot(at.x - goal.cx, at.y - goal.cy) < 120) {             // it fits: click into place
+            g.classList.add('placed'); clearTimeout(hintT);
+            tween(g, k, at, { x: goal.cx, y: goal.cy, s: 1 }, 160, () => {
+              if (slot) slot.classList.add('on'); g.remove();
+              snapSound(); burst(svg, goal.cx, goal.cy);
+              const placedSlot = svg.querySelector(`.pc[data-k="${k}"]`); if (placedSlot) { placedSlot.classList.add('snap'); }
+              if (--left === 0) setTimeout(finish, 650);
+            });
+          } else {                                                          // not there yet: back to the tray
+            api.SFX.again(); tween(g, k, at, home, 280); at = { ...home }; hint();
+          }
+        };
+        g.addEventListener('pointerup', drop); g.addEventListener('pointercancel', drop);
+      });
+    });
+  }
+  function snapSound() {
+    const X = api.SFX; if (!X.ready || !X.ready()) return;
+    X.tone(180, 0, 0.07, 0.4, 'triangle', 0.003); X.tone(1400, 0.01, 0.05, 0.18, 'square', 0.002);   // the click
+    X.star(0.08); X.star(0.18); X.bell(1318.5, 0.12, 0.5, 0.3); X.bell(1760, 0.24, 0.8, 0.28); X.hold(1.1);
+  }
+  function burst(svg, x, y) {   // a ring of sparkles where the piece clicked in
+    const NS = 'http://www.w3.org/2000/svg', g = document.createElementNS(NS, 'g'); g.setAttribute('class', 'pc-burst');
+    for (let i = 0; i < 12; i++) {
+      const a = i / 12 * Math.PI * 2, c = document.createElementNS(NS, 'text');
+      c.setAttribute('x', x); c.setAttribute('y', y); c.textContent = i % 3 ? '✦' : '★';
+      c.style.setProperty('--dx', `${Math.cos(a) * 190}px`); c.style.setProperty('--dy', `${Math.sin(a) * 190}px`);
+      c.setAttribute('class', i % 2 ? 'sp a' : 'sp b'); g.appendChild(c);
+    }
+    svg.appendChild(g); setTimeout(() => g.remove(), 900);
   }
   function viewPuzzle() {
     const t = today(), P = D.puzzles.length, b = board(r, t, P);
@@ -872,12 +1223,145 @@ function mount(api) {
     $('#rdCel').hidden = false;
     $('#rdCelOk').addEventListener('click', () => { $('#rdCel').hidden = true; }, { once: true });
   }
+
+  /* =====================================================================================================
+     كتاب ألغازي: her puzzle book (her choice, 20 Oct 2026: "a book instead", calmer than a gallery). One finished puzzle a
+     page, opened and turned like the books in her library (right to left, the same hardcover page sound).
+     ===================================================================================================== */
+  function finishedPuzzles() {   // a puzzle is finished on every 7th day of use (once its last pieces are in)
+    const P = D.puzzles.length, t = today(), pending = r.use.includes(t) && !r.opened.includes(t);
+    const n = Math.floor((r.use.length - (pending ? 1 : 0)) / 7);
+    return Array.from({ length: n }, (_, i) => ({ i, puzzle: i % P, day: r.use[i * 7 + 6] }));
+  }
+  const BOOK_SND = {};
+  async function bookSound(name, vol = 0.85) {
+    const X = api.SFX; X.init(); const c = X.ctx; if (!c) return;
+    try {
+      if (!BOOK_SND[name]) BOOK_SND[name] = fetch(`assets/audio/${name}.m4a`).then(x => x.arrayBuffer()).then(ab => new Promise((ok, no) => { const p = c.decodeAudioData(ab, ok, no); if (p && p.catch) p.catch(no); }));
+      const b = await BOOK_SND[name], src = c.createBufferSource(), g = c.createGain();
+      src.buffer = b; src.playbackRate.value = 0.94 + Math.random() * 0.12; g.gain.value = vol; src.connect(g); g.connect(c.destination); src.start();
+    } catch (e) {}
+  }
+  let BK = null;
+  const fmtAr = ds => { try { const [y, m, d] = ds.split('-').map(Number); return new Date(y, m - 1, d).toLocaleDateString('ar-u-ca-gregory-nu-arab', { day: 'numeric', month: 'long' }); } catch (e) { return ''; } };
+  function bookPage(n) {     // page n (0-based): a finished puzzle, the next one to win, or a page still to come
+    const fin = finishedPuzzles(), total = D.bookPages || 12, num = `<span class="rb-num">${AR(n + 1)}</span>`;
+    if (n >= total) return `<div class="rb-pg end"><span class="rb-endmark">🌸</span>${num}</div>`;
+    const f = fin[n];
+    if (f) {
+      const pz = D.puzzles[f.puzzle];
+      return `<div class="rb-pg"><div class="rb-pic complete" dir="ltr">${pieceCells({ puzzle: f.puzzle, have: 8 })}</div>
+        <p class="rb-title">${esc(pz.title || '')}</p><p class="rb-date">${f.day ? 'أكملتِه في ' + fmtAr(f.day) : ''}</p>${num}</div>`;
+    }
+    const next = n === fin.length;
+    return `<div class="rb-pg empty"><div class="rb-ghost"><span>${next ? '🧩' : '؟'}</span></div><p class="rb-title soft">${next ? 'لغزكِ القادم: قطعة كل يوم' : 'صفحة تنتظر'}</p>${num}</div>`;
+  }
+  function renderSpread() {
+    const st = $('#rbStage'), sp = BK.spread, total = D.bookPages || 12, last = Math.ceil(total / 2) - 1;
+    st.innerHTML = `<div class="rb-book open">
+        <div class="rb-half right" id="rbR">${bookPage(sp * 2)}</div><div class="rb-half left" id="rbL">${bookPage(sp * 2 + 1)}</div><div class="rb-spine"></div></div>
+      <button class="rb-arrow next" id="rbNext" dir="ltr" aria-label="الصفحة التالية"${sp >= last ? ' disabled' : ''}>‹</button>
+      <button class="rb-arrow prev" id="rbPrev" dir="ltr" aria-label="الصفحة السابقة"${sp <= 0 ? ' disabled' : ''}>›</button>`;
+    $('#rbNext').addEventListener('click', () => turn(1));
+    $('#rbPrev').addEventListener('click', () => turn(-1));
+    const book = st.querySelector('.rb-book'); let x0 = null;
+    book.addEventListener('pointerdown', e => { x0 = e.clientX; });
+    book.addEventListener('pointerup', e => { if (x0 == null) return; const dx = e.clientX - x0; x0 = null; if (Math.abs(dx) > 60) turn(dx > 0 ? 1 : -1); });   // right to left: a swipe to the right turns forward
+  }
+  async function turn(dir) {
+    const total = D.bookPages || 12, last = Math.ceil(total / 2) - 1, to = BK.spread + dir;
+    if (BK.busy || to < 0 || to > last) return;
+    BK.busy = true; bookSound('lib-flip1');
+    const half = $(dir > 0 ? '#rbL' : '#rbR'), leaf = document.createElement('div');
+    leaf.className = 'rb-leaf ' + (dir > 0 ? 'fwd' : 'back');
+    leaf.innerHTML = `<div class="rb-face front">${half.innerHTML}</div><div class="rb-face backface">${bookPage(dir > 0 ? to * 2 : to * 2 + 1)}</div>`;
+    half.parentNode.appendChild(leaf);
+    half.innerHTML = bookPage(dir > 0 ? to * 2 + 1 : to * 2);     // what shows under the turning page
+    await sleep(30); leaf.classList.add('go');
+    await sleep(reducedMotion() ? 20 : 720);
+    BK.spread = to; renderSpread(); BK.busy = false;
+  }
+  const reducedMotion = () => (api.reduced ? api.reduced() : false);
+  function openBook(page = 0, fresh = false) {
+    stopAll(); api.SFX.init();
+    BK = { spread: Math.max(0, Math.floor(page / 2)), busy: false };
+    const fin = finishedPuzzles(), total = D.bookPages || 12, latest = fin[fin.length - 1];
+    $('#rbStage').innerHTML = `<button class="rb-cover" id="rbCover">
+        <span class="rb-cwin" dir="ltr">${latest ? pieceCells({ puzzle: latest.puzzle, have: 8 }) : '<span class="rb-cq">🧩</span>'}</span>
+        <span class="rb-ctitle">كتاب ألغازي</span><span class="rb-cname" lang="en" dir="ltr">Maria's Puzzle Book</span>
+        <span class="rb-ccount">${AR(fin.length)} من ${AR(total)}</span></button>`;
+    api.show('rbook');
+    const open = async () => {
+      const cv = $('#rbCover'); if (!cv || cv.classList.contains('opening')) return;
+      cv.classList.add('opening'); bookSound('lib-open', 0.9);
+      await sleep(reducedMotion() ? 20 : 650);
+      renderSpread();
+      if (fresh) { const pg = $(page % 2 ? '#rbL' : '#rbR'); if (pg) { pg.classList.add('newpage'); api.SFX.unlock(); api.confetti($('#rdConfetti')); setTimeout(() => api.stopConfetti($('#rdConfetti')), 2500); } }
+    };
+    $('#rbCover').addEventListener('click', open);
+    if (fresh) setTimeout(open, 700);
+  }
+
   function celebrate(kind) {
     if (kind !== 'lesson') return;
     const L = D.lessons[r.current - 1];
     $('#rdCelBox').innerHTML = `<div class="rd-newstone">${esc(L.label)}</div><h2 class="rd-celt">درس جديد!</h2><button class="rd-homebtn" id="rdCelOk">هيا!</button>`;
     $('#rdCel').hidden = false; api.SFX.unlock(); api.confetti($('#rdConfetti'));
     $('#rdCelOk').addEventListener('click', () => { $('#rdCel').hidden = true; api.stopConfetti($('#rdConfetti')); }, { once: true });
+  }
+
+
+  /* =====================================================================================================
+     Speed Round: two minutes, the words she knows (Done lessons and the Current one); she reads each aloud and taps ✓.
+     A new personal best is +1 star.
+     ===================================================================================================== */
+  function speedPool() {
+    const ws = new Set();
+    D.lessons.slice(0, r.current).forEach(L => { if (L.ready) (L.words || []).concat(L.sight || []).forEach(w => { if (D.words[w] && !D.words[w].sound) ws.add(w); }); });
+    return [...ws];
+  }
+  let SP = null;
+  function startSpeed() {
+    const pool = speedPool(); if (pool.length < 8) return;
+    stopAll(); api.SFX.init();
+    SP = { n: 0, t0: performance.now(), acc: 0, hid: null, deck: shuffle(pool), i: 0, secs: 120 };
+    $('#rdSpCount').textContent = AR(0);
+    api.show('rspeed');
+    nextSpeed();
+    SP.tick = setInterval(speedTick, 250); speedTick();
+  }
+  function speedLeft() { if (!SP) return 0; const used = SP.acc + (SP.hid == null ? performance.now() - SP.t0 : 0); return Math.max(0, SP.secs - used / 1000); }
+  function speedTick() {
+    if (!SP) return;
+    const left = speedLeft(), C = 2 * Math.PI * 26, ring = $('#rdSpRing');
+    ring.style.strokeDasharray = `${C}`; ring.style.strokeDashoffset = `${C * (1 - left / SP.secs)}`;
+    $('#rdSpTimer').classList.toggle('low', left < 20);
+    if (left <= 0) endSpeed();
+  }
+  function nextSpeed() {
+    if (!SP) return;
+    if (SP.i >= SP.deck.length) { SP.deck = shuffle(SP.deck); SP.i = 0; }
+    const w = SP.deck[SP.i++], W = D.words[w];
+    $('#rdSpStage').innerHTML = `<div class="rd-spd enter"><button class="rd-spword" id="rdSpWord">${esc(W.tiles.join(''))}</button>
+      <div class="rd-spbtns"><button class="rd-replay" id="rdSpHear" aria-label="اسمعي">${ic('i-speaker')}</button><button class="rd-spok" id="rdSpOk">✓</button></div></div>`;
+    $('#rdSpHear').addEventListener('click', () => sayWord(w));
+    $('#rdSpWord').addEventListener('click', () => sayWord(w));
+    $('#rdSpOk').addEventListener('click', () => { if (!SP) return; SP.n++; $('#rdSpCount').textContent = AR(SP.n); api.SFX.star(); stopAudio(); nextSpeed(); }, { once: true });
+  }
+  function endSpeed() {
+    const sp = SP; if (!sp) return;
+    clearInterval(sp.tick); SP = null; stopAudio();
+    const t = today(), best = sp.n > r.speed.best && sp.n > 0;
+    r.speed.runs.push({ day: t, n: sp.n }); if (r.speed.runs.length > 200) r.speed.runs = r.speed.runs.slice(-200);
+    if (best) { r.speed.best = sp.n; r.stars.total += 1; r.stars.days[t] = (r.stars.days[t] || 0) + 1; }
+    save();
+    $('#rdCelBox').innerHTML = `<div class="rd-spres">${AR(sp.n)}</div><h2 class="rd-celt">${sp.n === 1 ? 'كلمة واحدة!' : 'كلمة في دقيقتين!'}</h2>
+      <p class="rd-celcap">${best ? 'أفضل نتيجة جديدة! ⭐ +١' : `أفضل نتيجة: ${AR(r.speed.best)}`}</p>
+      <div class="rd-spbtns"><button class="rd-homebtn" id="rdSpAgain">مرة أخرى ⚡</button><button class="rd-homebtn soft" id="rdSpHome">الرئيسية</button></div>`;
+    $('#rdCel').hidden = false;
+    if (best) { api.SFX.unlock(); api.confetti($('#rdConfetti')); } else api.SFX.good();
+    $('#rdSpAgain').addEventListener('click', () => { $('#rdCel').hidden = true; api.stopConfetti($('#rdConfetti')); startSpeed(); }, { once: true });
+    $('#rdSpHome').addEventListener('click', () => { $('#rdCel').hidden = true; api.stopConfetti($('#rdConfetti')); home(); }, { once: true });
   }
 
   /* =====================================================================================================
@@ -905,7 +1389,7 @@ function mount(api) {
         <button class="rp-btn${miss.length ? ' warn' : ''}" data-act="rec">Record sounds${miss.length ? ` (${miss.length} needed)` : ''}</button></div>
         ${miss.length ? `<p class="rp-warn">Needs recording: ${miss.map(x => `${esc(x.say)} (lesson ${x.lesson})`).join(', ')}</p>` : ''}</section>
       <section class="rp-card"><h2>Progress</h2>
-        <div class="rp-stats"><span><b>${streakOf(r, t)}</b> ${streakOf(r, t) === 1 ? 'day' : 'days'} in a row</span><span><b>${r.stars.total}</b> ${r.stars.total === 1 ? 'star' : 'stars'}</span><span><b>${r.use.length}</b> ${r.use.length === 1 ? 'day' : 'days'} of use</span><span><b>${b.have}</b> of 8 puzzle pieces this week</span></div>
+        <div class="rp-stats"><span><b>${streakOf(r, t)}</b> ${streakOf(r, t) === 1 ? 'day' : 'days'} in a row</span><span><b>${r.stars.total}</b> ${r.stars.total === 1 ? 'star' : 'stars'}</span><span><b>${r.use.length}</b> ${r.use.length === 1 ? 'day' : 'days'} of use</span><span><b>${b.have}</b> of 8 puzzle pieces this week</span><span>Speed Round best: <b>${r.speed.best}</b></span></div>
         <div class="rp-bars">${days7.map(d => `<div class="rp-bar${d === t ? ' today' : ''}"><i style="height:${Math.round((r.minutes[d] || 0) / mx * 60)}px"></i><b>${Math.round((r.minutes[d] || 0) / 60)}m</b><span>${fmtDay(d).split(' ')[0]}</span></div>`).join('')}</div></section>
       <section class="rp-card"><h2>Stuck words</h2>${stuck.length ? `<div class="rp-chips">${stuck.map(([w, x]) => `<button class="rp-chip" data-say="${esc(w)}">${esc(w.toUpperCase())} <i>×${x.n}</i></button>`).join('')}</div>` : '<p>None yet. A word goes here when she needs the help ladder.</p>'}</section>
       <section class="rp-card"><h2>Her recordings</h2><div id="rpMine"><p>Loading…</p></div></section>
@@ -1085,15 +1569,20 @@ function mount(api) {
     startSession(n, 'replay');
   });
   $('#rdBoardBtn').addEventListener('click', () => { api.SFX.init(); viewPuzzle(); });
+  $('#rdSpeedBtn').addEventListener('click', startSpeed);
+  $('#rdBookBtn').addEventListener('click', () => openBook(Math.max(0, finishedPuzzles().length - 1)));
+  $('#rbClose').addEventListener('click', () => { bookSound('lib-close', 0.8); BK = null; home(); });
+  $('#rdSpQuit').addEventListener('click', () => { if (SP) { clearInterval(SP.tick); SP = null; } stopAudio(); home(); });
   $('#rdQuit').addEventListener('click', () => { stopAll(); home(); });
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) { clock.pause(); stopAudio(); } else clock.resume();
+    if (SP) { if (document.hidden && SP.hid == null) { SP.acc += performance.now() - SP.t0; SP.hid = 1; } else if (!document.hidden && SP.hid != null) { SP.t0 = performance.now(); SP.hid = null; } }
   });
 
   return {
     home, ready,
-    isOn: () => ['rhome', 'rsession', 'rdone', 'rparent', 'rrec', 'rcheck', 'rplace'].some(id => !$('#' + id).hidden) || !$('#rdCel').hidden,
-    busy: () => !!S || busy || ['rdone', 'rparent', 'rrec', 'rcheck', 'rplace'].some(id => !$('#' + id).hidden) || !$('#rdCel').hidden,
+    isOn: () => ['rhome', 'rsession', 'rdone', 'rparent', 'rrec', 'rcheck', 'rplace', 'rspeed', 'rbook'].some(id => !$('#' + id).hidden) || !$('#rdCel').hidden,
+    busy: () => !!S || !!SP || busy || ['rdone', 'rparent', 'rrec', 'rcheck', 'rplace', 'rspeed'].some(id => !$('#' + id).hidden) || !$('#rdCel').hidden,
     leave: stopAll,
     doneToday: () => r.use.includes(today()),
     status: () => ({ done: r.use.includes(today()), lesson: r.current, sessions: sessionsToday(today()) }),
@@ -1109,7 +1598,7 @@ function mount(api) {
     },
     // for tests (?dev=1)
     get state() { return r; }, get data() { return D; }, get session() { return S; }, core, openParent, recordScreen, placement, masteryCheck,
-    _endSession: endSession, _start: startSession, _useSound: useSound, SND
+    _endSession: endSession, _book: openBook, _start: startSession, _useSound: useSound, SND, _try: (n, beats) => startSession(n, 'replay', beats), _speedEnd: () => endSpeed()
   };
 }
 

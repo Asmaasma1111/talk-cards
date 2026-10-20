@@ -1,6 +1,6 @@
 {
  "v": 1,
- "note": "Maria Reads: our own words, following the lesson order of Children Learning Reading. Phase 1 = lessons 1-8.",
+ "note": "Maria Reads: our own words, following the lesson order of Children Learning Reading. Phase 1 = lessons 1-8, Phase 2 = lessons 9-24.",
  "timer": [
   [
    1,
@@ -601,6 +601,2100 @@
     "k",
     "t"
    ]
+  },
+  "but": {
+   "tiles": [
+    "B",
+    "U",
+    "T"
+   ],
+   "says": [
+    "b",
+    "u",
+    "t"
+   ]
+  },
+  "cut": {
+   "e": "✂️",
+   "tiles": [
+    "C",
+    "U",
+    "T"
+   ],
+   "says": [
+    "k",
+    "u",
+    "t"
+   ]
+  },
+  "cub": {
+   "e": "🐻",
+   "tiles": [
+    "C",
+    "U",
+    "B"
+   ],
+   "says": [
+    "k",
+    "u",
+    "b"
+   ]
+  },
+  "tub": {
+   "e": "🛁",
+   "tiles": [
+    "T",
+    "U",
+    "B"
+   ],
+   "says": [
+    "t",
+    "u",
+    "b"
+   ]
+  },
+  "bus": {
+   "e": "🚌",
+   "tiles": [
+    "B",
+    "U",
+    "S"
+   ],
+   "says": [
+    "b",
+    "u",
+    "s"
+   ]
+  },
+  "us": {
+   "e": "👭",
+   "tiles": [
+    "U",
+    "S"
+   ],
+   "says": [
+    "u",
+    "s"
+   ]
+  },
+  "sat": {
+   "e": "🪑",
+   "tiles": [
+    "S",
+    "A",
+    "T"
+   ],
+   "says": [
+    "s",
+    "a",
+    "t"
+   ]
+  },
+  "cats": {
+   "e": "🐱🐱",
+   "tiles": [
+    "C",
+    "A",
+    "T",
+    "S"
+   ],
+   "says": [
+    "k",
+    "a",
+    "t",
+    "s"
+   ]
+  },
+  "bats": {
+   "e": "🦇🦇",
+   "tiles": [
+    "B",
+    "A",
+    "T",
+    "S"
+   ],
+   "says": [
+    "b",
+    "a",
+    "t",
+    "s"
+   ]
+  },
+  "cubs": {
+   "e": "🐻🐻",
+   "tiles": [
+    "C",
+    "U",
+    "B",
+    "S"
+   ],
+   "says": [
+    "k",
+    "u",
+    "b",
+    "s"
+   ]
+  },
+  "cuts": {
+   "e": "✂️",
+   "tiles": [
+    "C",
+    "U",
+    "T",
+    "S"
+   ],
+   "says": [
+    "k",
+    "u",
+    "t",
+    "s"
+   ]
+  },
+  "tubs": {
+   "e": "🛁🛁",
+   "tiles": [
+    "T",
+    "U",
+    "B",
+    "S"
+   ],
+   "says": [
+    "t",
+    "u",
+    "b",
+    "s"
+   ]
+  },
+  "pat": {
+   "e": "🤚",
+   "tiles": [
+    "P",
+    "A",
+    "T"
+   ],
+   "says": [
+    "p",
+    "a",
+    "t"
+   ]
+  },
+  "tap": {
+   "e": "🚰",
+   "tiles": [
+    "T",
+    "A",
+    "P"
+   ],
+   "says": [
+    "t",
+    "a",
+    "p"
+   ]
+  },
+  "cup": {
+   "e": "🥤",
+   "tiles": [
+    "C",
+    "U",
+    "P"
+   ],
+   "says": [
+    "k",
+    "u",
+    "p"
+   ]
+  },
+  "cups": {
+   "e": "🥤🥤",
+   "tiles": [
+    "C",
+    "U",
+    "P",
+    "S"
+   ],
+   "says": [
+    "k",
+    "u",
+    "p",
+    "s"
+   ]
+  },
+  "pup": {
+   "e": "🐶",
+   "tiles": [
+    "P",
+    "U",
+    "P"
+   ],
+   "says": [
+    "p",
+    "u",
+    "p"
+   ]
+  },
+  "pups": {
+   "e": "🐶🐶",
+   "tiles": [
+    "P",
+    "U",
+    "P",
+    "S"
+   ],
+   "says": [
+    "p",
+    "u",
+    "p",
+    "s"
+   ]
+  },
+  "up": {
+   "e": "⬆️",
+   "tiles": [
+    "U",
+    "P"
+   ],
+   "says": [
+    "u",
+    "p"
+   ]
+  },
+  "cap": {
+   "e": "🧢",
+   "tiles": [
+    "C",
+    "A",
+    "P"
+   ],
+   "says": [
+    "k",
+    "a",
+    "p"
+   ]
+  },
+  "past": {
+   "tiles": [
+    "P",
+    "A",
+    "S",
+    "T"
+   ],
+   "says": [
+    "p",
+    "a",
+    "s",
+    "t"
+   ]
+  },
+  "pot": {
+   "e": "🍲",
+   "tiles": [
+    "P",
+    "O",
+    "T"
+   ],
+   "says": [
+    "p",
+    "o",
+    "t"
+   ]
+  },
+  "pots": {
+   "e": "🍲🍲",
+   "tiles": [
+    "P",
+    "O",
+    "T",
+    "S"
+   ],
+   "says": [
+    "p",
+    "o",
+    "t",
+    "s"
+   ]
+  },
+  "top": {
+   "e": "🔝",
+   "tiles": [
+    "T",
+    "O",
+    "P"
+   ],
+   "says": [
+    "t",
+    "o",
+    "p"
+   ]
+  },
+  "tops": {
+   "tiles": [
+    "T",
+    "O",
+    "P",
+    "S"
+   ],
+   "says": [
+    "t",
+    "o",
+    "p",
+    "s"
+   ]
+  },
+  "stop": {
+   "e": "🛑",
+   "tiles": [
+    "S",
+    "T",
+    "O",
+    "P"
+   ],
+   "says": [
+    "s",
+    "t",
+    "o",
+    "p"
+   ]
+  },
+  "spot": {
+   "e": "🔴",
+   "tiles": [
+    "S",
+    "P",
+    "O",
+    "T"
+   ],
+   "says": [
+    "s",
+    "p",
+    "o",
+    "t"
+   ]
+  },
+  "pop": {
+   "e": "🎈",
+   "tiles": [
+    "P",
+    "O",
+    "P"
+   ],
+   "says": [
+    "p",
+    "o",
+    "p"
+   ]
+  },
+  "hat": {
+   "e": "👒",
+   "tiles": [
+    "H",
+    "A",
+    "T"
+   ],
+   "says": [
+    "h",
+    "a",
+    "t"
+   ]
+  },
+  "hats": {
+   "e": "👒👒",
+   "tiles": [
+    "H",
+    "A",
+    "T",
+    "S"
+   ],
+   "says": [
+    "h",
+    "a",
+    "t",
+    "s"
+   ]
+  },
+  "hut": {
+   "e": "🛖",
+   "tiles": [
+    "H",
+    "U",
+    "T"
+   ],
+   "says": [
+    "h",
+    "u",
+    "t"
+   ]
+  },
+  "hot": {
+   "e": "🔥",
+   "tiles": [
+    "H",
+    "O",
+    "T"
+   ],
+   "says": [
+    "h",
+    "o",
+    "t"
+   ]
+  },
+  "hop": {
+   "e": "🐰",
+   "tiles": [
+    "H",
+    "O",
+    "P"
+   ],
+   "says": [
+    "h",
+    "o",
+    "p"
+   ]
+  },
+  "hops": {
+   "e": "🐰",
+   "tiles": [
+    "H",
+    "O",
+    "P",
+    "S"
+   ],
+   "says": [
+    "h",
+    "o",
+    "p",
+    "s"
+   ]
+  },
+  "has": {
+   "tiles": [
+    "H",
+    "A",
+    "S"
+   ],
+   "says": [
+    "h",
+    "a",
+    "s"
+   ]
+  },
+  "on": {
+   "tiles": [
+    "O",
+    "N"
+   ],
+   "says": [
+    "o",
+    "n"
+   ]
+  },
+  "sun": {
+   "e": "☀️",
+   "tiles": [
+    "S",
+    "U",
+    "N"
+   ],
+   "says": [
+    "s",
+    "u",
+    "n"
+   ]
+  },
+  "not": {
+   "e": "🚫",
+   "tiles": [
+    "N",
+    "O",
+    "T"
+   ],
+   "says": [
+    "n",
+    "o",
+    "t"
+   ]
+  },
+  "can": {
+   "e": "🥫",
+   "tiles": [
+    "C",
+    "A",
+    "N"
+   ],
+   "says": [
+    "k",
+    "a",
+    "n"
+   ]
+  },
+  "bun": {
+   "e": "🥯",
+   "tiles": [
+    "B",
+    "U",
+    "N"
+   ],
+   "says": [
+    "b",
+    "u",
+    "n"
+   ]
+  },
+  "buns": {
+   "e": "🥯🥯",
+   "tiles": [
+    "B",
+    "U",
+    "N",
+    "S"
+   ],
+   "says": [
+    "b",
+    "u",
+    "n",
+    "s"
+   ]
+  },
+  "pan": {
+   "e": "🍳",
+   "tiles": [
+    "P",
+    "A",
+    "N"
+   ],
+   "says": [
+    "p",
+    "a",
+    "n"
+   ]
+  },
+  "nut": {
+   "e": "🥜",
+   "tiles": [
+    "N",
+    "U",
+    "T"
+   ],
+   "says": [
+    "n",
+    "u",
+    "t"
+   ]
+  },
+  "nuts": {
+   "e": "🥜🥜",
+   "tiles": [
+    "N",
+    "U",
+    "T",
+    "S"
+   ],
+   "says": [
+    "n",
+    "u",
+    "t",
+    "s"
+   ]
+  },
+  "snap": {
+   "e": "🫰",
+   "tiles": [
+    "S",
+    "N",
+    "A",
+    "P"
+   ],
+   "says": [
+    "s",
+    "n",
+    "a",
+    "p"
+   ]
+  },
+  "hug": {
+   "e": "🤗",
+   "tiles": [
+    "H",
+    "U",
+    "G"
+   ],
+   "says": [
+    "h",
+    "u",
+    "g"
+   ]
+  },
+  "hugs": {
+   "e": "🤗",
+   "tiles": [
+    "H",
+    "U",
+    "G",
+    "S"
+   ],
+   "says": [
+    "h",
+    "u",
+    "g",
+    "s"
+   ]
+  },
+  "bug": {
+   "e": "🐞",
+   "tiles": [
+    "B",
+    "U",
+    "G"
+   ],
+   "says": [
+    "b",
+    "u",
+    "g"
+   ]
+  },
+  "bugs": {
+   "e": "🐞🐞",
+   "tiles": [
+    "B",
+    "U",
+    "G",
+    "S"
+   ],
+   "says": [
+    "b",
+    "u",
+    "g",
+    "s"
+   ]
+  },
+  "gap": {
+   "tiles": [
+    "G",
+    "A",
+    "P"
+   ],
+   "says": [
+    "g",
+    "a",
+    "p"
+   ]
+  },
+  "got": {
+   "tiles": [
+    "G",
+    "O",
+    "T"
+   ],
+   "says": [
+    "g",
+    "o",
+    "t"
+   ]
+  },
+  "tug": {
+   "e": "🪢",
+   "tiles": [
+    "T",
+    "U",
+    "G"
+   ],
+   "says": [
+    "t",
+    "u",
+    "g"
+   ]
+  },
+  "bag": {
+   "e": "👜",
+   "tiles": [
+    "B",
+    "A",
+    "G"
+   ],
+   "says": [
+    "b",
+    "a",
+    "g"
+   ]
+  },
+  "bags": {
+   "e": "👜👜",
+   "tiles": [
+    "B",
+    "A",
+    "G",
+    "S"
+   ],
+   "says": [
+    "b",
+    "a",
+    "g",
+    "s"
+   ]
+  },
+  "tag": {
+   "e": "🏷️",
+   "tiles": [
+    "T",
+    "A",
+    "G"
+   ],
+   "says": [
+    "t",
+    "a",
+    "g"
+   ]
+  },
+  "snug": {
+   "e": "🛌",
+   "tiles": [
+    "S",
+    "N",
+    "U",
+    "G"
+   ],
+   "says": [
+    "s",
+    "n",
+    "u",
+    "g"
+   ]
+  },
+  "dad": {
+   "e": "👨",
+   "tiles": [
+    "D",
+    "A",
+    "D"
+   ],
+   "says": [
+    "d",
+    "a",
+    "d"
+   ]
+  },
+  "sad": {
+   "e": "😢",
+   "tiles": [
+    "S",
+    "A",
+    "D"
+   ],
+   "says": [
+    "s",
+    "a",
+    "d"
+   ]
+  },
+  "had": {
+   "tiles": [
+    "H",
+    "A",
+    "D"
+   ],
+   "says": [
+    "h",
+    "a",
+    "d"
+   ]
+  },
+  "bad": {
+   "e": "👎",
+   "tiles": [
+    "B",
+    "A",
+    "D"
+   ],
+   "says": [
+    "b",
+    "a",
+    "d"
+   ]
+  },
+  "dog": {
+   "e": "🐶",
+   "tiles": [
+    "D",
+    "O",
+    "G"
+   ],
+   "says": [
+    "d",
+    "o",
+    "g"
+   ]
+  },
+  "and": {
+   "tiles": [
+    "A",
+    "N",
+    "D"
+   ],
+   "says": [
+    "a",
+    "n",
+    "d"
+   ]
+  },
+  "hand": {
+   "e": "✋",
+   "tiles": [
+    "H",
+    "A",
+    "N",
+    "D"
+   ],
+   "says": [
+    "h",
+    "a",
+    "n",
+    "d"
+   ]
+  },
+  "sand": {
+   "e": "🏖️",
+   "tiles": [
+    "S",
+    "A",
+    "N",
+    "D"
+   ],
+   "says": [
+    "s",
+    "a",
+    "n",
+    "d"
+   ]
+  },
+  "stand": {
+   "e": "🧍",
+   "tiles": [
+    "S",
+    "T",
+    "A",
+    "N",
+    "D"
+   ],
+   "says": [
+    "s",
+    "t",
+    "a",
+    "n",
+    "d"
+   ]
+  },
+  "dot": {
+   "e": "⚫",
+   "tiles": [
+    "D",
+    "O",
+    "T"
+   ],
+   "says": [
+    "d",
+    "o",
+    "t"
+   ]
+  },
+  "dug": {
+   "e": "⛏️",
+   "tiles": [
+    "D",
+    "U",
+    "G"
+   ],
+   "says": [
+    "d",
+    "u",
+    "g"
+   ]
+  },
+  "is": {
+   "tiles": [
+    "I",
+    "S"
+   ],
+   "says": [
+    "i",
+    "s"
+   ]
+  },
+  "it": {
+   "tiles": [
+    "I",
+    "T"
+   ],
+   "says": [
+    "i",
+    "t"
+   ]
+  },
+  "in": {
+   "e": "📥",
+   "tiles": [
+    "I",
+    "N"
+   ],
+   "says": [
+    "i",
+    "n"
+   ]
+  },
+  "sit": {
+   "e": "🪑",
+   "tiles": [
+    "S",
+    "I",
+    "T"
+   ],
+   "says": [
+    "s",
+    "i",
+    "t"
+   ]
+  },
+  "bit": {
+   "tiles": [
+    "B",
+    "I",
+    "T"
+   ],
+   "says": [
+    "b",
+    "i",
+    "t"
+   ]
+  },
+  "big": {
+   "e": "🐘",
+   "tiles": [
+    "B",
+    "I",
+    "G"
+   ],
+   "says": [
+    "b",
+    "i",
+    "g"
+   ]
+  },
+  "dig": {
+   "e": "⛏️",
+   "tiles": [
+    "D",
+    "I",
+    "G"
+   ],
+   "says": [
+    "d",
+    "i",
+    "g"
+   ]
+  },
+  "did": {
+   "tiles": [
+    "D",
+    "I",
+    "D"
+   ],
+   "says": [
+    "d",
+    "i",
+    "d"
+   ]
+  },
+  "hid": {
+   "e": "🙈",
+   "tiles": [
+    "H",
+    "I",
+    "D"
+   ],
+   "says": [
+    "h",
+    "i",
+    "d"
+   ]
+  },
+  "his": {
+   "tiles": [
+    "H",
+    "I",
+    "S"
+   ],
+   "says": [
+    "h",
+    "i",
+    "s"
+   ]
+  },
+  "bin": {
+   "e": "🗑️",
+   "tiles": [
+    "B",
+    "I",
+    "N"
+   ],
+   "says": [
+    "b",
+    "i",
+    "n"
+   ]
+  },
+  "pin": {
+   "e": "📌",
+   "tiles": [
+    "P",
+    "I",
+    "N"
+   ],
+   "says": [
+    "p",
+    "i",
+    "n"
+   ]
+  },
+  "spin": {
+   "e": "🌀",
+   "tiles": [
+    "S",
+    "P",
+    "I",
+    "N"
+   ],
+   "says": [
+    "s",
+    "p",
+    "i",
+    "n"
+   ]
+  },
+  "tip": {
+   "tiles": [
+    "T",
+    "I",
+    "P"
+   ],
+   "says": [
+    "t",
+    "i",
+    "p"
+   ]
+  },
+  "sip": {
+   "e": "🧃",
+   "tiles": [
+    "S",
+    "I",
+    "P"
+   ],
+   "says": [
+    "s",
+    "i",
+    "p"
+   ]
+  },
+  "if": {
+   "tiles": [
+    "I",
+    "F"
+   ],
+   "says": [
+    "i",
+    "f"
+   ]
+  },
+  "fan": {
+   "e": "🪭",
+   "tiles": [
+    "F",
+    "A",
+    "N"
+   ],
+   "says": [
+    "f",
+    "a",
+    "n"
+   ]
+  },
+  "fun": {
+   "e": "🎉",
+   "tiles": [
+    "F",
+    "U",
+    "N"
+   ],
+   "says": [
+    "f",
+    "u",
+    "n"
+   ]
+  },
+  "fog": {
+   "e": "🌫️",
+   "tiles": [
+    "F",
+    "O",
+    "G"
+   ],
+   "says": [
+    "f",
+    "o",
+    "g"
+   ]
+  },
+  "fit": {
+   "tiles": [
+    "F",
+    "I",
+    "T"
+   ],
+   "says": [
+    "f",
+    "i",
+    "t"
+   ]
+  },
+  "fast": {
+   "e": "💨",
+   "tiles": [
+    "F",
+    "A",
+    "S",
+    "T"
+   ],
+   "says": [
+    "f",
+    "a",
+    "s",
+    "t"
+   ]
+  },
+  "gift": {
+   "e": "🎁",
+   "tiles": [
+    "G",
+    "I",
+    "F",
+    "T"
+   ],
+   "says": [
+    "g",
+    "i",
+    "f",
+    "t"
+   ]
+  },
+  "soft": {
+   "e": "🧸",
+   "tiles": [
+    "S",
+    "O",
+    "F",
+    "T"
+   ],
+   "says": [
+    "s",
+    "o",
+    "f",
+    "t"
+   ]
+  },
+  "fin": {
+   "e": "🐟",
+   "tiles": [
+    "F",
+    "I",
+    "N"
+   ],
+   "says": [
+    "f",
+    "i",
+    "n"
+   ]
+  },
+  "off": {
+   "tiles": [
+    "O",
+    "FF"
+   ],
+   "says": [
+    "o",
+    "f"
+   ]
+  },
+  "run": {
+   "e": "🏃‍♀️",
+   "tiles": [
+    "R",
+    "U",
+    "N"
+   ],
+   "says": [
+    "r",
+    "u",
+    "n"
+   ]
+  },
+  "ran": {
+   "e": "🏃‍♀️",
+   "tiles": [
+    "R",
+    "A",
+    "N"
+   ],
+   "says": [
+    "r",
+    "a",
+    "n"
+   ]
+  },
+  "rug": {
+   "tiles": [
+    "R",
+    "U",
+    "G"
+   ],
+   "says": [
+    "r",
+    "u",
+    "g"
+   ]
+  },
+  "frog": {
+   "e": "🐸",
+   "tiles": [
+    "F",
+    "R",
+    "O",
+    "G"
+   ],
+   "says": [
+    "f",
+    "r",
+    "o",
+    "g"
+   ]
+  },
+  "drip": {
+   "e": "💧",
+   "tiles": [
+    "D",
+    "R",
+    "I",
+    "P"
+   ],
+   "says": [
+    "d",
+    "r",
+    "i",
+    "p"
+   ]
+  },
+  "drop": {
+   "e": "💧",
+   "tiles": [
+    "D",
+    "R",
+    "O",
+    "P"
+   ],
+   "says": [
+    "d",
+    "r",
+    "o",
+    "p"
+   ]
+  },
+  "trip": {
+   "e": "🧳",
+   "tiles": [
+    "T",
+    "R",
+    "I",
+    "P"
+   ],
+   "says": [
+    "t",
+    "r",
+    "i",
+    "p"
+   ]
+  },
+  "grin": {
+   "e": "😁",
+   "tiles": [
+    "G",
+    "R",
+    "I",
+    "N"
+   ],
+   "says": [
+    "g",
+    "r",
+    "i",
+    "n"
+   ]
+  },
+  "grins": {
+   "e": "😁",
+   "tiles": [
+    "G",
+    "R",
+    "I",
+    "N",
+    "S"
+   ],
+   "says": [
+    "g",
+    "r",
+    "i",
+    "n",
+    "s"
+   ]
+  },
+  "grab": {
+   "e": "✊",
+   "tiles": [
+    "G",
+    "R",
+    "A",
+    "B"
+   ],
+   "says": [
+    "g",
+    "r",
+    "a",
+    "b"
+   ]
+  },
+  "crab": {
+   "e": "🦀",
+   "tiles": [
+    "C",
+    "R",
+    "A",
+    "B"
+   ],
+   "says": [
+    "k",
+    "r",
+    "a",
+    "b"
+   ]
+  },
+  "crust": {
+   "e": "🍞",
+   "tiles": [
+    "C",
+    "R",
+    "U",
+    "S",
+    "T"
+   ],
+   "says": [
+    "k",
+    "r",
+    "u",
+    "s",
+    "t"
+   ]
+  },
+  "map": {
+   "e": "🗺️",
+   "tiles": [
+    "M",
+    "A",
+    "P"
+   ],
+   "says": [
+    "m",
+    "a",
+    "p"
+   ]
+  },
+  "man": {
+   "e": "👨",
+   "tiles": [
+    "M",
+    "A",
+    "N"
+   ],
+   "says": [
+    "m",
+    "a",
+    "n"
+   ]
+  },
+  "mat": {
+   "tiles": [
+    "M",
+    "A",
+    "T"
+   ],
+   "says": [
+    "m",
+    "a",
+    "t"
+   ]
+  },
+  "mud": {
+   "e": "🟤",
+   "tiles": [
+    "M",
+    "U",
+    "D"
+   ],
+   "says": [
+    "m",
+    "u",
+    "d"
+   ]
+  },
+  "mug": {
+   "e": "☕",
+   "tiles": [
+    "M",
+    "U",
+    "G"
+   ],
+   "says": [
+    "m",
+    "u",
+    "g"
+   ]
+  },
+  "mom": {
+   "e": "👩",
+   "tiles": [
+    "M",
+    "O",
+    "M"
+   ],
+   "says": [
+    "m",
+    "o",
+    "m"
+   ]
+  },
+  "mist": {
+   "e": "🌫️",
+   "tiles": [
+    "M",
+    "I",
+    "S",
+    "T"
+   ],
+   "says": [
+    "m",
+    "i",
+    "s",
+    "t"
+   ]
+  },
+  "must": {
+   "tiles": [
+    "M",
+    "U",
+    "S",
+    "T"
+   ],
+   "says": [
+    "m",
+    "u",
+    "s",
+    "t"
+   ]
+  },
+  "bump": {
+   "tiles": [
+    "B",
+    "U",
+    "M",
+    "P"
+   ],
+   "says": [
+    "b",
+    "u",
+    "m",
+    "p"
+   ]
+  },
+  "hum": {
+   "e": "🎶",
+   "tiles": [
+    "H",
+    "U",
+    "M"
+   ],
+   "says": [
+    "h",
+    "u",
+    "m"
+   ]
+  },
+  "gum": {
+   "tiles": [
+    "G",
+    "U",
+    "M"
+   ],
+   "says": [
+    "g",
+    "u",
+    "m"
+   ]
+  },
+  "muffin": {
+   "e": "🧁",
+   "tiles": [
+    "M",
+    "U",
+    "FF",
+    "I",
+    "N"
+   ],
+   "says": [
+    "m",
+    "u",
+    "f",
+    "i",
+    "n"
+   ]
+  },
+  "red": {
+   "e": "🔴",
+   "tiles": [
+    "R",
+    "E",
+    "D"
+   ],
+   "says": [
+    "r",
+    "e",
+    "d"
+   ]
+  },
+  "bed": {
+   "e": "🛏️",
+   "tiles": [
+    "B",
+    "E",
+    "D"
+   ],
+   "says": [
+    "b",
+    "e",
+    "d"
+   ]
+  },
+  "fed": {
+   "tiles": [
+    "F",
+    "E",
+    "D"
+   ],
+   "says": [
+    "f",
+    "e",
+    "d"
+   ]
+  },
+  "pet": {
+   "e": "🐾",
+   "tiles": [
+    "P",
+    "E",
+    "T"
+   ],
+   "says": [
+    "p",
+    "e",
+    "t"
+   ]
+  },
+  "met": {
+   "e": "🤝",
+   "tiles": [
+    "M",
+    "E",
+    "T"
+   ],
+   "says": [
+    "m",
+    "e",
+    "t"
+   ]
+  },
+  "net": {
+   "e": "🥅",
+   "tiles": [
+    "N",
+    "E",
+    "T"
+   ],
+   "says": [
+    "n",
+    "e",
+    "t"
+   ]
+  },
+  "end": {
+   "e": "🏁",
+   "tiles": [
+    "E",
+    "N",
+    "D"
+   ],
+   "says": [
+    "e",
+    "n",
+    "d"
+   ]
+  },
+  "bend": {
+   "tiles": [
+    "B",
+    "E",
+    "N",
+    "D"
+   ],
+   "says": [
+    "b",
+    "e",
+    "n",
+    "d"
+   ]
+  },
+  "den": {
+   "tiles": [
+    "D",
+    "E",
+    "N"
+   ],
+   "says": [
+    "d",
+    "e",
+    "n"
+   ]
+  },
+  "ten": {
+   "e": "🔟",
+   "tiles": [
+    "T",
+    "E",
+    "N"
+   ],
+   "says": [
+    "t",
+    "e",
+    "n"
+   ]
+  },
+  "bent": {
+   "tiles": [
+    "B",
+    "E",
+    "N",
+    "T"
+   ],
+   "says": [
+    "b",
+    "e",
+    "n",
+    "t"
+   ]
+  },
+  "best": {
+   "e": "🏆",
+   "tiles": [
+    "B",
+    "E",
+    "S",
+    "T"
+   ],
+   "says": [
+    "b",
+    "e",
+    "s",
+    "t"
+   ]
+  },
+  "rest": {
+   "e": "😌",
+   "tiles": [
+    "R",
+    "E",
+    "S",
+    "T"
+   ],
+   "says": [
+    "r",
+    "e",
+    "s",
+    "t"
+   ]
+  },
+  "test": {
+   "e": "📝",
+   "tiles": [
+    "T",
+    "E",
+    "S",
+    "T"
+   ],
+   "says": [
+    "t",
+    "e",
+    "s",
+    "t"
+   ]
+  },
+  "pen": {
+   "e": "🖊️",
+   "tiles": [
+    "P",
+    "E",
+    "N"
+   ],
+   "says": [
+    "p",
+    "e",
+    "n"
+   ]
+  },
+  "hen": {
+   "e": "🐔",
+   "tiles": [
+    "H",
+    "E",
+    "N"
+   ],
+   "says": [
+    "h",
+    "e",
+    "n"
+   ]
+  },
+  "hens": {
+   "e": "🐔🐔",
+   "tiles": [
+    "H",
+    "E",
+    "N",
+    "S"
+   ],
+   "says": [
+    "h",
+    "e",
+    "n",
+    "s"
+   ]
+  },
+  "get": {
+   "tiles": [
+    "G",
+    "E",
+    "T"
+   ],
+   "says": [
+    "g",
+    "e",
+    "t"
+   ]
+  },
+  "naps": {
+   "e": "😴",
+   "tiles": [
+    "N",
+    "A",
+    "P",
+    "S"
+   ],
+   "says": [
+    "n",
+    "a",
+    "p",
+    "s"
+   ]
+  },
+  "jog": {
+   "e": "🏃‍♀️",
+   "tiles": [
+    "J",
+    "O",
+    "G"
+   ],
+   "says": [
+    "j",
+    "o",
+    "g"
+   ]
+  },
+  "jug": {
+   "e": "🫗",
+   "tiles": [
+    "J",
+    "U",
+    "G"
+   ],
+   "says": [
+    "j",
+    "u",
+    "g"
+   ]
+  },
+  "job": {
+   "tiles": [
+    "J",
+    "O",
+    "B"
+   ],
+   "says": [
+    "j",
+    "o",
+    "b"
+   ]
+  },
+  "jump": {
+   "e": "🤸‍♀️",
+   "tiles": [
+    "J",
+    "U",
+    "M",
+    "P"
+   ],
+   "says": [
+    "j",
+    "u",
+    "m",
+    "p"
+   ]
+  },
+  "just": {
+   "tiles": [
+    "J",
+    "U",
+    "S",
+    "T"
+   ],
+   "says": [
+    "j",
+    "u",
+    "s",
+    "t"
+   ]
+  },
+  "jam": {
+   "e": "🫙",
+   "tiles": [
+    "J",
+    "A",
+    "M"
+   ],
+   "says": [
+    "j",
+    "a",
+    "m"
+   ]
+  },
+  "jet": {
+   "e": "✈️",
+   "tiles": [
+    "J",
+    "E",
+    "T"
+   ],
+   "says": [
+    "j",
+    "e",
+    "t"
+   ]
+  },
+  "kid": {
+   "e": "🧒",
+   "tiles": [
+    "K",
+    "I",
+    "D"
+   ],
+   "says": [
+    "k",
+    "i",
+    "d"
+   ]
+  },
+  "kit": {
+   "e": "🧰",
+   "tiles": [
+    "K",
+    "I",
+    "T"
+   ],
+   "says": [
+    "k",
+    "i",
+    "t"
+   ]
+  },
+  "skip": {
+   "tiles": [
+    "S",
+    "K",
+    "I",
+    "P"
+   ],
+   "says": [
+    "s",
+    "k",
+    "i",
+    "p"
+   ]
+  },
+  "back": {
+   "tiles": [
+    "B",
+    "A",
+    "CK"
+   ],
+   "says": [
+    "b",
+    "a",
+    "k"
+   ]
+  },
+  "pack": {
+   "e": "🎒",
+   "tiles": [
+    "P",
+    "A",
+    "CK"
+   ],
+   "says": [
+    "p",
+    "a",
+    "k"
+   ]
+  },
+  "duck": {
+   "e": "🦆",
+   "tiles": [
+    "D",
+    "U",
+    "CK"
+   ],
+   "says": [
+    "d",
+    "u",
+    "k"
+   ]
+  },
+  "backpack": {
+   "e": "🎒",
+   "tiles": [
+    "B",
+    "A",
+    "CK",
+    "P",
+    "A",
+    "CK"
+   ],
+   "says": [
+    "b",
+    "a",
+    "k",
+    "p",
+    "a",
+    "k"
+   ]
+  },
+  "jacket": {
+   "e": "🧥",
+   "tiles": [
+    "J",
+    "A",
+    "CK",
+    "E",
+    "T"
+   ],
+   "says": [
+    "j",
+    "a",
+    "k",
+    "e",
+    "t"
+   ]
+  },
+  "pocket": {
+   "tiles": [
+    "P",
+    "O",
+    "CK",
+    "E",
+    "T"
+   ],
+   "says": [
+    "p",
+    "o",
+    "k",
+    "e",
+    "t"
+   ]
+  },
+  "the": {
+   "sight": true,
+   "tiles": [
+    "THE"
+   ],
+   "says": []
+  },
+  "he": {
+   "sight": true,
+   "tiles": [
+    "HE"
+   ],
+   "says": []
+  },
+  "no": {
+   "sight": true,
+   "tiles": [
+    "NO"
+   ],
+   "says": []
+  },
+  "so": {
+   "sight": true,
+   "tiles": [
+    "SO"
+   ],
+   "says": []
+  },
+  "don't": {
+   "sight": true,
+   "tiles": [
+    "DON'T"
+   ],
+   "says": []
+  },
+  "to": {
+   "sight": true,
+   "tiles": [
+    "TO"
+   ],
+   "says": []
+  },
+  "be": {
+   "sight": true,
+   "tiles": [
+    "BE"
+   ],
+   "says": []
+  },
+  "your": {
+   "sight": true,
+   "tiles": [
+    "YOUR"
+   ],
+   "says": []
   }
  },
  "ear": {
@@ -721,6 +2815,345 @@
     "bus",
     "egg"
    ]
+  },
+  "u": {
+   "beg": [
+    "up",
+    "umbrella",
+    "under"
+   ],
+   "mid": [
+    "sun",
+    "bus",
+    "cup",
+    "duck",
+    "bug",
+    "mud"
+   ],
+   "end": [],
+   "no": [
+    "cat",
+    "pen",
+    "dog",
+    "fish",
+    "bed",
+    "hat",
+    "tent",
+    "ten"
+   ]
+  },
+  "s": {
+   "beg": [
+    "sun",
+    "sock",
+    "sad",
+    "seal"
+   ],
+   "mid": [
+    "basket"
+   ],
+   "end": [
+    "bus",
+    "dress",
+    "glass"
+   ],
+   "no": [
+    "cat",
+    "hat",
+    "dog",
+    "pen",
+    "cup",
+    "bed"
+   ]
+  },
+  "p": {
+   "beg": [
+    "pen",
+    "pan",
+    "pear",
+    "pot"
+   ],
+   "mid": [
+    "apple",
+    "puppy"
+   ],
+   "end": [
+    "cup",
+    "map",
+    "top",
+    "mop"
+   ],
+   "no": [
+    "cat",
+    "bed",
+    "sun",
+    "dog",
+    "bus",
+    "fish"
+   ]
+  },
+  "o": {
+   "beg": [
+    "on",
+    "octopus",
+    "olive"
+   ],
+   "mid": [
+    "dog",
+    "pot",
+    "sock",
+    "top",
+    "box",
+    "frog"
+   ],
+   "end": [],
+   "no": [
+    "cat",
+    "sun",
+    "pen",
+    "cup",
+    "bed",
+    "fish"
+   ]
+  },
+  "h": {
+   "beg": [
+    "hat",
+    "hen",
+    "hot",
+    "horse",
+    "house"
+   ],
+   "mid": [],
+   "end": [],
+   "no": [
+    "cat",
+    "sun",
+    "dog",
+    "bus",
+    "pen",
+    "egg"
+   ]
+  },
+  "n": {
+   "beg": [
+    "net",
+    "nut",
+    "nose",
+    "nest"
+   ],
+   "mid": [
+    "banana",
+    "panda"
+   ],
+   "end": [
+    "sun",
+    "pen",
+    "ten",
+    "moon",
+    "bun"
+   ],
+   "no": [
+    "cat",
+    "dog",
+    "bus",
+    "cup",
+    "hat",
+    "bed"
+   ]
+  },
+  "g": {
+   "beg": [
+    "goat",
+    "gift",
+    "gum"
+   ],
+   "mid": [
+    "tiger",
+    "dragon"
+   ],
+   "end": [
+    "bag",
+    "bug",
+    "dog",
+    "egg",
+    "frog"
+   ],
+   "no": [
+    "cat",
+    "sun",
+    "pen",
+    "bus",
+    "cup",
+    "hat"
+   ]
+  },
+  "d": {
+   "beg": [
+    "dog",
+    "duck",
+    "door",
+    "dad"
+   ],
+   "mid": [
+    "panda",
+    "ladder"
+   ],
+   "end": [
+    "bed",
+    "red",
+    "hand",
+    "bird"
+   ],
+   "no": [
+    "cat",
+    "sun",
+    "pen",
+    "bus",
+    "cup",
+    "hat"
+   ]
+  },
+  "i": {
+   "beg": [
+    "in",
+    "insect",
+    "igloo"
+   ],
+   "mid": [
+    "fish",
+    "pin",
+    "six",
+    "gift",
+    "milk"
+   ],
+   "end": [],
+   "no": [
+    "cat",
+    "sun",
+    "dog",
+    "bus",
+    "cup",
+    "hat"
+   ]
+  },
+  "f": {
+   "beg": [
+    "fish",
+    "fan",
+    "frog",
+    "fox"
+   ],
+   "mid": [
+    "coffee"
+   ],
+   "end": [
+    "leaf",
+    "scarf",
+    "giraffe"
+   ],
+   "no": [
+    "cat",
+    "sun",
+    "dog",
+    "bus",
+    "cup",
+    "pen"
+   ]
+  },
+  "r": {
+   "beg": [
+    "rabbit",
+    "red",
+    "ring",
+    "rain"
+   ],
+   "mid": [
+    "carrot",
+    "parrot",
+    "zebra"
+   ],
+   "end": [
+    "car",
+    "star"
+   ],
+   "no": [
+    "cat",
+    "sun",
+    "dog",
+    "bus",
+    "pen",
+    "hat"
+   ]
+  },
+  "m": {
+   "beg": [
+    "map",
+    "moon",
+    "mouse",
+    "mom"
+   ],
+   "mid": [
+    "lemon",
+    "camel"
+   ],
+   "end": [
+    "jam",
+    "drum",
+    "gum"
+   ],
+   "no": [
+    "cat",
+    "sun",
+    "dog",
+    "bus",
+    "pen",
+    "hat"
+   ]
+  },
+  "e": {
+   "beg": [
+    "egg",
+    "elephant"
+   ],
+   "mid": [
+    "bed",
+    "pen",
+    "ten",
+    "net",
+    "hen",
+    "red"
+   ],
+   "end": [],
+   "no": [
+    "cat",
+    "sun",
+    "dog",
+    "bus",
+    "cup",
+    "hat"
+   ]
+  },
+  "j": {
+   "beg": [
+    "jam",
+    "jet",
+    "juice",
+    "jug"
+   ],
+   "mid": [],
+   "end": [
+    "orange",
+    "bridge"
+   ],
+   "no": [
+    "cat",
+    "sun",
+    "dog",
+    "bus",
+    "pen",
+    "hat"
+   ]
   }
  },
  "emoji": {
@@ -771,7 +3204,1133 @@
   "guitar": "🎸",
   "boat": "⛵",
   "net": "🥅",
-  "foot": "🦶"
+  "foot": "🦶",
+  "up": "⬆️",
+  "umbrella": "☂️",
+  "under": "⬇️",
+  "mud": "🟤",
+  "bug": "🐞",
+  "seal": "🦭",
+  "basket": "🧺",
+  "dress": "👗",
+  "glass": "🥛",
+  "pan": "🍳",
+  "pear": "🍐",
+  "pot": "🍲",
+  "puppy": "🐶",
+  "top": "🔝",
+  "mop": "🧹",
+  "on": "🔛",
+  "octopus": "🐙",
+  "olive": "🫒",
+  "box": "📦",
+  "frog": "🐸",
+  "hen": "🐔",
+  "hot": "🔥",
+  "horse": "🐴",
+  "house": "🏠",
+  "nut": "🥜",
+  "nose": "👃",
+  "nest": "🪺",
+  "banana": "🍌",
+  "panda": "🐼",
+  "bun": "🥯",
+  "goat": "🐐",
+  "gift": "🎁",
+  "gum": "🍬",
+  "dragon": "🐉",
+  "bag": "👜",
+  "door": "🚪",
+  "dad": "👨",
+  "ladder": "🪜",
+  "red": "🔴",
+  "hand": "✋",
+  "bird": "🐦",
+  "in": "📥",
+  "insect": "🐛",
+  "igloo": "🛖",
+  "pin": "📌",
+  "six": "6️⃣",
+  "milk": "🥛",
+  "fan": "🪭",
+  "fox": "🦊",
+  "coffee": "☕",
+  "leaf": "🍃",
+  "scarf": "🧣",
+  "giraffe": "🦒",
+  "ring": "💍",
+  "rain": "🌧️",
+  "carrot": "🥕",
+  "parrot": "🦜",
+  "star": "⭐",
+  "mouse": "🐭",
+  "mom": "👩",
+  "lemon": "🍋",
+  "camel": "🐫",
+  "jam": "🫙",
+  "drum": "🥁",
+  "elephant": "🐘",
+  "jet": "✈️",
+  "juice": "🧃",
+  "jug": "🫗",
+  "orange": "🍊",
+  "bridge": "🌉",
+  "pat": "🤚",
+  "bear": "🐻",
+  "pea": "🫛",
+  "bin": "🗑️",
+  "pack": "🎒",
+  "back": "🔙",
+  "tin": "🥫",
+  "set": null,
+  "sit": "🪑",
+  "bet": null,
+  "bit": null
+ },
+ "pairs": {
+  "pb": {
+   "a": "p",
+   "b": "b",
+   "pairs": [
+    [
+     "pat",
+     "bat"
+    ],
+    [
+     "cap",
+     "cab"
+    ],
+    [
+     "pear",
+     "bear"
+    ],
+    [
+     "pea",
+     "bee"
+    ],
+    [
+     "pin",
+     "bin"
+    ],
+    [
+     "pack",
+     "back"
+    ]
+   ]
+  },
+  "ei": {
+   "a": "e",
+   "b": "i",
+   "pairs": [
+    [
+     "pen",
+     "pin"
+    ],
+    [
+     "ten",
+     "tin"
+    ],
+    [
+     "set",
+     "sit"
+    ],
+    [
+     "bet",
+     "bit"
+    ]
+   ]
+  }
+ },
+ "sentences": {
+  "l12a": {
+   "text": "THE CAT.",
+   "words": [
+    "the",
+    "cat"
+   ],
+   "e": "🐱",
+   "photo": "cat"
+  },
+  "l12b": {
+   "text": "THE PUP.",
+   "words": [
+    "the",
+    "pup"
+   ],
+   "e": "🐶"
+  },
+  "l12c": {
+   "text": "THE BUS.",
+   "words": [
+    "the",
+    "bus"
+   ],
+   "e": "🚌",
+   "photo": "bus"
+  },
+  "l12d": {
+   "text": "THE CUP.",
+   "words": [
+    "the",
+    "cup"
+   ],
+   "e": "🥤",
+   "photo": "cup"
+  },
+  "l13a": {
+   "text": "THE CAT SAT.",
+   "words": [
+    "the",
+    "cat",
+    "sat"
+   ],
+   "e": "🐱🪑",
+   "photo": "sat"
+  },
+  "l13b": {
+   "text": "STOP THE BUS!",
+   "words": [
+    "stop",
+    "the",
+    "bus"
+   ],
+   "e": "🛑🚌",
+   "photo": "bus"
+  },
+  "l13c": {
+   "text": "THE PUP SAT UP.",
+   "words": [
+    "the",
+    "pup",
+    "sat",
+    "up"
+   ],
+   "e": "🐶",
+   "photo": "up"
+  },
+  "l13d": {
+   "text": "PAT THE PUP.",
+   "words": [
+    "pat",
+    "the",
+    "pup"
+   ],
+   "e": "🤚🐶"
+  },
+  "l14a": {
+   "text": "HE HAS THE HAT.",
+   "words": [
+    "he",
+    "has",
+    "the",
+    "hat"
+   ],
+   "e": "👦👒",
+   "photo": "hat"
+  },
+  "l14b": {
+   "text": "THE PUP HOPS.",
+   "words": [
+    "the",
+    "pup",
+    "hops"
+   ],
+   "e": "🐶"
+  },
+  "l14c": {
+   "text": "HE HOPS UP.",
+   "words": [
+    "he",
+    "hops",
+    "up"
+   ],
+   "e": "👦⬆️",
+   "photo": "up"
+  },
+  "l14d": {
+   "text": "HOP, PUP, HOP!",
+   "words": [
+    "hop",
+    "pup",
+    "hop"
+   ],
+   "e": "🐶"
+  },
+  "l15a": {
+   "text": "HE CAN HOP.",
+   "words": [
+    "he",
+    "can",
+    "hop"
+   ],
+   "e": "👦"
+  },
+  "l15b": {
+   "text": "THE CAT SAT ON THE BUS.",
+   "words": [
+    "the",
+    "cat",
+    "sat",
+    "on",
+    "the",
+    "bus"
+   ],
+   "e": "🐱🚌",
+   "photo": "bus"
+  },
+  "l15c": {
+   "text": "THE PUP CAN NOT STOP.",
+   "words": [
+    "the",
+    "pup",
+    "can",
+    "not",
+    "stop"
+   ],
+   "e": "🐶💨"
+  },
+  "l15d": {
+   "text": "HE HAS THE BUN.",
+   "words": [
+    "he",
+    "has",
+    "the",
+    "bun"
+   ],
+   "e": "🥯"
+  },
+  "l16a": {
+   "text": "THE CAT CAN HOP.",
+   "words": [
+    "the",
+    "cat",
+    "can",
+    "hop"
+   ],
+   "e": "🐱",
+   "photo": "cat"
+  },
+  "l16b": {
+   "text": "STOP, BUS, STOP!",
+   "words": [
+    "stop",
+    "bus",
+    "stop"
+   ],
+   "e": "🚌🛑",
+   "photo": "bus"
+  },
+  "l16c": {
+   "text": "HE HAS THE HOT POT.",
+   "words": [
+    "he",
+    "has",
+    "the",
+    "hot",
+    "pot"
+   ],
+   "e": "🍲🔥"
+  },
+  "l16d": {
+   "text": "THE PUP SAT ON THE CAP.",
+   "words": [
+    "the",
+    "pup",
+    "sat",
+    "on",
+    "the",
+    "cap"
+   ],
+   "e": "🐶🧢",
+   "photo": "cap"
+  },
+  "l17a": {
+   "text": "NO, PUP, NO!",
+   "words": [
+    "no",
+    "pup",
+    "no"
+   ],
+   "e": "🐶"
+  },
+  "l17b": {
+   "text": "HE GOT THE BAG.",
+   "words": [
+    "he",
+    "got",
+    "the",
+    "bag"
+   ],
+   "e": "👜"
+  },
+  "l17c": {
+   "text": "THE BUG HOPS.",
+   "words": [
+    "the",
+    "bug",
+    "hops"
+   ],
+   "e": "🐞",
+   "photo": "bug"
+  },
+  "l17d": {
+   "text": "HUG THE PUP.",
+   "words": [
+    "hug",
+    "the",
+    "pup"
+   ],
+   "e": "🤗🐶"
+  },
+  "l18a": {
+   "text": "DAD AND THE DOG.",
+   "words": [
+    "dad",
+    "and",
+    "the",
+    "dog"
+   ],
+   "e": "👨🐶",
+   "photo": "dog"
+  },
+  "l18b": {
+   "text": "THE DOG DUG.",
+   "words": [
+    "the",
+    "dog",
+    "dug"
+   ],
+   "e": "🐶⛏️",
+   "photo": "dog"
+  },
+  "l18c": {
+   "text": "STAND UP, DAD!",
+   "words": [
+    "stand",
+    "up",
+    "dad"
+   ],
+   "e": "👨",
+   "photo": "up"
+  },
+  "l18d": {
+   "text": "THE CAT AND THE DOG SAT.",
+   "words": [
+    "the",
+    "cat",
+    "and",
+    "the",
+    "dog",
+    "sat"
+   ],
+   "e": "🐱🐶",
+   "photo": "sat"
+  },
+  "l19a": {
+   "text": "THE PUP IS BIG.",
+   "words": [
+    "the",
+    "pup",
+    "is",
+    "big"
+   ],
+   "e": "🐶"
+  },
+  "l19b": {
+   "text": "IT IS IN THE BAG.",
+   "words": [
+    "it",
+    "is",
+    "in",
+    "the",
+    "bag"
+   ],
+   "e": "👜"
+  },
+  "l19c": {
+   "text": "SIT, PUP, SIT!",
+   "words": [
+    "sit",
+    "pup",
+    "sit"
+   ],
+   "e": "🐶🪑"
+  },
+  "l19d": {
+   "text": "THE DOG CAN DIG.",
+   "words": [
+    "the",
+    "dog",
+    "can",
+    "dig"
+   ],
+   "e": "🐶⛏️",
+   "photo": "dog"
+  },
+  "l20a": {
+   "text": "THE FAN IS ON.",
+   "words": [
+    "the",
+    "fan",
+    "is",
+    "on"
+   ],
+   "e": "🪭"
+  },
+  "l20b": {
+   "text": "IT IS SO FUN!",
+   "words": [
+    "it",
+    "is",
+    "so",
+    "fun"
+   ],
+   "e": "🎉"
+  },
+  "l20c": {
+   "text": "DON'T STOP!",
+   "words": [
+    "don't",
+    "stop"
+   ],
+   "e": "🛑"
+  },
+  "l20d": {
+   "text": "THE CAT IS SO SOFT.",
+   "words": [
+    "the",
+    "cat",
+    "is",
+    "so",
+    "soft"
+   ],
+   "e": "🐱",
+   "photo": "cat"
+  },
+  "l21a": {
+   "text": "THE FROG CAN HOP.",
+   "words": [
+    "the",
+    "frog",
+    "can",
+    "hop"
+   ],
+   "e": "🐸"
+  },
+  "l21b": {
+   "text": "RUN, DOG, RUN!",
+   "words": [
+    "run",
+    "dog",
+    "run"
+   ],
+   "e": "🐶💨",
+   "photo": "dog"
+  },
+  "l21c": {
+   "text": "THE CRAB IS ON THE SAND.",
+   "words": [
+    "the",
+    "crab",
+    "is",
+    "on",
+    "the",
+    "sand"
+   ],
+   "e": "🦀🏖️",
+   "photo": "crab"
+  },
+  "l22a": {
+   "text": "MOM HAS THE MAP.",
+   "words": [
+    "mom",
+    "has",
+    "the",
+    "map"
+   ],
+   "e": "👩🗺️",
+   "photo": "map"
+  },
+  "l22b": {
+   "text": "THE DOG IS IN THE MUD.",
+   "words": [
+    "the",
+    "dog",
+    "is",
+    "in",
+    "the",
+    "mud"
+   ],
+   "e": "🐶🟤",
+   "photo": "mud"
+  },
+  "l22c": {
+   "text": "DON'T BUMP THE MUG!",
+   "words": [
+    "don't",
+    "bump",
+    "the",
+    "mug"
+   ],
+   "e": "☕"
+  },
+  "l22d": {
+   "text": "IT CAN BE FUN.",
+   "words": [
+    "it",
+    "can",
+    "be",
+    "fun"
+   ],
+   "e": "🎉"
+  },
+  "l22e": {
+   "text": "RUN TO MOM!",
+   "words": [
+    "run",
+    "to",
+    "mom"
+   ],
+   "e": "👩"
+  },
+  "l23a": {
+   "text": "THE HEN IS RED.",
+   "words": [
+    "the",
+    "hen",
+    "is",
+    "red"
+   ],
+   "e": "🐔"
+  },
+  "l23b": {
+   "text": "GET IN BED!",
+   "words": [
+    "get",
+    "in",
+    "bed"
+   ],
+   "e": "🛏️",
+   "photo": "bed"
+  },
+  "l23c": {
+   "text": "THE PET IS IN THE DEN.",
+   "words": [
+    "the",
+    "pet",
+    "is",
+    "in",
+    "the",
+    "den"
+   ],
+   "e": "🐾"
+  },
+  "l23d": {
+   "text": "TEN HENS IN THE SUN!",
+   "words": [
+    "ten",
+    "hens",
+    "in",
+    "the",
+    "sun"
+   ],
+   "e": "🐔☀️",
+   "photo": "sun"
+  },
+  "l24a": {
+   "text": "JUMP, KID, JUMP!",
+   "words": [
+    "jump",
+    "kid",
+    "jump"
+   ],
+   "e": "🤸‍♀️"
+  },
+  "l24b": {
+   "text": "THE JAM IS IN THE JUG.",
+   "words": [
+    "the",
+    "jam",
+    "is",
+    "in",
+    "the",
+    "jug"
+   ],
+   "e": "🫙"
+  },
+  "l24c": {
+   "text": "PACK YOUR BACKPACK.",
+   "words": [
+    "pack",
+    "your",
+    "backpack"
+   ],
+   "e": "🎒"
+  },
+  "gift1": {
+   "text": "DAD HAS THE BIG GIFT.",
+   "words": [
+    "dad",
+    "has",
+    "the",
+    "big",
+    "gift"
+   ],
+   "e": "👨🎁"
+  },
+  "gift2": {
+   "text": "IT IS SO SOFT.",
+   "words": [
+    "it",
+    "is",
+    "so",
+    "soft"
+   ],
+   "e": "🎁"
+  },
+  "gift3": {
+   "text": "IS IT THE HAT? NO!",
+   "words": [
+    "is",
+    "it",
+    "the",
+    "hat",
+    "no"
+   ],
+   "e": "👒",
+   "photo": "hat"
+  },
+  "gift4": {
+   "text": "IS IT THE BAG? NO!",
+   "words": [
+    "is",
+    "it",
+    "the",
+    "bag",
+    "no"
+   ],
+   "e": "👜"
+  },
+  "gift5": {
+   "text": "IT IS THE PUP!",
+   "words": [
+    "it",
+    "is",
+    "the",
+    "pup"
+   ],
+   "e": "🐶"
+  },
+  "gift6": {
+   "text": "THE PUP HOPS ON DAD.",
+   "words": [
+    "the",
+    "pup",
+    "hops",
+    "on",
+    "dad"
+   ],
+   "e": "🐶👨"
+  },
+  "gift7": {
+   "text": "IT IS SO FUN!",
+   "words": [
+    "it",
+    "is",
+    "so",
+    "fun"
+   ],
+   "e": "🎉"
+  },
+  "frog1": {
+   "text": "THE FROG IS ON THE RUG.",
+   "words": [
+    "the",
+    "frog",
+    "is",
+    "on",
+    "the",
+    "rug"
+   ],
+   "e": "🐸"
+  },
+  "frog2": {
+   "text": "HOP, FROG, HOP!",
+   "words": [
+    "hop",
+    "frog",
+    "hop"
+   ],
+   "e": "🐸"
+  },
+  "frog3": {
+   "text": "THE CRAB IS ON THE SAND.",
+   "words": [
+    "the",
+    "crab",
+    "is",
+    "on",
+    "the",
+    "sand"
+   ],
+   "e": "🦀🏖️",
+   "photo": "crab"
+  },
+  "frog4": {
+   "text": "THE CRAB CAN NOT HOP.",
+   "words": [
+    "the",
+    "crab",
+    "can",
+    "not",
+    "hop"
+   ],
+   "e": "🦀",
+   "photo": "crab"
+  },
+  "frog5": {
+   "text": "THE CRAB CAN RUN!",
+   "words": [
+    "the",
+    "crab",
+    "can",
+    "run"
+   ],
+   "e": "🦀💨",
+   "photo": "crab"
+  },
+  "frog6": {
+   "text": "THE FROG AND THE CRAB GRIN.",
+   "words": [
+    "the",
+    "frog",
+    "and",
+    "the",
+    "crab",
+    "grin"
+   ],
+   "e": "🐸🦀",
+   "photo": "crab"
+  },
+  "bed1": {
+   "text": "THE PUP IS SO SAD.",
+   "words": [
+    "the",
+    "pup",
+    "is",
+    "so",
+    "sad"
+   ],
+   "e": "🐶",
+   "photo": "sad"
+  },
+  "bed2": {
+   "text": "IS THE RUG THE BEST BED? NO.",
+   "words": [
+    "is",
+    "the",
+    "rug",
+    "the",
+    "best",
+    "bed",
+    "no"
+   ],
+   "e": "🐶",
+   "photo": "bed"
+  },
+  "bed3": {
+   "text": "IS THE BAG THE BEST BED? NO.",
+   "words": [
+    "is",
+    "the",
+    "bag",
+    "the",
+    "best",
+    "bed",
+    "no"
+   ],
+   "e": "👜",
+   "photo": "bed"
+  },
+  "bed4": {
+   "text": "MOM HAS THE BEST BED.",
+   "words": [
+    "mom",
+    "has",
+    "the",
+    "best",
+    "bed"
+   ],
+   "e": "👩🛏️",
+   "photo": "bed"
+  },
+  "bed5": {
+   "text": "THE PUP NAPS IN THE BED.",
+   "words": [
+    "the",
+    "pup",
+    "naps",
+    "in",
+    "the",
+    "bed"
+   ],
+   "e": "🐶🛏️",
+   "photo": "bed"
+  },
+  "bed6": {
+   "text": "IT IS THE BEST!",
+   "words": [
+    "it",
+    "is",
+    "the",
+    "best"
+   ],
+   "e": "🏆"
+  },
+  "jet1": {
+   "text": "THE KID HAS THE RED BACKPACK.",
+   "words": [
+    "the",
+    "kid",
+    "has",
+    "the",
+    "red",
+    "backpack"
+   ],
+   "e": "🧒🎒"
+  },
+  "jet2": {
+   "text": "IN IT IS THE JAM AND THE MUFFIN.",
+   "words": [
+    "in",
+    "it",
+    "is",
+    "the",
+    "jam",
+    "and",
+    "the",
+    "muffin"
+   ],
+   "e": "🫙🧁"
+  },
+  "jet3": {
+   "text": "THE KID AND MOM GET ON THE JET.",
+   "words": [
+    "the",
+    "kid",
+    "and",
+    "mom",
+    "get",
+    "on",
+    "the",
+    "jet"
+   ],
+   "e": "✈️"
+  },
+  "jet4": {
+   "text": "THE JET IS BIG AND FAST.",
+   "words": [
+    "the",
+    "jet",
+    "is",
+    "big",
+    "and",
+    "fast"
+   ],
+   "e": "✈️💨"
+  },
+  "jet5": {
+   "text": "THE KID GRINS AND GRINS.",
+   "words": [
+    "the",
+    "kid",
+    "grins",
+    "and",
+    "grins"
+   ],
+   "e": "😁"
+  },
+  "jet6": {
+   "text": "IT IS SO FUN!",
+   "words": [
+    "it",
+    "is",
+    "so",
+    "fun"
+   ],
+   "e": "🎉"
+  }
+ },
+ "stories": {
+  "gift": {
+   "title": "THE BIG GIFT",
+   "pages": [
+    "gift1",
+    "gift2",
+    "gift3",
+    "gift4",
+    "gift5",
+    "gift6",
+    "gift7"
+   ],
+   "questions": [
+    {
+     "q": "What is in the gift?",
+     "opts": [
+      "🐶",
+      "👒",
+      "👜"
+     ],
+     "ok": 0,
+     "photos": [
+      "pup",
+      "hat",
+      "bag"
+     ]
+    },
+    {
+     "q": "Who has the gift?",
+     "opts": [
+      "🐱",
+      "👨",
+      "👵"
+     ],
+     "ok": 1,
+     "photos": [
+      "cat",
+      "dad",
+      "grandma"
+     ]
+    }
+   ],
+   "draw": "Draw the pup on Dad!",
+   "drawAr": "ارسمي الجرو يقفز على بابا!"
+  },
+  "frog": {
+   "title": "THE FROG AND THE CRAB",
+   "pages": [
+    "frog1",
+    "frog2",
+    "frog3",
+    "frog4",
+    "frog5",
+    "frog6"
+   ],
+   "questions": [
+    {
+     "q": "Who is on the rug?",
+     "opts": [
+      "🐸",
+      "🦀",
+      "🐶"
+     ],
+     "ok": 0,
+     "photos": [
+      "frog",
+      "crab",
+      "pup"
+     ]
+    },
+    {
+     "q": "Can the crab hop?",
+     "opts": [
+      "👍",
+      "👎"
+     ],
+     "ok": 1,
+     "photos": [
+      "yes",
+      "no"
+     ]
+    }
+   ],
+   "draw": "Draw the frog and the crab!",
+   "drawAr": "ارسمي الضفدع والسلطعون!"
+  },
+  "bed": {
+   "title": "THE BEST BED",
+   "pages": [
+    "bed1",
+    "bed2",
+    "bed3",
+    "bed4",
+    "bed5",
+    "bed6"
+   ],
+   "questions": [
+    {
+     "q": "Where does the pup nap?",
+     "opts": [
+      "👜",
+      "🛏️",
+      "🚌"
+     ],
+     "ok": 1,
+     "photos": [
+      "bag",
+      "bed",
+      "bus"
+     ]
+    },
+    {
+     "q": "Is the pup happy at the end?",
+     "opts": [
+      "👍",
+      "👎"
+     ],
+     "ok": 0,
+     "photos": [
+      "yes",
+      "no"
+     ]
+    }
+   ],
+   "draw": "Draw the best bed for the pup!",
+   "drawAr": "ارسمي أجمل سرير للجرو!"
+  },
+  "jet": {
+   "title": "THE JET",
+   "pages": [
+    "jet1",
+    "jet2",
+    "jet3",
+    "jet4",
+    "jet5",
+    "jet6"
+   ],
+   "questions": [
+    {
+     "q": "What is in the backpack?",
+     "opts": [
+      "🧸",
+      "🧁",
+      "👟"
+     ],
+     "ok": 1,
+     "photos": [
+      "toy",
+      "muffin",
+      "sneakers"
+     ]
+    },
+    {
+     "q": "Who gets on the jet?",
+     "opts": [
+      "🐶",
+      "🐸",
+      "👩‍👧"
+     ],
+     "ok": 2,
+     "photos": [
+      "pup",
+      "frog",
+      "mom"
+     ]
+    }
+   ],
+   "draw": "Draw the big red backpack!",
+   "drawAr": "ارسمي حقيبة الظهر الحمراء الكبيرة!"
+  }
  },
  "lessons": [
   {
@@ -1073,112 +4632,1158 @@
    "label": "U",
    "title": "U",
    "stage": 1,
-   "case": "upper"
+   "case": "upper",
+   "new": [
+    "u"
+   ],
+   "words": [
+    "but",
+    "cut",
+    "cub",
+    "tub"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "newsound",
+     "u"
+    ],
+    [
+     "hear",
+     "u"
+    ],
+    [
+     "read",
+     "cut",
+     "cub",
+     "tub",
+     "but"
+    ],
+    [
+     "diff",
+     "but/cut",
+     "cub/tub"
+    ],
+    [
+     "swap",
+     "cut>but",
+     "tub>cub"
+    ],
+    [
+     "me",
+     "word:cub"
+    ]
+   ],
+   "ready": true
   },
   {
    "n": 10,
    "label": "S",
    "title": "S",
    "stage": 1,
-   "case": "upper"
+   "case": "upper",
+   "new": [
+    "s"
+   ],
+   "words": [
+    "bus",
+    "us",
+    "sat",
+    "cats",
+    "bats",
+    "cubs",
+    "cuts",
+    "tubs"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "newsound",
+     "s"
+    ],
+    [
+     "hear",
+     "s"
+    ],
+    [
+     "where",
+     "s"
+    ],
+    [
+     "read",
+     "bus",
+     "sat",
+     "us",
+     "cats",
+     "bats",
+     "cubs"
+    ],
+    [
+     "diff",
+     "cat/cats",
+     "sat/bat"
+    ],
+    [
+     "swap",
+     "at>sat",
+     "cat>cats"
+    ],
+    [
+     "me",
+     "word:bus"
+    ]
+   ],
+   "ready": true
   },
   {
    "n": 11,
    "label": "P",
    "title": "P",
    "stage": 1,
-   "case": "upper"
+   "case": "upper",
+   "new": [
+    "p"
+   ],
+   "words": [
+    "pat",
+    "tap",
+    "cup",
+    "cups",
+    "pup",
+    "pups",
+    "up",
+    "cap",
+    "past"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "newsound",
+     "p"
+    ],
+    [
+     "pair",
+     "pb"
+    ],
+    [
+     "read",
+     "pup",
+     "cup",
+     "cap",
+     "tap",
+     "pat",
+     "up"
+    ],
+    [
+     "diff",
+     "cap/cup",
+     "pup/cup"
+    ],
+    [
+     "spell",
+     "cap",
+     "pup"
+    ],
+    [
+     "swap",
+     "cup>pup",
+     "cap>tap"
+    ],
+    [
+     "me",
+     "word:pup"
+    ]
+   ],
+   "ready": false
   },
   {
    "n": 12,
    "label": "THE",
    "title": "THE",
    "stage": 1,
-   "case": "upper"
+   "case": "upper",
+   "new": [],
+   "sight": [
+    "the"
+   ],
+   "words": [
+    "cat",
+    "pup",
+    "bus",
+    "cup"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "sight",
+     "the"
+    ],
+    [
+     "sent",
+     "l12a",
+     "l12b",
+     "l12c",
+     "l12d"
+    ],
+    [
+     "read",
+     "cups",
+     "pups",
+     "past",
+     "cuts"
+    ],
+    [
+     "spell",
+     "bus",
+     "cup"
+    ],
+    [
+     "me",
+     "word:the"
+    ]
+   ],
+   "ready": false
   },
   {
    "n": 13,
    "label": "O",
    "title": "O",
    "stage": 1,
-   "case": "upper"
+   "case": "upper",
+   "new": [
+    "o"
+   ],
+   "words": [
+    "pot",
+    "pots",
+    "top",
+    "tops",
+    "stop",
+    "spot",
+    "pop"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "newsound",
+     "o"
+    ],
+    [
+     "hear",
+     "o"
+    ],
+    [
+     "read",
+     "pot",
+     "top",
+     "stop",
+     "spot",
+     "pop"
+    ],
+    [
+     "sent",
+     "l13a",
+     "l13b",
+     "l13c",
+     "l13d"
+    ],
+    [
+     "diff",
+     "pot/pop",
+     "top/tap"
+    ],
+    [
+     "spell",
+     "top",
+     "pot"
+    ],
+    [
+     "swap",
+     "top>pop",
+     "pot>pots"
+    ],
+    [
+     "me",
+     "word:stop"
+    ]
+   ],
+   "ready": false
   },
   {
    "n": 14,
    "label": "H",
    "title": "H",
    "stage": 1,
-   "case": "upper"
+   "case": "upper",
+   "new": [
+    "h"
+   ],
+   "sight": [
+    "he"
+   ],
+   "words": [
+    "hat",
+    "hats",
+    "hut",
+    "hot",
+    "hop",
+    "hops",
+    "has"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "newsound",
+     "h"
+    ],
+    [
+     "hear",
+     "h"
+    ],
+    [
+     "sight",
+     "he"
+    ],
+    [
+     "read",
+     "hat",
+     "hot",
+     "hop",
+     "hut",
+     "has"
+    ],
+    [
+     "sent",
+     "l14a",
+     "l14b",
+     "l14c",
+     "l14d"
+    ],
+    [
+     "diff",
+     "hat/hut",
+     "hot/hop"
+    ],
+    [
+     "spell",
+     "hat",
+     "hop"
+    ],
+    [
+     "me",
+     "word:hat"
+    ]
+   ],
+   "ready": false
   },
   {
    "n": 15,
    "label": "N",
    "title": "N",
    "stage": 1,
-   "case": "upper"
+   "case": "upper",
+   "new": [
+    "n"
+   ],
+   "words": [
+    "on",
+    "sun",
+    "not",
+    "can",
+    "bun",
+    "buns",
+    "pan",
+    "nut",
+    "nuts",
+    "snap"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "newsound",
+     "n"
+    ],
+    [
+     "hear",
+     "n"
+    ],
+    [
+     "where",
+     "n"
+    ],
+    [
+     "read",
+     "sun",
+     "nut",
+     "can",
+     "pan",
+     "not",
+     "snap"
+    ],
+    [
+     "sent",
+     "l15a",
+     "l15b",
+     "l15c",
+     "l15d"
+    ],
+    [
+     "diff",
+     "not/nut",
+     "sun/bun"
+    ],
+    [
+     "spell",
+     "sun",
+     "nut"
+    ],
+    [
+     "swap",
+     "sun>bun",
+     "can>pan"
+    ],
+    [
+     "me",
+     "word:sun"
+    ]
+   ],
+   "ready": false
   },
   {
    "n": 16,
    "label": "★",
    "title": "Review",
    "stage": 1,
-   "case": "upper"
+   "case": "upper",
+   "new": [],
+   "words": [
+    "cut",
+    "bus",
+    "cup",
+    "pot",
+    "stop",
+    "hat",
+    "hop",
+    "sun",
+    "pan",
+    "nuts"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "read",
+     "cut",
+     "bus",
+     "pot",
+     "stop",
+     "hop",
+     "pan",
+     "nuts"
+    ],
+    [
+     "sent",
+     "l16a",
+     "l16b",
+     "l16c",
+     "l16d"
+    ],
+    [
+     "diff",
+     "hat/hot",
+     "cup/pup"
+    ],
+    [
+     "spell",
+     "stop",
+     "pan"
+    ],
+    [
+     "swap",
+     "hot>pot",
+     "cut>nut"
+    ],
+    [
+     "hear",
+     "n"
+    ],
+    [
+     "me",
+     "word:stop"
+    ]
+   ],
+   "ready": false
   },
   {
    "n": 17,
    "label": "G",
    "title": "G",
    "stage": 1,
-   "case": "upper"
+   "case": "upper",
+   "new": [
+    "g"
+   ],
+   "sight": [
+    "no"
+   ],
+   "words": [
+    "hug",
+    "hugs",
+    "bug",
+    "bugs",
+    "gap",
+    "got",
+    "tug",
+    "bag",
+    "bags",
+    "tag",
+    "snug"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "newsound",
+     "g"
+    ],
+    [
+     "hear",
+     "g"
+    ],
+    [
+     "where",
+     "g"
+    ],
+    [
+     "sight",
+     "no"
+    ],
+    [
+     "read",
+     "bug",
+     "bag",
+     "hug",
+     "tag",
+     "got",
+     "snug"
+    ],
+    [
+     "sent",
+     "l17a",
+     "l17b",
+     "l17c",
+     "l17d"
+    ],
+    [
+     "diff",
+     "bug/bag",
+     "hug/tug"
+    ],
+    [
+     "spell",
+     "bug",
+     "bag"
+    ],
+    [
+     "swap",
+     "bug>hug",
+     "bag>tag"
+    ],
+    [
+     "me",
+     "word:hug"
+    ]
+   ],
+   "ready": false
   },
   {
    "n": 18,
    "label": "D",
    "title": "D",
    "stage": 1,
-   "case": "upper"
+   "case": "upper",
+   "new": [
+    "d"
+   ],
+   "words": [
+    "dad",
+    "sad",
+    "had",
+    "bad",
+    "dog",
+    "and",
+    "hand",
+    "sand",
+    "stand",
+    "dot",
+    "dug"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "newsound",
+     "d"
+    ],
+    [
+     "hear",
+     "d"
+    ],
+    [
+     "where",
+     "d"
+    ],
+    [
+     "read",
+     "dad",
+     "dog",
+     "sad",
+     "hand",
+     "sand",
+     "and"
+    ],
+    [
+     "sent",
+     "l18a",
+     "l18b",
+     "l18c",
+     "l18d"
+    ],
+    [
+     "diff",
+     "dad/sad",
+     "hand/sand"
+    ],
+    [
+     "spell",
+     "dad",
+     "sand"
+    ],
+    [
+     "swap",
+     "sad>dad",
+     "and>hand"
+    ],
+    [
+     "me",
+     "word:dog"
+    ]
+   ],
+   "ready": false
   },
   {
    "n": 19,
    "label": "I",
    "title": "I",
    "stage": 1,
-   "case": "upper"
+   "case": "upper",
+   "new": [
+    "i"
+   ],
+   "words": [
+    "is",
+    "it",
+    "in",
+    "sit",
+    "bit",
+    "big",
+    "dig",
+    "did",
+    "hid",
+    "his",
+    "bin",
+    "pin",
+    "spin",
+    "tip",
+    "sip"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "newsound",
+     "i"
+    ],
+    [
+     "hear",
+     "i"
+    ],
+    [
+     "read",
+     "big",
+     "dig",
+     "sit",
+     "pin",
+     "bin",
+     "spin",
+     "it",
+     "is"
+    ],
+    [
+     "sent",
+     "l19a",
+     "l19b",
+     "l19c",
+     "l19d"
+    ],
+    [
+     "diff",
+     "big/dig",
+     "pin/bin"
+    ],
+    [
+     "spell",
+     "big",
+     "pin"
+    ],
+    [
+     "swap",
+     "bin>pin",
+     "big>dig"
+    ],
+    [
+     "me",
+     "word:big"
+    ]
+   ],
+   "ready": false
   },
   {
    "n": 20,
    "label": "F",
    "title": "F",
    "stage": 1,
-   "case": "upper"
+   "case": "upper",
+   "new": [
+    "f"
+   ],
+   "sight": [
+    "so",
+    "don't"
+   ],
+   "words": [
+    "if",
+    "fan",
+    "fun",
+    "fog",
+    "fit",
+    "fast",
+    "gift",
+    "soft",
+    "fin",
+    "off"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "newsound",
+     "f"
+    ],
+    [
+     "hear",
+     "f"
+    ],
+    [
+     "sight",
+     "so",
+     "don't"
+    ],
+    [
+     "read",
+     "fan",
+     "fun",
+     "fog",
+     "gift",
+     "soft",
+     "fast"
+    ],
+    [
+     "sent",
+     "l20a",
+     "l20b",
+     "l20c",
+     "l20d"
+    ],
+    [
+     "story",
+     "gift"
+    ],
+    [
+     "diff",
+     "fan/fin",
+     "fun/fan"
+    ],
+    [
+     "spell",
+     "fan",
+     "gift"
+    ],
+    [
+     "me",
+     "word:gift"
+    ]
+   ],
+   "ready": false
   },
   {
    "n": 21,
    "label": "R",
    "title": "R",
    "stage": 1,
-   "case": "upper"
+   "case": "upper",
+   "new": [
+    "r"
+   ],
+   "words": [
+    "run",
+    "ran",
+    "rug",
+    "frog",
+    "drip",
+    "drop",
+    "trip",
+    "grin",
+    "grins",
+    "grab",
+    "crab",
+    "crust"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "newsound",
+     "r"
+    ],
+    [
+     "hear",
+     "r"
+    ],
+    [
+     "read",
+     "run",
+     "rug",
+     "frog",
+     "crab",
+     "drip",
+     "drop",
+     "grin"
+    ],
+    [
+     "sent",
+     "l21a",
+     "l21b",
+     "l21c"
+    ],
+    [
+     "story",
+     "frog"
+    ],
+    [
+     "diff",
+     "ran/run",
+     "crab/grab"
+    ],
+    [
+     "spell",
+     "frog",
+     "run"
+    ],
+    [
+     "swap",
+     "ran>run",
+     "crab>grab"
+    ],
+    [
+     "me",
+     "word:frog"
+    ]
+   ],
+   "ready": false
   },
   {
    "n": 22,
    "label": "M",
    "title": "M",
    "stage": 1,
-   "case": "upper"
+   "case": "upper",
+   "new": [
+    "m"
+   ],
+   "sight": [
+    "to",
+    "be"
+   ],
+   "words": [
+    "map",
+    "man",
+    "mat",
+    "mud",
+    "mug",
+    "mom",
+    "mist",
+    "must",
+    "bump",
+    "hum",
+    "gum",
+    "muffin"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "newsound",
+     "m"
+    ],
+    [
+     "hear",
+     "m"
+    ],
+    [
+     "where",
+     "m"
+    ],
+    [
+     "sight",
+     "to",
+     "be"
+    ],
+    [
+     "read",
+     "mom",
+     "map",
+     "mud",
+     "mug",
+     "man",
+     "gum",
+     "muffin"
+    ],
+    [
+     "sent",
+     "l22a",
+     "l22b",
+     "l22c",
+     "l22d",
+     "l22e"
+    ],
+    [
+     "diff",
+     "man/mat",
+     "mug/mud"
+    ],
+    [
+     "spell",
+     "map",
+     "mud"
+    ],
+    [
+     "swap",
+     "mat>map",
+     "mug>hug"
+    ],
+    [
+     "me",
+     "word:mom"
+    ]
+   ],
+   "ready": false
   },
   {
    "n": 23,
    "label": "E",
    "title": "E",
    "stage": 1,
-   "case": "upper"
+   "case": "upper",
+   "new": [
+    "e"
+   ],
+   "words": [
+    "red",
+    "bed",
+    "fed",
+    "pet",
+    "met",
+    "net",
+    "end",
+    "bend",
+    "den",
+    "ten",
+    "bent",
+    "best",
+    "rest",
+    "test",
+    "pen",
+    "hen",
+    "hens",
+    "get",
+    "naps"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "newsound",
+     "e"
+    ],
+    [
+     "pair",
+     "ei"
+    ],
+    [
+     "read",
+     "red",
+     "bed",
+     "hen",
+     "pen",
+     "ten",
+     "net",
+     "best"
+    ],
+    [
+     "sent",
+     "l23a",
+     "l23b",
+     "l23c",
+     "l23d"
+    ],
+    [
+     "story",
+     "bed"
+    ],
+    [
+     "diff",
+     "bed/red",
+     "pen/hen"
+    ],
+    [
+     "spell",
+     "bed",
+     "ten"
+    ],
+    [
+     "swap",
+     "bed>red",
+     "pen>hen"
+    ],
+    [
+     "me",
+     "word:red"
+    ]
+   ],
+   "ready": false
   },
   {
    "n": 24,
    "label": "J K",
    "title": "J, K",
    "stage": 1,
-   "case": "upper"
+   "case": "upper",
+   "new": [
+    "j",
+    "k"
+   ],
+   "sight": [
+    "your"
+   ],
+   "words": [
+    "jog",
+    "jug",
+    "job",
+    "jump",
+    "just",
+    "jam",
+    "jet",
+    "kid",
+    "kit",
+    "skip",
+    "back",
+    "pack",
+    "duck",
+    "backpack",
+    "jacket",
+    "pocket"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "newsound",
+     "j"
+    ],
+    [
+     "hear",
+     "j"
+    ],
+    [
+     "sight",
+     "your"
+    ],
+    [
+     "read",
+     "jam",
+     "jet",
+     "jug",
+     "jump",
+     "kid",
+     "duck",
+     "back",
+     "pack"
+    ],
+    [
+     "sent",
+     "l24a",
+     "l24b",
+     "l24c"
+    ],
+    [
+     "story",
+     "jet"
+    ],
+    [
+     "diff",
+     "jug/jog",
+     "back/pack"
+    ],
+    [
+     "spell",
+     "jam",
+     "duck"
+    ],
+    [
+     "swap",
+     "back>pack",
+     "jug>jog"
+    ],
+    [
+     "me",
+     "word:jump"
+    ]
+   ],
+   "ready": false
   },
   {
    "n": 25,
@@ -1468,23 +6073,97 @@
    "case": "lower"
   }
  ],
+ "photos": [
+  "act",
+  "alligator",
+  "ant",
+  "apple",
+  "astronaut",
+  "ball",
+  "basket",
+  "bat",
+  "bats",
+  "bed",
+  "bee",
+  "boat",
+  "book",
+  "bucket",
+  "bug",
+  "bus",
+  "cab",
+  "cap",
+  "car",
+  "cat",
+  "cats",
+  "clock",
+  "crab",
+  "cub",
+  "cubs",
+  "cup",
+  "cut",
+  "cuts",
+  "dog",
+  "dress",
+  "duck",
+  "egg",
+  "fish",
+  "foot",
+  "glass",
+  "guitar",
+  "hat",
+  "hotel",
+  "key",
+  "kite",
+  "map",
+  "monkey",
+  "moon",
+  "mud",
+  "net",
+  "pen",
+  "rabbit",
+  "robot",
+  "rocket",
+  "sad",
+  "sat",
+  "seal",
+  "sock",
+  "sun",
+  "tea",
+  "ten",
+  "tent",
+  "tiger",
+  "toy",
+  "tub",
+  "tubs",
+  "umbrella",
+  "under",
+  "up",
+  "us",
+  "web",
+  "zebra"
+ ],
  "puzzles": [
   {
    "id": "p01",
-   "img": "assets/reads/puzzles/p01.webp"
+   "img": "assets/reads/puzzles/p01.webp",
+   "title": "أصدقاء لطاف"
   },
   {
    "id": "p02",
-   "img": "assets/reads/puzzles/p02.webp"
+   "img": "assets/reads/puzzles/p02.webp",
+   "title": "حلويات سعيدة"
   },
   {
    "id": "p03",
-   "img": "assets/reads/puzzles/p03.webp"
+   "img": "assets/reads/puzzles/p03.webp",
+   "title": "حديقة مبتسمة"
   },
   {
    "id": "p04",
-   "img": "assets/reads/puzzles/p04.webp"
+   "img": "assets/reads/puzzles/p04.webp",
+   "title": "كنوز السكويشي"
   }
  ],
+ "bookPages": 12,
  "puzzleRule": "one piece per day of use (days 1-6), the last two on day 7: the finished puzzle is the big reward"
 }

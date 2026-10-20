@@ -64,7 +64,10 @@ D.lessons.filter(L => L.ready).forEach(L => {
     assert(voice['w-' + w], `no clip for ${w}`);
   });
 });
-Object.values(D.ear).forEach(e => ['beg', 'mid', 'end', 'no'].forEach(k => e[k].forEach(w => assert(voice['w-' + w], `no clip for ${w}`))));
+// ear-game words of the lessons that are open (later lessons open only when their voice is recorded)
+D.lessons.filter(L => L.ready).forEach(L => L.beats.filter(b => b[0] === 'hear' || b[0] === 'where').forEach(b => {
+  const e = D.ear[b[1]]; ['beg', 'mid', 'end', 'no'].forEach(k => e[k].forEach(w => assert(voice['w-' + w], `lesson ${L.n}: no clip for ${w}`)));
+}));
 // every sound lessons 1-8 use has a built-in clip, so no lesson waits for a recording
 D.lessons.filter(L => L.ready).forEach(L => core.taught(D, L.n, true).forEach(id => assert(voice['p-' + id], `no built-in sound /${id}/ for lesson ${L.n}`)));
 console.log('Maria Reads rules: all tests passed');
