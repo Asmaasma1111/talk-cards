@@ -2425,3 +2425,38 @@ body[data-profile="mama"] .deck-apps { display: none; }
 .rd-yesmark svg { width: 44px; height: 44px; }
 .rd-nomark { display: grid; place-items: center; color: #E5484D; }
 .rd-nomark svg { width: min(15vw, 130px); height: min(15vw, 130px); }
+
+/* bigger cards and pictures, so she sees them clearly (her request, 20 Oct 2026) */
+.rd-photo { width: clamp(220px, 36vh, 320px); height: clamp(220px, 36vh, 320px); border-radius: 36px; }
+.rd-after { min-height: clamp(220px, 36vh, 320px); }
+.rd-pic { height: clamp(220px, 34vh, 300px); }
+.rd-emo { font-size: clamp(140px, 22vh, 190px); }
+.rd-fbphoto { width: clamp(300px, 48vh, 420px); height: clamp(300px, 48vh, 420px); border-radius: 48px; }
+.rd-yes, .rd-no { width: min(36vw, 40vh, 320px); height: min(36vw, 40vh, 320px); }
+.rd-car { width: min(28vw, 250px); height: min(28vh, 220px); }
+.rd-opt { width: min(30vw, 36vh, 280px); height: min(30vw, 36vh, 280px); }
+.rd-item { width: clamp(200px, 26vw, 260px); }
+.rd-buy { width: clamp(260px, 38vh, 340px); }
+.rd-act { width: min(38vw, 300px); min-height: min(38vw, 40vh, 300px); }
+.rd-spot { width: 170px; height: 170px; } .rd-spot b { font-size: 100px; }
+@media (max-height: 800px) {
+  .rd-yes, .rd-no { width: min(34vw, 42vh, 300px); height: min(34vw, 42vh, 300px); }
+  .rd-car { height: min(26vh, 190px); }
+}
+
+/* Flashcards Basketball, taking a sound away, building up a long sentence */
+.rd-ball { gap: 14px; }
+.rd-hoopbox { position: relative; width: 220px; height: 150px; }
+.rd-backboard { position: absolute; left: 20px; right: 20px; top: 0; height: 96px; border-radius: 14px; background: #fff; box-shadow: inset 0 0 0 6px #F27BA8, 0 8px 18px rgba(158, 47, 99, .15); }
+.rd-backboard::after { content: ''; position: absolute; left: 50%; top: 34px; translate: -50% 0; width: 70px; height: 46px; border: 5px solid #F27BA8; border-radius: 6px; }
+.rd-rim { position: absolute; left: 50%; top: 92px; translate: -50% 0; width: 120px; height: 16px; border-radius: 99px; background: #FF8A3D; box-shadow: 0 4px 0 #D9681F; z-index: 2; }
+.rd-net { position: absolute; left: 50%; top: 104px; translate: -50% 0; width: 104px; height: 48px; clip-path: polygon(0 0, 100% 0, 82% 100%, 18% 100%);
+  background: repeating-linear-gradient(60deg, transparent 0 8px, rgba(255, 255, 255, .95) 8px 11px), repeating-linear-gradient(-60deg, transparent 0 8px, rgba(255, 255, 255, .95) 8px 11px); background-color: rgba(242, 123, 168, .25); }
+.rd-hoopbox.swish .rd-net { animation: rdSwish .5s ease; }
+@keyframes rdSwish { 50% { transform: scaleY(1.25) translateY(4px); } }
+.rd-score { margin: 0; font: 800 30px var(--apfont); color: var(--rdeep); }
+.rd-flick { width: auto; height: auto; min-width: 300px; padding: 34px 56px; border-radius: 40px; border: 6px solid #FFE3EE; background: #fff; touch-action: none;
+  font: 700 clamp(84px, 12vw, 136px)/1 var(--read); color: var(--ink); box-shadow: 0 12px 0 #F1DCE5, 0 22px 40px rgba(158, 47, 99, .14); }
+.rd-tile.wipe { animation: rdWipe .55s ease forwards; }
+@keyframes rdWipe { to { transform: translateY(-80px) rotate(-14deg) scale(.6); opacity: 0; } }
+.rd-lw.hide { visibility: hidden; }

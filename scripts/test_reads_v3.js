@@ -29,6 +29,13 @@ assert.deepStrictEqual(core.clean({ current: 4, lessons: {}, stars: { total: 9, 
 assert.strictEqual(core.clean({ current: 4, lessons: {}, stars: { total: 9, days: {} } }).stars.total, 9);
 
 // every lesson 1-8 step uses a known beat and only words that exist
-const BEATS = ['flash', 'newsound', 'hear', 'where', 'read', 'swap', 'me', 'sight', 'diff', 'spell', 'sent', 'story', 'pair', 'stretch', 'action', 'run', 'shop', 'hoops', 'teach'];
-D.lessons.slice(0, 8).forEach(L => L.beats.forEach(b => assert(BEATS.includes(b[0]), `lesson ${L.n}: ${b[0]}`)));
+const BEATS = ['flash', 'newsound', 'hear', 'where', 'read', 'swap', 'me', 'sight', 'diff', 'spell', 'sent', 'story', 'pair', 'stretch', 'action', 'run', 'shop', 'hoops', 'teach', 'basket'];
+D.lessons.filter(L => L.beats).forEach(L => L.beats.forEach(b => assert(BEATS.includes(b[0]), `lesson ${L.n}: ${b[0]}`)));
+// a swap is adding, changing or taking away one letter tile
+D.lessons.filter(L => L.beats).forEach(L => L.beats.filter(b => b[0] === 'swap').forEach(b => b.slice(1).forEach(x => {
+  const [a, c] = x.split('>'), A = D.words[a].tiles, C = D.words[c].tiles; assert(Math.abs(A.length - C.length) <= 1, `lesson ${L.n}: ${x}`);
+})));
+// the -ed ending: one tile, said /t/ after an unvoiced sound and /d/ otherwise; the M or N pairs are heard words
+assert.deepStrictEqual(D.words.hopped.says, ['h', 'o', 'p', 't']); assert.deepStrictEqual(D.words.hugged.says, ['h', 'u', 'g', 'd']);
+assert(D.pairs.mn.pairs.every(pr => pr.every(w => w in D.emoji)));
 console.log('Maria Reads v3 rules: all tests passed');

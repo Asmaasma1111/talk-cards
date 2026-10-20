@@ -2695,6 +2695,84 @@
     "YOUR"
    ],
    "says": []
+  },
+  "a": {
+   "sight": true,
+   "tiles": [
+    "A"
+   ],
+   "says": []
+  },
+  "i": {
+   "sight": true,
+   "tiles": [
+    "I"
+   ],
+   "says": []
+  },
+  "of": {
+   "sight": true,
+   "tiles": [
+    "OF"
+   ],
+   "says": []
+  },
+  "into": {
+   "sight": true,
+   "tiles": [
+    "INTO"
+   ],
+   "says": []
+  },
+  "hopped": {
+   "e": "🐰",
+   "tiles": [
+    "H",
+    "O",
+    "PP",
+    "ED"
+   ],
+   "says": [
+    "h",
+    "o",
+    "p",
+    "t"
+   ],
+   "ed": true
+  },
+  "jumped": {
+   "e": "🤸‍♀️",
+   "tiles": [
+    "J",
+    "U",
+    "M",
+    "P",
+    "ED"
+   ],
+   "says": [
+    "j",
+    "u",
+    "m",
+    "p",
+    "t"
+   ],
+   "ed": true
+  },
+  "hugged": {
+   "e": "🤗",
+   "tiles": [
+    "H",
+    "U",
+    "GG",
+    "ED"
+   ],
+   "says": [
+    "h",
+    "u",
+    "g",
+    "d"
+   ],
+   "ed": true
   }
  },
  "ear": {
@@ -3285,7 +3363,14 @@
   "set": null,
   "sit": "🪑",
   "bet": null,
-  "bit": null
+  "bit": null,
+  "nap": "😴",
+  "mice": "🐭",
+  "nice": "😊",
+  "mail": "📬",
+  "nail": "💅",
+  "meat": "🥩",
+  "neat": "✨"
  },
  "pairs": {
   "pb": {
@@ -3339,6 +3424,28 @@
      "bit"
     ]
    ]
+  },
+  "mn": {
+   "a": "m",
+   "b": "n",
+   "pairs": [
+    [
+     "map",
+     "nap"
+    ],
+    [
+     "mice",
+     "nice"
+    ],
+    [
+     "mail",
+     "nail"
+    ],
+    [
+     "meat",
+     "neat"
+    ]
+   ]
   }
  },
  "sentences": {
@@ -3377,6 +3484,17 @@
    ],
    "e": "🥤",
    "photo": "cup"
+  },
+  "l13e": {
+   "text": "A PUP SAT UP.",
+   "words": [
+    "a",
+    "pup",
+    "sat",
+    "up"
+   ],
+   "e": "🐶",
+   "photo": "up"
   },
   "l13a": {
    "text": "THE CAT SAT.",
@@ -3458,6 +3576,16 @@
     "hop"
    ],
    "e": "🐶",
+   "photo": "hop"
+  },
+  "l15e": {
+   "text": "I CAN HOP.",
+   "words": [
+    "i",
+    "can",
+    "hop"
+   ],
+   "e": "🐰",
    "photo": "hop"
   },
   "l15a": {
@@ -3724,6 +3852,17 @@
    "e": "🐱",
    "photo": "soft"
   },
+  "l21d": {
+   "text": "A CUP OF SAND.",
+   "words": [
+    "a",
+    "cup",
+    "of",
+    "sand"
+   ],
+   "e": "🥤🏖️",
+   "photo": "sand"
+  },
   "l21a": {
    "text": "THE FROG CAN HOP.",
    "words": [
@@ -3814,6 +3953,19 @@
    "e": "👩",
    "photo": "mom"
   },
+  "l22f": {
+   "text": "THE DOG RAN INTO THE MUD.",
+   "words": [
+    "the",
+    "dog",
+    "ran",
+    "into",
+    "the",
+    "mud"
+   ],
+   "e": "🐶🟤",
+   "photo": "mud"
+  },
   "l23a": {
    "text": "THE HEN IS RED.",
    "words": [
@@ -3859,6 +4011,29 @@
    ],
    "e": "🐔☀️",
    "photo": "sun"
+  },
+  "l24d": {
+   "text": "THE KID JUMPED AND HOPPED.",
+   "words": [
+    "the",
+    "kid",
+    "jumped",
+    "and",
+    "hopped"
+   ],
+   "e": "🤸‍♀️",
+   "photo": "kid"
+  },
+  "l24e": {
+   "text": "MOM HUGGED THE PUP.",
+   "words": [
+    "mom",
+    "hugged",
+    "the",
+    "pup"
+   ],
+   "e": "🤗🐶",
+   "photo": "pup"
   },
   "l24a": {
    "text": "JUMP, KID, JUMP!",
@@ -4884,6 +5059,15 @@
      "word:cub"
     ]
    ],
+   "notes": [
+    {
+     "title": "U says /u/",
+     "text": [
+      "A short /u/ as in up. Contrast it with /a/: cut and cat, tub and tab.",
+      "What's the difference: she finds the one letter that changed between two words."
+     ]
+    }
+   ],
    "ready": true
   },
   {
@@ -4944,6 +5128,15 @@
      "me",
      "word:bus"
     ]
+   ],
+   "notes": [
+    {
+     "title": "S says /s/",
+     "text": [
+      "A long, smooth snake sound she can hold: ssssun.",
+      "Adding S at the end makes more than one: cat, cats."
+     ]
+    }
    ],
    "ready": true
   },
@@ -5008,6 +5201,15 @@
      "word:pup"
     ]
    ],
+   "notes": [
+    {
+     "title": "P says /p/",
+     "text": [
+      "/p/ is a puff of air; /b/ has voice. Arabic has no /p/, so the p-or-b ear game matters.",
+      "Spelling from dictation starts now and comes in every lesson from here on."
+     ]
+    }
+   ],
    "ready": false
   },
   {
@@ -5058,6 +5260,15 @@
      "word:the"
     ]
    ],
+   "notes": [
+    {
+     "title": "THE, the first sight word",
+     "text": [
+      "THE is learnt whole: hear it, tap it, read it. Do not sound it out.",
+      "The first sentences: she reads each word, then swipes under the whole sentence."
+     ]
+    }
+   ],
    "ready": false
   },
   {
@@ -5068,6 +5279,9 @@
    "case": "upper",
    "new": [
     "o"
+   ],
+   "sight": [
+    "a"
    ],
    "words": [
     "pot",
@@ -5099,11 +5313,16 @@
      "pop"
     ],
     [
+     "sight",
+     "a"
+    ],
+    [
      "sent",
      "l13a",
      "l13b",
      "l13c",
-     "l13d"
+     "l13d",
+     "l13e"
     ],
     [
      "diff",
@@ -5124,6 +5343,15 @@
      "me",
      "word:stop"
     ]
+   ],
+   "notes": [
+    {
+     "title": "O says /o/",
+     "text": [
+      "The American o, like \"awe\" in hot.",
+      "A on its own is a word too (A PUP). Say it the way you would in a sentence."
+     ]
+    }
    ],
    "ready": false
   },
@@ -5194,6 +5422,14 @@
      "word:hat"
     ]
    ],
+   "notes": [
+    {
+     "title": "H says /h/",
+     "text": [
+      "/h/ is only a breath. HE is a word where the E at the end says its name."
+     ]
+    }
+   ],
    "ready": false
   },
   {
@@ -5204,6 +5440,9 @@
    "case": "upper",
    "new": [
     "n"
+   ],
+   "sight": [
+    "i"
    ],
    "words": [
     "on",
@@ -5243,7 +5482,12 @@
      "snap"
     ],
     [
+     "sight",
+     "i"
+    ],
+    [
      "sent",
+     "l15e",
      "l15a",
      "l15b",
      "l15c",
@@ -5268,6 +5512,14 @@
      "me",
      "word:sun"
     ]
+   ],
+   "notes": [
+    {
+     "title": "N says /n/",
+     "text": [
+      "/n/ is a hum through the nose. I on its own is a word too: I CAN HOP."
+     ]
+    }
    ],
    "ready": false
   },
@@ -5324,7 +5576,17 @@
     [
      "swap",
      "hot>pot",
-     "cut>nut"
+     "cut>nut",
+     "nuts>nut"
+    ],
+    [
+     "basket",
+     "cup",
+     "pot",
+     "hat",
+     "sun",
+     "bus",
+     "stop"
     ],
     [
      "hear",
@@ -5334,6 +5596,15 @@
      "me",
      "word:stop"
     ]
+   ],
+   "notes": [
+    {
+     "title": "Review",
+     "text": [
+      "A longer review: split it over two sessions if she tires.",
+      "Flashcards Basketball: she reads the card aloud, then flicks it into the basket. Taking a sound away: NUTS becomes NUT."
+     ]
+    }
    ],
    "ready": false
   },
@@ -5418,6 +5689,14 @@
      "word:hug"
     ]
    ],
+   "notes": [
+    {
+     "title": "G says /g/",
+     "text": [
+      "A short /g/, never \"guh\". NO: the O at the end says its name."
+     ]
+    }
+   ],
    "ready": false
   },
   {
@@ -5487,12 +5766,21 @@
     [
      "swap",
      "sad>dad",
-     "and>hand"
+     "and>hand",
+     "sand>sad"
     ],
     [
      "me",
      "word:dog"
     ]
+   ],
+   "notes": [
+    {
+     "title": "D says /d/",
+     "text": [
+      "A short /d/, never \"duh\". Taking a sound away: SAND becomes SAD."
+     ]
+    }
    ],
    "ready": false
   },
@@ -5571,6 +5859,15 @@
      "me",
      "word:big"
     ]
+   ],
+   "notes": [
+    {
+     "title": "I says /i/",
+     "text": [
+      "The short /i/ as in it.",
+      "In IS and HIS the S sounds like /z/. The rule comes in lesson 32; for now, say the word for her and let her copy it."
+     ]
+    }
    ],
    "ready": false
   },
@@ -5651,6 +5948,16 @@
      "word:gift"
     ]
    ],
+   "notes": [
+    {
+     "title": "F says /f/",
+     "text": [
+      "Top teeth on the bottom lip, then air: ffff.",
+      "SO and DON'T: the O says its name, /oh/.",
+      "The first story: after each page, talk about what happened."
+     ]
+    }
+   ],
    "ready": false
   },
   {
@@ -5661,6 +5968,9 @@
    "case": "upper",
    "new": [
     "r"
+   ],
+   "sight": [
+    "of"
    ],
    "words": [
     "run",
@@ -5699,10 +6009,15 @@
      "grin"
     ],
     [
+     "sight",
+     "of"
+    ],
+    [
      "sent",
      "l21a",
      "l21b",
-     "l21c"
+     "l21c",
+     "l21d"
     ],
     [
      "story",
@@ -5728,6 +6043,16 @@
      "word:frog"
     ]
    ],
+   "notes": [
+    {
+     "title": "R says /r/",
+     "text": [
+      "A growl with no vowel before it: rrrr, not \"er\".",
+      "OF is a sight word: learnt whole.",
+      "DR and TR: in fast speech DRIP can sound like \"jrip\" and TRIP like \"chrip\". That is normal. Teach the clean sounds and do not worry about it."
+     ]
+    }
+   ],
    "ready": false
   },
   {
@@ -5741,7 +6066,8 @@
    ],
    "sight": [
     "to",
-    "be"
+    "be",
+    "into"
    ],
    "words": [
     "map",
@@ -5776,7 +6102,12 @@
     [
      "sight",
      "to",
-     "be"
+     "be",
+     "into"
+    ],
+    [
+     "pair",
+     "mn"
     ],
     [
      "read",
@@ -5794,7 +6125,8 @@
      "l22b",
      "l22c",
      "l22d",
-     "l22e"
+     "l22e",
+     "l22f"
     ],
     [
      "diff",
@@ -5815,6 +6147,15 @@
      "me",
      "word:mom"
     ]
+   ],
+   "notes": [
+    {
+     "title": "M says /m/",
+     "text": [
+      "Lips closed, a hum. /m/ and /n/ are easy to mix up: the M or N ear game helps.",
+      "TO is a sight word, said \"too\". INTO is IN and TO together. BE: the E says its name."
+     ]
+    }
    ],
    "ready": false
   },
@@ -5901,6 +6242,14 @@
      "word:red"
     ]
    ],
+   "notes": [
+    {
+     "title": "E says /e/",
+     "text": [
+      "The short /e/ as in egg. /e/ and /i/ are easy to mix up: the e-or-i ear game helps."
+     ]
+    }
+   ],
    "ready": false
   },
   {
@@ -5962,10 +6311,27 @@
      "pack"
     ],
     [
+     "read",
+     "jumped",
+     "hopped",
+     "hugged"
+    ],
+    [
      "sent",
      "l24a",
      "l24b",
-     "l24c"
+     "l24c",
+     "l24d",
+     "l24e"
+    ],
+    [
+     "basket",
+     "jam",
+     "jet",
+     "duck",
+     "pack",
+     "kid",
+     "jump"
     ],
     [
      "story",
@@ -5990,6 +6356,16 @@
      "me",
      "word:jump"
     ]
+   ],
+   "notes": [
+    {
+     "title": "J and K",
+     "text": [
+      "Two new letters: /j/ (never \"juh\") and /k/, which she knows from C.",
+      "YOUR is a sight word.",
+      "Words ending in -ED: the E is said only after D or T (added, started). Otherwise it is skipped: hopped sounds like \"hopt\", hugged like \"hugd\". The ED tile shows this."
+     ]
+    }
    ],
    "ready": false
   },

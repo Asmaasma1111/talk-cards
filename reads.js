@@ -189,7 +189,8 @@ const CUE = {
   run: 'اسمعي الصوت، ثم المسي حرفه',
   shop: 'اشتري بقول الأصوات',
   hoops: 'قفزة لكل صوت',
-  teach: 'أنتِ المعلّمة اليوم!'
+  teach: 'أنتِ المعلّمة اليوم!',
+  basket: 'اقرئي البطاقة ثم اقذفيها في السلة'
 };
 
 /* =====================================================================================================
@@ -242,7 +243,7 @@ function mount(api) {
   }
   const grapheme = id => (SOUND[id] ? SOUND[id].g.split(' ')[0] : id.toUpperCase());
   const TILE = { A: 'a', B: 'b', C: 'k', D: 'd', E: 'e', F: 'f', G: 'g', H: 'h', I: 'i', J: 'j', K: 'k', M: 'm', N: 'n', O: 'o', P: 'p', R: 'r', S: 's', T: 't', U: 'u',
-                 CK: 'k', FF: 'f', SS: 's', GG: 'g' };
+                 CK: 'k', FF: 'f', SS: 's', GG: 'g', PP: 'p', DD: 'd', TT: 't' };
   const tileSound = c => TILE[c] || null;
   // a real photo when there is one (her request: real photos, not emoji or drawings), else the old picture
   const PHOTO = () => new Set((D && D.photos) || []);
@@ -944,6 +945,7 @@ function mount(api) {
   }
   function swapOne(s, from, to) {
     const A = D.words[from].tiles, B = D.words[to].tiles;
+    if (B.length === A.length - 1) return dropOne(s, from, to);
     let slot, letter;                                           // where the new tile goes, and which letter it is
     if (B.length === A.length + 1 && B.slice(1).join('') === A.join('')) { slot = 0; letter = B[0]; }
     else if (B.length === A.length + 1 && B.slice(0, -1).join('') === A.join('')) { slot = A.length; letter = B[B.length - 1]; }
@@ -976,6 +978,34 @@ function mount(api) {
           tries++; b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
           await sayLetter(sid(b.dataset.c)); await sleep(250);
           await (tries > 1 ? sayStretchy(to) : sayWord(to));
+        }
+      }));
+    });
+  }
+
+  // take a sound away: CATS -> CAT; she taps the letter that has to go, it flies off, then she reads the new word
+  function dropOne(s, from, to) {
+    const A = D.words[from].tiles, B = D.words[to].tiles;
+    let k = A.findIndex((t, i) => t !== B[i]); if (k < 0) k = A.length - 1;
+    stage.innerHTML = `<div class="rd-swap rd-drop"><p class="rd-sayit" lang="ar" dir="rtl">أي حرف نمحو؟ 🧽</p>
+      <div class="rd-word">${A.map((t, i) => `<button class="rd-tile" data-i="${i}">${esc(t)}</button>`).join('')}</div>
+      <button class="rd-replay" id="rdAgain" aria-label="اسمعي الكلمة">${ic('i-speaker')}</button></div>`;
+    $('#rdAgain').addEventListener('click', () => sayWord(to));
+    return new Promise(done => {
+      (async () => { await sayWord(from); await sleep(450); await sayWord(to); })();
+      let tries = 0;
+      stage.querySelectorAll('.rd-drop .rd-tile').forEach(b => b.addEventListener('click', async () => {
+        api.SFX.init();
+        if (Number(b.dataset.i) === k) {
+          stage.querySelectorAll('.rd-drop .rd-tile').forEach(x => { x.disabled = true; });
+          b.classList.add('wipe'); api.SFX.flip && api.SFX.flip();
+          await sleep(550); if (s !== S) return;
+          await readWord(s, to, '<div class="rd-made">🧽✨</div>');
+          done();
+        } else {
+          tries++; b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+          await sayWord(to);
+          if (tries > 1) { const want = stage.querySelector(`.rd-drop .rd-tile[data-i="${k}"]`); if (want) want.classList.add('nudge'); }
         }
       }));
     });
@@ -1098,7 +1128,7 @@ function mount(api) {
         if (b.dataset.c === T[i]) {
           const sl = stage.querySelector(`[data-slot="${i}"]`); b.disabled = true; b.classList.add('used');
           sl.textContent = b.dataset.c; sl.classList.remove('slot'); sl.classList.add('lit', 'pop');
-          sayLetter(tileSound(b.dataset.c)); i++; tries = 0;
+          sayLetter(W.says[i]); i++; tries = 0;      // the sound in this word (the ED of HOPPED says /t/)
           if (i === T.length) {
             stage.querySelectorAll('.rd-tray .pick').forEach(x => { x.disabled = true; });
             await sleep(550); if (s !== S) return;
@@ -1123,10 +1153,12 @@ function mount(api) {
   async function sentOne(s, id, opts = {}) {
     const X = D.sentences[id], toks = X.text.split(/\s+/);
     const line = k => `${opts.page ? `<div class="rd-page">${esc(opts.page)}</div>` : ''}<div class="rd-line">${toks.map((t, i) => `<span class="rd-lw${i < k ? ' on' : i === k ? ' cur' : ''}">${esc(t)}</span>`).join(' ')}</div>`;
+    const long = X.words.length >= 5;      // a long sentence: after each new word, she reads again from the start
     for (let k = 0; k < X.words.length; k++) {
       if (s !== S) return;
       const w = X.words[k], known = s.n >= 11 && (r.ok[w] || 0) >= 3;
       await readWord(s, w, line(k), { quick: known, quiet: true, before: X.words.slice(0, k) });
+      if (long && k > 0 && k < X.words.length - 1 && s === S) await buildUp(s, toks, k + 1, opts);
     }
     if (s !== S) return;
     stage.innerHTML = `<div class="rd-read rd-sentence">${opts.page ? `<div class="rd-page">${esc(opts.page)}</div>` : ''}
@@ -1142,6 +1174,19 @@ function mount(api) {
     if (s !== S) return;
     $('#rdAfter').innerHTML = X.photo && PHOTO().has(X.photo) ? photoImg(X.photo) : X.e ? `<span class="rd-emo">${X.e}</span>` : '<span class="rd-sparkle">⭐</span>';
     api.SFX.good(); await sleep(1400);
+  }
+  // the line so far (THE FAT): she swipes under it and hears its words one after another
+  async function buildUp(s, toks, k, opts = {}) {
+    stage.innerHTML = `<div class="rd-read rd-sentence">${opts.page ? `<div class="rd-page">${esc(opts.page)}</div>` : ''}
+      <div class="rd-line big">${toks.map((t, i) => `<span class="rd-lw${i < k ? ' on' : ' hide'}">${esc(t)}</span>`).join(' ')}</div>
+      <div class="rd-swipe ready" id="rdSwipe"><span class="rd-sw-hint">›››</span><i class="rd-thumb" id="rdThumb"></i></div><p class="rd-sayit" lang="ar" dir="rtl">من البداية مرة أخرى ↩️</p></div>`;
+    await swipeOnce(); if (s !== S) return;
+    const ws = [...stage.querySelectorAll('.rd-lw.on')];
+    for (let i = 0; i < ws.length; i++) {
+      ws.forEach(x => x.classList.remove('say')); ws[i].classList.add('say');
+      const w = toks[i].replace(/[.,!?"]/g, '').toLowerCase(); await sayWord(w); await sleep(60);
+    }
+    ws.forEach(x => x.classList.remove('say')); await sleep(300);
   }
   function swipeOnce() {    // a plain left-to-right swipe under a line
     return new Promise(ok => {
@@ -1329,6 +1374,44 @@ function mount(api) {
     }
   }
 
+  /* ---------- Flashcards Basketball: read the card aloud, then flick it up into the basket; the word is said as it scores ---------- */
+  async function beatBasket(s, words) {
+    const cards = words.filter(w => D.words[w] && CLIPS['w-' + w]).slice(0, 8); if (!cards.length) return;
+    let score = 0;
+    for (const w of cards) {
+      if (!alive(s)) return;
+      const W = D.words[w];
+      stage.innerHTML = `<div class="rd-game rd-ball"><div class="rd-hoopbox" id="rdHoopBox"><span class="rd-backboard"></span><span class="rd-rim"></span><span class="rd-net"></span></div>
+        <p class="rd-score" id="rdScore">🏀 ${AR(score)}</p>
+        <button class="rd-card rd-flick" id="rdFlick">${esc(W.tiles.join(''))}</button>
+        <p class="rd-sayit" lang="ar" dir="rtl">اقرئيها، ثم اقذفيها إلى السلة ⬆️</p>
+        <button class="rd-replay small" id="rdAgain" aria-label="اسمعي">${ic('i-speaker')}</button></div>`;
+      $('#rdAgain').addEventListener('click', () => sayWord(w));
+      const card = $('#rdFlick');
+      await new Promise(ok => {
+        let y0 = null, x0 = null;
+        const nudge = setTimeout(() => card.classList.add('nudge'), 6000);
+        card.addEventListener('pointerdown', e => { api.SFX.init(); y0 = e.clientY; x0 = e.clientX; try { card.setPointerCapture(e.pointerId); } catch (err) {} });
+        card.addEventListener('pointermove', e => { if (y0 == null) return; const dy = Math.min(0, e.clientY - y0); card.style.transform = `translate(${(e.clientX - x0) * 0.3}px, ${dy}px)`; });
+        const up = async e => {
+          if (y0 == null) return; const dy = e.clientY - y0; y0 = null;
+          if (dy > -60) { card.style.transform = ''; return; }        // not a flick yet: it drops back
+          clearTimeout(nudge);
+          const hb = $('#rdHoopBox').getBoundingClientRect(), cb = card.getBoundingClientRect();
+          card.style.transition = 'transform .55s cubic-bezier(.3,.7,.4,1), opacity .55s';
+          card.style.transform = `translate(${hb.left + hb.width / 2 - (cb.left + cb.width / 2)}px, ${hb.top + hb.height * 0.55 - (cb.top + cb.height / 2)}px) scale(.28) rotate(-12deg)`;
+          card.style.opacity = '.2';
+          await sleep(560); score++; $('#rdScore').textContent = `🏀 ${AR(score)}`; $('#rdHoopBox').classList.add('swish');
+          api.SFX.good(); await sayWord(w); await sleep(500); ok();
+        };
+        card.addEventListener('pointerup', up); card.addEventListener('pointercancel', () => { y0 = null; card.style.transform = ''; });
+      });
+    }
+    if (!alive(s)) return;
+    stage.innerHTML = `<div class="rd-game rd-ball"><p class="rd-sayit big" lang="ar" dir="rtl">🏀 ${AR(score)} في السلة! رائع!</p></div>`;
+    api.SFX.unlock(); await sleep(1500);
+  }
+
   /* ---------- Teach Mama (role reversal): Teddy is the pupil and reads; Maria, the teacher, says if Teddy is right ---------- */
   async function beatTeach(s, words) {
     const known = taught(D, s.n, true);
@@ -1364,7 +1447,7 @@ function mount(api) {
 
   const BEAT = { flash: beatFlash, newsound: beatNewSound, hear: beatHear, where: beatWhere, read: beatRead, swap: beatSwap, me: beatMe,
                  sight: beatSight, diff: beatDiff, spell: beatSpell, sent: beatSent, story: beatStory, pair: beatPair,
-                 stretch: beatStretch, action: beatAction, run: beatRun, shop: beatShop, hoops: beatHoops, teach: beatTeach };
+                 stretch: beatStretch, action: beatAction, run: beatRun, shop: beatShop, hoops: beatHoops, teach: beatTeach, basket: beatBasket };
 
   /* =====================================================================================================
      The end of a session: Mama's tap, the stars, and on the first session of the day a puzzle piece

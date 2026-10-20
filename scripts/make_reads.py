@@ -70,11 +70,13 @@ sounds = [{'id': i, 'say': s, 'g': g, 'ex': ex, 'kind': k, 'lesson': l, 'tip': t
 # sight = a word she learns whole (one tile, no sounding out). Tiles: one letter each, except CK FF SS GG (one sound).
 LETTER = {'A': 'a', 'B': 'b', 'C': 'k', 'D': 'd', 'E': 'e', 'F': 'f', 'G': 'g', 'H': 'h', 'I': 'i', 'J': 'j', 'K': 'k', 'M': 'm',
           'N': 'n', 'O': 'o', 'P': 'p', 'R': 'r', 'S': 's', 'T': 't', 'U': 'u'}
-PAIRS = {'CK': 'k', 'FF': 'f', 'SS': 's', 'GG': 'g'}
+PAIRS = {'CK': 'k', 'FF': 'f', 'SS': 's', 'GG': 'g', 'PP': 'p', 'DD': 'd', 'TT': 't'}
+UNVOICED = {'p', 'k', 's', 'f', 'h', 'x', 'ch', 'sh', 'th'}
 def tiles_of(w):
     W, out, i = w.upper(), [], 0
     while i < len(W):
-        if W[i:i + 2] in PAIRS: out.append(W[i:i + 2]); i += 2
+        if W[i:].endswith('ED') and i == len(W) - 2 and len(W) > 3: out.append('ED'); i += 2   # the past-tense ending: one tile
+        elif W[i:i + 2] in PAIRS: out.append(W[i:i + 2]); i += 2
         else: out.append(W[i]); i += 1
     return out
 WORDS = {}
@@ -87,6 +89,10 @@ def word(w, e=None, pic=None, sound=False, sight=False):
         d['sight'] = True; d['tiles'] = [w.upper()]; d['says'] = []
     else:
         d['tiles'] = tiles_of(w); d['says'] = [PAIRS.get(t, LETTER.get(t)) for t in d['tiles']]
+        if d['tiles'][-1] == 'ED':   # the book's rule: the e is said only after d or t; otherwise ED is /t/ (hopped) or /d/ (hugged)
+            prev = d['says'][-2]
+            assert prev not in ('d', 't'), (w, 'add a voiced -ed word only with a clip for /ed/')
+            d['says'][-1] = 't' if prev in UNVOICED else 'd'; d['ed'] = True
         assert all(d['says']), w
     WORDS[w] = d
 # Phase 1 (lessons 1-8)
@@ -114,8 +120,10 @@ for w, e in [('but', None), ('cut', '✂️'), ('cub', '🐻'), ('tub', '🛁'),
              ('jog', '🏃‍♀️'), ('jug', '🫗'), ('job', None), ('jump', '🤸‍♀️'), ('just', None), ('jam', '🫙'), ('jet', '✈️'), ('kid', '🧒'), ('kit', '🧰'), ('skip', None),
              ('back', None), ('pack', '🎒'), ('duck', '🦆'), ('backpack', '🎒'), ('jacket', '🧥'), ('pocket', None)]:
     word(w, e)
-for w in ['the', 'he', 'no', 'so', "don't", 'to', 'be', 'your']:
+for w in ['the', 'he', 'no', 'so', "don't", 'to', 'be', 'your', 'a', 'i', 'of', 'into']:
     word(w, sight=True)
+for w, e in [('hopped', '🐰'), ('jumped', '🤸‍♀️'), ('hugged', '🤗')]:
+    word(w, e)
 
 # ear games: words she only hears (an emoji shows after she answers)
 E = {'apple': '🍎', 'ant': '🐜', 'alligator': '🐊', 'astronaut': '🧑‍🚀', 'cat': '🐱', 'map': '🗺️', 'hat': '👒', 'cap': '🧢', 'sad': '😢',
@@ -134,7 +142,9 @@ E = {'apple': '🍎', 'ant': '🐜', 'alligator': '🐊', 'astronaut': '🧑‍�
      'carrot': '🥕', 'parrot': '🦜', 'star': '⭐', 'mouse': '🐭', 'mom': '👩', 'lemon': '🍋', 'camel': '🐫', 'jam': '🫙', 'drum': '🥁',
      'elephant': '🐘', 'jet': '✈️', 'juice': '🧃', 'jug': '🫗', 'orange': '🍊', 'bridge': '🌉',
      # the /p/ and /b/ game, the /e/ and /i/ game
-     'pat': '🤚', 'bear': '🐻', 'pea': '🫛', 'bin': '🗑️', 'pack': '🎒', 'back': '🔙', 'tin': '🥫', 'set': None, 'sit': '🪑', 'bet': None, 'bit': None}
+     'pat': '🤚', 'bear': '🐻', 'pea': '🫛', 'bin': '🗑️', 'pack': '🎒', 'back': '🔙', 'tin': '🥫', 'set': None, 'sit': '🪑', 'bet': None, 'bit': None,
+     # the /m/ or /n/ game (lesson 22: two sounds made with the nose)
+     'nap': '😴', 'mice': '🐭', 'nice': '😊', 'mail': '📬', 'nail': '💅', 'meat': '🥩', 'neat': '✨'}
 EAR = {
     'a': {'beg': ['apple', 'ant', 'alligator', 'astronaut'], 'mid': ['cat', 'map', 'hat', 'cap', 'sad', 'bat'], 'end': [],
           'no': ['sun', 'dog', 'pen', 'bus', 'cup', 'fish', 'egg', 'moon', 'bed']},
@@ -181,6 +191,7 @@ for s_, d in EAR.items():
 PAIRGAMES = {
     'pb': {'a': 'p', 'b': 'b', 'pairs': [['pat', 'bat'], ['cap', 'cab'], ['pear', 'bear'], ['pea', 'bee'], ['pin', 'bin'], ['pack', 'back']]},
     'ei': {'a': 'e', 'b': 'i', 'pairs': [['pen', 'pin'], ['ten', 'tin'], ['set', 'sit'], ['bet', 'bit']]},
+    'mn': {'a': 'm', 'b': 'n', 'pairs': [['map', 'nap'], ['mice', 'nice'], ['mail', 'nail'], ['meat', 'neat']]},
 }
 for g in PAIRGAMES.values():
     for pr in g['pairs']:
@@ -195,18 +206,18 @@ def sent(sid, text, e=None):
     SENT[sid] = {'text': text, 'words': toks, **({'e': e} if e else {})}
 for sid, text, e in [
     ('l12a', 'THE CAT.', '🐱'), ('l12b', 'THE PUP.', '🐶'), ('l12c', 'THE BUS.', '🚌'), ('l12d', 'THE CUP.', '🥤'),
-    ('l13a', 'THE CAT SAT.', '🐱🪑'), ('l13b', 'STOP THE BUS!', '🛑🚌'), ('l13c', 'THE PUP SAT UP.', '🐶'), ('l13d', 'PAT THE PUP.', '🤚🐶'),
+    ('l13e', 'A PUP SAT UP.', '🐶'), ('l13a', 'THE CAT SAT.', '🐱🪑'), ('l13b', 'STOP THE BUS!', '🛑🚌'), ('l13c', 'THE PUP SAT UP.', '🐶'), ('l13d', 'PAT THE PUP.', '🤚🐶'),
     ('l14a', 'HE HAS THE HAT.', '👦👒'), ('l14b', 'THE PUP HOPS.', '🐶'), ('l14c', 'HE HOPS UP.', '👦⬆️'), ('l14d', 'HOP, PUP, HOP!', '🐶'),
-    ('l15a', 'HE CAN HOP.', '👦'), ('l15b', 'THE CAT SAT ON THE BUS.', '🐱🚌'), ('l15c', 'THE PUP CAN NOT STOP.', '🐶💨'), ('l15d', 'HE HAS THE BUN.', '🥯'),
+    ('l15e', 'I CAN HOP.', '🐰'), ('l15a', 'HE CAN HOP.', '👦'), ('l15b', 'THE CAT SAT ON THE BUS.', '🐱🚌'), ('l15c', 'THE PUP CAN NOT STOP.', '🐶💨'), ('l15d', 'HE HAS THE BUN.', '🥯'),
     ('l16a', 'THE CAT CAN HOP.', '🐱'), ('l16b', 'STOP, BUS, STOP!', '🚌🛑'), ('l16c', 'HE HAS THE HOT POT.', '🍲🔥'), ('l16d', 'THE PUP SAT ON THE CAP.', '🐶🧢'),
     ('l17a', 'NO, PUP, NO!', '🐶'), ('l17b', 'HE GOT THE BAG.', '👜'), ('l17c', 'THE BUG HOPS.', '🐞'), ('l17d', 'HUG THE PUP.', '🤗🐶'),
     ('l18a', 'DAD AND THE DOG.', '👨🐶'), ('l18b', 'THE DOG DUG.', '🐶⛏️'), ('l18c', 'STAND UP, DAD!', '👨'), ('l18d', 'THE CAT AND THE DOG SAT.', '🐱🐶'),
     ('l19a', 'THE PUP IS BIG.', '🐶'), ('l19b', 'IT IS IN THE BAG.', '👜'), ('l19c', 'SIT, PUP, SIT!', '🐶🪑'), ('l19d', 'THE DOG CAN DIG.', '🐶⛏️'),
     ('l20a', 'THE FAN IS ON.', '🪭'), ('l20b', 'IT IS SO FUN!', '🎉'), ('l20c', "DON'T STOP!", '🛑'), ('l20d', 'THE CAT IS SO SOFT.', '🐱'),
-    ('l21a', 'THE FROG CAN HOP.', '🐸'), ('l21b', 'RUN, DOG, RUN!', '🐶💨'), ('l21c', 'THE CRAB IS ON THE SAND.', '🦀🏖️'),
-    ('l22a', 'MOM HAS THE MAP.', '👩🗺️'), ('l22b', 'THE DOG IS IN THE MUD.', '🐶🟤'), ('l22c', "DON'T BUMP THE MUG!", '☕'), ('l22d', 'IT CAN BE FUN.', '🎉'), ('l22e', 'RUN TO MOM!', '👩'),
+    ('l21d', 'A CUP OF SAND.', '🥤🏖️'), ('l21a', 'THE FROG CAN HOP.', '🐸'), ('l21b', 'RUN, DOG, RUN!', '🐶💨'), ('l21c', 'THE CRAB IS ON THE SAND.', '🦀🏖️'),
+    ('l22a', 'MOM HAS THE MAP.', '👩🗺️'), ('l22b', 'THE DOG IS IN THE MUD.', '🐶🟤'), ('l22c', "DON'T BUMP THE MUG!", '☕'), ('l22d', 'IT CAN BE FUN.', '🎉'), ('l22e', 'RUN TO MOM!', '👩'), ('l22f', 'THE DOG RAN INTO THE MUD.', '🐶🟤'),
     ('l23a', 'THE HEN IS RED.', '🐔'), ('l23b', 'GET IN BED!', '🛏️'), ('l23c', 'THE PET IS IN THE DEN.', '🐾'), ('l23d', 'TEN HENS IN THE SUN!', '🐔☀️'),
-    ('l24a', 'JUMP, KID, JUMP!', '🤸‍♀️'), ('l24b', 'THE JAM IS IN THE JUG.', '🫙'), ('l24c', 'PACK YOUR BACKPACK.', '🎒'),
+    ('l24d', 'THE KID JUMPED AND HOPPED.', '🤸‍♀️'), ('l24e', 'MOM HUGGED THE PUP.', '🤗🐶'), ('l24a', 'JUMP, KID, JUMP!', '🤸‍♀️'), ('l24b', 'THE JAM IS IN THE JUG.', '🫙'), ('l24c', 'PACK YOUR BACKPACK.', '🎒'),
 ]:
     sent(sid, text, e)
 # a story: pages (sentences), 2 curiosity questions with picture answers, and a "draw it" prompt
@@ -256,30 +267,30 @@ L = [
      'beats': [['flash'], ['newsound', 'p'], ['pair', 'pb'], ['read', 'pup', 'cup', 'cap', 'tap', 'pat', 'up'], ['diff', 'cap/cup', 'pup/cup'], ['spell', 'cap', 'pup'], ['swap', 'cup>pup', 'cap>tap'], ['me', 'word:pup']]},
     {'n': 12, 'new': [], 'sight': ['the'], 'words': ['cat', 'pup', 'bus', 'cup'],
      'beats': [['flash'], ['sight', 'the'], ['sent', 'l12a', 'l12b', 'l12c', 'l12d'], ['read', 'cups', 'pups', 'past', 'cuts'], ['spell', 'bus', 'cup'], ['me', 'word:the']]},
-    {'n': 13, 'new': ['o'], 'words': ['pot', 'pots', 'top', 'tops', 'stop', 'spot', 'pop'],
-     'beats': [['flash'], ['newsound', 'o'], ['hear', 'o'], ['read', 'pot', 'top', 'stop', 'spot', 'pop'], ['sent', 'l13a', 'l13b', 'l13c', 'l13d'], ['diff', 'pot/pop', 'top/tap'], ['spell', 'top', 'pot'], ['swap', 'top>pop', 'pot>pots'], ['me', 'word:stop']]},
+    {'n': 13, 'new': ['o'], 'sight': ['a'], 'words': ['pot', 'pots', 'top', 'tops', 'stop', 'spot', 'pop'],
+     'beats': [['flash'], ['newsound', 'o'], ['hear', 'o'], ['read', 'pot', 'top', 'stop', 'spot', 'pop'], ['sight', 'a'], ['sent', 'l13a', 'l13b', 'l13c', 'l13d', 'l13e'], ['diff', 'pot/pop', 'top/tap'], ['spell', 'top', 'pot'], ['swap', 'top>pop', 'pot>pots'], ['me', 'word:stop']]},
     {'n': 14, 'new': ['h'], 'sight': ['he'], 'words': ['hat', 'hats', 'hut', 'hot', 'hop', 'hops', 'has'],
      'beats': [['flash'], ['newsound', 'h'], ['hear', 'h'], ['sight', 'he'], ['read', 'hat', 'hot', 'hop', 'hut', 'has'], ['sent', 'l14a', 'l14b', 'l14c', 'l14d'], ['diff', 'hat/hut', 'hot/hop'], ['spell', 'hat', 'hop'], ['me', 'word:hat']]},
-    {'n': 15, 'new': ['n'], 'words': ['on', 'sun', 'not', 'can', 'bun', 'buns', 'pan', 'nut', 'nuts', 'snap'],
-     'beats': [['flash'], ['newsound', 'n'], ['hear', 'n'], ['where', 'n'], ['read', 'sun', 'nut', 'can', 'pan', 'not', 'snap'], ['sent', 'l15a', 'l15b', 'l15c', 'l15d'], ['diff', 'not/nut', 'sun/bun'], ['spell', 'sun', 'nut'], ['swap', 'sun>bun', 'can>pan'], ['me', 'word:sun']]},
+    {'n': 15, 'new': ['n'], 'sight': ['i'], 'words': ['on', 'sun', 'not', 'can', 'bun', 'buns', 'pan', 'nut', 'nuts', 'snap'],
+     'beats': [['flash'], ['newsound', 'n'], ['hear', 'n'], ['where', 'n'], ['read', 'sun', 'nut', 'can', 'pan', 'not', 'snap'], ['sight', 'i'], ['sent', 'l15e', 'l15a', 'l15b', 'l15c', 'l15d'], ['diff', 'not/nut', 'sun/bun'], ['spell', 'sun', 'nut'], ['swap', 'sun>bun', 'can>pan'], ['me', 'word:sun']]},
     {'n': 16, 'new': [], 'words': ['cut', 'bus', 'cup', 'pot', 'stop', 'hat', 'hop', 'sun', 'pan', 'nuts'],
-     'beats': [['flash'], ['read', 'cut', 'bus', 'pot', 'stop', 'hop', 'pan', 'nuts'], ['sent', 'l16a', 'l16b', 'l16c', 'l16d'], ['diff', 'hat/hot', 'cup/pup'], ['spell', 'stop', 'pan'], ['swap', 'hot>pot', 'cut>nut'], ['hear', 'n'], ['me', 'word:stop']]},
+     'beats': [['flash'], ['read', 'cut', 'bus', 'pot', 'stop', 'hop', 'pan', 'nuts'], ['sent', 'l16a', 'l16b', 'l16c', 'l16d'], ['diff', 'hat/hot', 'cup/pup'], ['spell', 'stop', 'pan'], ['swap', 'hot>pot', 'cut>nut', 'nuts>nut'], ['basket', 'cup', 'pot', 'hat', 'sun', 'bus', 'stop'], ['hear', 'n'], ['me', 'word:stop']]},
     {'n': 17, 'new': ['g'], 'sight': ['no'], 'words': ['hug', 'hugs', 'bug', 'bugs', 'gap', 'got', 'tug', 'bag', 'bags', 'tag', 'snug'],
      'beats': [['flash'], ['newsound', 'g'], ['hear', 'g'], ['where', 'g'], ['sight', 'no'], ['read', 'bug', 'bag', 'hug', 'tag', 'got', 'snug'], ['sent', 'l17a', 'l17b', 'l17c', 'l17d'], ['diff', 'bug/bag', 'hug/tug'], ['spell', 'bug', 'bag'], ['swap', 'bug>hug', 'bag>tag'], ['me', 'word:hug']]},
     {'n': 18, 'new': ['d'], 'words': ['dad', 'sad', 'had', 'bad', 'dog', 'and', 'hand', 'sand', 'stand', 'dot', 'dug'],
-     'beats': [['flash'], ['newsound', 'd'], ['hear', 'd'], ['where', 'd'], ['read', 'dad', 'dog', 'sad', 'hand', 'sand', 'and'], ['sent', 'l18a', 'l18b', 'l18c', 'l18d'], ['diff', 'dad/sad', 'hand/sand'], ['spell', 'dad', 'sand'], ['swap', 'sad>dad', 'and>hand'], ['me', 'word:dog']]},
+     'beats': [['flash'], ['newsound', 'd'], ['hear', 'd'], ['where', 'd'], ['read', 'dad', 'dog', 'sad', 'hand', 'sand', 'and'], ['sent', 'l18a', 'l18b', 'l18c', 'l18d'], ['diff', 'dad/sad', 'hand/sand'], ['spell', 'dad', 'sand'], ['swap', 'sad>dad', 'and>hand', 'sand>sad'], ['me', 'word:dog']]},
     {'n': 19, 'new': ['i'], 'words': ['is', 'it', 'in', 'sit', 'bit', 'big', 'dig', 'did', 'hid', 'his', 'bin', 'pin', 'spin', 'tip', 'sip'],
      'beats': [['flash'], ['newsound', 'i'], ['hear', 'i'], ['read', 'big', 'dig', 'sit', 'pin', 'bin', 'spin', 'it', 'is'], ['sent', 'l19a', 'l19b', 'l19c', 'l19d'], ['diff', 'big/dig', 'pin/bin'], ['spell', 'big', 'pin'], ['swap', 'bin>pin', 'big>dig'], ['me', 'word:big']]},
     {'n': 20, 'new': ['f'], 'sight': ['so', "don't"], 'words': ['if', 'fan', 'fun', 'fog', 'fit', 'fast', 'gift', 'soft', 'fin', 'off'],
      'beats': [['flash'], ['newsound', 'f'], ['hear', 'f'], ['sight', 'so', "don't"], ['read', 'fan', 'fun', 'fog', 'gift', 'soft', 'fast'], ['sent', 'l20a', 'l20b', 'l20c', 'l20d'], ['story', 'gift'], ['diff', 'fan/fin', 'fun/fan'], ['spell', 'fan', 'gift'], ['me', 'word:gift']]},
-    {'n': 21, 'new': ['r'], 'words': ['run', 'ran', 'rug', 'frog', 'drip', 'drop', 'trip', 'grin', 'grins', 'grab', 'crab', 'crust'],
-     'beats': [['flash'], ['newsound', 'r'], ['hear', 'r'], ['read', 'run', 'rug', 'frog', 'crab', 'drip', 'drop', 'grin'], ['sent', 'l21a', 'l21b', 'l21c'], ['story', 'frog'], ['diff', 'ran/run', 'crab/grab'], ['spell', 'frog', 'run'], ['swap', 'ran>run', 'crab>grab'], ['me', 'word:frog']]},
-    {'n': 22, 'new': ['m'], 'sight': ['to', 'be'], 'words': ['map', 'man', 'mat', 'mud', 'mug', 'mom', 'mist', 'must', 'bump', 'hum', 'gum', 'muffin'],
-     'beats': [['flash'], ['newsound', 'm'], ['hear', 'm'], ['where', 'm'], ['sight', 'to', 'be'], ['read', 'mom', 'map', 'mud', 'mug', 'man', 'gum', 'muffin'], ['sent', 'l22a', 'l22b', 'l22c', 'l22d', 'l22e'], ['diff', 'man/mat', 'mug/mud'], ['spell', 'map', 'mud'], ['swap', 'mat>map', 'mug>hug'], ['me', 'word:mom']]},
+    {'n': 21, 'new': ['r'], 'sight': ['of'], 'words': ['run', 'ran', 'rug', 'frog', 'drip', 'drop', 'trip', 'grin', 'grins', 'grab', 'crab', 'crust'],
+     'beats': [['flash'], ['newsound', 'r'], ['hear', 'r'], ['read', 'run', 'rug', 'frog', 'crab', 'drip', 'drop', 'grin'], ['sight', 'of'], ['sent', 'l21a', 'l21b', 'l21c', 'l21d'], ['story', 'frog'], ['diff', 'ran/run', 'crab/grab'], ['spell', 'frog', 'run'], ['swap', 'ran>run', 'crab>grab'], ['me', 'word:frog']]},
+    {'n': 22, 'new': ['m'], 'sight': ['to', 'be', 'into'], 'words': ['map', 'man', 'mat', 'mud', 'mug', 'mom', 'mist', 'must', 'bump', 'hum', 'gum', 'muffin'],
+     'beats': [['flash'], ['newsound', 'm'], ['hear', 'm'], ['where', 'm'], ['sight', 'to', 'be', 'into'], ['pair', 'mn'], ['read', 'mom', 'map', 'mud', 'mug', 'man', 'gum', 'muffin'], ['sent', 'l22a', 'l22b', 'l22c', 'l22d', 'l22e', 'l22f'], ['diff', 'man/mat', 'mug/mud'], ['spell', 'map', 'mud'], ['swap', 'mat>map', 'mug>hug'], ['me', 'word:mom']]},
     {'n': 23, 'new': ['e'], 'words': ['red', 'bed', 'fed', 'pet', 'met', 'net', 'end', 'bend', 'den', 'ten', 'bent', 'best', 'rest', 'test', 'pen', 'hen', 'hens', 'get', 'naps'],
      'beats': [['flash'], ['newsound', 'e'], ['pair', 'ei'], ['read', 'red', 'bed', 'hen', 'pen', 'ten', 'net', 'best'], ['sent', 'l23a', 'l23b', 'l23c', 'l23d'], ['story', 'bed'], ['diff', 'bed/red', 'pen/hen'], ['spell', 'bed', 'ten'], ['swap', 'bed>red', 'pen>hen'], ['me', 'word:red']]},
     {'n': 24, 'new': ['j', 'k'], 'sight': ['your'], 'words': ['jog', 'jug', 'job', 'jump', 'just', 'jam', 'jet', 'kid', 'kit', 'skip', 'back', 'pack', 'duck', 'backpack', 'jacket', 'pocket'],
-     'beats': [['flash'], ['newsound', 'j'], ['hear', 'j'], ['sight', 'your'], ['read', 'jam', 'jet', 'jug', 'jump', 'kid', 'duck', 'back', 'pack'], ['sent', 'l24a', 'l24b', 'l24c'], ['story', 'jet'], ['diff', 'jug/jog', 'back/pack'], ['spell', 'jam', 'duck'], ['swap', 'back>pack', 'jug>jog'], ['me', 'word:jump']]},
+     'beats': [['flash'], ['newsound', 'j'], ['hear', 'j'], ['sight', 'your'], ['read', 'jam', 'jet', 'jug', 'jump', 'kid', 'duck', 'back', 'pack'], ['read', 'jumped', 'hopped', 'hugged'], ['sent', 'l24a', 'l24b', 'l24c', 'l24d', 'l24e'], ['basket', 'jam', 'jet', 'duck', 'pack', 'kid', 'jump'], ['story', 'jet'], ['diff', 'jug/jog', 'back/pack'], ['spell', 'jam', 'duck'], ['swap', 'back>pack', 'jug>jog'], ['me', 'word:jump']]},
 ]
 # the day's tutor note in Mama's view (our own words; the Book Edition pack replaces them with the book's notes)
 NOTES = {
@@ -301,6 +312,29 @@ NOTES = {
          'In Hop to that Sound she hears a sound and finds its letter.'])],
     8: [('Review', ['Everything so far, mixed together. Short and cheerful.',
          'If a word is hard, go back to its sounds: tap, tap, tap, then swipe.'])],
+    9: [('U says /u/', ['A short /u/ as in up. Contrast it with /a/: cut and cat, tub and tab.',
+         "What's the difference: she finds the one letter that changed between two words."])],
+    10: [('S says /s/', ['A long, smooth snake sound she can hold: ssssun.', 'Adding S at the end makes more than one: cat, cats.'])],
+    11: [('P says /p/', ['/p/ is a puff of air; /b/ has voice. Arabic has no /p/, so the p-or-b ear game matters.',
+          'Spelling from dictation starts now and comes in every lesson from here on.'])],
+    12: [('THE, the first sight word', ['THE is learnt whole: hear it, tap it, read it. Do not sound it out.',
+          'The first sentences: she reads each word, then swipes under the whole sentence.'])],
+    13: [('O says /o/', ['The American o, like "awe" in hot.', 'A on its own is a word too (A PUP). Say it the way you would in a sentence.'])],
+    14: [('H says /h/', ['/h/ is only a breath. HE is a word where the E at the end says its name.'])],
+    15: [('N says /n/', ['/n/ is a hum through the nose. I on its own is a word too: I CAN HOP.'])],
+    16: [('Review', ['A longer review: split it over two sessions if she tires.',
+          'Flashcards Basketball: she reads the card aloud, then flicks it into the basket. Taking a sound away: NUTS becomes NUT.'])],
+    17: [('G says /g/', ['A short /g/, never "guh". NO: the O at the end says its name.'])],
+    18: [('D says /d/', ['A short /d/, never "duh". Taking a sound away: SAND becomes SAD.'])],
+    19: [('I says /i/', ['The short /i/ as in it.', 'In IS and HIS the S sounds like /z/. The rule comes in lesson 32; for now, say the word for her and let her copy it.'])],
+    20: [('F says /f/', ['Top teeth on the bottom lip, then air: ffff.', "SO and DON'T: the O says its name, /oh/.", 'The first story: after each page, talk about what happened.'])],
+    21: [('R says /r/', ['A growl with no vowel before it: rrrr, not "er".', 'OF is a sight word: learnt whole.',
+          'DR and TR: in fast speech DRIP can sound like "jrip" and TRIP like "chrip". That is normal. Teach the clean sounds and do not worry about it.'])],
+    22: [('M says /m/', ['Lips closed, a hum. /m/ and /n/ are easy to mix up: the M or N ear game helps.',
+          'TO is a sight word, said "too". INTO is IN and TO together. BE: the E says its name.'])],
+    23: [('E says /e/', ['The short /e/ as in egg. /e/ and /i/ are easy to mix up: the e-or-i ear game helps.'])],
+    24: [('J and K', ['Two new letters: /j/ (never "juh") and /k/, which she knows from C.', 'YOUR is a sight word.',
+          'Words ending in -ED: the E is said only after D or T (added, started). Otherwise it is skipped: hopped sounds like "hopt", hugged like "hugd". The ED tile shows this.'])],
 }
 GUIDE = {
     'soundsIntro': 'Say every sound short and clean. Stop sounds (b, c, d, g, j, k, p, t) are never stretched and never end in "uh". Long sounds (a, e, i, o, u, f, l, m, n, r, s, v, z) can be held.',
