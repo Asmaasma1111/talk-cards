@@ -365,6 +365,10 @@ QOPT = {'🐶': 'pup', '👒': 'hat', '👜': 'bag', '🐱': 'cat', '👨': 'dad
 for st in STORIES.values():
     for q in st['questions']:
         q['photos'] = [QOPT.get(o) for o in q['opts']]
+# the colouring page after each story (our own outline art, made with ChatGPT): assets/reads/colour/<story>.webp
+COLOUR_DIR = os.path.join(os.path.dirname(OUT), 'assets', 'reads', 'colour')
+for sid, st in STORIES.items():
+    if os.path.exists(os.path.join(COLOUR_DIR, sid + '.webp')): st['colour'] = f'assets/reads/colour/{sid}.webp'
 
 # every clip a lesson needs (words, sentences, story pages and questions, single sounds): a lesson opens only when all exist
 VOICE = os.path.join(os.path.dirname(OUT), 'audio', 'voice.json')

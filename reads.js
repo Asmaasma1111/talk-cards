@@ -224,6 +224,17 @@ function mount(api) {
     return new Promise((ok, bad) => { const tx = d.transaction('pack', 'readwrite'); if (p) tx.objectStore('pack').put(p, 'current'); else tx.objectStore('pack').delete('current'); tx.oncomplete = () => ok(); tx.onerror = () => bad(tx.error); });
   }
   let PACK = null;
+  /* ---------- رسوماتي: the story pictures she coloured, kept on this iPad (and in the backup file) ---------- */
+  function artDB() {
+    return new Promise((ok, bad) => {
+      if (!root.indexedDB) return bad(new Error('no IndexedDB'));
+      const q = indexedDB.open('maria-reads-art', 1);
+      q.onupgradeneeded = () => { if (!q.result.objectStoreNames.contains('art')) q.result.createObjectStore('art', { keyPath: 'id' }); };
+      q.onsuccess = () => ok(q.result); q.onerror = () => bad(q.error);
+    });
+  }
+  async function artAll() { try { const d = await artDB(); return await new Promise(ok => { const g = d.transaction('art').objectStore('art').getAll(); g.onsuccess = () => ok(g.result || []); g.onerror = () => ok([]); }); } catch (e) { return []; } }
+  async function artPut(x) { const d = await artDB(); return new Promise((ok, bad) => { const tx = d.transaction('art', 'readwrite'); tx.objectStore('art').put(x); tx.oncomplete = () => ok(); tx.onerror = () => bad(tx.error); }); }
   const ready = Promise.all([
     fetch('reads.json').then(x => x.json()).then(d => { D = d; d.sounds.forEach(s => { SOUND[s.id] = s; }); }),
     fetch('audio/voice.json').then(x => (x.ok ? x.json() : null)).then(v => { CLIPS = (v && v.decks && v.decks.reads && v.decks.reads.clips) || {}; }).catch(() => {}),
@@ -410,7 +421,8 @@ function mount(api) {
       <button class="rd-speedbtn" id="rdSpeedBtn" hidden>⚡ سباق الكلمات <i id="rdBest"></i></button>
     </div>
     <div class="rd-boardbox"><button class="rd-boardbtn" id="rdBoardBtn" aria-label="لغز الأسبوع"><span class="rd-board" id="rdBoard" dir="ltr"></span><span class="rd-boardcap" id="rdBoardCap"></span></button>
-      <button class="rd-bookbtn" id="rdBookBtn">📖 كتاب ألغازي <i id="rdBookN"></i></button></div>
+      <button class="rd-bookbtn" id="rdBookBtn">📖 كتاب ألغازي <i id="rdBookN"></i></button>
+      <button class="rd-bookbtn" id="rdArtBtn">🖼️ رسوماتي <i id="rdArtN"></i></button></div>
   </div>
 </section>
 
@@ -570,6 +582,7 @@ function mount(api) {
     $('#rdBoardCap').textContent = b.pending ? 'افتحي هديّة اليوم!' : b.complete ? 'أكملتِ اللغز! 🎉' : b.fresh || !b.have ? 'لغز جديد: قطعة كل يوم' : `${AR(b.have)} من ٨ قطع`;
     const done = finishedPuzzles().length;
     $('#rdBookN').textContent = `${AR(done)} من ${AR(D.bookPages || 12)}`;
+    artAll().then(a => { const el = $('#rdArtN'); if (el) el.textContent = a.length ? AR(a.length) : ''; });
   }
 
   /* =====================================================================================================
@@ -1232,10 +1245,22 @@ function mount(api) {
       }
     }
     if (s !== S) return;
-    stage.innerHTML = `<div class="rd-draw enter"><span class="rd-drawic">🖍️</span><p class="rd-qtext" lang="en">${esc(st.draw)}</p>
-      <p class="rd-drawar" lang="ar" dir="rtl">${esc(st.drawAr)}</p><button class="rd-next" id="rdDrew">رسمتُ! ✓</button></div>`;
+    const canColour = !!(st.colour && api.colour);
+    stage.innerHTML = `<div class="rd-draw enter"><span class="rd-drawic">🎨</span><p class="rd-qtext" lang="en">${esc(st.draw)}</p>
+      <p class="rd-drawar" lang="ar" dir="rtl">${esc(canColour ? 'لوّني صورة القصة!' : st.drawAr)}</p>
+      ${canColour ? '<button class="rd-next" id="rdColour">🎨 لوّني الصورة</button>' : '<button class="rd-next" id="rdDrew">رسمتُ! ✓</button>'}</div>`;
     sayLine(`qq-${sid}${st.questions.length}`);
-    await new Promise(ok => $('#rdDrew').addEventListener('click', () => { api.SFX.good(); ok(); }, { once: true }));
+    if (!canColour) { await new Promise(ok => $('#rdDrew').addEventListener('click', () => { api.SFX.good(); ok(); }, { once: true })); return; }
+    await new Promise(ok => $('#rdColour').addEventListener('click', ok, { once: true }));
+    api.SFX.init(); clock.pause(); stopAudio();             // colouring time is not reading time: the ring waits
+    await new Promise(ok => {
+      const back = () => { api.show('rsession'); clock.resume(); ok(); };
+      api.colour('rd-' + sid, {
+        src: st.colour, title: st.title, back: '← القصة', done: 'احفظيها في رسوماتي ✓',
+        onDone: async pic => { try { await artPut({ id: sid, title: st.title, day: today(), at: Date.now(), pic }); } catch (e) {} api.toast('🖼️ في رسوماتي!'); back(); },
+        onBack: back
+      });
+    });
   }
 
   /* ---------- which sound did she hear? /p/ or /b/ (lesson 11), /e/ or /i/ (lesson 23): sounds Arabic does not have ---------- */
@@ -1686,6 +1711,14 @@ function mount(api) {
     if (fresh) setTimeout(open, 700);
   }
 
+  async function openArt() {
+    const all = (await artAll()).sort((a, b) => b.at - a.at);
+    $('#rdCelBox').innerHTML = `<div class="rd-wall"><h2 class="rd-celt">رسوماتي 🖼️</h2>
+      <div class="rd-artgrid">${all.length ? all.map(x => `<figure class="rd-artfig"><img src="${x.pic}" alt=""><figcaption lang="en">${esc(x.title)}</figcaption><small>${fmtAr(x.day)}</small></figure>`).join('')
+        : '<p class="rd-celcap">بعد كل قصة تلوّنين صورتها، فتصل إلى هنا 🎨</p>'}</div><button class="rd-homebtn" id="rdCelOk">رائع!</button></div>`;
+    $('#rdCel').hidden = false; api.SFX.star();
+    $('#rdCelOk').addEventListener('click', () => { $('#rdCel').hidden = true; }, { once: true });
+  }
   const STICK = ['⭐', '🌟', '🌸', '🦄', '🌈', '🍓', '🧁', '🎀', '💜', '🦋', '🍭', '🐱'];
   function openStars() {
     const days = Object.entries(r.stars.days).filter(([, n]) => n > 0).sort((a, b) => (a[0] < b[0] ? -1 : 1));
@@ -2008,6 +2041,7 @@ function mount(api) {
   $('#rhome .rd-stats').addEventListener('click', e => { if (e.target.closest('.rd-starn')) { api.SFX.init(); openStars(); } });
   $('#rdSpeedBtn').addEventListener('click', startSpeed);
   $('#rdBookBtn').addEventListener('click', () => openBook(Math.max(0, finishedPuzzles().length - 1)));
+  $('#rdArtBtn').addEventListener('click', () => { api.SFX.init(); openArt(); });
   $('#rbClose').addEventListener('click', () => { bookSound('lib-close', 0.8); BK = null; home(); });
   $('#rdSpQuit').addEventListener('click', () => { if (SP) { clearInterval(SP.tick); SP = null; } stopAudio(); home(); });
   $('#rdQuit').addEventListener('click', () => { stopAll(); home(); });
@@ -2044,7 +2078,7 @@ function mount(api) {
     },
     // for tests (?dev=1)
     get state() { return r; }, get data() { return D; }, get session() { return S; }, get pack() { return PACK; }, core, openParent, recordScreen, referenceScreen, placement, masteryCheck, openStars,
-    _endSession: endSession, _book: openBook, _start: startSession, _useSound: useSound, SND, _try: (n, beats) => startSession(n, 'replay', beats), _speedEnd: () => endSpeed()
+    _endSession: endSession, _book: openBook, _art: () => openArt(), _start: startSession, _useSound: useSound, SND, _try: (n, beats) => startSession(n, 'replay', beats), _speedEnd: () => endSpeed()
   };
 }
 

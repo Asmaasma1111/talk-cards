@@ -1070,10 +1070,14 @@ function mount(api) {
   const artOpen = id => PICS.findIndex(p => p.id === id) < opened(tools1());
   const WIP = n => 'tc:maria:colour:' + n;
   let CL = null;
-  function openColour(n) {                      // n: the picture's id
+  // ext (from Maria Reads): a story's colouring page { src, title, back, done, onDone(picture), onBack() }; her picture
+  // goes back to the story instead of the studio gallery
+  function openColour(n, ext) {                 // n: the picture's id
     const W = 1024, cv = $('#clCanvas'), ctx = cv.getContext('2d', { willReadFrequently: true });
-    if (!PIC[n]) return;
-    $('#clTitle').textContent = PIC[n].t;
+    if (!PIC[n] && !ext) return;
+    $('#clTitle').textContent = ext ? ext.title : PIC[n].t;
+    $('#clBack').textContent = ext ? ext.back : 'مرسمي ←';
+    $('#clDone').textContent = ext ? ext.done : 'علّقيها في المعرض ✓';
     $('#clWait').hidden = false; $('#clWait').textContent = '…';
     ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, W);
     api.show('lcolor');
@@ -1100,12 +1104,12 @@ function mount(api) {
       }
       let fills = new Map();
       try { const w = JSON.parse(localStorage.getItem(WIP(n)) || 'null'); if (w && w.v === 1) fills = new Map(w.f); } catch (e) {}
-      CL = { n, W, ctx, lum, labels, fills, history: [], colour: CL ? CL.colour : COLOURS[0], out: ctx.createImageData(W, W) };
+      CL = { n, W, ctx, lum, labels, fills, history: [], colour: CL ? CL.colour : COLOURS[0], out: ctx.createImageData(W, W), ext: ext || null };
       $('#clWait').hidden = true;
       paintColour(); palette();
     };
     img.onerror = () => { $('#clWait').textContent = 'هذه الصورة تصل قريباً 🎨'; };
-    img.src = `assets/library/color/${n}.webp`;
+    img.src = ext ? ext.src : `assets/library/color/${n}.webp`;
   }
   function paintColour() {
     const { W, lum, labels, fills, out, ctx } = CL, d = out.data, rgb = {}, glit = {};
@@ -1298,12 +1302,13 @@ function mount(api) {
   $('#clClear').addEventListener('click', () => { if (!CL || !CL.fills.size) return; CL.history.push(['all', new Map(CL.fills)]); CL.fills = new Map(); paintColour(); keepWip(); });
   $('#clDone').addEventListener('click', () => {
     if (!CL) return;
+    if (CL.ext) { const ext = CL.ext, pic = shrinkArt(); CL = null; SND.chime(0, 0.6); ext.onDone(pic); return; }
     const n = CL.n; lib.art[n] = shrinkArt(); save();
     SND.chime(0, 0.6); api.SFX.good && api.SFX.good();
     CL = null; openStudio();
     setTimeout(() => { const fr = document.querySelector(`#stBoard .st-frame[data-pic="${n}"]`); if (fr) sparkle(fr); }, 700);
   });
-  $('#clBack').addEventListener('click', () => { CL = null; openStudio(); });
+  $('#clBack').addEventListener('click', () => { const ext = CL && CL.ext; CL = null; if (ext) ext.onBack(); else openStudio(); });
   $('#stPx').addEventListener('click', () => { stopClip(); $('#stPanel').hidden = true; renderSpots(); });
   $('#stPanel').addEventListener('click', e => {
     const col = e.target.closest('.st-colour'); if (col) { stopClip(); $('#stPanel').hidden = true; openColour(col.dataset.art); return; }
@@ -1595,6 +1600,7 @@ function mount(api) {
     isOn: () => ['lhome', 'lbook', 'lstudio', 'lcolor', 'lsquish', 'lparent'].some(id => !$('#' + id).hidden),
     busy: () => !$('#lbook').hidden || busy || !$('#lbCel').hidden || !$('#lbDec').hidden || !$('#lsquish').hidden || !$('#lparent').hidden || !$('#paPin').hidden,
     reload() { lib = load(); },
+    colour: (id, ext) => openColour(id, ext),       // Maria Reads: a story's colouring page in the same colouring screen
     snapshot() { return JSON.parse(JSON.stringify(lib)); },
     valid,
     replace(obj) { lib = clean(obj); save(); },

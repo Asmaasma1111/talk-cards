@@ -2460,3 +2460,10 @@ body[data-profile="mama"] .deck-apps { display: none; }
 .rd-tile.wipe { animation: rdWipe .55s ease forwards; }
 @keyframes rdWipe { to { transform: translateY(-80px) rotate(-14deg) scale(.6); opacity: 0; } }
 .rd-lw.hide { visibility: hidden; }
+
+/* رسوماتي: the story pictures she coloured */
+.rd-artgrid { width: 100%; max-height: 58vh; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; padding: 6px; }
+.rd-artfig { margin: 0; padding: 10px 10px 8px; border-radius: 22px; background: #fff; box-shadow: 0 8px 18px rgba(158, 47, 99, .14); text-align: center; }
+.rd-artfig img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 14px; display: block; }
+.rd-artfig figcaption { margin-top: 6px; font: 800 15px var(--en); color: var(--rdeep); }
+.rd-artfig small { font: 700 13px var(--apfont); color: rgba(43, 35, 64, .5); }
