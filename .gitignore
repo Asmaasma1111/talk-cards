@@ -24,3 +24,14 @@ stickers-preview/
 
 # مكتبتي story sources and roadmap stay private: only stories.json is published
 content/
+
+# Maria Reads v3 planning notes and the private Book Edition stay off GitHub
+CHANGES_NEEDED.md
+COVERAGE_MAP.md
+scripts/coverage_map.py
+*book-edition*
+*Book-Edition*
+*BookEdition*
+
+# Cloudflare build output
+_site/
