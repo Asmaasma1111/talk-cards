@@ -458,11 +458,8 @@ function mount(api) {
   /* =====================================================================================================
      Home: the path, the start button, today's reading times and the puzzle of the week
      ===================================================================================================== */
-  const bedtimeNow = () => {
-    const now = new Date(), hm = pad2(now.getHours()) + ':' + pad2(now.getMinutes());
-    return hm >= (r.settings.bedtime || '19:30') || hm < '05:00';
-  };
-  const sessionsToday = t => r.log.filter(x => x.day === t).length;
+  // today's sessions: a lesson or review session counts (a replay of a done lesson is extra play)
+  const sessionsToday = t => r.log.filter(x => x.day === t && x.mode !== 'replay').length;
   let lastLesson = null;
   async function home() {
     await ready;
@@ -482,7 +479,7 @@ function mount(api) {
     renderGo(t);
     renderBoard(t);
     const pool = speedPool(), sb = $('#rdSpeedBtn');
-    sb.hidden = pool.length < 8 || bedtimeNow();
+    sb.hidden = pool.length < 8;
     $('#rdBest').textContent = r.speed.best ? `أفضل نتيجة: ${AR(r.speed.best)}` : '';
     api.show('rhome');
     const centre = () => {   // the current lesson in the middle of the path
@@ -505,11 +502,14 @@ function mount(api) {
   function goInfo(t) {
     const n = r.current, L = D.lessons[n - 1];
     if (!L.ready) return { off: true, label: 'قريباً ✨', note: 'الدرس القادم يصل قريباً. اختاري درساً أخضر لتعيديه.' };
-    if (bedtimeNow()) return { off: true, label: 'نامي جيداً 🌙', note: 'وقت النوم الآن. نقرأ غداً!' };
     const miss = missingFor(n);
     if (miss.length) return { off: true, label: 'ابدئي', note: `ماما تسجّل صوت ${miss.map(id => SOUND[id].say).join(' و ')} أولاً 🎙️`, mama: true };
-    if (reviewToday(r, n, t)) return { label: 'مراجعة', mode: 'review', note: 'يوم مراجعة: نلعب بما تعرفينه' };
-    return { label: `ابدئي الدرس ${AR(n)}`, mode: 'lesson', note: '' };
+    // "start session 1", "start session 2", then "come back tomorrow" (her wording, 20 Oct 2026)
+    const done = sessionsToday(t), want = r.settings.sessions || 2;
+    if (done >= want) return { off: true, label: 'عودي غداً 🌟', note: want > 1 ? 'أنهيتِ جلسات اليوم كلّها. أحسنتِ!' : 'أنهيتِ جلسة اليوم. أحسنتِ!' };
+    const label = `ابدئي الجلسة ${AR(done + 1)}`;
+    if (reviewToday(r, n, t)) return { label, mode: 'review', note: 'يوم مراجعة: نلعب بما تعرفينه' };
+    return { label, mode: 'lesson', note: `الدرس ${AR(n)}: ${L.title}` };
   }
   function renderGo(t) {
     const g = goInfo(t);
@@ -584,7 +584,7 @@ function mount(api) {
   let ticker = null;
   function startSession(n, mode, only) {   // only: chosen beats (tests, ?dev=1)
     const t = today(), L = D.lessons[n - 1];
-    if (!only && (!L || !L.ready || bedtimeNow() || missingFor(n).length)) return;
+    if (!only && (!L || !L.ready || missingFor(n).length)) return;
     api.SFX.init();
     let beats, base = 0;
     if (only) beats = only;
@@ -1714,7 +1714,6 @@ function mount(api) {
         <p>Your taps: Alone ${taps('alone')} · With a little help ${taps('help')} · Not yet ${taps('not')}</p></section>
       <section class="rp-card"><h2>Settings</h2>
         <label class="rp-set">Sessions a day <select id="rpSess">${[1, 2, 3].map(k => `<option value="${k}"${k === r.settings.sessions ? ' selected' : ''}>${k}</option>`).join('')}</select></label>
-        <label class="rp-set">No lessons from (bedtime) <input type="time" id="rpBed" value="${esc(r.settings.bedtime)}"></label>
         <label class="rp-set">Arabic cue lines at the start <input type="checkbox" id="rpCues"${r.settings.cues ? ' checked' : ''}></label>
         <div class="rp-set">Current lesson <select id="rpLesson">${opts}</select><button class="rp-btn" data-act="setlesson">Set</button></div></section>
       <section class="rp-card"><h2>Placement check</h2><p>${r.placement && r.placement.day ? `Done on ${fmtDay(r.placement.day)}${r.placement.skipped ? ' (skipped)' : ''}. Sounds she knew: ${(r.placement.known || []).length ? r.placement.known.map(id => SOUND[id] ? SOUND[id].say : id).join(' ') : 'none'}.` : 'Not done yet.'}</p>
@@ -1796,7 +1795,6 @@ function mount(api) {
     if (el.id === 'rpFile' && el.files[0]) { api.restore(el.files[0], openParent); el.value = ''; return; }
     if (el.id === 'rpSess') { r.settings.sessions = Math.max(1, Math.min(3, Number(el.value) || 2)); save(); }
     if (el.id === 'rpPack' && el.files[0]) { loadPack(el.files[0]); el.value = ''; return; }
-    if (el.id === 'rpBed' && el.value) { r.settings.bedtime = el.value; save(); }
     if (el.id === 'rpCues') { r.settings.cues = el.checked; save(); }
   });
 
@@ -1917,7 +1915,7 @@ function mount(api) {
     api.SFX.init();
     if (st === 'locked' || (st === 'current' && !D.lessons[n - 1].ready)) { b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); api.SFX.again(); return; }
     if (st === 'current') { const m = $('#rdGo').dataset.mode; if (m) startSession(n, m); else { $('#rdGo').classList.remove('shake'); void $('#rdGo').offsetWidth; $('#rdGo').classList.add('shake'); } return; }
-    if (bedtimeNow() || missingFor(n).length) { b.classList.add('shake'); return; }
+    if (missingFor(n).length) { b.classList.add('shake'); return; }
     startSession(n, 'replay');
   });
   $('#rdBoardBtn').addEventListener('click', () => { api.SFX.init(); viewPuzzle(); });
