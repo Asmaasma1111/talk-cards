@@ -384,16 +384,41 @@ function mount(api) {
     const fmt = hm => { const [h, m] = hm.split(':').map(Number); return AR(`${((h + 11) % 12) + 1}:${pad2(m)}`); };
     $('#rdSlots').innerHTML = slots.map((hm, i) => `<span class="rd-slot${done > i ? ' on' : ''}">${done > i ? ic('i-tick') : ''}${i === 0 ? 'بعد الغداء' : 'المساء'} <i>${fmt(hm)}</i></span>`).join('');
   }
-  function pieceCells(b, P, extra = 0) {
-    const pz = D.puzzles[b.puzzle], have = new Set(PIECE_ORDER.slice(0, b.have + extra));
-    return Array.from({ length: 8 }, (_, k) => {
-      const c = k % 4, y = Math.floor(k / 4);
-      return `<i class="rd-cell${have.has(k) ? ' on' : ''}" data-k="${k}" style="background-image:url(${pz.img});background-position:${c * 100 / 3}% ${y * 100}%"></i>`;
+  /* ---------- the puzzle board: real jigsaw pieces (knobs and sockets), 4 across and 2 down ----------
+     Each inner edge has one knob, out on one piece and in on its neighbour; the pattern changes from puzzle to puzzle.
+     A piece she has not won yet is a white outline; a won piece shows its part of the picture. */
+  const PW = 300, PH = 400, KN = 300;
+  function edge(x0, y0, x1, y1, sgn) {
+    if (!sgn) return `L${x1} ${y1}`;
+    const L = Math.hypot(x1 - x0, y1 - y0), ax = (x1 - x0) / L, ay = (y1 - y0) / L, nx = ay, ny = -ax;
+    const p = (du, v) => { const u = L / 2 + du * KN, w = v * KN * sgn; return `${(x0 + ax * u + nx * w).toFixed(1)} ${(y0 + ay * u + ny * w).toFixed(1)}`; };
+    return `L${p(-0.12, 0)} C${p(-0.08, 0)} ${p(-0.06, 0.04)} ${p(-0.09, 0.08)} C${p(-0.15, 0.15)} ${p(-0.08, 0.24)} ${p(0, 0.24)} `
+      + `C${p(0.08, 0.24)} ${p(0.15, 0.15)} ${p(0.09, 0.08)} C${p(0.06, 0.04)} ${p(0.08, 0)} ${p(0.12, 0)} L${x1} ${y1}`;
+  }
+  function piecePath(k, pz) {
+    const c = k % 4, y = Math.floor(k / 4), f = pz % 2 ? -1 : 1, g = pz % 3 === 1 ? -1 : 1;
+    const H = [1, -1, 1, -1].map(v => v * f), V = [[-1, 1, -1], [1, -1, 1]].map(row => row.map(v => v * g));
+    const x0 = c * PW, y0 = y * PH, x1 = x0 + PW, y1 = y0 + PH;
+    return `M${x0} ${y0} ${edge(x0, y0, x1, y0, y === 0 ? 0 : -H[c])} ${edge(x1, y0, x1, y1, c === 3 ? 0 : V[y][c])} `
+      + `${edge(x1, y1, x0, y1, y === 1 ? 0 : H[c])} ${edge(x0, y1, x0, y0, c === 0 ? 0 : -V[y][c - 1])} Z`;
+  }
+  let boardN = 0;
+  function pieceCells(b) {
+    const pz = D.puzzles[b.puzzle], have = new Set(PIECE_ORDER.slice(0, b.have)), id = 'pz' + (++boardN);
+    const pieces = Array.from({ length: 8 }, (_, k) => {
+      const d = piecePath(k, b.puzzle);
+      return `<clipPath id="${id}-${k}"><path d="${d}"/></clipPath>`;
     }).join('');
+    const body = Array.from({ length: 8 }, (_, k) => {
+      const d = piecePath(k, b.puzzle);
+      return `<g class="pc${have.has(k) ? ' on' : ''}" data-k="${k}"><path class="pc-empty" d="${d}"/>`
+        + `<g class="pc-img"><image href="${pz.img}" x="0" y="0" width="1200" height="800" preserveAspectRatio="none" clip-path="url(#${id}-${k})"/><path class="pc-line" d="${d}"/></g></g>`;
+    }).join('');
+    return `<svg class="rd-jig" viewBox="-14 -14 1228 828" aria-hidden="true"><defs>${pieces}</defs>${body}</svg>`;
   }
   function renderBoard(t) {
     const P = D.puzzles.length, b = board(r, t, P);
-    $('#rdBoard').innerHTML = pieceCells(b, P) + (b.pending ? '<span class="rd-gift">🎁</span>' : '');
+    $('#rdBoard').innerHTML = pieceCells(b) + (b.pending ? '<span class="rd-gift">🎁</span>' : '');
     $('#rdBoard').classList.toggle('complete', !!b.complete);
     $('#rdBoardCap').textContent = b.pending ? 'افتحي هديّة اليوم!' : b.complete ? 'أكملتِ اللغز! 🎉' : b.fresh || !b.have ? 'لغز جديد: قطعة كل يوم' : `${AR(b.have)} من ٨ قطع`;
   }
@@ -812,7 +837,7 @@ function mount(api) {
     if (!b.pending) return home();
     busy = true;
     const cel = $('#rdCel'), boxEl = $('#rdCelBox');
-    boxEl.innerHTML = `<div class="rd-bigboard" id="rdBig" dir="ltr">${pieceCells(b, P)}</div>
+    boxEl.innerHTML = `<div class="rd-bigboard" id="rdBig" dir="ltr">${pieceCells(b)}</div>
       <button class="rd-wrapped" id="rdWrap" aria-label="افتحي"><span class="lid">🎀</span><span class="body">🎁</span></button>
       <p class="rd-celcap" id="rdCelCap">المسي الهديّة!</p>`;
     cel.hidden = false;
@@ -821,7 +846,7 @@ function mount(api) {
     r.opened.push(t); if (r.opened.length > 60) r.opened = r.opened.slice(-60); save();
     await sleep(500);
     const fresh = PIECE_ORDER.slice(b.have, b.get);
-    fresh.forEach((k, i) => setTimeout(() => { const c = $(`#rdBig .rd-cell[data-k="${k}"]`); if (c) { c.classList.add('on', 'arrive'); api.SFX.star(); } }, i * 650));
+    fresh.forEach((k, i) => setTimeout(() => { const c = $(`#rdBig .pc[data-k="${k}"]`); if (c) { c.classList.add('on', 'arrive'); api.SFX.star(); } }, i * 650));
     await sleep(700 + fresh.length * 650);
     $('#rdWrap').remove();
     const complete = b.get === 8;
@@ -835,7 +860,7 @@ function mount(api) {
     const t = today(), P = D.puzzles.length, b = board(r, t, P);
     if (b.pending) return openGift();
     const boxEl = $('#rdCelBox');
-    boxEl.innerHTML = `<div class="rd-bigboard${b.complete ? ' complete' : ''}" dir="ltr">${pieceCells(b, P)}</div>
+    boxEl.innerHTML = `<div class="rd-bigboard${b.complete ? ' complete' : ''}" dir="ltr">${pieceCells(b)}</div>
       <p class="rd-celcap">${b.complete ? 'أكملتِ اللغز! 🎉' : 'كل يوم تقرئين فيه = قطعة جديدة'}</p><button class="rd-homebtn" id="rdCelOk">رائع!</button>`;
     $('#rdCel').hidden = false;
     $('#rdCelOk').addEventListener('click', () => { $('#rdCel').hidden = true; }, { once: true });

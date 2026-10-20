@@ -1951,13 +1951,18 @@ body[data-profile="mama"] .deck-apps { display: none; }
 .rd-slot.on { background: #DDF7EA; color: #1E7A50; }
 .rd-slot svg { width: 18px; height: 18px; }
 .rd-boardbtn { border: 0; background: none; padding: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; font: inherit; }
-.rd-board { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; width: clamp(290px, 33vw, 420px); aspect-ratio: 3 / 2; padding: 8px;
+.rd-board { position: relative; display: block; width: clamp(290px, 33vw, 420px); padding: 10px;
   background: #fff; border-radius: 26px; box-shadow: 0 14px 30px rgba(158, 47, 99, .16); }
 .rd-board.complete, .rd-bigboard.complete { box-shadow: 0 0 0 6px var(--ryel), 0 14px 30px rgba(158, 47, 99, .16); }
-.rd-cell { display: block; border-radius: 10px; background-size: 400% 200%; background-repeat: no-repeat; background-color: #F7F1F5; }
-.rd-cell:not(.on) { position: relative; background-image: none !important; background: repeating-linear-gradient(135deg, #F7F1F5 0 10px, #FBF7FA 10px 20px); box-shadow: inset 0 0 0 2px #EDE2EA; }
-.rd-cell:not(.on)::after { content: '🧩'; position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(16px, 2.4vw, 34px); opacity: .22; }
-.rd-cell.arrive { animation: rdArrive .6s cubic-bezier(.3, 1.5, .5, 1); }
+.rd-jig { display: block; width: 100%; height: auto; overflow: visible; }
+.rd-jig .pc-empty { fill: #fff; stroke: #4A3F5C; stroke-opacity: .55; stroke-width: 2px; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.rd-jig .pc:not(.on) .pc-img { display: none; }
+.rd-jig .pc.on .pc-empty { display: none; }
+.rd-jig .pc-line { fill: none; stroke: #6B5A78; stroke-opacity: .45; stroke-width: 2px; stroke-linejoin: round; vector-effect: non-scaling-stroke; transition: stroke-width .6s ease, stroke-opacity .6s ease; }
+.rd-jig .pc.on { filter: drop-shadow(0 4px 6px rgba(120, 60, 100, .22)); }
+.rd-jig .pc.arrive { transform-box: fill-box; transform-origin: center; animation: rdArrive .7s cubic-bezier(.3, 1.5, .5, 1); }
+.complete .rd-jig .pc-line { stroke-width: 1px; stroke-opacity: .25; }
+.complete .rd-jig .pc.on { filter: none; }
 .rd-gift { position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(64px, 8vw, 90px); animation: rdBounce 1.2s ease-in-out infinite; filter: drop-shadow(0 10px 14px rgba(158, 47, 99, .3)); }
 .rd-boardcap { font-size: 19px; font-weight: 800; color: var(--rdeep); }
 
@@ -2085,11 +2090,8 @@ body[data-profile="mama"] .deck-apps { display: none; }
 .rd-cel { flex-direction: column; background: rgba(255, 247, 251, .97); }
 .rd-cel canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .rd-celbox { position: relative; display: flex; flex-direction: column; align-items: center; gap: 22px; }
-.rd-bigboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: min(80vw, 860px, 105vh); aspect-ratio: 3 / 2; padding: 12px; border-radius: 34px; background: #fff;
+.rd-bigboard { display: block; width: min(80vw, 860px, 100vh); padding: 16px; border-radius: 34px; background: #fff;
   box-shadow: 0 18px 40px rgba(158, 47, 99, .18); transition: gap .6s ease; }
-.rd-bigboard .rd-cell { border-radius: 14px; transition: border-radius .6s ease; }
-.rd-bigboard.complete { gap: 0; }
-.rd-bigboard.complete .rd-cell { border-radius: 0; }
 .rd-wrapped { position: absolute; top: 42%; left: 50%; translate: -50% -50%; border: 0; background: none; padding: 0; font-size: 210px; line-height: 1; animation: rdBounce 1.2s ease-in-out infinite; }
 .rd-wrapped .lid { position: absolute; top: -70px; left: 50%; translate: -50% 0; font-size: 120px; transition: transform .5s ease, opacity .5s ease; }
 .rd-wrapped.open { animation: none; }
