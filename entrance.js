@@ -50,10 +50,7 @@ function mount(api) {
   });
 
   /* ---------- the page ---------- */
-  function hello() {
-    const h = new Date().getHours();
-    return (h < 12 ? 'صباح الخير' : 'مساء الخير') + ' يا ماريا! اختاري تطبيقاً.';
-  }
+  const hello = () => 'مرحباً يا ماريا! اختاري تطبيقاً.';   // no morning or evening: she may open it at any time
   function dateText() {
     const [y, m, d] = api.today().split('-').map(Number);
     try { return new Date(y, m - 1, d).toLocaleDateString('ar-u-ca-gregory-nu-arab', { weekday: 'long', day: 'numeric', month: 'long' }); }
@@ -96,19 +93,81 @@ function mount(api) {
     try { api.setPhoto(await shrink(f)); photo(); } catch (err) { api.toast('هذه الصورة لا تفتح، جرّبي صورة أخرى'); }
   });
 
-  // her photo, made small: a square crop from the middle, 420 px (it stays on the iPad, in her progress and her backup)
+  /* ---------- her photo, made small: a 420 px square (it stays on the iPad, in her progress and her backup) ----------
+     A cut-out photo (plain white around her) is framed on her head and shoulders and the white turns pink, like the
+     page; any other photo is cropped from the middle as it is. */
   function shrink(file) {
     return new Promise((ok, bad) => {
       const url = URL.createObjectURL(file), im = new Image();
-      im.onload = () => {
-        const side = Math.min(im.width, im.height), S = Math.min(420, side), cv = document.createElement('canvas');
-        cv.width = cv.height = S;
-        cv.getContext('2d').drawImage(im, (im.width - side) / 2, (im.height - side) / 2.6, side, side, 0, 0, S, S);
-        URL.revokeObjectURL(url); ok(cv.toDataURL('image/jpeg', 0.84));
-      };
+      im.onload = () => { URL.revokeObjectURL(url); try { ok(frame(im)); } catch (e) { bad(e); } };
       im.onerror = () => { URL.revokeObjectURL(url); bad(new Error('not a picture')); };
       im.src = url;
     });
+  }
+  const canvas = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return [c, c.getContext('2d', { willReadFrequently: true })]; };
+  const isWhite = (d, i) => { const lo = Math.min(d[i], d[i + 1], d[i + 2]); return lo >= 222 && Math.max(d[i], d[i + 1], d[i + 2]) - lo <= 28; };
+  // the plain background: near-white pixels joined to the edge of the picture
+  function backdrop(d, w, h) {
+    const bg = new Uint8Array(w * h), stack = [];
+    const seed = p => { if (!bg[p] && isWhite(d, p * 4)) { bg[p] = 1; stack.push(p); } };
+    for (let x = 0; x < w; x++) { seed(x); seed((h - 1) * w + x); }
+    for (let y = 0; y < h; y++) { seed(y * w); seed(y * w + w - 1); }
+    while (stack.length) {
+      const p = stack.pop(), x = p % w;
+      if (x > 0) seed(p - 1);
+      if (x < w - 1) seed(p + 1);
+      if (p >= w) seed(p - w);
+      if (p < w * (h - 1)) seed(p + w);
+    }
+    return bg;
+  }
+  // a quick look at a small copy: is it a cut-out, and where is her head? Returns the square to keep, or null.
+  function headBox(im) {
+    const W = im.width, H = im.height, k = Math.min(1, 240 / Math.max(W, H));
+    const w = Math.max(8, Math.round(W * k)), h = Math.max(8, Math.round(H * k)), [, c] = canvas(w, h);
+    c.drawImage(im, 0, 0, w, h);
+    const bg = backdrop(c.getImageData(0, 0, w, h).data, w, h);
+    let topWhite = 0, area = 0;
+    for (let x = 0; x < w; x++) topWhite += bg[x];
+    for (let p = 0; p < w * h; p++) area += bg[p];
+    if (topWhite < w * 0.85 || area < w * h * 0.15) return null;          // a normal photo
+    const row = y => { let l = -1, r = -1; for (let x = 0; x < w; x++) if (!bg[y * w + x]) { if (l < 0) l = x; r = x; } return [l, r]; };
+    let top = 0;
+    while (top < h && row(top)[0] < 0) top++;
+    if (top >= h) return null;
+    const ls = [], rs = [];
+    for (let y = top; y < top + Math.max(2, (h - top) * 0.22) && y < h; y++) { const [l, r] = row(y); if (l >= 0) { ls.push(l); rs.push(r); } }
+    const mid = a => a.sort((x, y) => x - y)[a.length >> 1];
+    const L = mid(ls) / k, R = mid(rs) / k, side = Math.min(Math.max(W, H), Math.max(Math.min(W, H) * 0.45, (R - L) * 2.2)) || Math.min(W, H);
+    return { sx: (L + R) / 2 - side / 2, sy: top / k - side * 0.09, side };
+  }
+  function frame(im) {
+    const S = 420, box = headBox(im), [cv, c] = canvas(S, S);
+    if (!box) {
+      const side = Math.min(im.width, im.height);
+      c.drawImage(im, (im.width - side) / 2, (im.height - side) / 2.6, side, side, 0, 0, S, S);
+      return cv.toDataURL('image/jpeg', 0.84);
+    }
+    // the square may reach past the photo's edges: that part is white too, so it turns pink with the rest
+    const z = S / box.side;
+    c.fillStyle = '#fff'; c.fillRect(0, 0, S, S);
+    c.drawImage(im, -box.sx * z, -box.sy * z, im.width * z, im.height * z);
+    const img = c.getImageData(0, 0, S, S), d = img.data, bg = backdrop(d, S, S);
+    const [, pc] = canvas(S, S), g = pc.createRadialGradient(S * 0.5, S * 0.4, S * 0.08, S * 0.5, S * 0.45, S * 0.72);
+    g.addColorStop(0, '#FFE0EC'); g.addColorStop(1, '#FFAFCB');
+    pc.fillStyle = g; pc.fillRect(0, 0, S, S);
+    const pk = pc.getImageData(0, 0, S, S).data;
+    for (let p = 0; p < S * S; p++) {
+      const i = p * 4, x = p % S;
+      let t = bg[p] ? 1 : 0;
+      if (!t && ((x > 0 && bg[p - 1]) || (x < S - 1 && bg[p + 1]) || (p >= S && bg[p - S]) || (p < S * (S - 1) && bg[p + S]))) {
+        const lo = Math.min(d[i], d[i + 1], d[i + 2]), hi = Math.max(d[i], d[i + 1], d[i + 2]);   // her soft edge: light pixels lean pink
+        t = hi - lo < 40 ? Math.max(0, Math.min(1, (lo - 165) / 60)) * 0.85 : 0;
+      }
+      if (t) for (let ch = 0; ch < 3; ch++) d[i + ch] = Math.round(d[i + ch] * (1 - t) + pk[i + ch] * t);
+    }
+    c.putImageData(img, 0, 0);
+    return cv.toDataURL('image/jpeg', 0.86);
   }
 
   return { home, isOn: () => !$('#apps').hidden };
