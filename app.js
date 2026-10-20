@@ -1339,19 +1339,86 @@ function onParentClick(e) {
   }
 }
 function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); }
-function backup() {
+/* ---------- what lives on this device outside the progress keys: her recordings, Baba's messages, unfinished colouring
+   pages, the library PIN. The backup carries them too, so moving to a new address (or a new iPad) loses nothing. ---------- */
+const DEVICE_DBS = [   // [database, stores to back up, every store the app creates] (all keyed by 'id', as in the modules)
+  ['maktabati-voice', ['clips'], ['clips']],
+  ['maktabati-baba', ['audio'], ['audio']],
+  ['maria-reads', ['mine'], ['sounds', 'mine']]     // Mama's sounds already travel inside Maria Reads' own backup
+];
+const DEVICE_KEYS = k => k.startsWith('tc:maria:colour:') || ['tc:maria:libpin', 'tc:maria:studioSeen', 'tc:last', 'tc:deck'].includes(k);
+function openStoreDB(name, stores) {
+  return new Promise((ok, bad) => {
+    if (!window.indexedDB) return bad(new Error('no IndexedDB'));
+    const q = indexedDB.open(name, 1);
+    q.onupgradeneeded = () => stores.forEach(st => { if (!q.result.objectStoreNames.contains(st)) q.result.createObjectStore(st, { keyPath: 'id' }); });
+    q.onsuccess = () => ok(q.result); q.onerror = () => bad(q.error);
+  });
+}
+const blobB64 = blob => new Promise((ok, bad) => { const f = new FileReader(); f.onload = () => ok(String(f.result).split(',')[1] || ''); f.onerror = () => bad(f.error); f.readAsDataURL(blob); });
+function b64Blob(s, type) { const bin = atob(s), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return new Blob([u], { type }); }
+async function deviceExtras() {
+  const out = { ls: {}, idb: {} };
+  try { Object.keys(localStorage).filter(DEVICE_KEYS).forEach(k => { out.ls[k] = localStorage.getItem(k); }); } catch (e) {}
+  for (const [name, stores, all] of DEVICE_DBS) {
+    let db = null;
+    try { db = await openStoreDB(name, all); } catch (e) { continue; }
+    for (const st of stores) {
+      const rows = await new Promise(ok => { try { const q = db.transaction(st).objectStore(st).getAll(); q.onsuccess = () => ok(q.result || []); q.onerror = () => ok([]); } catch (e) { ok([]); } });
+      if (!rows.length) continue;
+      const enc = [];
+      for (const row of rows) {
+        const o = {};
+        for (const [k, v] of Object.entries(row)) o[k] = v instanceof Blob ? { __blob: await blobB64(v), type: v.type } : v;
+        enc.push(o);
+      }
+      (out.idb[name] = out.idb[name] || {})[st] = enc;
+    }
+    db.close();
+  }
+  return out;
+}
+async function restoreExtras(dev) {
+  if (!dev || typeof dev !== 'object') return 0;
+  let n = 0;
+  Object.entries(dev.ls || {}).forEach(([k, v]) => { if (DEVICE_KEYS(k) && typeof v === 'string' && lsSet(k, v)) n++; });
+  for (const [name, stores] of Object.entries(dev.idb || {})) {
+    const def = DEVICE_DBS.find(d => d[0] === name); if (!def) continue;
+    const db = await openStoreDB(name, def[2]);
+    for (const [st, rows] of Object.entries(stores)) {
+      if (!def[1].includes(st) || !Array.isArray(rows)) continue;
+      const dec = rows.map(o => { const r = {}; for (const [k, v] of Object.entries(o)) r[k] = v && typeof v === 'object' && typeof v.__blob === 'string' ? b64Blob(v.__blob, v.type || 'audio/mp4') : v; return r; });
+      await new Promise((ok, bad) => { const tx = db.transaction(st, 'readwrite'); dec.forEach(r => tx.objectStore(st).put(r)); tx.oncomplete = ok; tx.onerror = () => bad(tx.error); });
+      n += dec.length;
+    }
+    db.close();
+  }
+  return n;
+}
+// iPad: the share sheet needs a fresh tap, and gathering the recordings can take a moment, so a second tap saves the file
+function offerSave(file) {
+  const box = document.createElement('div');
+  box.className = 'save-offer';
+  box.innerHTML = '<div><p>The backup is ready.<br><span lang="ar" dir="rtl">النسخة جاهزة.</span></p><button type="button">Save the file · احفظي الملف</button></div>';
+  document.body.append(box);
+  box.querySelector('button').addEventListener('click', () => { box.remove(); navigator.share({ files: [file] }).catch(() => {}); }, { once: true });
+  box.addEventListener('click', e => { if (e.target === box) box.remove(); });
+}
+async function backup() {
   save();
   const profiles = {};
   Object.keys(PROFILE_KEY).forEach(p => {
     if (p === prof) profiles[p] = st;
     else if ((APP === 'talk-cards' || PROFILES.includes(p)) && lsGet(PROFILE_KEY[p])) profiles[p] = readProfile(p);
   });
-  const data = JSON.stringify({ app: 'maria-talk-cards', v: 2, saved: new Date().toISOString(), profiles, ...(MATHS ? { math: MATHS.snapshot() } : {}), ...(LIB ? { lib: LIB.snapshot() } : {}), ...(READS ? { reads: READS.snapshot() } : {}) });
+  let device = null;
+  if (APP === 'talk-cards') { try { device = await deviceExtras(); } catch (e) { console.warn('device extras', e); } }
+  const data = JSON.stringify({ app: 'maria-talk-cards', v: 3, saved: new Date().toISOString(), profiles, ...(MATHS ? { math: MATHS.snapshot() } : {}), ...(LIB ? { lib: LIB.snapshot() } : {}), ...(READS ? { reads: READS.snapshot() } : {}), ...(device ? { device } : {}) });
   const name = `${APP}-backup-${today()}.json`;
   let file = null;
   try { file = new File([data], name, { type: 'application/json' }); } catch (e) {}
   if (file && isIOS() && navigator.canShare && navigator.canShare({ files: [file] })) {
-    navigator.share({ files: [file] }).catch(() => {});
+    navigator.share({ files: [file] }).catch(err => { if (err && err.name === 'NotAllowedError') offerSave(file); });
     return;
   }
   const url = URL.createObjectURL(file || new Blob([data], { type: 'application/json' }));
@@ -1369,15 +1436,18 @@ async function restore(file, after = renderParent) {
     const math = MATHS && MATHS.valid(obj.math) ? obj.math : null;            // times tables (backups from October 2026 on)
     const libr = LIB && LIB.valid(obj.lib) ? obj.lib : null;                  // her library (from 13 October 2026)
     const rds = READS && READS.valid(obj.reads) ? obj.reads : null;           // Maria Reads (from 20 October 2026)
-    if (!ok.length && !math && !libr && !rds) throw new Error('bad');
-    const what = [...ok.map(p => (p === 'mama' ? 'Mama' : 'Maria')), ...(math ? ['times tables'] : []), ...(libr ? ['library'] : []), ...(rds ? ['Maria Reads'] : [])];
+    const dev = APP === 'talk-cards' && obj.device && typeof obj.device === 'object' ? obj.device : null;   // recordings etc. (from 20 October 2026)
+    if (!ok.length && !math && !libr && !rds && !dev) throw new Error('bad');
+    const what = [...ok.map(p => (p === 'mama' ? 'Mama' : 'Maria')), ...(math ? ['times tables'] : []), ...(libr ? ['library'] : []), ...(rds ? ['Maria Reads'] : []), ...(dev ? ['recordings'] : [])];
     if (!confirm(APP === 'prepositions' ? 'Replace your progress on this device with this backup?'
       : `Replace the progress on this device with this backup (${what.join(' and ')})?`)) return;
     ok.forEach(p => lsSet(PROFILE_KEY[p], JSON.stringify(merge(profiles[p], p))));
     if (math) MATHS.replace(math);
     if (libr) LIB.replace(libr);
     if (rds) await READS.replace(rds);
+    if (dev) await restoreExtras(dev);
     load(prof); after(); toast('Progress restored.');
+    if (dev) setTimeout(() => location.reload(), 1200);   // the library and Maria Reads read their recordings when they start
   } catch (e) { toast(APP === 'prepositions' ? 'That file has no Prepositions progress.' : 'That file is not a Talk Cards backup.'); }
 }
 
@@ -1522,7 +1592,7 @@ async function boot() {
   }
   if (DEV) {
     renderDev();
-    window.TC = { get MATHS() { return MATHS; }, get SB() { return SB; }, get LIB() { return LIB; }, get APPS() { return APPS; }, get READS() { return READS; }, get st() { return st; }, get S() { return S; }, CARD, SET, SETS, today, buildQueue, newOrder, dueIds, eligible, trickyIds, funIds, flip, rate, save, Speech, SFX, setPracticeIds, get VOICE() { return VOICE; }, renderText, voiceEl, get prof() { return prof; }, openProfile, showPicker, PCARDS, weekStats, readProfile,
+    window.TC = { deviceExtras, restoreExtras, restore, get MATHS() { return MATHS; }, get SB() { return SB; }, get LIB() { return LIB; }, get APPS() { return APPS; }, get READS() { return READS; }, get st() { return st; }, get S() { return S; }, CARD, SET, SETS, today, buildQueue, newOrder, dueIds, eligible, trickyIds, funIds, flip, rate, save, Speech, SFX, setPracticeIds, get VOICE() { return VOICE; }, renderText, voiceEl, get prof() { return prof; }, openProfile, showPicker, PCARDS, weekStats, readProfile,
       showCard(id) { if (!S) newSession('fun', [id]); else { S.queue = S.queue.filter(x => x !== id); S.cur = id; S.flipped = S.seenBack = S.flipping = S.busy = false; if (CARD[id].kind === 'gap') renderGapCard(CARD[id]); else renderCard(CARD[id]); } } };
   }
   if (APPS && prof === 'maria') APPS.home();                                   // her entrance page: she picks an app
