@@ -18,9 +18,10 @@ for f in ['app.js', 'style.css', 'sw.js', 'prepositions.json', '.nojekyll',
 page = open(os.path.join(SRC, 'index.html'), encoding='utf-8').read()
 subs = [
     ('<html lang="en">', '<html lang="en" data-app="prepositions">'),
-    ('<title>Talk Cards</title>', '<title>Prepositions</title>'),
+    ('<title>تطبيقات ماريا</title>', '<title>Prepositions</title>'),
     ('<meta name="theme-color" content="#F6F8FF">', '<meta name="theme-color" content="#EEF2F7">'),
-    ('<meta name="apple-mobile-web-app-title" content="Talk Cards">', '<meta name="apple-mobile-web-app-title" content="Prepositions">'),
+    ('<meta name="apple-mobile-web-app-title" content="تطبيقات ماريا">', '<meta name="apple-mobile-web-app-title" content="Prepositions">'),
+    ('<link rel="apple-touch-icon" href="apple-touch-icon.png">', '<link rel="apple-touch-icon" href="icon-192.png">'),   # its own icon, not Maria's
     ('<link rel="preload" href="fonts/andika-700.woff2" as="font" type="font/woff2" crossorigin>\n', ''),
     ('<body>', '<body data-profile="mama" class="single">'),
     ('<script src="garden.js"></script>\n', ''),         # Maria's science garden,

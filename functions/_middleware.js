@@ -5,7 +5,7 @@
    Before signing in, only the app's name and icon (for "Add to Home Screen") and this page are sent. */
 const COOKIE = 'mr_session';
 const YEAR = 365 * 24 * 3600;
-const OPEN = new Set(['/signin', '/manifest.json', '/icon-192.png', '/icon-512.png', '/favicon.ico', '/robots.txt']);
+const OPEN = new Set(['/signin', '/manifest.json', '/icon-192.png', '/icon-512.png', '/apple-touch-icon.png', '/favicon.ico', '/robots.txt']);
 const enc = new TextEncoder();
 
 const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
@@ -40,7 +40,7 @@ function signinPage(next, wrong) {
 <html lang="ar" dir="rtl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow"><meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>تسجيل الدخول · Sign in</title>
 <style>
   :root { color-scheme: light; }
