@@ -761,8 +761,8 @@ function mount(api) {
       if (!alive(s)) return;
       stage.innerHTML = `<div class="rd-game rd-hear">
         <button class="rd-replay" id="rdAgain" aria-label="اسمعي مرة أخرى">${ic('i-speaker')}</button>
-        <div class="rd-choices"><button class="rd-yes" data-a="1"><b>${esc(grapheme(id))}</b><span>👂 نعم</span></button>
-        <button class="rd-no" data-a="0"><b>☁️</b><span>لا</span></button></div></div>`;
+        <div class="rd-choices"><button class="rd-yes" data-a="1"><b>${esc(grapheme(id))}</b><span lang="en">👂 Yes</span></button>
+        <button class="rd-no" data-a="0"><b>☁️</b><span lang="en">No</span></button></div></div>`;
       $('#rdAgain').addEventListener('click', () => sayWord(w));
       await sleep(250); sayWord(w);
       const ans = await choice('.rd-choices button');
@@ -988,7 +988,7 @@ function mount(api) {
       <div class="rd-mebtns"><button class="rd-mbtn model" id="rdModel">${ic('i-speaker')}<span>اسمعي</span></button>
       <button class="rd-mbtn mic" id="rdMic"><svg viewBox="0 0 64 64" class="rd-micring" aria-hidden="true"><circle cx="32" cy="32" r="29" id="rdMicRing"/></svg><span class="rd-micic">🎙️</span><span>سجّلي</span></button>
       <button class="rd-mbtn mine" id="rdMine" disabled>▶<span>صوتي</span></button></div>
-      <button class="rd-next" id="rdNext" hidden>التالي ←</button></div>`;
+      <button class="rd-next" id="rdNext" hidden lang="en" dir="ltr">Next →</button></div>`;
     $('#rdModel').addEventListener('click', model);
     await sleep(300); await model();
     let url = null;
@@ -1216,7 +1216,7 @@ function mount(api) {
       if (!alive(s) || !CLIPS['w-' + w]) continue;              // a word with no voice yet waits for its recording
       stage.innerHTML = `<div class="rd-game rd-stretch"><button class="rd-replay big" id="rdAgain" aria-label="اسمعي مرة أخرى">${ic('i-speaker')}</button>
         <div class="rd-snail" id="rdBar" aria-hidden="true"><i></i></div><p class="rd-sayit" id="rdSay" lang="ar" dir="rtl"></p>
-        <div class="rd-after" id="rdAfter"></div><button class="rd-next" id="rdNext" hidden>التالي ←</button></div>`;
+        <div class="rd-after" id="rdAfter"></div><button class="rd-next" id="rdNext" hidden lang="en" dir="ltr">Next →</button></div>`;
       const bar = $('#rdBar'), say = $('#rdSay');
       const slow = async () => {
         const id = CLIPS['s-' + w] ? 's-' + w : 'w-' + w;
@@ -1338,7 +1338,7 @@ function mount(api) {
       const wrongs = near(w), wrong = Math.random() < 0.6 && wrongs.length ? wrongs[Math.floor(Math.random() * wrongs.length)] : null;
       const T = D.words[w].tiles;
       stage.innerHTML = `<div class="rd-game rd-teach"><span class="rd-teddy talk">🧸</span><div class="rd-word">${T.map((t, i) => `<button class="rd-tile" data-i="${i}">${esc(t)}</button>`).join('')}</div>
-        <div class="rd-choices"><button class="rd-yes" data-a="1"><b>✓</b><span>صحيح</span></button><button class="rd-no" data-a="0"><b>✗</b><span>خطأ</span></button></div>
+        <div class="rd-choices"><button class="rd-yes" data-a="1"><b>✓</b><span lang="en">Yes</span></button><button class="rd-no" data-a="0"><b>✗</b><span lang="en">No</span></button></div>
         <p class="rd-sayit" id="rdSay" lang="ar" dir="rtl"></p></div>`;
       await sleep(600); await sayWord(wrong || w);
       const ans = await choice('.rd-choices button'); if (!alive(s)) return;
