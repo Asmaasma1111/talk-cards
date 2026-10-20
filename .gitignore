@@ -32,3 +32,6 @@ scripts/coverage_map.py
 *book-edition*
 *Book-Edition*
 *BookEdition*
+
+# Cloudflare build output
+_site/

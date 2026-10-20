@@ -1,4 +1,4 @@
-/* Cloudflare Pages: Maria's apps open only after signing in.
+/* Cloudflare Pages: the apps open only after signing in.
    Mama sets the password herself as the secret APP_PASSWORD (Cloudflare dashboard, or `wrangler pages secret put`);
    it is never in these files. The sign-in page is part of the app's own address, so it works inside the iPad
    home-screen app. A device stays signed in for a year; changing the password signs every device out.
@@ -41,7 +41,7 @@ function signinPage(next, wrong) {
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow"><meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/icon-192.png">
-<title>تطبيقات ماريا</title>
+<title>تسجيل الدخول · Sign in</title>
 <style>
   :root { color-scheme: light; }
   * { box-sizing: border-box; }
@@ -59,7 +59,7 @@ function signinPage(next, wrong) {
 </style></head>
 <body><form method="post" action="/signin">
   <img src="/icon-192.png" alt="">
-  <h1>تطبيقات ماريا</h1>
+  <h1>تسجيل الدخول <span class="en">Sign in</span></h1>
   <p>كلمة السرّ مرّة واحدة على هذا الجهاز.<span class="en">Enter the password once on this device.</span></p>
   <input type="password" name="password" autocomplete="current-password" required autofocus aria-label="Password">
   <input type="hidden" name="next" value="${esc(next)}">
@@ -71,7 +71,7 @@ function signinPage(next, wrong) {
 export async function onRequest(ctx) {
   const { request, env, next } = ctx;
   const pw = env.APP_PASSWORD;
-  if (!pw) return new Response('Maria\'s apps are not set up yet.', { status: 503, headers: PRIVATE });
+  if (!pw) return new Response('Not set up yet.', { status: 503, headers: PRIVATE });
   const url = new URL(request.url);
 
   if (url.pathname === '/robots.txt') return new Response('User-agent: *\nDisallow: /\n', { headers: { 'Content-Type': 'text/plain', ...PRIVATE } });
