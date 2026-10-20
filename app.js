@@ -1414,7 +1414,7 @@ async function backup() {
   let device = null;
   if (APP === 'talk-cards') { try { device = await deviceExtras(); } catch (e) { console.warn('device extras', e); } }
   const data = JSON.stringify({ app: 'maria-talk-cards', v: 3, saved: new Date().toISOString(), profiles, ...(MATHS ? { math: MATHS.snapshot() } : {}), ...(LIB ? { lib: LIB.snapshot() } : {}), ...(READS ? { reads: READS.snapshot() } : {}), ...(device ? { device } : {}) });
-  const name = `${APP}-backup-${today()}.json`;
+  const name = `${APP === 'talk-cards' ? 'maria-apps' : APP}-backup-${today()}.json`;   // one file: every app of hers
   let file = null;
   try { file = new File([data], name, { type: 'application/json' }); } catch (e) {}
   if (file && isIOS() && navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -1587,7 +1587,8 @@ async function boot() {
       open: k => { if (k === 'math' && MATHS) MATHS.home(); else if (k === 'lib' && LIB) LIB.home(); else if (k === 'reads' && READS) READS.home(); else renderHome(); },
       leaveTalk: () => { Speech.stop(); S = null; },
       leaveMath: () => {},
-      leaveAll: () => { Speech.stop(); S = null; if (READS) READS.leave(); }
+      leaveAll: () => { Speech.stop(); S = null; if (READS) READS.leave(); },
+      backup, restore: file => restore(file, () => { load(prof); if (APPS) APPS.home(); })
     });
   }
   if (DEV) {

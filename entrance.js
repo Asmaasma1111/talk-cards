@@ -37,6 +37,10 @@ function mount(api) {
     <button class="ap-tile t-lib" data-app="lib"><span class="ap-art"><img src="assets/apps/lib.webp" alt=""></span><span class="ap-name">مكتبتي</span><span class="ap-en">قصّة كلّ يوم</span><span class="ap-state" id="apLib"></span></button>
     <button class="ap-tile t-reads" data-app="reads" hidden><span class="ap-art"><img src="assets/apps/reads.webp" alt=""></span><span class="ap-name">ماريا تقرأ</span><span class="ap-en" lang="en" dir="ltr">Maria Reads</span><span class="ap-state" id="apReads"></span></button>
   </div>
+  <div class="ap-keep">
+    <button class="ap-keepbtn" id="apBackup"><span aria-hidden="true">💾</span>نسخة احتياطية لكل التطبيقات<small lang="en" dir="ltr">Back up all apps</small></button>
+    <label class="ap-keepbtn soft"><span aria-hidden="true">📂</span>استعادة من ملف<small lang="en" dir="ltr">Restore</small><input type="file" id="apRestore" accept="application/json,.json" hidden></label>
+  </div>
   <div class="ap-foot" lang="en" dir="ltr">Designed by Dr Asma Khattala</div>
   <input type="file" id="apFile" accept="image/*" hidden>
 </section>`);
@@ -175,6 +179,9 @@ function mount(api) {
     return cv.toDataURL('image/jpeg', 0.86);
   }
 
+  // one backup for all her apps (Talk Cards, times tables, her library, Maria Reads, her recordings): one file, one tap
+  $('#apBackup').addEventListener('click', () => { api.SFX.init(); if (api.backup) api.backup(); });
+  $('#apRestore').addEventListener('change', e => { const f = e.target.files[0]; if (f && api.restore) api.restore(f); e.target.value = ''; });
   return { home, isOn: () => !$('#apps').hidden };
 }
 
