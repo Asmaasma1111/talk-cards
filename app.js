@@ -636,7 +636,7 @@ function calendarHTML(active, days, reg, goalMin) {
 /* ---------- screens ---------- */
 function show(name) {     // every screen (the times-tables screens too): only the named one is visible
   document.querySelectorAll('body > .screen').forEach(el => { el.hidden = el.id !== name; });
-  if (['home', 'done', 'mhome', 'mdone', 'lhome'].includes(name) && reloadForUpdate.pending) setTimeout(reloadForUpdate, 300);
+  if (['home', 'done', 'mhome', 'mdone', 'lhome', 'apps'].includes(name) && reloadForUpdate.pending) setTimeout(reloadForUpdate, 300);
 }
 function toast(msg) {
   const t = $('#toast'); t.textContent = msg; t.hidden = false;
@@ -713,6 +713,7 @@ let S = null;    // current session or practice round
 let MATHS = null;  // the times-tables deck (maths.js), Maria only
 let LIB = null;    // مكتبتي, her story library (library.js), Maria only
 let SB = null;     // Maria's sticker book (stickerbook.js): a sticker for every 7 days in a row
+let APPS = null;   // تطبيقات ماريا اليوميّة, the entrance page with her three apps (entrance.js), Maria only
 function newSession(mode, ids, warm = []) {
   S = { mode, queue: ids.slice(), all: new Set(ids), good: new Set(), again: new Set(), hint: new Set(), rated: new Set(),
         cur: null, flipped: false, seenBack: false, flipping: false, busy: false, celeb: [], frontPlan: null, backPlan: null,
@@ -1390,7 +1391,8 @@ function onDevClick(e) {
   Speech.stop(); S = null;
   $('#celebrate').hidden = true;
   renderDev();
-  if (MATHS && MATHS.isOn()) MATHS.home();
+  if (APPS && APPS.isOn()) APPS.home();
+  else if (MATHS && MATHS.isOn()) MATHS.home();
   else if (LIB && LIB.isOn()) LIB.home();
   else if ($('#picker').hidden) renderHome();
 }
@@ -1479,15 +1481,38 @@ async function boot() {
       setDeck: d => lsSet(DECK_KEY, d),
       stopEnglish: () => { Speech.stop(); S = null; },
       english: () => { Speech.stop(); S = null; renderHome(); },
-      maths: () => { if (MATHS) MATHS.home(); else renderHome(); }
+      maths: () => { if (MATHS) MATHS.home(); else renderHome(); },
+      appsChip: window.MariaApps ? () => window.MariaApps.chip() : null,
+      apps: () => { Speech.stop(); S = null; if (APPS) APPS.home(); else renderHome(); }
+    });
+  }
+  if (APP === 'talk-cards' && PROFILES.includes('maria') && window.MariaApps) {
+    APPS = window.MariaApps.mount({
+      today, show, toast, SFX,
+      photo: () => (prof === 'maria' && st.photo) || '',
+      setPhoto: url => { if (prof !== 'maria') return; st.photo = url; save(); },
+      status: () => {
+        const t = today(), m = MATHS ? MATHS.snapshot() : null, l = LIB ? LIB.snapshot() : null;
+        const libDone = !!l && Object.values(l.read || {}).some(r => r && r.day === t);
+        return {
+          talk: { done: (st.days || []).includes(t), stars: starsToday() },
+          math: { done: !!m && !!m.daily && m.daily.day === t && !!m.daily.hit, min: m ? Math.floor(((m.active || {})[t] || 0) / 60) : 0, goal: m ? m.settings.goalMin : 5 },
+          lib: { done: libDone, open: !!l && !libDone && !!l.today && l.today.day === t }
+        };
+      },
+      open: k => { if (k === 'math' && MATHS) MATHS.home(); else if (k === 'lib' && LIB) LIB.home(); else renderHome(); },
+      leaveTalk: () => { Speech.stop(); S = null; },
+      leaveMath: () => {},
+      leaveAll: () => { Speech.stop(); S = null; }
     });
   }
   if (DEV) {
     renderDev();
-    window.TC = { get MATHS() { return MATHS; }, get SB() { return SB; }, get LIB() { return LIB; }, get st() { return st; }, get S() { return S; }, CARD, SET, SETS, today, buildQueue, newOrder, dueIds, eligible, trickyIds, funIds, flip, rate, save, Speech, SFX, setPracticeIds, get VOICE() { return VOICE; }, renderText, voiceEl, get prof() { return prof; }, openProfile, showPicker, PCARDS, weekStats, readProfile,
+    window.TC = { get MATHS() { return MATHS; }, get SB() { return SB; }, get LIB() { return LIB; }, get APPS() { return APPS; }, get st() { return st; }, get S() { return S; }, CARD, SET, SETS, today, buildQueue, newOrder, dueIds, eligible, trickyIds, funIds, flip, rate, save, Speech, SFX, setPracticeIds, get VOICE() { return VOICE; }, renderText, voiceEl, get prof() { return prof; }, openProfile, showPicker, PCARDS, weekStats, readProfile,
       showCard(id) { if (!S) newSession('fun', [id]); else { S.queue = S.queue.filter(x => x !== id); S.cur = id; S.flipped = S.seenBack = S.flipping = S.busy = false; if (CARD[id].kind === 'gap') renderGapCard(CARD[id]); else renderCard(CARD[id]); } } };
   }
-  if (MATHS && prof === 'maria' && lsGet(DECK_KEY) === 'math') MATHS.home();   // she was last in the times tables
+  if (APPS && prof === 'maria') APPS.home();                                   // her entrance page: she picks an app
+  else if (MATHS && prof === 'maria' && lsGet(DECK_KEY) === 'math') MATHS.home();   // she was last in the times tables
   else if (LIB && prof === 'maria' && lsGet(DECK_KEY) === 'lib') LIB.home();    // or in her library
   else if (known) renderHome(); else showPicker();   // first launch with several profiles: choose one
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

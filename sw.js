@@ -2,7 +2,7 @@
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
 // The same file serves both apps: Talk Cards registers sw.js, Prepositions registers sw.js?app=prepositions.
 const APP = new URL(location.href).searchParams.get('app') === 'prepositions' ? 'prepositions' : 'talk-cards';
-const VERSION = APP + '-v91';
+const VERSION = APP + '-v92';
 const FILES = APP === 'prepositions' ? [
   './',
   'index.html',
@@ -27,6 +27,10 @@ const FILES = APP === 'prepositions' ? [
   'stickerbook.js',
   'squishy.js',
   'library.js',
+  'entrance.js',
+  'assets/apps/talk.webp',
+  'assets/apps/math.webp',
+  'assets/apps/lib.webp',
   'stories.json',
   'stickers/stickers.json',
   'sets.json',

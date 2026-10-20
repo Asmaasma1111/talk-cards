@@ -1836,3 +1836,72 @@ body[data-profile="mama"] .deck-lib { display: none; }
 .pa-keys button { min-height: 56px; font-family: var(--baloo, sans-serif); font-size: 24px; font-weight: 700; color: #2B3A44; background: #F4F0EA; border: 0; border-radius: 16px; }
 .pa-cancel { margin-top: 12px; min-height: 40px; padding: 0 16px; font-family: var(--baloo, sans-serif); font-size: 16px; color: #6B7A84; background: none; border: 0; }
 .lb-crown span { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+
+/* ---------- تطبيقات ماريا اليوميّة: the entrance page (entrance.js) ---------- */
+.ap { --apfont: 'Baloo Bhaijaan 2', 'Tajawal', 'Geeza Pro', sans-serif; --rose: #F27BA8; --blush: #FFE3EE; --deep: #9E2F63;
+  font-family: var(--apfont); color: var(--ink); overflow: hidden; align-items: center; justify-content: center; gap: clamp(14px, 2.6vh, 26px);
+  background: radial-gradient(ellipse at 50% -10%, #FFFFFF 0, rgba(255, 255, 255, 0) 55%),
+    radial-gradient(circle at 8% 92%, #FFD0E2 0, rgba(255, 208, 226, 0) 32%),
+    radial-gradient(circle at 94% 80%, #F3DDFF 0, rgba(243, 221, 255, 0) 30%),
+    linear-gradient(180deg, #FFF3F8 0%, #FFE6F0 100%); }
+.ap-sky { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.ap-sky i { position: absolute; width: 22px; height: 22px; opacity: .5; animation: apFloat 14s ease-in-out infinite; }
+.ap-sky i::before { content: '♥'; position: absolute; inset: 0; font: 22px/22px var(--apfont); color: #FFB2CF; text-align: center; }
+.ap-sky i:nth-child(2n)::before { content: '✦'; color: #F7C6E0; }
+.ap-sky i:nth-child(3n)::before { color: #E8C9F5; }
+.ap-sky i:nth-child(1) { left: 6%; top: 14%; } .ap-sky i:nth-child(2) { left: 18%; top: 72%; animation-delay: -3s; }
+.ap-sky i:nth-child(3) { left: 33%; top: 9%; animation-delay: -6s; transform: scale(.8); } .ap-sky i:nth-child(4) { left: 54%; top: 88%; animation-delay: -9s; }
+.ap-sky i:nth-child(5) { left: 72%; top: 12%; animation-delay: -2s; } .ap-sky i:nth-child(6) { left: 88%; top: 40%; animation-delay: -7s; }
+.ap-sky i:nth-child(7) { left: 92%; top: 86%; animation-delay: -11s; } .ap-sky i:nth-child(8) { left: 3%; top: 46%; animation-delay: -5s; }
+@keyframes apFloat { 0%, 100% { translate: 0 0; rotate: -8deg; } 50% { translate: 0 -16px; rotate: 8deg; } }
+
+.ap-head { position: relative; display: flex; align-items: center; gap: clamp(18px, 3vw, 34px); }
+.ap-photo { position: relative; flex: none; width: clamp(128px, 17vh, 168px); aspect-ratio: 1; padding: 0; border: 0; border-radius: 50%; background: none; }
+.ap-ring { position: absolute; inset: -9px; border-radius: 50%; background: conic-gradient(#FF9EC4, #F6C5FF, #FFD6A8, #FF9EC4); box-shadow: 0 14px 30px rgba(214, 82, 140, .25); }
+.ap-pic { position: absolute; inset: 0; border-radius: 50%; border: 5px solid #fff; background: #FFEAF2 center / cover no-repeat; }
+.ap-photo.empty .ap-pic { background-image: radial-gradient(circle at 50% 38%, #FFC9DD 0 17%, transparent 17.5%), radial-gradient(ellipse at 50% 92%, #FFC9DD 0 34%, transparent 34.5%); }
+.ap-photo.empty .ap-pic::after { content: 'صورتي'; position: absolute; left: 0; right: 0; bottom: 18%; text-align: center; font: 800 16px/1 var(--apfont); color: var(--deep); opacity: .75; }
+.ap-cam { position: absolute; left: -2px; bottom: 4px; width: 44px; height: 44px; display: grid; place-items: center; font-size: 21px; border-radius: 50%;
+  background: #fff; box-shadow: 0 4px 10px rgba(158, 47, 99, .22); }
+.ap-photo:active .ap-pic { transform: scale(.97); }
+.ap-words { text-align: right; }
+.ap-title { margin: 0; font: 700 clamp(36px, 5.4vw, 58px)/1.15 'Marhey', var(--apfont); color: var(--deep); letter-spacing: 0; text-shadow: 0 3px 0 #FFFFFF; }
+.ap-hello { margin: 6px 0 0; font-size: clamp(20px, 2.6vw, 27px); font-weight: 700; }
+.ap-date { margin: 2px 0 0; font-size: clamp(16px, 2vw, 20px); font-weight: 600; color: rgba(43, 35, 64, .6); }
+
+.ap-today { display: inline-flex; align-items: center; gap: 12px; padding: 10px 22px; border-radius: 99px; background: rgba(255, 255, 255, .78);
+  box-shadow: 0 6px 16px rgba(214, 82, 140, .12); font-size: clamp(17px, 2.1vw, 21px); font-weight: 700; color: var(--deep); }
+.ap-dots { display: inline-flex; gap: 7px; }
+.ap-dots i { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid currentColor; opacity: .55; }
+.ap-dots i.on { opacity: 1; } .ap-dots .d-talk { color: #E5B400; } .ap-dots .d-math { color: #F0679C; } .ap-dots .d-lib { color: #9C82E8; }
+.ap-dots i.d-talk.on { background: #FFD84D; } .ap-dots i.d-math.on { background: #FF8FBA; } .ap-dots i.d-lib.on { background: #BBA8F5; }
+
+.ap-tiles { display: flex; gap: clamp(16px, 2.6vw, 30px); justify-content: center; flex-wrap: wrap; }
+.ap-tile { position: relative; width: clamp(220px, 27vw, 292px); display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 18px 16px 20px; border: 4px solid #fff; border-radius: 38px; font-family: var(--apfont);
+  box-shadow: 0 16px 34px rgba(214, 82, 140, .2), inset 0 -6px 0 rgba(255, 255, 255, .55); transition: transform .15s ease; }
+.t-talk { background: linear-gradient(170deg, #FFF8D6 0%, #FFFFFF 70%); }
+.t-math { background: linear-gradient(170deg, #FFE1EC 0%, #FFFFFF 70%); }
+.t-lib { background: linear-gradient(170deg, #ECE5FF 0%, #FFFFFF 70%); }
+.ap-tile:active { transform: scale(.96); }
+.ap-tile.press { animation: apPress .32s ease; }
+@keyframes apPress { 0% { transform: scale(1); } 35% { transform: scale(.93, .9); } 70% { transform: scale(1.03); } 100% { transform: scale(1); } }
+.ap-art { width: clamp(118px, 17vh, 160px); aspect-ratio: 1; display: block; animation: apBob 5s ease-in-out infinite; }
+.t-math .ap-art { animation-delay: -1.6s; } .t-lib .ap-art { animation-delay: -3.2s; }
+.ap-art img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 10px 12px rgba(150, 60, 110, .18)); }
+@keyframes apBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.ap-name { font-size: clamp(27px, 3.4vw, 34px); font-weight: 800; line-height: 1.2; }
+.ap-en { font-size: 17px; font-weight: 600; color: rgba(43, 35, 64, .55); line-height: 1.2; }
+.ap-en[lang="en"] { font-family: var(--en); font-weight: 700; }
+.ap-state { margin-top: 10px; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 4px 16px; border-radius: 99px;
+  background: rgba(255, 255, 255, .9); box-shadow: 0 2px 6px rgba(150, 60, 110, .12); font-size: 17px; font-weight: 700; color: rgba(43, 35, 64, .7); }
+.ap-state.done { background: #DDF7EA; color: #1E7A50; }
+.ap-state svg { width: 20px; height: 20px; }
+.ap-foot { position: absolute; bottom: calc(var(--safe-b) + 10px); left: 0; right: 0; text-align: center; font: 600 13px var(--en); color: rgba(43, 35, 64, .4); }
+@media (max-height: 700px) { .ap-art { width: 104px; } .ap-tile { padding: 12px 12px 14px; } }
+@media (prefers-reduced-motion: reduce) { .ap-sky i, .ap-art { animation: none; } }
+
+/* the way back to the entrance page, on every app's Home */
+.deck-apps { background: #FFB8D2; font-family: 'Baloo Bhaijaan 2', 'Tajawal', var(--ar); }
+.ap-chip-ic { width: 24px; height: 24px; }
+body[data-profile="mama"] .deck-apps { display: none; }

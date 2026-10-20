@@ -222,11 +222,15 @@ function mount(api) {
   }
   row($('#home'), $('#toMaths'));
   row($('#mhome'), $('#mxToTalk'));
-  $('#lbDecks').innerHTML = '<button class="deck-chip deck-talk" lang="en" dir="ltr" data-go="talk">Talk Cards</button><button class="deck-chip deck-math" lang="ar" dir="rtl" data-go="math"><span class="x" aria-hidden="true">×</span>جدول الضرب</button><button class="deck-chip deck-studio" lang="ar" dir="rtl" data-go="studio">🎨 مرسمي</button>';
+  const studioChip = '<button class="deck-chip deck-studio" lang="ar" dir="rtl" data-go="studio">🎨 مرسمي</button>';
+  // with the entrance page (entrance.js) one chip goes back to «تطبيقاتي»; without it, chips to the other two apps
+  $('#lbDecks').innerHTML = api.appsChip ? api.appsChip().outerHTML.replace('<button', '<button data-go="apps"') + studioChip
+    : '<button class="deck-chip deck-talk" lang="en" dir="ltr" data-go="talk">Talk Cards</button><button class="deck-chip deck-math" lang="ar" dir="rtl" data-go="math"><span class="x" aria-hidden="true">×</span>جدول الضرب</button>' + studioChip;
   $('#lbDecks').addEventListener('click', e => {
     const b = e.target.closest('[data-go]'); if (!b) return;
     if (b.dataset.go === 'studio') { if (!busy) openStudio(); return; }
-    leaveRoom(); b.dataset.go === 'talk' ? api.english() : api.maths();
+    leaveRoom();
+    if (b.dataset.go === 'apps') api.apps(); else if (b.dataset.go === 'talk') api.english(); else api.maths();
   });
 
   /* ---------- sounds: real CC0 recordings (assets/audio, see CREDITS.md); chimes in code ---------- */
