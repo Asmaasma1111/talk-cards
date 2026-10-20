@@ -1,0 +1,177 @@
+{
+ "_note": "which candidate becomes each mystery photo (chosen 20 Oct 2026 from the contact sheets); fx/fy move the 4:3 crop, zoom crops tighter",
+ "C1": {
+  "dir": "C1-p",
+  "i": 3
+ },
+ "B1": {
+  "dir": "B1-p",
+  "i": 0
+ },
+ "F1": {
+  "dir": "F1-p",
+  "i": 4
+ },
+ "G1": {
+  "dir": "G1-p",
+  "i": 3
+ },
+ "E4": {
+  "dir": "E4-p",
+  "i": 5
+ },
+ "A1": {
+  "dir": "A1-p",
+  "i": 1
+ },
+ "C2": {
+  "dir": "C2",
+  "i": 1
+ },
+ "E1": {
+  "dir": "E1-p",
+  "i": 1
+ },
+ "B2": {
+  "dir": "B2b-p",
+  "i": 4
+ },
+ "F2": {
+  "dir": "F2-p",
+  "i": 6
+ },
+ "G2": {
+  "dir": "G2",
+  "i": 2
+ },
+ "H1": {
+  "dir": "H1",
+  "i": 3,
+  "sound": {
+   "file": "Humpbackwhale2.ogg",
+   "licence": "CC0",
+   "link": "https://commons.wikimedia.org/wiki/File:Humpbackwhale2.ogg",
+   "via": "Wikimedia Commons"
+  }
+ },
+ "A2": {
+  "dir": "A2-p",
+  "i": 0
+ },
+ "C3": {
+  "dir": "C3-p",
+  "i": 6
+ },
+ "D1": {
+  "dir": "D1-p",
+  "i": 2
+ },
+ "B3": {
+  "dir": "B3-p",
+  "i": 5
+ },
+ "F3": {
+  "dir": "F3-p",
+  "i": 6
+ },
+ "G3": {
+  "dir": "G3",
+  "i": 3
+ },
+ "E2": {
+  "dir": "E2-p",
+  "i": 0
+ },
+ "A3": {
+  "dir": "A3",
+  "i": 2
+ },
+ "C4": {
+  "dir": "C4",
+  "i": 4
+ },
+ "E3": {
+  "dir": "E3-p",
+  "i": 7
+ },
+ "B4": {
+  "dir": "B4",
+  "i": 1
+ },
+ "F4": {
+  "dir": "F4-p",
+  "i": 7
+ },
+ "G4": {
+  "dir": "G4-p",
+  "i": 7
+ },
+ "A4": {
+  "dir": "A4",
+  "i": 4
+ },
+ "C5": {
+  "dir": "C5",
+  "i": 0
+ },
+ "I1": {
+  "dir": "I1-p",
+  "i": 5
+ },
+ "I2": {
+  "dir": "I2b-p",
+  "i": 7
+ },
+ "I3": {
+  "dir": "I3",
+  "i": 2
+ },
+ "I4": {
+  "dir": "I4",
+  "i": 2
+ },
+ "I5": {
+  "dir": "I5-p",
+  "i": 4
+ },
+ "I6": {
+  "dir": "I6",
+  "i": 1
+ },
+ "I7": {
+  "dir": "I7",
+  "i": 0
+ },
+ "I8": {
+  "dir": "I8",
+  "i": 3
+ },
+ "I9": {
+  "dir": "I9-p",
+  "i": 0
+ },
+ "I10": {
+  "dir": "I10",
+  "i": 1
+ },
+ "I11": {
+  "dir": "I11",
+  "i": 7
+ },
+ "I12": {
+  "dir": "I12",
+  "i": 4
+ },
+ "I13": {
+  "dir": "I13",
+  "i": 3
+ },
+ "I14": {
+  "dir": "I14",
+  "i": 1
+ },
+ "I15": {
+  "dir": "I15-p",
+  "i": 1
+ }
+}

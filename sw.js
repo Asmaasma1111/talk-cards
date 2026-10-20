@@ -2,7 +2,7 @@
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
 // The same file serves both apps: Talk Cards registers sw.js, Prepositions registers sw.js?app=prepositions.
 const APP = new URL(location.href).searchParams.get('app') === 'prepositions' ? 'prepositions' : 'talk-cards';
-const VERSION = APP + '-v110';
+const VERSION = APP + '-v111';
 const FILES = APP === 'prepositions' ? [
   './',
   'index.html',
@@ -30,6 +30,10 @@ const FILES = APP === 'prepositions' ? [
   'entrance.js',
   'reads.js',
   'reads.json',
+  'curiosity.js',
+  'curiosity.json',
+  'assets/apps/curiosity.svg',
+  'assets/curiosity/sounds/h1.m4a',
   'assets/apps/talk.webp',
   'assets/apps/math.webp',
   'assets/apps/lib.webp',
@@ -145,8 +149,17 @@ async function cacheReads(cache) {
   } catch (e) { /* the pictures still load when online */ }
 }
 
+// علبة الفضول: the real photos listed in curiosity.json, one by one
+async function cacheCuriosity(cache) {
+  if (APP !== 'talk-cards') return;
+  try {
+    const d = await (await fetch('curiosity.json', { cache: 'no-cache' })).json();
+    await Promise.all(d.mysteries.filter(m => m.photo).map(m => cache.add(new Request(m.photo, { cache: 'no-cache' })).catch(() => {})));
+  } catch (e) { /* the pictures still load when online */ }
+}
+
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSION).then(async c => { await c.addAll(FILES); await cacheVoice(c); await cacheStickers(c); await cacheStories(c); await cacheColour(c); await cacheReads(c); }).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(VERSION).then(async c => { await c.addAll(FILES); await cacheVoice(c); await cacheStickers(c); await cacheStories(c); await cacheColour(c); await cacheReads(c); await cacheCuriosity(c); }).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {

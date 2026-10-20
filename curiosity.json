@@ -1,0 +1,3472 @@
+{
+ "v": 1,
+ "goal": "اليوم نتدرّب لنكون سائلات ماهرات",
+ "rules": [
+  "اسألي أكبر عدد من الأسئلة",
+  "لا تتوقفي لتجيبي",
+  "قوليها كما خطرت لكِ",
+  "حوّلي الجملة إلى سؤال"
+ ],
+ "themes": {
+  "A": {
+   "ar": "ألوان وفن",
+   "en": "Colours and art"
+  },
+  "B": {
+   "ar": "أشياء أحبّها",
+   "en": "Things I love"
+  },
+  "C": {
+   "ar": "الحيوانات",
+   "en": "Animals"
+  },
+  "D": {
+   "ar": "الفضاء والسماء",
+   "en": "Space and sky"
+  },
+  "E": {
+   "ar": "جسمي",
+   "en": "My body"
+  },
+  "F": {
+   "ar": "خدعة اليوم",
+   "en": "Trick of the day"
+  },
+  "G": {
+   "ar": "«انظر كيف»",
+   "en": "\"Look how\" (Fridays)"
+  },
+  "H": {
+   "ar": "صوتٌ غامض",
+   "en": "Mystery sound"
+  },
+  "I": {
+   "ar": "من كتاب العلوم",
+   "en": "From her science book"
+  }
+ },
+ "rotation": [
+  [
+   "A"
+  ],
+  [
+   "C"
+  ],
+  [
+   "D",
+   "E"
+  ],
+  [
+   "B"
+  ],
+  [
+   "F"
+  ],
+  [
+   "G"
+  ],
+  [
+   "E",
+   "H"
+  ]
+ ],
+ "week1": [
+  "A5",
+  "C1",
+  "D8",
+  "B1",
+  "F1",
+  "G1",
+  "E4"
+ ],
+ "chapters": {
+  "1": "Living things",
+  "2": "Life cycles",
+  "3": "Ecosystems",
+  "4": "Changes",
+  "5": "Earth changes",
+  "6": "Soil and fossils"
+ },
+ "tips": [
+  "Give real explanations, never just \"because\".",
+  "Show your own surprise.",
+  "Say «لا أعرف... هيا نبحث معًا» (\"I don't know, let's find out together\").",
+  "Praise the question, not the answer."
+ ],
+ "mysteries": [
+  {
+   "id": "A1",
+   "theme": "A",
+   "n": 1,
+   "line": "قوسُ قزحٍ فوق الرمال",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "مطر",
+      "شمس"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "ضوء",
+      "ألوان"
+     ]
+    },
+    {
+     "w": "أين",
+     "k": [
+      "نهاية",
+      "سماء"
+     ]
+    }
+   ],
+   "find": "Make a rainbow with a glass of water in sunlight",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Sunlight looks white, but it is really all the colours mixed together.\n  - When sunlight shines into raindrops, it bends going in, bounces off the back of each drop and bends again coming out.\n    Each colour bends a slightly different amount, so the colours spread apart: red on the outside, violet on the inside.\n  - You only see a rainbow with the sun behind you and the rain in front, usually in the morning or late afternoon.\n  - A surprise for her \"end of the rainbow\" hint: a rainbow has no end. It is really a full circle; the ground hides the\n    bottom half. From an aeroplane, people sometimes see the whole circle.\n  - Each person sees their own rainbow, from their own drops.\n  - In the desert, rain is rare, so a desert rainbow is special."
+    },
+    {
+     "label": "Find out together",
+     "md": "  - On a sunny morning or late afternoon, fill a clear glass to the top and stand it in direct sun on a windowsill or\n    table.\n  - Hold a sheet of white paper near it and move the paper until the colours appear.\n  - Another way: spray a hose into the air with your backs to the sun."
+    },
+    {
+     "label": "Safety",
+     "md": "  - Never look straight at the sun.\n  - Use a sturdy glass, placed safely, and wipe up spills."
+    }
+   ],
+   "photo": "assets/curiosity/photos/a1.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "A2",
+   "theme": "A",
+   "n": 2,
+   "line": "أصفر وأزرق صارا أخضر",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "ماذا لو",
+     "k": [
+      "أحمر",
+      "أبيض"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "خلط",
+      "لون"
+     ]
+    },
+    {
+     "w": "كم",
+     "k": [
+      "لون",
+      "جديد"
+     ]
+    }
+   ],
+   "find": "Mix paints and make her own colour chart",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Paint gets its colour by soaking up some colours of light and bouncing back the rest.\n  - Yellow paint bounces back mostly yellow and a little green. Blue paint bounces back mostly blue and a little green.\n    Mixed together, each soaks up what the other bounces back, and the colour they both still bounce back is green.\n  - White makes a colour lighter (red and white make pink). A tiny bit of black makes it darker.\n  - With red, yellow and blue (plus white), she can mix a huge number of colours.\n  - Coloured light mixes differently from paint: on a screen, red and green light make yellow. That is another mystery\n    for later."
+    },
+    {
+     "label": "Find out together",
+     "md": "mix paints and make her own colour chart: which two colours made each new one?"
+    },
+    {
+     "label": "Safety",
+     "md": "washable children's paint, an apron, and a covered table."
+    }
+   ],
+   "photo": "assets/curiosity/photos/a2.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "A3",
+   "theme": "A",
+   "n": 3,
+   "line": "طائر النحام وردي، وصغيره رمادي",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "طعام",
+      "لون"
+     ]
+    },
+    {
+     "w": "متى",
+     "k": [
+      "يكبر",
+      "يتغيّر"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "يأكل",
+      "أخضر"
+     ]
+    }
+   ],
+   "find": "What flamingos eat and why it turns them pink",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Flamingo chicks hatch grey or white. They turn pink because of natural colours in their food: tiny shrimps and algae\n    (very small water plants).\n  - Their bodies turn these colours into pink and red in their feathers, skin and legs. It takes a young flamingo about\n    two to three years to become fully pink.\n  - In zoos, flamingos get special food with the same colours, or they slowly fade.\n  - The same family of natural colours makes carrots orange.\n  - Her hint asks about green food: a flamingo would not turn green. Without its pink-making food, its new feathers\n    simply grow paler.\n  - Greater flamingos spend the winter on Saudi Arabia's coasts."
+    },
+    {
+     "label": "Find out together",
+     "md": "find out what flamingos eat and how they eat it (upside down, with their heads in the water)."
+    },
+    {
+     "label": "Safety",
+     "md": "none."
+    }
+   ],
+   "tags": [
+    3
+   ],
+   "photo": "assets/curiosity/photos/a3.webp",
+   "credit": "Wikimedia Commons, Evelyndemartino, CC0",
+   "ready": true
+  },
+  {
+   "id": "A4",
+   "theme": "A",
+   "n": 4,
+   "line": "نجمة من مربعات صغيرة",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "دائرة",
+      "مسطرة"
+     ]
+    },
+    {
+     "w": "كم",
+     "k": [
+      "قطعة",
+      "لون"
+     ]
+    },
+    {
+     "w": "من",
+     "k": [
+      "صانع",
+      "مسجد"
+     ]
+    }
+   ],
+   "find": "Draw an eight-pointed star with a compass and ruler",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Islamic geometric patterns are built from circles and straight lines. The craftsmen used only a compass and a\n    straight edge.\n  - Dividing a circle into equal parts gives stars with 8, 10, 12 or more points.\n  - An eight-pointed star is two squares of the same size on top of each other, one turned like a diamond.\n  - In tile mosaics, each small piece is cut by hand and fitted with others so that the pattern repeats and covers the\n    whole wall with no gaps. Such patterns decorate mosques and palaces from Spain to Central Asia, and in Algeria too,\n    for example in Tlemcen."
+    },
+    {
+     "label": "Find out together",
+     "md": "draw an eight-pointed star together: draw a circle, a square inside it, then a second square\n  turned like a diamond."
+    },
+    {
+     "label": "Safety",
+     "md": "the compass point is sharp, so an adult stays close."
+    }
+   ],
+   "photo": "assets/curiosity/photos/a4.webp",
+   "credit": "Wikimedia Commons, User:Patrickringgenberg, CC BY 3.0",
+   "ready": true
+  },
+  {
+   "id": "A5",
+   "theme": "A",
+   "n": 5,
+   "line": "رسمتي",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "لون",
+      "اخترتِ"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "مطر",
+      "ليل"
+     ]
+    },
+    {
+     "w": "ماذا",
+     "k": [
+      "قصة",
+      "داخل"
+     ]
+    }
+   ],
+   "find": "Family asks her questions about her drawing; she answers",
+   "kind": "drawing",
+   "card": [
+    {
+     "label": "Why this one first",
+     "md": "she knows more about this picture than anyone in the world. There is nothing to get wrong, so\n  her first storm feels safe. It also lets her practise explaining her choices aloud."
+    },
+    {
+     "label": "Find out together",
+     "md": "  - The family asks her questions about her drawing, and she answers.\n  - Ask open questions, for example why she chose a colour, or what would change at night. Wait quietly for her answer.\n  - Show real interest.\n  - This is also modelling: she hears what good questions sound like."
+    },
+    {
+     "label": "Safety",
+     "md": "none."
+    }
+   ],
+   "ready": true
+  },
+  {
+   "id": "A6",
+   "theme": "A",
+   "n": 6,
+   "line": "ظلُّ يدي صار طائرًا",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "ضوء",
+      "يد"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "كبير",
+      "صغير"
+     ]
+    },
+    {
+     "w": "متى",
+     "k": [
+      "يختفي",
+      "ظل"
+     ]
+    }
+   ],
+   "find": "Hand shadows on a wall in afternoon sunlight",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "A7",
+   "theme": "A",
+   "n": 7,
+   "line": "الحنّاء برتقالية ثم تصير داكنة",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "لون",
+      "يوم"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "نبات",
+      "أوراق"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "ماء",
+      "صابون"
+     ]
+    }
+   ],
+   "find": "Henna leaves, and why the colour deepens over a day",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "A8",
+   "theme": "A",
+   "n": 8,
+   "line": "كلّ ألوان الشاشة من ثلاثة ألوان فقط",
+   "weekMin": 3,
+   "hints": [
+    {
+     "w": "أيّ",
+     "k": [
+      "أحمر",
+      "أخضر"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "نقاط",
+      "صغيرة"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "عدسة",
+      "شاشة"
+     ]
+    }
+   ],
+   "find": "Look at a screen through a magnifying glass",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "A9",
+   "theme": "A",
+   "n": 9,
+   "line": "رمالٌ ملوّنة في زجاجة",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "طبقة",
+      "مستقيمة"
+     ]
+    },
+    {
+     "w": "من أين",
+     "k": [
+      "لون",
+      "رمل"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "تختلط",
+      "لا"
+     ]
+    }
+   ],
+   "find": "Make one with salt coloured with chalk",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "B1",
+   "theme": "B",
+   "n": 1,
+   "line": "اسكويشي يعود إلى شكله ببطء",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "بطء",
+      "هواء"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "مصنع",
+      "رغوة"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "ثلاجة",
+      "شمس"
+     ]
+    }
+   ],
+   "find": "Put one squishy in the fridge for an hour, compare with another",
+   "homeTip": "one of her own squishies",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - A squishy is made of a special slow-rising foam, full of tiny air pockets.\n  - When she presses it, the air is pushed out. It rises slowly because air can only seep back in through very tiny holes,\n    and because the foam itself is made to move slowly.\n  - Cold makes the foam stiffer, so it rises even more slowly. Warmth makes it softer and quicker.\n  - The foam is a cousin of memory foam, which was developed for NASA in the 1960s to make aeroplane seats safer: a link\n    to her love of space."
+    },
+    {
+     "label": "Find out together",
+     "md": "  - Put one squishy in the fridge for an hour and keep a matching one in the room.\n  - Press both together, then count or time how long each takes to rise.\n  - She predicts first."
+    },
+    {
+     "label": "Safety",
+     "md": "  - Use a squishy she does not mind changing.\n  - The fridge is fine. If you also try the sun, keep it short (about 10 minutes), because strong sun can fade and crack\n    foam.\n  - Never use the microwave or oven.\n  - Squishies are not for biting or chewing."
+    }
+   ],
+   "photo": "assets/curiosity/photos/b1.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "B2",
+   "theme": "B",
+   "n": 2,
+   "line": "فستانٌ يلمع",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "ضوء",
+      "لمعان"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "خيط",
+      "إبرة"
+     ]
+    },
+    {
+     "w": "من",
+     "k": [
+      "صمّم",
+      "أوّل"
+     ]
+    }
+   ],
+   "find": "Shine a torch on sequins and on plain fabric",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Sequins are tiny, flat, shiny discs, today usually plastic with a thin metal-like coating.\n  - A smooth, shiny surface bounces light back in one direction, like a mirror. When that light comes straight into her\n    eyes, she sees a flash.\n  - Plain fabric is made of rough little threads that scatter light in every direction, so it looks soft, not shiny.\n  - Every sequin sits at a slightly different angle, so as she moves, different sequins flash: that is the sparkle.\n  - Each sequin has a tiny hole and is sewn on with a needle and thread. Today machines do most of it.\n  - People have sewn shiny discs onto clothes for thousands of years: gold ones were found on clothes in Tutankhamun's\n    tomb in Egypt.\n  - A surprise: the English word \"sequin\" comes from the Arabic سكّة, the stamp used to make coins, through an old\n    Italian gold coin."
+    },
+    {
+     "label": "Find out together",
+     "md": "shine a torch on sequins and on plain fabric in a dim room, and move it slowly."
+    },
+    {
+     "label": "Safety",
+     "md": "never shine the torch into anyone's eyes. Needles only with an adult."
+    }
+   ],
+   "photo": "assets/curiosity/photos/b2.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "B3",
+   "theme": "B",
+   "n": 3,
+   "line": "كريمٌ يحمي البشرة من الشمس",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "حاجز",
+      "أشعة"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "شمس",
+      "حرق"
+     ]
+    },
+    {
+     "w": "متى",
+     "k": [
+      "نضع",
+      "مرة"
+     ]
+    }
+   ],
+   "find": "Sunscreen on clear plastic over coloured paper in the sun for a few days",
+   "homeTip": "your own face cream and a sunscreen tube",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Sunlight carries invisible rays called ultraviolet (UV). Too much UV burns the skin, and over many years it harms it.\n  - Sunscreen puts a very thin shield on the skin. Some sunscreens soak up the UV rays, and others bounce them away.\n  - The SPF number on the tube tells how well it protects against burning.\n  - It works best put on about 15 minutes before going out, and again every two hours, or after swimming or sweating."
+    },
+    {
+     "label": "Find out together",
+     "md": "  - Spread sunscreen on one half of a clear plastic sheet (a plastic sleeve works) and lay it over coloured paper in a\n    sunny window for a few days.\n  - Which half of the paper fades?"
+    },
+    {
+     "label": "Safety",
+     "md": "the paper stays in the sun, not Maria. Keep cream out of eyes, and use a children's sunscreen on her skin."
+    }
+   ],
+   "photo": "assets/curiosity/photos/b3.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "B4",
+   "theme": "B",
+   "n": 4,
+   "line": "سحّابٌ يُغلق بحركة واحدة",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "أسنان",
+      "تتشابك"
+     ]
+    },
+    {
+     "w": "من",
+     "k": [
+      "اخترع",
+      "أوّل"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "سنّ",
+      "مكسور"
+     ]
+    }
+   ],
+   "find": "Look at a zip with a magnifying glass",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - A zip has two rows of tiny teeth. Each tooth has a little bump on top and a hollow underneath.\n  - The slider is shaped like a Y. Moving up, it pushes the two rows together at an angle, so each bump hooks into the\n    hollow of the tooth on the other side. Moving down, a little wedge inside pushes them apart.\n  - An American inventor, Whitcomb Judson, made an early version in 1893. A Swedish-American engineer, Gideon Sundback,\n    designed the zip we use today between 1913 and 1917.\n  - Her hint about a broken tooth: the teeth cannot lock at that spot, so the zip splits open there."
+    },
+    {
+     "label": "Find out together",
+     "md": "look at a zip with a magnifying glass, then open and close it very slowly."
+    },
+    {
+     "label": "Safety",
+     "md": "mind fingers and hair in zips."
+    }
+   ],
+   "photo": "assets/curiosity/photos/b4.webp",
+   "credit": "Wikimedia Commons, Rabensteiner, Public domain",
+   "ready": true
+  },
+  {
+   "id": "B5",
+   "theme": "B",
+   "n": 5,
+   "line": "لاصقٌ صُنع بعد نزهةٍ مع كلب",
+   "weekMin": 3,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "خطاف",
+      "حلقة"
+     ]
+    },
+    {
+     "w": "من",
+     "k": [
+      "رأى",
+      "كلب"
+     ]
+    },
+    {
+     "w": "أين",
+     "k": [
+      "نبات",
+      "يلتصق"
+     ]
+    }
+   ],
+   "find": "The story of Velcro and burdock seeds",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "B6",
+   "theme": "B",
+   "n": 6,
+   "line": "قطرات ماءٍ على كأسٍ بارد من الخارج",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "من أين",
+     "k": [
+      "ماء",
+      "هواء"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "بارد",
+      "خارج"
+     ]
+    },
+    {
+     "w": "متى",
+     "k": [
+      "صيف",
+      "شتاء"
+     ]
+    }
+   ],
+   "find": "Cold glass on the table, dry it, watch drops return",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "B7",
+   "theme": "B",
+   "n": 7,
+   "line": "ثمر النخلة يغيّر لونه",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "لون",
+      "شمس"
+     ]
+    },
+    {
+     "w": "متى",
+     "k": [
+      "يحلو",
+      "ينضج"
+     ]
+    },
+    {
+     "w": "كم",
+     "k": [
+      "نوع",
+      "تمر"
+     ]
+    }
+   ],
+   "find": "Taste different stages; ask at the market",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "B8",
+   "theme": "B",
+   "n": 8,
+   "line": "رائحة العطر تملأ الغرفة كلّها",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "تنتقل",
+      "هواء"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "بعيد",
+      "قريب"
+     ]
+    },
+    {
+     "w": "كم",
+     "k": [
+      "وقت",
+      "تصل"
+     ]
+    }
+   ],
+   "find": "Spray in one corner; each person raises a hand when they smell it",
+   "homeTip": "your perfume bottle",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "C1",
+   "theme": "C",
+   "n": 1,
+   "line": "القطّة تقع على قدميها",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "تلتفّ",
+      "ذيل"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "لا تتأذّى",
+      "عالٍ"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "إنسان",
+      "قفز"
+     ]
+    }
+   ],
+   "find": "Watch a slow-motion video",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Inside a cat's ears is a balance sense that always knows which way is down.\n  - When it falls, it turns its head first. Then it twists its front half, with its front legs tucked in, and then its\n    back half. A very bendy back and a loose collarbone make this possible.\n  - It then spreads out a little and lands softly, with bent legs.\n  - Kittens learn to do this at about three to four weeks old.\n  - A surprise: the tail is not the secret. Cats born without tails can do it too.\n  - Cats can still be badly hurt in falls, especially from balconies and windows."
+    },
+    {
+     "label": "Find out together",
+     "md": "watch a slow-motion video of a cat landing (you search for it, in the parent area or on your\n  phone)."
+    },
+    {
+     "label": "Safety",
+     "md": "never drop, throw or push a cat, or any animal, to see what happens."
+    }
+   ],
+   "photo": "assets/curiosity/photos/c1.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "C2",
+   "theme": "C",
+   "n": 2,
+   "line": "الحرباء تغيّر لونها",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "خوف",
+      "دفء"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "جلد",
+      "خلايا"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "ملوّن",
+      "ورقة"
+     ]
+    }
+   ],
+   "find": "Why chameleons really change colour",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Many people think chameleons change colour to match what they sit on and hide. In fact, they mainly change colour to\n    show how they feel and to \"talk\" to other chameleons (calm, angry, scared, or showing off). They also change to\n    control their warmth: darker to soak up sunshine when cool, paler when hot.\n  - How: under the outer skin is a layer of cells packed with tiny crystals. When the chameleon relaxes or gets excited,\n    the crystals move closer together or further apart, and this changes which colours of light bounce back. Other cells\n    add yellow, red and dark colours.\n  - A surprise for her \"what if on coloured paper\" hint: it would not turn the colour of the paper. Its usual colours\n    already suit leaves and branches.\n  - Saudi Arabia has its own chameleons, mostly in the green south-west."
+    },
+    {
+     "label": "Find out together",
+     "md": "  - Find out why chameleons really change colour.\n  - Look at photos of the same chameleon calm and excited, or watch a short wildlife film together."
+    },
+    {
+     "label": "Safety",
+     "md": "do not catch or handle wild chameleons or lizards; it frightens them. In a pet shop, just look."
+    }
+   ],
+   "tags": [
+    3
+   ],
+   "photo": "assets/curiosity/photos/c2.webp",
+   "credit": "Wikimedia Commons, user:fantagu, Public domain",
+   "ready": true
+  },
+  {
+   "id": "C3",
+   "theme": "C",
+   "n": 3,
+   "line": "البومة تدير رأسها إلى الخلف",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "رقبة",
+      "عظام"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "عين",
+      "ثابتة"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "إنسان",
+      "يدير"
+     ]
+    }
+   ],
+   "find": "How far she can turn her own head",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - An owl's eyes are very large and shaped like tubes, fixed in place. It cannot roll its eyes as we do, so it turns\n    its whole head instead.\n  - It can turn its head about 270 degrees, three quarters of the way round (not a full circle).\n  - Its neck has 14 bones, twice as many as ours (we have 7), which makes it very bendy.\n  - Special blood vessels keep blood flowing to its brain even while its neck is twisted."
+    },
+    {
+     "label": "Find out together",
+     "md": "how far can she turn her own head? Ask her to look over her shoulder slowly while you watch.\n  People manage about a quarter of the way round each side."
+    },
+    {
+     "label": "Safety",
+     "md": "turn slowly and gently, never with a jerk."
+    }
+   ],
+   "photo": "assets/curiosity/photos/c3.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "C4",
+   "theme": "C",
+   "n": 4,
+   "line": "ثعلب الفنك آذانه كبيرة جدًّا",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "حرارة",
+      "صحراء"
+     ]
+    },
+    {
+     "w": "ماذا",
+     "k": [
+      "يسمع",
+      "رمل"
+     ]
+    },
+    {
+     "w": "أين",
+     "k": [
+      "يعيش",
+      "الجزائر"
+     ]
+    }
+   ],
+   "find": "The fennec, Algeria's national animal",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - The fennec is the smallest fox in the world, about the size of a small cat, and its ears can be about 15 centimetres\n    long.\n  - The big ears help in two ways. They let heat escape, which keeps it cool in the desert. And they hear tiny sounds,\n    even insects moving under the sand, so it can dig them out.\n  - Thick fur on the soles of its feet protects them from the hot sand.\n  - It lives in the Sahara, including Algeria. It sleeps in a burrow in the heat of the day and comes out at night.\n  - It is Algeria's national animal, and Algeria's football team is nicknamed \"Les Fennecs\"."
+    },
+    {
+     "label": "Find out together",
+     "md": "find out more about the fennec, Algeria's national animal: what it eats, and where it sleeps."
+    },
+    {
+     "label": "Safety",
+     "md": "fennecs are wild animals, not pets."
+    }
+   ],
+   "photo": "assets/curiosity/photos/c4.webp",
+   "credit": "Wikimedia Commons, Anass ERRIHANI, CC BY-SA 4.0",
+   "ready": true
+  },
+  {
+   "id": "C5",
+   "theme": "C",
+   "n": 5,
+   "line": "المها العربي عاد إلى الصحراء",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "اختفى",
+      "صيد"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "عاد",
+      "محميّة"
+     ]
+    },
+    {
+     "w": "ماذا",
+     "k": [
+      "يأكل",
+      "يشرب"
+     ]
+    }
+   ],
+   "find": "How the oryx was brought back",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - The Arabian oryx was hunted until it disappeared from the wild. The last wild ones were shot in 1972.\n  - Luckily, a few lived in zoos. They had babies, and their young were brought back to the desert from 1982, in Oman,\n    then in Saudi Arabia (from 1990), Jordan and the Emirates, in protected reserves.\n  - In 2011 it became the first animal ever to go from \"extinct in the wild\" back to \"vulnerable\".\n  - It eats grasses, leaves and roots, and gets much of its water from plants and dew, so it can go for weeks without\n    drinking. Its white coat reflects the sun."
+    },
+    {
+     "label": "Find out together",
+     "md": "find out how the oryx was brought back, and look at photos of a reserve."
+    },
+    {
+     "label": "Safety",
+     "md": "none."
+    }
+   ],
+   "tags": [
+    4
+   ],
+   "photo": "assets/curiosity/photos/c5.webp",
+   "credit": "Wikimedia Commons, Simon Tonge, CC0",
+   "ready": true
+  },
+  {
+   "id": "C6",
+   "theme": "C",
+   "n": 6,
+   "line": "النحلة ترقص لتخبر صديقاتها",
+   "weekMin": 3,
+   "hints": [
+    {
+     "w": "ماذا",
+     "k": [
+      "تقول",
+      "رقص"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "تفهم",
+      "النحلات"
+     ]
+    },
+    {
+     "w": "أين",
+     "k": [
+      "زهرة",
+      "بعيدة"
+     ]
+    }
+   ],
+   "find": "Watch a waggle-dance video",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "C7",
+   "theme": "C",
+   "n": 7,
+   "line": "بيضة النعامة بجانب بيضة الدجاجة",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كم",
+     "k": [
+      "دجاجة",
+      "تساوي"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "كبيرة",
+      "طائر"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "نطبخ",
+      "عائلة"
+     ]
+    }
+   ],
+   "find": "How many hen's eggs fit in one",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "C8",
+   "theme": "C",
+   "n": 8,
+   "line": "اليرقة والفراشة كائنٌ واحد",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "تتغيّر",
+      "شرنقة"
+     ]
+    },
+    {
+     "w": "كم",
+     "k": [
+      "يوم",
+      "تبقى"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "أجنحة",
+      "ألوان"
+     ]
+    }
+   ],
+   "find": "Links to her school life-cycle lesson",
+   "kind": "photo",
+   "card": null,
+   "tags": [
+    2
+   ],
+   "ready": false
+  },
+  {
+   "id": "C9",
+   "theme": "C",
+   "n": 9,
+   "line": "الصقر يرى فريسته من بعيد",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "عين",
+      "بعيد"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "سريع",
+      "ينقضّ"
+     ]
+    },
+    {
+     "w": "من",
+     "k": [
+      "يدرّب",
+      "صقّار"
+     ]
+    }
+   ],
+   "find": "Falconry in Saudi heritage",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "D1",
+   "theme": "D",
+   "n": 1,
+   "line": "القمر يغيّر شكله كلّ ليلة",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "شمس",
+      "ضوء"
+     ]
+    },
+    {
+     "w": "متى",
+     "k": [
+      "بدر",
+      "هلال"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "بلا قمر",
+      "بحر"
+     ]
+    }
+   ],
+   "find": "Draw the moon each evening for a week; link to the Hijri months",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - The moon does not really change shape. The sun always lights half of it.\n  - As the moon travels around the Earth (about once every 29 and a half days), we see more or less of that lit half:\n    crescent, half, full, and back again.\n  - The Hijri month begins when the new thin crescent (الهلال) is seen. The full moon (البدر) comes around the middle of\n    the month.\n  - Her hint about the sea: the moon's pull makes most of the sea's tides, the rise and fall of the water at the coast.\n    Without the moon, tides would be much smaller."
+    },
+    {
+     "label": "Find out together",
+     "md": "  - Draw the moon each evening for a week, with the Hijri date under each drawing.\n  - In a dark room, shine a torch on a ball while she turns slowly, holding it at arm's length."
+    },
+    {
+     "label": "Safety",
+     "md": "none (looking at the moon is safe)."
+    }
+   ],
+   "photo": "assets/curiosity/photos/d1.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "D2",
+   "theme": "D",
+   "n": 2,
+   "line": "الماء يطفو كرةً في محطة الفضاء",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "يطفو",
+      "كرة"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "يشربون",
+      "فضاء"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "نسكب",
+      "كأس"
+     ]
+    }
+   ],
+   "find": "Astronaut drinking video",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "D3",
+   "theme": "D",
+   "n": 3,
+   "line": "ريّانة برناوي أوّل رائدة فضاء سعودية",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "تدرّبت",
+      "صغيرة"
+     ]
+    },
+    {
+     "w": "ماذا",
+     "k": [
+      "تأكل",
+      "فضاء"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "تجارب",
+      "علماء"
+     ]
+    }
+   ],
+   "find": "Her 2023 mission and what she studied",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "D4",
+   "theme": "D",
+   "n": 4,
+   "line": "على المرّيخ غروب الشمس أزرق",
+   "weekMin": 3,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "غبار",
+      "ضوء"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "عرفنا",
+      "روبوت"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "نعيش",
+      "هواء"
+     ]
+    }
+   ],
+   "find": "Photos from the Mars rovers",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "D5",
+   "theme": "D",
+   "n": 5,
+   "line": "في الصحراء نرى نجومًا أكثر من المدينة",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "أضواء",
+      "مدينة"
+     ]
+    },
+    {
+     "w": "كم",
+     "k": [
+      "نجمة",
+      "عدد"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "اهتدى",
+      "المسافرون"
+     ]
+    }
+   ],
+   "find": "Stargazing on a family desert trip",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "D6",
+   "theme": "D",
+   "n": 6,
+   "line": "ضوء الشمس يحتاج ثماني دقائق ليصل إلينا",
+   "weekMin": 4,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "سريع",
+      "ضوء"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "أبعد",
+      "أقرب"
+     ]
+    },
+    {
+     "w": "كم",
+     "k": [
+      "سنة",
+      "تسافر"
+     ]
+    }
+   ],
+   "find": "How fast light travels",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "D7",
+   "theme": "D",
+   "n": 7,
+   "line": "حلقات زُحل من ثلجٍ وصخور",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "حلقات",
+      "حول"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "تبقى",
+      "تدور"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "نمشي",
+      "عليها"
+     ]
+    }
+   ],
+   "find": "Saturn photos",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "D8",
+   "theme": "D",
+   "n": 8,
+   "line": "رسمتي للفضاء",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "ألوان",
+      "اخترتِ"
+     ]
+    },
+    {
+     "w": "ماذا",
+     "k": [
+      "يعيش",
+      "كوكبي"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "نسافر",
+      "إليه"
+     ]
+    }
+   ],
+   "find": "She explains her concept and colours to the family",
+   "kind": "drawing",
+   "card": [
+    {
+     "label": "Why this one",
+     "md": "her own idea again, so the storm stays safe while the topic moves to space."
+    },
+    {
+     "label": "Find out together",
+     "md": "she explains her concept and her colours to the family. Real answers in case she asks:\n  - Rockets carry spacecraft into space. A trip to the Moon takes about three days, and a trip to Mars takes about\n    seven months.\n  - Scientists have not found living things on any other planet yet. They are still looking, for example with robots on\n    Mars that search for signs of tiny life from long ago.\n  - If she asks something you do not know, say «لا أعرف... هيا نبحث معًا»."
+    },
+    {
+     "label": "Safety",
+     "md": "none."
+    }
+   ],
+   "ready": true
+  },
+  {
+   "id": "E1",
+   "theme": "E",
+   "n": 1,
+   "line": "لا يوجد اثنان بالبصمة نفسها",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "مختلفة",
+      "توأم"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "تتكوّن",
+      "جلد"
+     ]
+    },
+    {
+     "w": "ماذا",
+     "k": [
+      "فائدة",
+      "إمساك"
+     ]
+    }
+   ],
+   "find": "Ink fingerprints of the whole family; compare with a magnifier",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Fingerprints are the tiny ridges on our fingertips.\n  - They form before birth, from about the 10th week of pregnancy, and are set by about the 17th week.\n  - Genes play a part, and so do tiny differences in how each baby lies and grows in the womb. This is why even identical\n    twins have different fingerprints.\n  - The pattern stays the same all her life; it just grows bigger as she grows. The three main patterns are loops (the\n    most common), whorls and arches.\n  - What they are for: scientists are still not completely sure. They probably help us feel textures, and may help us\n    grip rough or wet things. A good moment for «لا أعرف... هيا نبحث معًا».\n  - A surprise for an animal lover: koalas have fingerprints very like ours."
+    },
+    {
+     "label": "Find out together",
+     "md": "  - Make ink fingerprints of the whole family and compare them with a magnifying glass.\n  - Find who has loops, whorls or arches.\n  - No ink at home? Shade a dark patch with a soft pencil, press a fingertip on it, then press clear sticky tape on the\n    finger and stick the tape on white paper."
+    },
+    {
+     "label": "Safety",
+     "md": "use washable, non-toxic ink only, and wash hands afterwards."
+    }
+   ],
+   "photo": "assets/curiosity/photos/e1.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "E2",
+   "theme": "E",
+   "n": 2,
+   "line": "التثاؤب ينتقل من شخصٍ إلى آخر",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "ينتقل",
+      "يرى"
+     ]
+    },
+    {
+     "w": "متى",
+     "k": [
+      "نتثاءب",
+      "تعب"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "قطة",
+      "كلب"
+     ]
+    }
+   ],
+   "find": "Try yawning at dinner and count who catches it",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Scientists are still not sure exactly why we yawn. One idea is that it helps cool the brain and wake us up when we\n    are tired or bored.\n  - Seeing, hearing, or even reading about a yawn can make us yawn. We catch yawns more easily from family and friends.\n  - Children usually start catching yawns at about four or five years old.\n  - Her hint about animals: some studies found that dogs can catch yawns from people, especially their owners.\n    Chimpanzees catch yawns too. Nobody really knows about cats: a lovely one to wonder about."
+    },
+    {
+     "label": "Find out together",
+     "md": "yawn at dinner and count who catches it."
+    },
+    {
+     "label": "Safety",
+     "md": "none."
+    }
+   ],
+   "photo": "assets/curiosity/photos/e2.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "E3",
+   "theme": "E",
+   "n": 3,
+   "line": "أصابعي تتجعّد في الماء",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "ماء",
+      "طويل"
+     ]
+    },
+    {
+     "w": "متى",
+     "k": [
+      "تعود",
+      "ملساء"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "قدم",
+      "بارد"
+     ]
+    }
+   ],
+   "find": "Test after a bath; why it might help grip",
+   "homeTip": "her wrinkly fingers after a bath",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - After about five to ten minutes in water, fingers and toes wrinkle. It happens faster in warm water.\n  - It is not only the skin soaking up water. The nerves tell the tiny blood vessels under the skin to narrow, the soft\n    fingertip shrinks a little, and the skin on top folds into wrinkles.\n  - Scientists think the wrinkles may help us grip wet things, a bit like the pattern on a tyre. Not every study agrees,\n    so it is still being explored.\n  - The wrinkles go away within about half an hour after drying.\n  - It only happens on the fingers and toes, the palms and the soles of the feet."
+    },
+    {
+     "label": "Find out together",
+     "md": "  - Test after a bath: are her toes wrinkly too?\n  - Move wet marbles or pebbles from one bowl to another, once with dry fingers and once with wrinkly ones. Which is\n    easier?"
+    },
+    {
+     "label": "Safety",
+     "md": "warm water, not hot. Keep marbles away from little ones (they can choke)."
+    }
+   ],
+   "photo": "assets/curiosity/photos/e3.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "E4",
+   "theme": "E",
+   "n": 4,
+   "line": "قلبي يدقّ أسرع بعد القفز",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "أسرع",
+      "رياضة"
+     ]
+    },
+    {
+     "w": "كم",
+     "k": [
+      "دقّة",
+      "دقيقة"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "نعرف",
+      "نبض"
+     ]
+    }
+   ],
+   "find": "Count her pulse before and after 30 seconds of jumping",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - The heart is a muscle about the size of her fist.\n  - When she jumps, her muscles need more oxygen from the blood. So her heart beats faster and harder, and she breathes\n    faster too.\n  - When she rests, it slows down again within a few minutes.\n  - At rest, a child her age usually has roughly 70 to 110 beats a minute. After jumping it climbs much higher."
+    },
+    {
+     "label": "Find out together",
+     "md": "  - Count her pulse before and after 30 seconds of jumping.\n  - To find it, put two fingers (not the thumb, which has its own pulse) on the inside of her wrist, below the thumb.\n    Or press gently on one side of her neck.\n  - Count for 15 seconds and multiply by 4. You can do the sum together.\n  - She can also put her hand on her chest after jumping and feel it."
+    },
+    {
+     "label": "Safety",
+     "md": "  - Jump on a clear, non-slippery floor, away from furniture, in bare feet or trainers (not socks on tiles).\n  - Stop if she feels dizzy or unwell.\n  - Press gently on the neck, on one side only."
+    }
+   ],
+   "photo": "assets/curiosity/photos/e4.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "E5",
+   "theme": "E",
+   "n": 5,
+   "line": "حين أسُدّ أنفي لا أعرف طعم التفاحة",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "أنف",
+      "طعم"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "نتذوّق",
+      "لسان"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "زكام",
+      "طعام"
+     ]
+    }
+   ],
+   "find": "Blindfold taste test, nose pinched",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "E6",
+   "theme": "E",
+   "n": 6,
+   "line": "في يدي أكثر من خمس وعشرين عظمة",
+   "weekMin": 3,
+   "hints": [
+    {
+     "w": "كم",
+     "k": [
+      "عظمة",
+      "جسم"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "كثيرة",
+      "صغيرة"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "نرى",
+      "أشعة"
+     ]
+    }
+   ],
+   "find": "Count finger joints together",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "E7",
+   "theme": "E",
+   "n": 7,
+   "line": "سنّي سقطت وستنبت أخرى",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "تسقط",
+      "صغيرة"
+     ]
+    },
+    {
+     "w": "كم",
+     "k": [
+      "سنّ",
+      "كبار"
+     ]
+    },
+    {
+     "w": "متى",
+     "k": [
+      "آخر",
+      "سنّ"
+     ]
+    }
+   ],
+   "find": "Count teeth in the mirror",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "E8",
+   "theme": "E",
+   "n": 8,
+   "line": "بؤبؤ العين يكبر ويصغر",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "ضوء",
+      "قويّ"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "عضلة",
+      "صغيرة"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "قطّة",
+      "حيوانات"
+     ]
+    }
+   ],
+   "find": "Watch her pupils in a mirror near a lamp",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "F1",
+   "theme": "F",
+   "n": 1,
+   "line": "حفّاضةٌ تشرب الماء ولا يخرج منها!",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "ثقيلة",
+      "ماء"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "حبيبات",
+      "هلام"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "ملح",
+      "حفّاضة"
+     ]
+    }
+   ],
+   "find": "",
+   "what": "A clean nappy drinks a whole cup of water and gets heavy; the crystals inside turn into jelly",
+   "predictEn": "How many cups of water will the nappy drink?",
+   "homeTip": "a clean nappy with a cup of water beside it",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "What happens",
+     "md": "the nappy drinks cup after cup, gets heavy, and the water does not run back out, even when it is\n  squeezed a little."
+    },
+    {
+     "label": "Explanation",
+     "md": "  - Inside a nappy is a fluffy layer mixed with tiny white crystals of a special \"super-soaking\" material.\n  - Each crystal can soak up many, many times its own weight in water. The water goes inside the crystals and turns\n    them into soft jelly.\n  - Her question, why the wee does not come out: the liquid is locked inside the jelly, so it cannot flow back out. The\n    top layer lets liquid pass through quickly, so the side next to the baby feels drier.\n  - Her question, why it gets heavy: the water is still there, only trapped. Water is heavy: one cup weighs about a\n    quarter of a kilo.\n  - A surprise for the salt hint: sprinkle salt on the jelly and it turns runny again, because salt makes the crystals\n    let go of the water. That is also why a nappy holds less wee than plain water: wee is a little salty."
+    },
+    {
+     "label": "Find out together",
+     "md": "  - She predicts how many cups. Then pour water onto a clean new nappy one cup at a time, and count until it cannot take\n    any more.\n  - Weigh the nappy dry and again full, on a kitchen scale.\n  - You cut open a second, dry nappy over a tray and shake out the crystals. Add water to a spoonful and watch the jelly\n    grow, then sprinkle salt on it."
+    },
+    {
+     "label": "Safety",
+     "md": "  - Only an adult cuts the nappy, over a tray.\n  - Do not breathe in the powder, and keep it away from eyes and mouths. Wash hands afterwards.\n  - Put the jelly in the bin, never down the sink (it can block the drain)."
+    }
+   ],
+   "predict": "كم كوبًا من الماء ستشرب الحفّاضة؟",
+   "photo": "assets/curiosity/photos/f1.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "F2",
+   "theme": "F",
+   "n": 2,
+   "line": "فلفلٌ أسود على وجه الماء",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "يهرب",
+      "صابون"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "سطح",
+      "ماء"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "سكّر",
+      "ملح"
+     ]
+    }
+   ],
+   "find": "",
+   "what": "Pepper flees from a soapy finger",
+   "predictEn": "What will the pepper do when she touches it?",
+   "homeTip": "pepper sprinkled on water in a white plate",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "What happens",
+     "md": "the pepper rushes away to the edges of the plate."
+    },
+    {
+     "label": "Explanation",
+     "md": "  - The top of water behaves like a thin, stretched skin, because water particles pull on each other. Pepper is so\n    light that it rests on that skin.\n  - Soap weakens the pull where it touches. The stronger pull of the water further away drags the surface outwards, and\n    the pepper rides along with it.\n  - The pepper is not \"afraid\" of the soap: it is carried by the water's surface.\n  - A clean finger does almost nothing. Try that first, so she can compare."
+    },
+    {
+     "label": "Find out together",
+     "md": "  - First touch the middle with a clean, dry finger, then with a finger dipped in washing-up liquid.\n  - Her hint asks about sugar and salt: try a pinch of each in a fresh plate of pepper water and see what happens."
+    },
+    {
+     "label": "Safety",
+     "md": "  - Keep pepper away from eyes and noses (it stings and makes you sneeze).\n  - Use a little washing-up liquid on the finger only, and wash hands afterwards. Nothing is for drinking."
+    }
+   ],
+   "predict": "ماذا سيفعل الفلفل حين نلمس الماء بإصبعٍ عليه صابون؟",
+   "photo": "assets/curiosity/photos/f2.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "F3",
+   "theme": "F",
+   "n": 3,
+   "line": "ماءٌ ملوّن يمشي على المناديل",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "يصعد",
+      "منديل"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "لون",
+      "جديد"
+     ]
+    },
+    {
+     "w": "متى",
+     "k": [
+      "يتوقّف",
+      "كوب"
+     ]
+    }
+   ],
+   "find": "",
+   "what": "Coloured water climbs paper towels between cups",
+   "predictEn": "What will the middle cup look like tomorrow?",
+   "homeTip": "the cups and paper-towel strips, set up",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "What happens",
+     "md": "the coloured water climbs up the paper, over the top and down into the empty middle cup. Yellow and\n  blue make the middle cup green."
+    },
+    {
+     "label": "Explanation",
+     "md": "  - A paper towel is made of tiny fibres with tiny gaps between them.\n  - Water clings to the fibres and pulls more water along behind it, so it can climb up the gaps against gravity. This\n    is called capillary action. Plants use the same pull to lift water up their stems.\n  - The water stops moving when the cups are about equally full."
+    },
+    {
+     "label": "Find out together",
+     "md": "  - Three cups in a row: yellow water on one side, blue on the other, the middle one empty. A folded strip of paper\n    towel bridges each pair of cups.\n  - She predicts, then you look again after an hour and the next morning."
+    },
+    {
+     "label": "Safety",
+     "md": "food colouring stains, so cover the table and use plastic cups. An adult adds the colouring."
+    }
+   ],
+   "predict": "كيف سيبدو الكوب الأوسط غدًا؟",
+   "photo": "assets/curiosity/photos/f3.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "F4",
+   "theme": "F",
+   "n": 4,
+   "line": "بيضةٌ في كأس ماء",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "تطفو",
+      "ملح"
+     ]
+    },
+    {
+     "w": "كم",
+     "k": [
+      "ملعقة",
+      "تكفي"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "سكّر",
+      "زيت"
+     ]
+    }
+   ],
+   "find": "",
+   "what": "Egg sinks, then floats after salt is added",
+   "predictEn": "Will the egg float? And with salt?",
+   "homeTip": "an egg in a glass of water",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "What happens",
+     "md": "the egg sinks in plain water. After enough salt is stirred in, it floats."
+    },
+    {
+     "label": "Explanation",
+     "md": "  - A fresh egg is a little heavier than the same amount of plain water, so it sinks.\n  - Salt dissolved in the water makes the water heavier for its size. When the water becomes heavier than the egg, the\n    egg floats.\n  - This is why it is easier to float in the sea than in a swimming pool, and why people float so easily in the very\n    salty Dead Sea.\n  - A surprise: an old egg can float even in plain water, because air collects inside it as it ages."
+    },
+    {
+     "label": "Find out together",
+     "md": "  - Plain water first, after her prediction. Then add salt one spoon at a time, stirring each in, and count the spoons:\n    it usually takes several.\n  - Her hint asks about sugar: try it in a second glass."
+    },
+    {
+     "label": "Safety",
+     "md": "a raw egg, so wash hands afterwards. Use a sturdy glass. The salty water is not for drinking."
+    }
+   ],
+   "predict": "هل ستطفو البيضة؟ وإذا أضفنا الملح؟",
+   "photo": "assets/curiosity/photos/f4.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "F5",
+   "theme": "F",
+   "n": 5,
+   "line": "خيطٌ يرفع مكعّب ثلج",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "يلتصق",
+      "ملح"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "يذوب",
+      "يتجمّد"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "سكّر",
+      "ثلج"
+     ]
+    }
+   ],
+   "find": "",
+   "what": "Salt lets a string stick to ice",
+   "predictEn": "Can a string lift an ice cube?",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "F6",
+   "theme": "F",
+   "n": 6,
+   "line": "ألوانٌ ترقص على الحليب",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "تتحرّك",
+      "صابون"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "ماء",
+      "حليب"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "تختلط",
+      "ألوان"
+     ]
+    }
+   ],
+   "find": "",
+   "what": "Food colouring swirls when soap touches milk",
+   "predictEn": "What will the colours do?",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "F7",
+   "theme": "F",
+   "n": 7,
+   "line": "قلمٌ مكسور في كأس ماء",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "يبدو",
+      "مكسور"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "ضوء",
+      "ماء"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "زيت",
+      "فارغ"
+     ]
+    }
+   ],
+   "find": "",
+   "what": "A pencil looks broken in water",
+   "predictEn": "Will the pencil look straight?",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "F8",
+   "theme": "F",
+   "n": 8,
+   "line": "بالونٌ يرفع قصاصات الورق",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "يلتصق",
+      "شعر"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "كهرباء",
+      "صغيرة"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "صوف",
+      "ماء"
+     ]
+    }
+   ],
+   "find": "",
+   "what": "A balloon rubbed on hair lifts paper bits",
+   "predictEn": "Will the paper jump to the balloon?",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "G1",
+   "theme": "G",
+   "n": 1,
+   "line": "﴿أَفَلَا يَنظُرُونَ إِلَى الْإِبِلِ كَيْفَ خُلِقَتْ﴾ (الغاشية: 17)",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "سنام",
+      "رمل"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "عطش",
+      "أيّام"
+     ]
+    },
+    {
+     "w": "ماذا",
+     "k": [
+      "رموش",
+      "عيون"
+     ]
+    }
+   ],
+   "find": "Camel eyelashes, nostrils, feet and hump",
+   "verse": {
+    "text": "أَفَلَا يَنظُرُونَ إِلَى ٱلْإِبِلِ كَيْفَ خُلِقَتْ",
+    "ref": "الغاشية: ١٧"
+   },
+   "bankLine": "﴿أَفَلَا يَنظُرُونَ إِلَى الْإِبِلِ كَيْفَ خُلِقَتْ﴾ (الغاشية: 17)",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Respect",
+     "md": "the verse invites us to look and reflect. Share the facts below as things to wonder at, without linking\n  the verse to any scientific claim. Let her questions lead."
+    },
+    {
+     "label": "Explanation (things to wonder at)",
+     "md": "  - **The hump** stores fat, not water. The camel's body can use it for energy when food is scarce. When the fat is used\n    up, the hump becomes smaller and floppy.\n  - **Thirst:** a camel saves water in many ways. Its body warms up by several degrees during the day before it starts to\n    sweat, and it loses very little water in its droppings.\n    - In summer heat it can go about a week or more without a drink, and much longer in cooler months, when it eats green\n      plants.\n    - When it does drink, a very thirsty camel can take in around 100 litres in about ten minutes.\n  - **Eyes:** two rows of long eyelashes, and a thin third eyelid that wipes sand away. It can also close its nostrils in\n    a sandstorm.\n  - **Feet:** two toes on a wide, leathery pad that spreads out on sand, so it does not sink. Tough pads on its chest and\n    knees let it kneel on hot sand."
+    },
+    {
+     "label": "Find out together",
+     "md": "  - Look at close-up photos of camel eyelashes, nostrils, feet and the hump.\n  - If you pass camels on a drive, stop and watch them together.\n  - Press a flat hand, then one finger, into sand or flour: which one sinks?"
+    },
+    {
+     "label": "Safety",
+     "md": "watch real camels only from a safe distance, with an adult. Camels can kick and bite."
+    }
+   ],
+   "photo": "assets/curiosity/photos/g1.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "G2",
+   "theme": "G",
+   "n": 2,
+   "line": "﴿وَإِلَى السَّمَاءِ كَيْفَ رُفِعَتْ﴾ (الغاشية: 18)",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "زرقاء",
+      "لون"
+     ]
+    },
+    {
+     "w": "ماذا",
+     "k": [
+      "فوق",
+      "غيوم"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "تطير",
+      "طائرة"
+     ]
+    }
+   ],
+   "find": "Watch clouds change for ten minutes",
+   "verse": {
+    "text": "وَإِلَى ٱلسَّمَآءِ كَيْفَ رُفِعَتْ",
+    "ref": "الغاشية: ١٨"
+   },
+   "bankLine": "﴿وَإِلَى السَّمَاءِ كَيْفَ رُفِعَتْ﴾ (الغاشية: 18)",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Respect",
+     "md": "the verse invites us to look and reflect. Share the facts below as things to wonder at, without linking\n  the verse to any scientific claim. Let her questions lead."
+    },
+    {
+     "label": "Explanation (things to wonder at)",
+     "md": "  - **Blue:** sunlight looks white, but it is all the colours mixed. The air scatters blue light much more than red, all\n    over the sky, so blue reaches our eyes from every direction.\n  - **Sunset:** the light crosses much more air, the blue is scattered away on the journey, and the reds and oranges\n    are left.\n  - **Clouds:** they are made of tiny water droplets or bits of ice, so small and light that rising air holds them up.\n    When droplets join into bigger drops, they fall as rain.\n  - **Above the clouds:** big aeroplanes fly about 10 to 12 kilometres up, often above most of the clouds, where the sky\n    is a deeper blue."
+    },
+    {
+     "label": "Find out together",
+     "md": "lie on a blanket or sit by a window and watch the clouds change for ten minutes. What shapes\n  does she see?"
+    },
+    {
+     "label": "Safety",
+     "md": "never look straight at the sun."
+    }
+   ],
+   "photo": "assets/curiosity/photos/g2.webp",
+   "credit": "Wikimedia Commons, Trixia Lao, CC0",
+   "ready": true
+  },
+  {
+   "id": "G3",
+   "theme": "G",
+   "n": 3,
+   "line": "﴿وَإِلَى الْجِبَالِ كَيْفَ نُصِبَتْ﴾ (الغاشية: 19)",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "تكوّنت",
+      "صخور"
+     ]
+    },
+    {
+     "w": "كم",
+     "k": [
+      "عمر",
+      "جبل"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "عالية",
+      "قمّة"
+     ]
+    }
+   ],
+   "find": "Layers in rocks; a family trip photo",
+   "verse": {
+    "text": "وَإِلَى ٱلْجِبَالِ كَيْفَ نُصِبَتْ",
+    "ref": "الغاشية: ١٩"
+   },
+   "bankLine": "﴿وَإِلَى الْجِبَالِ كَيْفَ نُصِبَتْ﴾ (الغاشية: 19)",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Respect",
+     "md": "the verse invites us to look and reflect. Share the facts below as things to wonder at, without linking\n  the verse to any scientific claim. Let her questions lead."
+    },
+    {
+     "label": "Explanation (things to wonder at)",
+     "md": "  - Most mountains form very slowly, over millions of years, when huge pieces of the Earth's outer shell push together\n    and fold and lift the rock up. Some, like volcanoes, are built from melted rock coming out.\n  - Wind, rain and ice wear mountains down very slowly.\n  - The Sarawat mountains (السروات) run down the west of Saudi Arabia, near the Red Sea. The highest peaks, in the\n    south-west near Abha, reach about 3,000 metres.\n  - Some rocks in the mountains of western Saudi Arabia are more than 600 million years old.\n  - Many rocks form in layers, from sand and mud pressed down over a very long time. That is why some cliffs have\n    stripes."
+    },
+    {
+     "label": "Find out together",
+     "md": "look for layers in rocks and cliffs, in photos or on a family trip, and take a photo."
+    },
+    {
+     "label": "Safety",
+     "md": "on a trip, stay away from cliff edges and loose rocks, with an adult."
+    }
+   ],
+   "tags": [
+    5
+   ],
+   "photo": "assets/curiosity/photos/g3.webp",
+   "credit": "Wikimedia Commons, Richard Mortel, CC BY 2.0",
+   "ready": true
+  },
+  {
+   "id": "G4",
+   "theme": "G",
+   "n": 4,
+   "line": "﴿وَإِلَى الْأَرْضِ كَيْفَ سُطِحَتْ﴾ (الغاشية: 20)",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "نراها",
+      "مستوية"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "نمشي",
+      "بعيدًا"
+     ]
+    },
+    {
+     "w": "ماذا",
+     "k": [
+      "تحت",
+      "رمل"
+     ]
+    }
+   ],
+   "find": "Look at the horizon from a high place",
+   "verse": {
+    "text": "وَإِلَى ٱلْأَرْضِ كَيْفَ سُطِحَتْ",
+    "ref": "الغاشية: ٢٠"
+   },
+   "bankLine": "﴿وَإِلَى الْأَرْضِ كَيْفَ سُطِحَتْ﴾ (الغاشية: 20)",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Respect",
+     "md": "the verse invites us to look and reflect. Share the facts below as things to wonder at, without linking\n  the verse to any scientific claim. Let her questions lead."
+    },
+    {
+     "label": "Explanation (things to wonder at)",
+     "md": "  - The Earth is a huge ball, so big that the part we stand on looks flat and spread out to us.\n  - The horizon is where the Earth's curve hides what lies beyond. On flat ground it is only about 5 kilometres away for\n    an adult. From a high place we can see much further.\n  - Under the sand are layers of rock. In many places deep under Saudi Arabia, water is stored inside the rock, from rain\n    that fell long ago."
+    },
+    {
+     "label": "Find out together",
+     "md": "look at the horizon from a high place (a roof, a hill or a tall building) and compare it with\n  the view from the ground."
+    },
+    {
+     "label": "Safety",
+     "md": "high places only with an adult, well away from the edge."
+    }
+   ],
+   "photo": "assets/curiosity/photos/g4.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "G5",
+   "theme": "G",
+   "n": 5,
+   "line": "﴿وَأَوْحَىٰ رَبُّكَ إِلَى النَّحْلِ﴾ (النحل: 68)",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "سداسيّ",
+      "شكل"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "تصنع",
+      "شمع"
+     ]
+    },
+    {
+     "w": "كم",
+     "k": [
+      "نحلة",
+      "خليّة"
+     ]
+    }
+   ],
+   "find": "Draw hexagons; why bees use them",
+   "verse": {
+    "text": "وَأَوْحَىٰ رَبُّكَ إِلَى ٱلنَّحْلِ",
+    "ref": "النحل: ٦٨"
+   },
+   "bankLine": "﴿وَأَوْحَىٰ رَبُّكَ إِلَى النَّحْلِ﴾ (النحل: 68)",
+   "kind": "photo",
+   "card": null,
+   "tags": [
+    2
+   ],
+   "ready": false
+  },
+  {
+   "id": "G6",
+   "theme": "G",
+   "n": 6,
+   "line": "﴿قَالَتْ نَمْلَةٌ يَا أَيُّهَا النَّمْلُ ادْخُلُوا مَسَاكِنَكُمْ﴾ (النمل: 18)",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "تتكلّم",
+      "نملة"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "صفّ",
+      "طريق"
+     ]
+    },
+    {
+     "w": "ماذا",
+     "k": [
+      "تحمل",
+      "طعام"
+     ]
+    }
+   ],
+   "find": "Watch ants with a crumb of sugar",
+   "verse": {
+    "text": "قَالَتْ نَمْلَةٌ يَـٰٓأَيُّهَا ٱلنَّمْلُ ٱدْخُلُوا۟ مَسَـٰكِنَكُمْ",
+    "ref": "النمل: ١٨"
+   },
+   "bankLine": "﴿قَالَتْ نَمْلَةٌ يَا أَيُّهَا النَّمْلُ ادْخُلُوا مَسَاكِنَكُمْ﴾ (النمل: 18)",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "G7",
+   "theme": "G",
+   "n": 7,
+   "line": "﴿وَأَنزَلْنَا مِنَ السَّمَاءِ مَاءً بِقَدَرٍ﴾ (المؤمنون: 18)",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "من أين",
+     "k": [
+      "مطر",
+      "غيمة"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "تنبت",
+      "بذرة"
+     ]
+    },
+    {
+     "w": "متى",
+     "k": [
+      "صحراء",
+      "خضراء"
+     ]
+    }
+   ],
+   "find": "Plant a seed and watch it after watering",
+   "verse": {
+    "text": "وَأَنزَلْنَا مِنَ ٱلسَّمَآءِ مَآءًۢ بِقَدَرٍ",
+    "ref": "المؤمنون: ١٨"
+   },
+   "bankLine": "﴿وَأَنزَلْنَا مِنَ السَّمَاءِ مَاءً بِقَدَرٍ﴾ (المؤمنون: 18)",
+   "kind": "photo",
+   "card": null,
+   "tags": [
+    2,
+    4
+   ],
+   "ready": false
+  },
+  {
+   "id": "G8",
+   "theme": "G",
+   "n": 8,
+   "line": "﴿أَلَمْ تَرَ إِلَىٰ رَبِّكَ كَيْفَ مَدَّ الظِّلَّ﴾ (الفرقان: 45)",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "طويل",
+      "قصير"
+     ]
+    },
+    {
+     "w": "متى",
+     "k": [
+      "أقصر",
+      "ظهر"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "يتحرّك",
+      "شمس"
+     ]
+    }
+   ],
+   "find": "Mark a stick's shadow at three times of day",
+   "verse": {
+    "text": "أَلَمْ تَرَ إِلَىٰ رَبِّكَ كَيْفَ مَدَّ ٱلظِّلَّ",
+    "ref": "الفرقان: ٤٥"
+   },
+   "bankLine": "﴿أَلَمْ تَرَ إِلَىٰ رَبِّكَ كَيْفَ مَدَّ الظِّلَّ﴾ (الفرقان: 45)",
+   "kind": "photo",
+   "card": null,
+   "ready": false
+  },
+  {
+   "id": "H1",
+   "theme": "H",
+   "n": 1,
+   "line": "صوتُ حوتٍ تحت الماء",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "يغنّي",
+      "بعيد"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "يسمع",
+      "ماء"
+     ]
+    },
+    {
+     "w": "ماذا",
+     "k": [
+      "يقول",
+      "صغيره"
+     ]
+    }
+   ],
+   "find": "Listen to whale songs together",
+   "kind": "sound",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Male humpback whales sing long songs that repeat, mostly in the season when they look for a mate. Scientists think\n    the songs help with that and with keeping in touch, but they still do not know exactly what the songs mean. A good\n    moment for «لا أعرف... هيا نبحث معًا».\n  - All the males in one part of the ocean sing the same song, and it slowly changes over the months, as if they learn\n    it from each other.\n  - Sound travels about four times faster in water than in air, and much further: low whale sounds can be heard many\n    kilometres away.\n  - Whales have no ears sticking out. They hear through their heads and jaws.\n  - A mother and her calf make very soft sounds to each other, almost a whisper, so that other animals do not hear."
+    },
+    {
+     "label": "Find out together",
+     "md": "listen to more whale songs together and talk about what they sound like."
+    },
+    {
+     "label": "Safety",
+     "md": "keep the volume gentle."
+    }
+   ],
+   "photo": "assets/curiosity/photos/h1.webp",
+   "credit": "Wikimedia Commons, National Marine Sanctuaries, Public domain",
+   "sound": "assets/curiosity/sounds/h1.m4a",
+   "ready": true
+  },
+  {
+   "id": "H2",
+   "theme": "H",
+   "n": 2,
+   "line": "صوتي في التسجيل يختلف عن صوتي في رأسي",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "مختلف",
+      "أذن"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "يخرج",
+      "فم"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "صدى",
+      "جبل"
+     ]
+    }
+   ],
+   "find": "Speak with ears covered, then uncovered",
+   "kind": "myvoice",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - When she speaks, she hears her voice in two ways: through the air into her ears, like everyone else, and through\n    the bones of her head, which carry the low, deep sounds.\n  - So inside her head her voice sounds deeper and fuller. A recording has only the air part, so it sounds higher to\n    her. But the recording is how everyone else hears her.\n  - Almost everyone is surprised by their own recorded voice at first. Her voice is lovely.\n  - Her hint about an echo: sound bounces off a far, hard surface like a cliff and comes back to us a moment later."
+    },
+    {
+     "label": "Find out together",
+     "md": "she talks or hums with her ears covered, then uncovered. When does her voice sound louder?"
+    },
+    {
+     "label": "Safety",
+     "md": "cover the ears gently; never press hard."
+    }
+   ],
+   "ready": true
+  },
+  {
+   "id": "I1",
+   "theme": "I",
+   "n": 1,
+   "line": "نبتةٌ تميل نحو النافذة",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "ضوء",
+      "تميل"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "ندير",
+      "الأصيص"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "تعرف",
+      "الشمس"
+     ]
+    }
+   ],
+   "find": "Turn the pot and watch it lean back over a few days",
+   "chapter": 1,
+   "chapterName": "Living things",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Plants make their own food from light, air and water, so light matters to them.\n  - A plant substance gathers on the shady side of the stem and makes the cells there grow longer. The longer side\n    pushes the stem over, so it bends towards the light.\n  - If the pot is turned round, the plant bends back towards the light within a few days."
+    },
+    {
+     "label": "Find out together",
+     "md": "turn the pot and watch it lean back over a few days. Take a photo each day."
+    },
+    {
+     "label": "Safety",
+     "md": "none."
+    }
+   ],
+   "photo": "assets/curiosity/photos/i1.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "I2",
+   "theme": "I",
+   "n": 2,
+   "line": "حصاةٌ وبذرةٌ في كوبين",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "ماذا",
+     "k": [
+      "الفرق",
+      "حيّ"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "تكبر",
+      "لا"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "ماء",
+      "أكثر"
+     ]
+    }
+   ],
+   "find": "Water both for a week (she predicts first)",
+   "chapter": 1,
+   "chapterName": "Living things",
+   "homeTip": "a pebble and a bean in two cups of damp cotton",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - A seed is alive. Inside it is a tiny baby plant and a store of food. With water, air and warmth it wakes up and\n    starts to grow: first a root, then a shoot.\n  - A pebble is not alive. It cannot grow, take in food, or make new pebbles.\n  - A bean on damp cotton usually sprouts within about three to seven days.\n  - Her hint about more water: a seed covered in water cannot get air, so it may not grow. Damp is better than soaked."
+    },
+    {
+     "label": "Find out together",
+     "md": "water both cups a little each day for a week. She predicts first."
+    },
+    {
+     "label": "Safety",
+     "md": "dry kitchen beans are for planting only, never for eating raw. Wash hands afterwards."
+    }
+   ],
+   "photo": "assets/curiosity/photos/i2.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "I3",
+   "theme": "I",
+   "n": 3,
+   "line": "قشرة البصل تحت المجهر",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "ماذا",
+     "k": [
+      "مربعات",
+      "صغيرة"
+     ]
+    },
+    {
+     "w": "كم",
+     "k": [
+      "خليّة",
+      "نبتة"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "نرى",
+      "مجهر"
+     ]
+    }
+   ],
+   "find": "Look with a magnifier or a phone zoom",
+   "chapter": 1,
+   "chapterName": "Living things",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - All living things are made of tiny building blocks called cells.\n  - In onion skin, the cells look like little boxes side by side. Plant cells have stiff walls, which give them that\n    shape.\n  - One onion skin has thousands of cells. Her own body has trillions.\n  - Onion cells are too small to see clearly by eye. A strong magnifier or a phone's zoom may show a faint pattern; a\n    toy microscope shows them clearly."
+    },
+    {
+     "label": "Find out together",
+     "md": "you peel a very thin, see-through layer from inside an onion, and she looks with a magnifier or\n  a phone zoom."
+    },
+    {
+     "label": "Safety",
+     "md": "only an adult uses the knife."
+    }
+   ],
+   "photo": "assets/curiosity/photos/i3.webp",
+   "credit": "Wikimedia Commons, Katekor1, CC BY 4.0",
+   "ready": true
+  },
+  {
+   "id": "I4",
+   "theme": "I",
+   "n": 4,
+   "line": "رمّانةٌ فيها مئات البذور",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "كثيرة",
+      "بذور"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "نزرع",
+      "حبّة"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "تنتقل",
+      "بعيدًا"
+     ]
+    }
+   ],
+   "find": "Count the seeds; plant one",
+   "chapter": 2,
+   "chapterName": "Life cycles",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - A pomegranate usually holds several hundred seeds. Each juicy red jewel has one seed inside.\n  - Plants make many seeds because most will never grow: they are eaten, or land in a bad place.\n  - Birds and other animals eat the fruit and drop the seeds somewhere else. That is how seeds travel far from the\n    plant.\n  - A pomegranate seed planted in soil can grow into a new tree, but it takes a few years to give fruit."
+    },
+    {
+     "label": "Find out together",
+     "md": "count the seeds together in groups of ten, then plant one or two in a pot."
+    },
+    {
+     "label": "Safety",
+     "md": "the juice stains, so use an apron or old clothes. An adult cuts the fruit."
+    }
+   ],
+   "photo": "assets/curiosity/photos/i4.webp",
+   "credit": "Wikimedia Commons, Fumikas Sagisavas, CC0",
+   "ready": true
+  },
+  {
+   "id": "I5",
+   "theme": "I",
+   "n": 5,
+   "line": "أبو ذنيبة يصير ضفدعًا",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "أين",
+     "k": [
+      "ذيل",
+      "يذهب"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "يتنفّس",
+      "ماء"
+     ]
+    },
+    {
+     "w": "متى",
+     "k": [
+      "أرجل",
+      "تظهر"
+     ]
+    }
+   ],
+   "find": "Time-lapse video of a tadpole",
+   "chapter": 2,
+   "chapterName": "Life cycles",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - A frog starts as an egg in the water. A tadpole hatches, with a tail for swimming and gills for breathing in water.\n  - Back legs grow first, then front legs. Lungs grow, so it can breathe air.\n  - Her hint about the tail: it does not fall off. The body slowly takes it back in and uses it as food for growing.\n  - For many frogs the whole change takes about three months."
+    },
+    {
+     "label": "Find out together",
+     "md": "watch a time-lapse video of a tadpole changing."
+    },
+    {
+     "label": "Safety",
+     "md": "if you see tadpoles in a pond, just look. Wash hands after touching pond water."
+    }
+   ],
+   "photo": "assets/curiosity/photos/i5.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "I6",
+   "theme": "I",
+   "n": 6,
+   "line": "نحلةٌ مغطّاة بغبارٍ أصفر",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "ماذا",
+     "k": [
+      "غبار",
+      "زهرة"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "تحمل",
+      "تطير"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "لا نحل",
+      "ثمار"
+     ]
+    }
+   ],
+   "find": "Look at pollen on a flower with a magnifier",
+   "chapter": 2,
+   "chapterName": "Life cycles",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - The yellow dust is pollen, made by flowers. Bees collect it, with sweet nectar, as food for their hive.\n  - Pollen sticks to the bee's fuzzy hairs. When the bee visits the next flower, some rubs off, and the flower can then\n    make seeds and fruit.\n  - Many fruits and vegetables need bees and other insects to carry their pollen. Without them we would have far fewer\n    apples, almonds and melons."
+    },
+    {
+     "label": "Find out together",
+     "md": "look at the pollen inside a flower with a magnifier (a lily or a sunflower shows it well)."
+    },
+    {
+     "label": "Safety",
+     "md": "watch bees from a distance and never touch them. Pollen stains clothes and can make some people sneeze."
+    }
+   ],
+   "photo": "assets/curiosity/photos/i6.webp",
+   "credit": "Wikimedia Commons, Clinton &amp; Charles Robertson from RAF Lakenheath, UK &amp; San Marcos, TX, USA &amp; UK, CC BY-SA 2.0",
+   "ready": true
+  },
+  {
+   "id": "I7",
+   "theme": "I",
+   "n": 7,
+   "line": "الصبّار بلا أوراق",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "أشواك",
+      "ماء"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "يعيش",
+      "صحراء"
+     ]
+    },
+    {
+     "w": "أين",
+     "k": [
+      "يخزّن",
+      "ساق"
+     ]
+    }
+   ],
+   "find": "Touch (carefully) and compare a cactus with a leafy plant",
+   "chapter": 3,
+   "chapterName": "Ecosystems",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - A cactus's spines are its leaves, changed into thin, hard points. Flat leaves would lose a lot of water in the\n    desert heat, and spines lose almost none.\n  - Its thick green stem stores water and makes the plant's food, the job leaves do in other plants. A waxy skin keeps\n    the water in.\n  - The spines also protect it from thirsty animals and give it a little shade.\n  - Its roots spread wide just under the ground, to soak up rain quickly when it comes."
+    },
+    {
+     "label": "Find out together",
+     "md": "compare a cactus with a leafy plant: feel the leafy plant's leaves, and look closely at the\n  cactus's thick stem and spines."
+    },
+    {
+     "label": "Safety",
+     "md": "spines prick. An adult shows where to touch (a smooth part of the stem, gently, or not at all)."
+    }
+   ],
+   "photo": "assets/curiosity/photos/i7.webp",
+   "credit": "Wikimedia Commons, U.S. Fish and Wildlife Service, Public domain",
+   "ready": true
+  },
+  {
+   "id": "I8",
+   "theme": "I",
+   "n": 8,
+   "line": "غصنٌ يمشي!",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "يختبئ",
+      "شكل"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "يشبه",
+      "غصن"
+     ]
+    },
+    {
+     "w": "من",
+     "k": [
+      "يبحث",
+      "عنه"
+     ]
+    }
+   ],
+   "find": "Find hidden animals in camouflage photos",
+   "chapter": 3,
+   "chapterName": "Ecosystems",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - A stick insect looks just like a twig: long, thin and brown or green. It even sways gently, like a branch in the\n    wind.\n  - It keeps still in the day and eats leaves at night.\n  - Birds and lizards hunt by looking, so looking like a stick keeps it safe. This is called camouflage."
+    },
+    {
+     "label": "Find out together",
+     "md": "find the hidden animals in camouflage photos (owls on bark, leaf insects, crabs on sand)."
+    },
+    {
+     "label": "Safety",
+     "md": "none."
+    }
+   ],
+   "photo": "assets/curiosity/photos/i8.webp",
+   "credit": "Wikimedia Commons, gbohne from Berlin, Germany, CC BY-SA 2.0",
+   "ready": true
+  },
+  {
+   "id": "I9",
+   "theme": "I",
+   "n": 9,
+   "line": "تفاحةٌ تُركت أيّامًا",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "تتغيّر",
+      "لون"
+     ]
+    },
+    {
+     "w": "من",
+     "k": [
+      "يأكل",
+      "بقايا"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "ثلّاجة",
+      "أبطأ"
+     ]
+    }
+   ],
+   "find": "Two apple slices in closed jars, one in the fridge (predict first; never open the mouldy jar)",
+   "chapter": 3,
+   "chapterName": "Ecosystems",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - A cut apple turns brown within minutes because the air reacts with it. That is not mould.\n  - Over days, tiny living things (moulds and bacteria) start to feed on the old fruit and break it down.\n  - This is nature's recycling: what is left goes back into the soil and feeds new plants.\n  - Cold slows these tiny living things down, so food in the fridge lasts longer."
+    },
+    {
+     "label": "Find out together",
+     "md": "put two apple slices in two closed jars, one in the fridge and one on a shelf. She predicts\n  first, then you look each day through the glass."
+    },
+    {
+     "label": "Safety",
+     "md": "keep the jars closed. Never open, smell or touch the mouldy one; an adult throws it away, jar and all."
+    }
+   ],
+   "photo": "assets/curiosity/photos/i9.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  },
+  {
+   "id": "I10",
+   "theme": "I",
+   "n": 10,
+   "line": "علبُ عصيرٍ صارت درّاجة",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "تذوب",
+      "تُصنع"
+     ]
+    },
+    {
+     "w": "كم",
+     "k": [
+      "علبة",
+      "درّاجة"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "نرميها",
+      "رمل"
+     ]
+    }
+   ],
+   "find": "Start a family recycling box and count cans for a month",
+   "chapter": 4,
+   "chapterName": "Changes",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Drinks cans are made of aluminium. At the recycling plant they are shredded, melted and rolled into new sheets, for\n    new cans or other things, such as bicycle frames.\n  - Recycling aluminium uses about 95 per cent less energy than making new aluminium from rock.\n  - A can can be recycled again and again without getting worse. A bicycle frame takes hundreds of cans.\n  - Her hint about throwing a can on the sand: a can does not rot away. It can lie there for a very long time, until\n    someone picks it up."
+    },
+    {
+     "label": "Find out together",
+     "md": "start a family recycling box and count the cans for a month."
+    },
+    {
+     "label": "Safety",
+     "md": "rinse the cans. Torn cans have sharp edges, so an adult handles any damaged ones."
+    }
+   ],
+   "photo": "assets/curiosity/photos/i10.webp",
+   "credit": "Wikimedia Commons, Ruth Hartnup from Vancouver, Canada, CC BY 2.0",
+   "ready": true
+  },
+  {
+   "id": "I11",
+   "theme": "I",
+   "n": 11,
+   "line": "النمر العربي بقي منه قليل",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "قليل",
+      "صيد"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "نحميه",
+      "محميّة"
+     ]
+    },
+    {
+     "w": "أين",
+     "k": [
+      "يعيش",
+      "جبال"
+     ]
+    }
+   ],
+   "find": "How Saudi Arabia protects the leopard and the oryx (C5)",
+   "chapter": 4,
+   "chapterName": "Changes",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - The Arabian leopard lives in rocky mountains. Hunting, and the loss of the wild animals it eats, have left fewer than\n    about 200 in the wild.\n  - Saudi Arabia is helping: leopard cubs are born in a breeding centre in Taif, with a plan to return leopards to a\n    protected reserve near AlUla.\n  - 10 February is the International Day of the Arabian Leopard, recognised by the United Nations."
+    },
+    {
+     "label": "Find out together",
+     "md": "find out how Saudi Arabia protects the leopard, and the oryx too (mystery C5)."
+    },
+    {
+     "label": "Safety",
+     "md": "none."
+    }
+   ],
+   "photo": "assets/curiosity/photos/i11.webp",
+   "credit": "Wikimedia Commons, shankar s. from Dubai, united arab emirates, CC BY 2.0",
+   "ready": true
+  },
+  {
+   "id": "I12",
+   "theme": "I",
+   "n": 12,
+   "line": "صخرةٌ تشبه الفيل في العُلا",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "من",
+     "k": [
+      "نحت",
+      "صخرة"
+     ]
+    },
+    {
+     "w": "كم",
+     "k": [
+      "سنة",
+      "يحتاج"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "رياح",
+      "رمل"
+     ]
+    }
+   ],
+   "find": "Rub two sandstones together and watch the grains",
+   "chapter": 5,
+   "chapterName": "Earth changes",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Elephant Rock is a huge sandstone rock, about 50 metres tall, near AlUla.\n  - Her hint asks who carved it: nobody did. Wind blowing sand, and water from rare rains, slowly wore away the softer\n    parts of the rock over a very long time, and left the shape of an elephant with its trunk.\n  - This slow wearing away is called erosion. It is still going on today, too slowly to see."
+    },
+    {
+     "label": "Find out together",
+     "md": "rub two pieces of sandstone (or two rough stones) together over dark paper and look at the\n  grains that fall."
+    },
+    {
+     "label": "Safety",
+     "md": "rub gently, outdoors or over paper, keeping the dust away from eyes. Wash hands afterwards."
+    }
+   ],
+   "photo": "assets/curiosity/photos/i12.webp",
+   "credit": "Wikimedia Commons, Richard Mortel, CC BY 2.0",
+   "ready": true
+  },
+  {
+   "id": "I13",
+   "theme": "I",
+   "n": 13,
+   "line": "في السعودية جبالٌ كانت براكين",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "صهارة",
+      "تخرج"
+     ]
+    },
+    {
+     "w": "متى",
+     "k": [
+      "آخر",
+      "مرّة"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "سوداء",
+      "صخور"
+     ]
+    }
+   ],
+   "find": "Look at photos of Al-Wahbah crater and the harrats",
+   "chapter": 5,
+   "chapterName": "Earth changes",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Deep under the ground, rock is so hot that it melts. When it comes out of the ground it is called lava.\n  - When lava cools, it hardens into a dark rock called basalt. That is why the lava fields of Saudi Arabia, the harrats\n    (الحرّات), are black.\n  - The last eruption near Madinah was in 1256, more than 750 years ago, and its lava stopped south of the city.\n  - Al-Wahbah crater is about 2 kilometres wide. It was made by a huge burst of steam when hot melted rock met water\n    underground."
+    },
+    {
+     "label": "Find out together",
+     "md": "look at photos of Al-Wahbah crater and the harrats on a map."
+    },
+    {
+     "label": "Safety",
+     "md": "none (on a visit, stay well back from crater edges)."
+    }
+   ],
+   "photo": "assets/curiosity/photos/i13.webp",
+   "credit": "Wikimedia Commons, SariSabban, CC BY-SA 3.0",
+   "ready": true
+  },
+  {
+   "id": "I14",
+   "theme": "I",
+   "n": 14,
+   "line": "سمكةٌ في صخرةٍ وسط الصحراء",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "وصلت",
+      "صحراء"
+     ]
+    },
+    {
+     "w": "متى",
+     "k": [
+      "عاشت",
+      "قديمًا"
+     ]
+    },
+    {
+     "w": "ماذا",
+     "k": [
+      "كان",
+      "المكان"
+     ]
+    }
+   ],
+   "find": "Press a shell into clay to make a \"fossil\"",
+   "chapter": 6,
+   "chapterName": "Soil and fossils",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Millions of years ago, shallow seas covered parts of Arabia.\n  - When a fish died, it sank and was covered by mud. Over a very long time the mud pressed into rock, and minerals\n    slowly took the place of the bones, keeping their shape: a fossil.\n  - Later the sea went away, the land dried, and wind wore the rock down until the fossil appeared.\n  - Fossils of sea shells and other sea creatures have been found in Saudi rocks, for example in the Tuwaiq mountains\n    near Riyadh."
+    },
+    {
+     "label": "Find out together",
+     "md": "press a shell into clay or play dough to make a \"fossil\" print."
+    },
+    {
+     "label": "Safety",
+     "md": "clay or play dough only (plaster gets hot as it sets)."
+    }
+   ],
+   "photo": "assets/curiosity/photos/i14.webp",
+   "credit": "Wikimedia Commons, Gary Todd, CC0",
+   "ready": true
+  },
+  {
+   "id": "I15",
+   "theme": "I",
+   "n": 15,
+   "line": "ماءٌ على رمل، وماءٌ على طين",
+   "weekMin": 1,
+   "hints": [
+    {
+     "w": "أيّ",
+     "k": [
+      "أسرع",
+      "يمرّ"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "حبيبات",
+      "كبيرة"
+     ]
+    },
+    {
+     "w": "ماذا لو",
+     "k": [
+      "نزرع",
+      "فيه"
+     ]
+    }
+   ],
+   "find": "Pour the same water on both and time it (predict first)",
+   "chapter": 6,
+   "chapterName": "Soil and fossils",
+   "homeTip": "sand and clay soil in two funnels",
+   "kind": "photo",
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Sand has big grains with big gaps between them, so water runs straight through and does not stay.\n  - Clay has tiny grains packed close together, with tiny gaps, so water passes very slowly and much of it stays.\n  - Good garden soil is a mix, so it holds some water and lets the rest drain away.\n  - Her hint about planting: in pure sand plants dry out fast; in pure clay their roots can sit in water."
+    },
+    {
+     "label": "Find out together",
+     "md": "pour the same amount of water onto sand and onto clay soil and time how long it takes to come\n  through. She predicts first."
+    },
+    {
+     "label": "Safety",
+     "md": "an adult cuts the plastic bottles for the funnels. Wash hands after handling soil."
+    }
+   ],
+   "photo": "assets/curiosity/photos/i15.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
+  }
+ ]
+}

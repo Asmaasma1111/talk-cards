@@ -1,5 +1,5 @@
 /* تطبيقات ماريا اليوميّة: the entrance page of Talk Cards (Maria only).
-   Big tiles open her apps (Talk Cards, جدول الضرب, مكتبتي, ماريا تقرأ); each app has a «تطبيقاتي» chip back here.
+   Big tiles open her apps (Talk Cards, جدول الضرب, مكتبتي, ماريا تقرأ, علبة الفضول); each app has a «تطبيقاتي» chip back here.
    Her photo is chosen on the iPad, made small and kept in her progress (and her backup file), never in the app's files. */
 (function (root) {
 'use strict';
@@ -36,6 +36,7 @@ function mount(api) {
     <button class="ap-tile t-math" data-app="math"><span class="ap-art"><img src="assets/apps/math.webp" alt=""></span><span class="ap-name">جدول الضرب</span><span class="ap-en">أرقام وألعاب</span><span class="ap-state" id="apMath"></span></button>
     <button class="ap-tile t-lib" data-app="lib"><span class="ap-art"><img src="assets/apps/lib.webp" alt=""></span><span class="ap-name">مكتبتي</span><span class="ap-en">قصّة كلّ يوم</span><span class="ap-state" id="apLib"></span></button>
     <button class="ap-tile t-reads" data-app="reads" hidden><span class="ap-art"><img src="assets/apps/reads.webp" alt=""></span><span class="ap-name">ماريا تقرأ</span><span class="ap-en" lang="en" dir="ltr">Maria Reads</span><span class="ap-state" id="apReads"></span></button>
+    <button class="ap-tile t-cbox" data-app="cbox" hidden><span class="ap-art"><img src="assets/apps/curiosity.svg" alt=""></span><span class="ap-name">علبة الفضول</span><span class="ap-en">سؤال كلّ يوم</span><span class="ap-state" id="apCbox"></span></button>
   </div>
   <div class="ap-keep">
     <button class="ap-keepbtn" id="apBackup"><span aria-hidden="true">💾</span>نسخة احتياطية لكل التطبيقات<small lang="en" dir="ltr">Back up all apps</small></button>
@@ -79,13 +80,16 @@ function mount(api) {
     state($('#apTalk'), s.talk.done, s.talk.done ? 'أنجزتِها اليوم' : s.talk.stars ? `${AR(s.talk.stars)} نجوم اليوم` : 'تنتظركِ اليوم');
     state($('#apMath'), s.math.done, s.math.done ? 'أنجزتِ هدف اليوم' : s.math.min ? `${AR(s.math.min)} من ${AR(s.math.goal)} دقائق` : 'تنتظركِ اليوم');
     state($('#apLib'), s.lib.done, s.lib.done ? 'قرأتِ قصّة اليوم' : s.lib.open ? 'قصّة اليوم مفتوحة' : 'قصّة اليوم تنتظركِ');
-    const keys = ['talk', 'math', 'lib'].concat(s.reads ? ['reads'] : []);
-    $('#apps .t-reads').hidden = !s.reads; $('#apps .ap-tiles').classList.toggle('four', !!s.reads);
+    const keys = ['talk', 'math', 'lib'].concat(s.reads ? ['reads'] : [], s.cbox ? ['cbox'] : []);
+    $('#apps .t-reads').hidden = !s.reads; $('#apps .t-cbox').hidden = !s.cbox;
+    $('#apps .ap-tiles').classList.toggle('four', keys.length === 4); $('#apps .ap-tiles').classList.toggle('five', keys.length === 5);
     if (s.reads) state($('#apReads'), s.reads.done, s.reads.done ? 'قرأتِ اليوم' : `الدرس ${AR(s.reads.lesson)} ينتظركِ`);
+    if (s.cbox) state($('#apCbox'), s.cbox.done, s.cbox.done ? 'فتحتِ علبة اليوم' : 'علبة اليوم تنتظركِ');
     const n = keys.filter(k => s[k].done).length, all = keys.length;
-    const ofAll = all === 4 ? 'أربعة' : 'ثلاثة';
+    const WORD = { 3: 'ثلاثة', 4: 'أربعة', 5: 'خمسة' }, ofAll = WORD[all] || AR(all);
+    const some = n === 1 ? 'تطبيقاً واحداً' : n === 2 ? 'تطبيقين' : `${WORD[n] || AR(n)} تطبيقات`;
     $('#apToday').innerHTML = `<span class="ap-dots">${keys.map(k => `<i class="d-${k}${s[k].done ? ' on' : ''}"></i>`).join('')}</span>`
-      + `<span>${n === all ? `أنجزتِ تطبيقاتكِ ال${ofAll} اليوم! 🌸` : n ? `أنجزتِ ${n === 1 ? 'تطبيقاً واحداً' : n === 2 ? 'تطبيقين' : 'ثلاثة تطبيقات'} من ${ofAll} اليوم` : `${ofAll} تطبيقات تنتظركِ اليوم`}</span>`;
+      + `<span>${n === all ? `أنجزتِ تطبيقاتكِ ال${ofAll} اليوم! 🌸` : n ? `أنجزتِ ${some} من ${ofAll} اليوم` : `${ofAll} تطبيقات تنتظركِ اليوم`}</span>`;
     api.show('apps');
   }
 
@@ -179,7 +183,7 @@ function mount(api) {
     return cv.toDataURL('image/jpeg', 0.86);
   }
 
-  // one backup for all her apps (Talk Cards, times tables, her library, Maria Reads, her recordings): one file, one tap
+  // one backup for all her apps (Talk Cards, times tables, her library, Maria Reads, the Curiosity Box, her recordings): one file, one tap
   $('#apBackup').addEventListener('click', () => { api.SFX.init(); if (api.backup) api.backup(); });
   $('#apRestore').addEventListener('change', e => { const f = e.target.files[0]; if (f && api.restore) api.restore(f); e.target.value = ''; });
   return { home, isOn: () => !$('#apps').hidden };

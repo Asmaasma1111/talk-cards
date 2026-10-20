@@ -10442,6 +10442,157 @@
      "d": 0.71
     }
    }
+  },
+  "cbox": {
+   "voice": "Aoede",
+   "model": "gemini TTS",
+   "placeholder": false,
+   "clips": {
+    "end": {
+     "f": "cb/end.m4a",
+     "d": 2.44
+    },
+    "flip": {
+     "f": "cb/flip.m4a",
+     "d": 3.14
+    },
+    "flipDone": {
+     "f": "cb/flipDone.m4a",
+     "d": 2.38
+    },
+    "found": {
+     "f": "cb/found.m4a",
+     "d": 0.93
+    },
+    "fruit": {
+     "f": "cb/fruit.m4a",
+     "d": 2.21
+    },
+    "hello": {
+     "f": "cb/hello.m4a",
+     "d": 3.26
+    },
+    "m-A1": {
+     "f": "cb/m-A1.m4a",
+     "d": 1.77
+    },
+    "m-A2": {
+     "f": "cb/m-A2.m4a",
+     "d": 2.31
+    },
+    "m-A4": {
+     "f": "cb/m-A4.m4a",
+     "d": 2.37
+    },
+    "m-B1": {
+     "f": "cb/m-B1.m4a",
+     "d": 2.66
+    },
+    "m-C2": {
+     "f": "cb/m-C2.m4a",
+     "d": 1.77
+    },
+    "m-C3": {
+     "f": "cb/m-C3.m4a",
+     "d": 2.5
+    },
+    "m-C5": {
+     "f": "cb/m-C5.m4a",
+     "d": 2.6
+    },
+    "m-E1": {
+     "f": "cb/m-E1.m4a",
+     "d": 2.26
+    },
+    "m-E2": {
+     "f": "cb/m-E2.m4a",
+     "d": 4.13
+    },
+    "m-E4": {
+     "f": "cb/m-E4.m4a",
+     "d": 2.05
+    },
+    "m-F1": {
+     "f": "cb/m-F1.m4a",
+     "d": 3.22
+    },
+    "m-F2": {
+     "f": "cb/m-F2.m4a",
+     "d": 2.39
+    },
+    "m-H1": {
+     "f": "cb/m-H1.m4a",
+     "d": 1.95
+    },
+    "m-H2": {
+     "f": "cb/m-H2.m4a",
+     "d": 3.72
+    },
+    "m-I1": {
+     "f": "cb/m-I1.m4a",
+     "d": 2.08
+    },
+    "needOne": {
+     "f": "cb/needOne.m4a",
+     "d": 2.62
+    },
+    "p-F1": {
+     "f": "cb/p-F1.m4a",
+     "d": 2.46
+    },
+    "p-F2": {
+     "f": "cb/p-F2.m4a",
+     "d": 4.65
+    },
+    "p-F4": {
+     "f": "cb/p-F4.m4a",
+     "d": 3.62
+    },
+    "praiseLong": {
+     "f": "cb/praiseLong.m4a",
+     "d": 3.89
+    },
+    "praiseShort": {
+     "f": "cb/praiseShort.m4a",
+     "d": 3.91
+    },
+    "predict": {
+     "f": "cb/predict.m4a",
+     "d": 2.97
+    },
+    "r2": {
+     "f": "cb/r2.m4a",
+     "d": 1.44
+    },
+    "r3": {
+     "f": "cb/r3.m4a",
+     "d": 1.96
+    },
+    "r4": {
+     "f": "cb/r4.m4a",
+     "d": 1.82
+    },
+    "sort": {
+     "f": "cb/sort.m4a",
+     "d": 1.98
+    },
+    "star": {
+     "f": "cb/star.m4a",
+     "d": 1.85
+    },
+    "stormGo": {
+     "f": "cb/stormGo.m4a",
+     "d": 2.23
+    },
+    "surprised": {
+     "f": "cb/surprised.m4a",
+     "d": 1.0
+    },
+    "wonderOk": {
+     "f": "cb/wonderOk.m4a",
+     "d": 5.27
+    }
+   }
   }
  }
 }

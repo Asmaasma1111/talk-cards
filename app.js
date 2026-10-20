@@ -715,6 +715,7 @@ let LIB = null;    // مكتبتي, her story library (library.js), Maria only
 let SB = null;     // Maria's sticker book (stickerbook.js): a sticker for every 7 days in a row
 let APPS = null;   // تطبيقات ماريا اليوميّة, the entrance page with her apps (entrance.js), Maria only
 let READS = null;  // ماريا تقرأ, her phonics path (reads.js), Maria only
+let CBOX = null;   // علبة الفضول, her question-asking app (curiosity.js), Maria only
 function newSession(mode, ids, warm = []) {
   S = { mode, queue: ids.slice(), all: new Set(ids), good: new Set(), again: new Set(), hint: new Set(), rated: new Set(),
         cur: null, flipped: false, seenBack: false, flipping: false, busy: false, celeb: [], frontPlan: null, backPlan: null,
@@ -1344,7 +1345,8 @@ function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navig
 const DEVICE_DBS = [   // [database, stores to back up, every store the app creates] (all keyed by 'id', as in the modules)
   ['maktabati-voice', ['clips'], ['clips']],
   ['maktabati-baba', ['audio'], ['audio']],
-  ['maria-reads', ['mine'], ['sounds', 'mine']]     // Mama's sounds already travel inside Maria Reads' own backup
+  ['maria-reads', ['mine'], ['sounds', 'mine']],    // Mama's sounds already travel inside Maria Reads' own backup
+  ['curiosity-box', ['clips', 'photos'], ['clips', 'photos']]   // her questions (voice) and Mama's photos
 ];
 const DEVICE_KEYS = k => k.startsWith('tc:maria:colour:') || ['tc:maria:libpin', 'tc:maria:studioSeen', 'tc:last', 'tc:deck'].includes(k);
 function openStoreDB(name, stores) {
@@ -1413,7 +1415,7 @@ async function backup() {
   });
   let device = null;
   if (APP === 'talk-cards') { try { device = await deviceExtras(); } catch (e) { console.warn('device extras', e); } }
-  const data = JSON.stringify({ app: 'maria-talk-cards', v: 3, saved: new Date().toISOString(), profiles, ...(MATHS ? { math: MATHS.snapshot() } : {}), ...(LIB ? { lib: LIB.snapshot() } : {}), ...(READS ? { reads: READS.snapshot() } : {}), ...(device ? { device } : {}) });
+  const data = JSON.stringify({ app: 'maria-talk-cards', v: 3, saved: new Date().toISOString(), profiles, ...(MATHS ? { math: MATHS.snapshot() } : {}), ...(LIB ? { lib: LIB.snapshot() } : {}), ...(READS ? { reads: READS.snapshot() } : {}), ...(CBOX ? { cbox: CBOX.snapshot() } : {}), ...(device ? { device } : {}) });
   const name = `${APP === 'talk-cards' ? 'maria-apps' : APP}-backup-${today()}.json`;   // one file: every app of hers
   let file = null;
   try { file = new File([data], name, { type: 'application/json' }); } catch (e) {}
@@ -1436,15 +1438,17 @@ async function restore(file, after = renderParent) {
     const math = MATHS && MATHS.valid(obj.math) ? obj.math : null;            // times tables (backups from October 2026 on)
     const libr = LIB && LIB.valid(obj.lib) ? obj.lib : null;                  // her library (from 13 October 2026)
     const rds = READS && READS.valid(obj.reads) ? obj.reads : null;           // Maria Reads (from 20 October 2026)
+    const cbx = CBOX && CBOX.valid(obj.cbox) ? obj.cbox : null;               // the Curiosity Box (from 21 October 2026)
     const dev = APP === 'talk-cards' && obj.device && typeof obj.device === 'object' ? obj.device : null;   // recordings etc. (from 20 October 2026)
-    if (!ok.length && !math && !libr && !rds && !dev) throw new Error('bad');
-    const what = [...ok.map(p => (p === 'mama' ? 'Mama' : 'Maria')), ...(math ? ['times tables'] : []), ...(libr ? ['library'] : []), ...(rds ? ['Maria Reads'] : []), ...(dev ? ['recordings'] : [])];
+    if (!ok.length && !math && !libr && !rds && !cbx && !dev) throw new Error('bad');
+    const what = [...ok.map(p => (p === 'mama' ? 'Mama' : 'Maria')), ...(math ? ['times tables'] : []), ...(libr ? ['library'] : []), ...(rds ? ['Maria Reads'] : []), ...(cbx ? ['Curiosity Box'] : []), ...(dev ? ['recordings'] : [])];
     if (!confirm(APP === 'prepositions' ? 'Replace your progress on this device with this backup?'
       : `Replace the progress on this device with this backup (${what.join(' and ')})?`)) return;
     ok.forEach(p => lsSet(PROFILE_KEY[p], JSON.stringify(merge(profiles[p], p))));
     if (math) MATHS.replace(math);
     if (libr) LIB.replace(libr);
     if (rds) await READS.replace(rds);
+    if (cbx) CBOX.replace(cbx);
     if (dev) await restoreExtras(dev);
     load(prof); after(); toast('Progress restored.');
     if (dev) setTimeout(() => location.reload(), 1200);   // the library and Maria Reads read their recordings when they start
@@ -1466,6 +1470,7 @@ function onDevClick(e) {
   renderDev();
   if (APPS && APPS.isOn()) APPS.home();
   else if (READS && READS.isOn()) READS.home();
+  else if (CBOX && CBOX.isOn()) CBOX.home();
   else if (MATHS && MATHS.isOn()) MATHS.home();
   else if (LIB && LIB.isOn()) LIB.home();
   else if ($('#picker').hidden) renderHome();
@@ -1508,7 +1513,7 @@ function wire() {
 
 function reloadForUpdate() {
   if (!reloadForUpdate.pending) return;
-  if (S || !$('#parent').hidden || !$('#celebrate').hidden || (MATHS && MATHS.busy()) || (SB && SB.busy()) || (LIB && LIB.busy()) || (READS && READS.busy())) return;   // wait until she is back on Home or Done
+  if (S || !$('#parent').hidden || !$('#celebrate').hidden || (MATHS && MATHS.busy()) || (SB && SB.busy()) || (LIB && LIB.busy()) || (READS && READS.busy()) || (CBOX && CBOX.busy())) return;   // wait until she is back on Home or Done
   location.reload();
 }
 
@@ -1569,6 +1574,15 @@ async function boot() {
       apps: () => { Speech.stop(); S = null; if (APPS) APPS.home(); else renderHome(); }
     });
   }
+  if (APP === 'talk-cards' && PROFILES.includes('maria') && window.CuriosityBox) {
+    CBOX = window.CuriosityBox.mount({
+      today, lsGet, lsSet, show, toast, SFX, confetti, stopConfetti, reduced, DEV, holdToOpen, backup, restore,
+      setDeck: d => lsSet(DECK_KEY, d),
+      stopEnglish: () => { Speech.stop(); S = null; },
+      appsChip: window.MariaApps ? () => window.MariaApps.chip() : null,
+      apps: () => { Speech.stop(); S = null; if (APPS) APPS.home(); else renderHome(); }
+    });
+  }
   if (APP === 'talk-cards' && PROFILES.includes('maria') && window.MariaApps) {
     APPS = window.MariaApps.mount({
       today, show, toast, SFX,
@@ -1581,19 +1595,20 @@ async function boot() {
           talk: { done: (st.days || []).includes(t), stars: starsToday() },
           math: { done: !!m && !!m.daily && m.daily.day === t && !!m.daily.hit, min: m ? Math.floor(((m.active || {})[t] || 0) / 60) : 0, goal: m ? m.settings.goalMin : 5 },
           lib: { done: libDone, open: !!l && !libDone && !!l.today && l.today.day === t },
-          ...(READS ? { reads: READS.status() } : {})
+          ...(READS ? { reads: READS.status() } : {}),
+          ...(CBOX ? { cbox: CBOX.status() } : {})
         };
       },
-      open: k => { if (k === 'math' && MATHS) MATHS.home(); else if (k === 'lib' && LIB) LIB.home(); else if (k === 'reads' && READS) READS.home(); else renderHome(); },
+      open: k => { if (k === 'math' && MATHS) MATHS.home(); else if (k === 'lib' && LIB) LIB.home(); else if (k === 'reads' && READS) READS.home(); else if (k === 'cbox' && CBOX) CBOX.home(); else renderHome(); },
       leaveTalk: () => { Speech.stop(); S = null; },
       leaveMath: () => {},
-      leaveAll: () => { Speech.stop(); S = null; if (READS) READS.leave(); },
+      leaveAll: () => { Speech.stop(); S = null; if (READS) READS.leave(); if (CBOX) CBOX.leave(); },
       backup, restore: file => restore(file, () => { load(prof); if (APPS) APPS.home(); })
     });
   }
   if (DEV) {
     renderDev();
-    window.TC = { deviceExtras, restoreExtras, restore, get MATHS() { return MATHS; }, get SB() { return SB; }, get LIB() { return LIB; }, get APPS() { return APPS; }, get READS() { return READS; }, get st() { return st; }, get S() { return S; }, CARD, SET, SETS, today, buildQueue, newOrder, dueIds, eligible, trickyIds, funIds, flip, rate, save, Speech, SFX, setPracticeIds, get VOICE() { return VOICE; }, renderText, voiceEl, get prof() { return prof; }, openProfile, showPicker, PCARDS, weekStats, readProfile,
+    window.TC = { deviceExtras, restoreExtras, restore, get MATHS() { return MATHS; }, get SB() { return SB; }, get LIB() { return LIB; }, get APPS() { return APPS; }, get READS() { return READS; }, get CBOX() { return CBOX; }, get st() { return st; }, get S() { return S; }, CARD, SET, SETS, today, buildQueue, newOrder, dueIds, eligible, trickyIds, funIds, flip, rate, save, Speech, SFX, setPracticeIds, get VOICE() { return VOICE; }, renderText, voiceEl, get prof() { return prof; }, openProfile, showPicker, PCARDS, weekStats, readProfile,
       showCard(id) { if (!S) newSession('fun', [id]); else { S.queue = S.queue.filter(x => x !== id); S.cur = id; S.flipped = S.seenBack = S.flipping = S.busy = false; if (CARD[id].kind === 'gap') renderGapCard(CARD[id]); else renderCard(CARD[id]); } } };
   }
   if (APPS && prof === 'maria') APPS.home();                                   // her entrance page: she picks an app
