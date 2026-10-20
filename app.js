@@ -1344,8 +1344,7 @@ function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navig
 const DEVICE_DBS = [   // [database, stores to back up, every store the app creates] (all keyed by 'id', as in the modules)
   ['maktabati-voice', ['clips'], ['clips']],
   ['maktabati-baba', ['audio'], ['audio']],
-  ['maria-reads', ['mine'], ['sounds', 'mine']],    // Mama's sounds already travel inside Maria Reads' own backup
-  ['maria-reads-art', ['art'], ['art']]              // the story pictures she coloured (رسوماتي)
+  ['maria-reads', ['mine'], ['sounds', 'mine']]     // Mama's sounds already travel inside Maria Reads' own backup
 ];
 const DEVICE_KEYS = k => k.startsWith('tc:maria:colour:') || ['tc:maria:libpin', 'tc:maria:studioSeen', 'tc:last', 'tc:deck'].includes(k);
 function openStoreDB(name, stores) {
@@ -1564,7 +1563,6 @@ async function boot() {
   if (APP === 'talk-cards' && PROFILES.includes('maria') && window.MariaReads) {
     READS = window.MariaReads.mount({
       today, lsGet, lsSet, show, toast, SFX, confetti, stopConfetti, reduced, DEV, holdToOpen, backup, restore,
-      colour: (id, ext) => { if (!LIB || !LIB.colour) return false; LIB.colour(id, ext); return true; },
       setDeck: d => lsSet(DECK_KEY, d),
       stopEnglish: () => { Speech.stop(); S = null; },
       appsChip: window.MariaApps ? () => window.MariaApps.chip() : null,

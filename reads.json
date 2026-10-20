@@ -4420,8 +4420,7 @@
     }
    ],
    "draw": "Draw the pup on Dad!",
-   "drawAr": "ارسمي الجرو يقفز على بابا!",
-   "colour": "assets/reads/colour/gift.webp"
+   "drawAr": "ارسمي الجرو يقفز على بابا!"
   },
   "frog": {
    "title": "THE FROG AND THE CRAB",
@@ -4462,8 +4461,7 @@
     }
    ],
    "draw": "Draw the frog and the crab!",
-   "drawAr": "ارسمي الضفدع والسلطعون!",
-   "colour": "assets/reads/colour/frog.webp"
+   "drawAr": "ارسمي الضفدع والسلطعون!"
   },
   "bed": {
    "title": "THE BEST BED",
@@ -4504,8 +4502,7 @@
     }
    ],
    "draw": "Draw the best bed for the pup!",
-   "drawAr": "ارسمي أجمل سرير للجرو!",
-   "colour": "assets/reads/colour/bed.webp"
+   "drawAr": "ارسمي أجمل سرير للجرو!"
   },
   "jet": {
    "title": "THE JET",
@@ -4548,8 +4545,7 @@
     }
    ],
    "draw": "Draw the big red backpack!",
-   "drawAr": "ارسمي حقيبة الظهر الحمراء الكبيرة!",
-   "colour": "assets/reads/colour/jet.webp"
+   "drawAr": "ارسمي حقيبة الظهر الحمراء الكبيرة!"
   }
  },
  "lessons": [
