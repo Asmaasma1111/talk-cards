@@ -2417,3 +2417,11 @@ body[data-profile="mama"] .deck-apps { display: none; }
 .rp-table { width: 100%; border-collapse: collapse; font-size: 15px; }
 .rp-table th, .rp-table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #F0E6EB; vertical-align: top; }
 .rp-from { margin: 12px 4px 0; font-size: 20px; color: var(--rdeep); }
+
+/* the ear game's yes / no cards: a green tick on top of the sound, a red cross for no */
+.rd-hear .rd-yes { position: relative; padding-top: 24px; }
+.rd-yesmark { position: absolute; top: -36px; left: 50%; translate: -50% 0; width: 70px; height: 70px; border-radius: 50%; display: grid; place-items: center;
+  background: #2FB36B; color: #fff; box-shadow: 0 0 0 6px #fff, 0 8px 16px rgba(30, 107, 69, .25); }
+.rd-yesmark svg { width: 44px; height: 44px; }
+.rd-nomark { display: grid; place-items: center; color: #E5484D; }
+.rd-nomark svg { width: min(15vw, 130px); height: min(15vw, 130px); }

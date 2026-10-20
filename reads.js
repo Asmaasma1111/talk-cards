@@ -753,6 +753,9 @@ function mount(api) {
     if (right) right.classList.add('right');
     if (ok) api.SFX.good(); else api.SFX.again();
   }
+  // the yes / no cards of the ear game: a green tick on the sound, a red cross for "no" (her choice, 20 Oct 2026)
+  const TICK = '<svg viewBox="0 0 48 48"><path d="M12 25.5l8 8L36.5 15" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const CROSS = '<svg viewBox="0 0 48 48"><path d="M14 14l20 20M34 14L14 34" fill="none" stroke="currentColor" stroke-width="7.5" stroke-linecap="round"/></svg>';
   async function beatHear(s, [id]) {
     const E = D.ear[id]; if (!E) return;
     const yes = [...E.beg, ...E.mid, ...E.end];
@@ -761,8 +764,8 @@ function mount(api) {
       if (!alive(s)) return;
       stage.innerHTML = `<div class="rd-game rd-hear">
         <button class="rd-replay" id="rdAgain" aria-label="اسمعي مرة أخرى">${ic('i-speaker')}</button>
-        <div class="rd-choices"><button class="rd-yes" data-a="1"><b>${esc(grapheme(id))}</b><span lang="en">👂 Yes</span></button>
-        <button class="rd-no" data-a="0"><b>☁️</b><span lang="en">No</span></button></div></div>`;
+        <div class="rd-choices"><button class="rd-yes" data-a="1"><i class="rd-yesmark" aria-hidden="true">${TICK}</i><b>${esc(grapheme(id))}</b><span lang="en">👂 Yes</span></button>
+        <button class="rd-no" data-a="0"><i class="rd-nomark" aria-hidden="true">${CROSS}</i><span lang="en">No</span></button></div></div>`;
       $('#rdAgain').addEventListener('click', () => sayWord(w));
       await sleep(250); sayWord(w);
       const ans = await choice('.rd-choices button');
