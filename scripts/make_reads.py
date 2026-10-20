@@ -239,14 +239,14 @@ story('jet', 'THE JET', [('THE KID HAS THE RED BACKPACK.', '🧒🎒'), ('IN IT 
 # (Phase 2) sight = a word she learns whole; diff = what's the difference?; spell = build a word she hears;
 # sent = sentences, one word at a time; story = a short story, questions, draw it; pair = which sound did she hear?
 L = [
-    {'n': 1, 'new': ['a'], 'beats': [['newsound', 'a'], ['hear', 'a'], ['where', 'a'], ['me', 'sound:a']]},
-    {'n': 2, 'new': ['b'], 'beats': [['flash'], ['newsound', 'b'], ['hear', 'b'], ['where', 'b'], ['me', 'sound:b']]},
-    {'n': 3, 'new': [], 'words': ['ab', 'ba'], 'beats': [['flash'], ['read', 'ab', 'ba', 'ab', 'ba'], ['me', 'word:ab']]},
-    {'n': 4, 'new': ['k'], 'words': ['ab', 'cab', 'ba'], 'beats': [['flash'], ['newsound', 'k'], ['hear', 'k'], ['read', 'ab', 'cab', 'ba', 'cab'], ['me', 'word:cab']]},
-    {'n': 5, 'new': ['t'], 'words': ['ab', 'cab'], 'beats': [['flash'], ['newsound', 't'], ['hear', 't'], ['where', 't'], ['read', 'ab', 'cab']]},
-    {'n': 6, 'new': [], 'words': ['at', 'bat', 'cat', 'act'], 'beats': [['flash'], ['read', 'at', 'bat', 'cat', 'act'], ['swap', 'at>bat', 'at>cat'], ['read', 'cat', 'at', 'bat'], ['me', 'word:cat']]},
-    {'n': 7, 'new': [], 'words': ['bat', 'tab'], 'beats': [['flash'], ['read', 'bat', 'tab', 'bat', 'tab'], ['swap', 'cat>bat', 'cab>tab'], ['read', 'cat', 'cab', 'at'], ['me', 'word:tab']]},
-    {'n': 8, 'new': [], 'words': ['at', 'bat', 'cat', 'ab', 'cab', 'tab'], 'beats': [['flash'], ['read', 'at', 'bat', 'cat', 'ab', 'cab', 'tab'], ['swap', 'ab>cab', 'cab>tab', 'cab>cat'], ['hear', 't'], ['me', 'word:bat']]},
+    {'n': 1, 'new': ['a'], 'beats': [['newsound', 'a'], ['stretch', 'at', 'cat', 'map', 'sad', 'apple'], ['hear', 'a'], ['where', 'a'], ['me', 'sound:a']]},
+    {'n': 2, 'new': ['b'], 'beats': [['flash'], ['newsound', 'b'], ['stretch', 'ab', 'bat', 'cab', 'bus'], ['action', 'a', 'b'], ['hear', 'b'], ['where', 'b'], ['me', 'sound:b']]},
+    {'n': 3, 'new': [], 'words': ['ab', 'ba'], 'beats': [['flash'], ['read', 'ab', 'ba', 'ab', 'ba'], ['stretch', 'bat', 'tab', 'cab', 'sad'], ['hoops', 'ab', 'bat', 'cab'], ['me', 'word:ab']]},
+    {'n': 4, 'new': ['k'], 'words': ['ab', 'cab', 'ba'], 'beats': [['flash'], ['newsound', 'k'], ['hear', 'k'], ['read', 'ab', 'cab', 'ba', 'cab'], ['swap', 'ab>cab'], ['spell', 'cab', 'ab'], ['run', 'a', 'b', 'k'], ['me', 'word:cab']]},
+    {'n': 5, 'new': ['t'], 'words': ['ab', 'cab'], 'beats': [['flash'], ['newsound', 't'], ['hear', 't'], ['where', 't'], ['action', 'k', 't'], ['read', 'ab', 'cab'], ['spell', 'cab']]},
+    {'n': 6, 'new': [], 'words': ['at', 'bat', 'cat', 'act'], 'beats': [['flash'], ['read', 'at', 'bat', 'cat', 'act'], ['swap', 'at>bat', 'at>cat'], ['spell', 'at', 'bat', 'cat'], ['shop', 'cat', 'bat', 'cab'], ['read', 'cat', 'at', 'bat'], ['me', 'word:cat']]},
+    {'n': 7, 'new': [], 'words': ['bat', 'tab'], 'beats': [['flash'], ['read', 'bat', 'tab', 'bat', 'tab'], ['swap', 'cat>bat', 'cab>tab'], ['hoops', 'tab', 'bat', 'cat'], ['run', 'b', 'k', 't'], ['read', 'cat', 'cab', 'at'], ['me', 'word:tab']]},
+    {'n': 8, 'new': [], 'words': ['at', 'bat', 'cat', 'ab', 'cab', 'tab'], 'beats': [['flash'], ['read', 'at', 'bat', 'cat', 'ab', 'cab', 'tab'], ['swap', 'ab>cab', 'cab>tab', 'cab>cat'], ['spell', 'tab', 'cab', 'bat'], ['shop', 'cab', 'cat', 'bat'], ['hear', 't'], ['me', 'word:bat']]},
     # Phase 2
     {'n': 9, 'new': ['u'], 'words': ['but', 'cut', 'cub', 'tub'],
      'beats': [['flash'], ['newsound', 'u'], ['hear', 'u'], ['read', 'cut', 'cub', 'tub', 'but'], ['diff', 'but/cut', 'cub/tub'], ['swap', 'cut>but', 'tub>cub'], ['me', 'word:cub']]},
@@ -281,6 +281,42 @@ L = [
     {'n': 24, 'new': ['j', 'k'], 'sight': ['your'], 'words': ['jog', 'jug', 'job', 'jump', 'just', 'jam', 'jet', 'kid', 'kit', 'skip', 'back', 'pack', 'duck', 'backpack', 'jacket', 'pocket'],
      'beats': [['flash'], ['newsound', 'j'], ['hear', 'j'], ['sight', 'your'], ['read', 'jam', 'jet', 'jug', 'jump', 'kid', 'duck', 'back', 'pack'], ['sent', 'l24a', 'l24b', 'l24c'], ['story', 'jet'], ['diff', 'jug/jog', 'back/pack'], ['spell', 'jam', 'duck'], ['swap', 'back>pack', 'jug>jog'], ['me', 'word:jump']]},
 ]
+# the day's tutor note in Mama's view (our own words; the Book Edition pack replaces them with the book's notes)
+NOTES = {
+    1: [('The first sound', ['Say the sound, not the letter name: A says /a/ as in apple. Keep it short and clean, with no "uh".',
+         'While she traces, she says the sound with every stroke.',
+         'Stretchy words are only heard today: say them slowly, then at normal speed, and let her copy you. She does not read them yet.'])],
+    2: [('Two sounds', ['/b/ is short: lips together, a little pop, no "buh".',
+         'Hear a Sound and Perform an Action: each sound has its own move. Join in with the moves, it makes the sounds stick.'])],
+    3: [('Blending begins', ['Point and swipe: she taps A, then B, then swipes and says AB smoothly.',
+         'If she says the two sounds but cannot join them, say them slowly together and a little shorter each time.',
+         'Hopping Hoops: one hop for each sound, then out with the whole word. It is all listening: she does not need to see the word.'])],
+    4: [('C says /k/', ['C and K share one sound, /k/. It is short, with no vowel after it.',
+         'Spelling: she hears CAB and builds it with the letter tiles, left to right.'])],
+    5: [('T says /t/', ['/t/ is only air, no voice. Listen for any "tuh" and help her keep it crisp.',
+         'The action game now uses /k/ and /t/, two sounds that are easy to mix up.'])],
+    6: [('First real words', ['AT, BAT, CAT, ACT: she sounds out every word, then reads it at normal speed.',
+         'The Shopping Game: she buys a thing by saying each of its sounds. One coin for each sound.'])],
+    7: [('Reading the other way', ['BAT and TAB use the same letters in another order. This shows her why left to right matters.',
+         'In Hop to that Sound she hears a sound and finds its letter.'])],
+    8: [('Review', ['Everything so far, mixed together. Short and cheerful.',
+         'If a word is hard, go back to its sounds: tap, tap, tap, then swipe.'])],
+}
+GUIDE = {
+    'soundsIntro': 'Say every sound short and clean. Stop sounds (b, c, d, g, j, k, p, t) are never stretched and never end in "uh". Long sounds (a, e, i, o, u, f, l, m, n, r, s, v, z) can be held.',
+    'pairsIntro': 'Each pair is made the same way in the mouth. The first one has voice (put a hand on your throat: it buzzes); the second is only air. Arabic has some of these sounds but not all, so the ear games practise them.',
+    'pairs': [['/b/ bat', '/p/ pat'], ['/d/ dog', '/t/ top'], ['/g/ go', '/k/ cat'], ['/j/ jam', '/ch/ chop'], ['/th/ this', '/th/ thin'], ['/z/ zip', '/s/ sun'], ['/v/ van', '/f/ fan']],
+    'stretchTalk': ['"Go and waaash your hands." Stretch one word a day in everyday talk.', '"Can you find the c-a-t?" Say a word in sounds and let her join them.',
+                    '"What sound does sun start with?" Play with first sounds in the car or at dinner.', '"Mmmilk or mmmuffin?" Stretch the first sound of things you offer her.'],
+    'bedtime': ['Bedtime is for books, not lessons. Keep the lessons in the day.', 'While you read to her, point under the words as you read them, left to right.',
+                'Let her find a word she knows on the page, and praise it.'],
+    'tips': ['Two or three short sessions at the same times every day work better than one long one.', 'Praise what she did well, by name: "You said every sound!"',
+             'If she is tired, stop. A short break, then a happy finish, is better than pushing on.', 'Point under the words at bedtime, left to right, as you read to her.',
+             '"Go and waaash your hands": stretch one word a day in everyday talk.', 'Do not hold her back because blending is not perfect yet: it grows with practice.'],
+}
+for n, notes in NOTES.items():
+    L[n - 1]['notes'] = [{'title': t, 'text': x} for t, x in notes]
+
 # real photos (her request, 20 Oct 2026): assets/reads/photos/<concept>.webp, from scripts/reads_photos.py. A word's photo is
 # its own concept, or its singular (CATS -> cat); a sentence shows the photo of its last word that has one
 PHOTO_DIR = os.path.join(os.path.dirname(OUT), 'assets', 'reads', 'photos')
@@ -317,6 +353,12 @@ def needs(L):
         elif t == 'newsound': sounds.add(args[0])
     for x in xs: ws.update(SENT[x]['words'])
     return ws, xs, sounds
+for M in L:
+    for b in M['beats']:
+        if b[0] in ('stretch', 'shop', 'hoops'):
+            for w in b[1:]: assert w in WORDS or w in E, (M['n'], w)
+        if b[0] in ('action', 'run'):
+            for x in b[1:]: assert any(x == t[0] for t in SOUNDS), (M['n'], x)
 taught_so_far = []
 lessons = []
 for i in range(65):
@@ -345,7 +387,7 @@ data = {
                   'letterSound': {'A': 'a', 'B': 'b', 'C': 'k', 'D': 'd', 'E': 'e', 'F': 'f', 'G': 'g', 'H': 'h', 'I': 'i', 'J': 'j', 'K': 'k',
                                   'L': 'l', 'M': 'm', 'N': 'n', 'O': 'o', 'P': 'p', 'Q': 'qu', 'R': 'r', 'S': 's', 'T': 't', 'U': 'u', 'V': 'v',
                                   'W': 'w', 'X': 'x', 'Y': 'ee', 'Z': 'z'}},
-    'sounds': sounds, 'words': WORDS, 'ear': EAR, 'emoji': E, 'pairs': PAIRGAMES, 'sentences': SENT, 'stories': STORIES, 'lessons': lessons,
+    'sounds': sounds, 'words': WORDS, 'ear': EAR, 'emoji': E, 'pairs': PAIRGAMES, 'sentences': SENT, 'stories': STORIES, 'lessons': lessons, 'guide': GUIDE,
     'photos': PHOTOS,
     'puzzles': [{'id': f'p0{i}', 'img': f'assets/reads/puzzles/p0{i}.webp', 'title': t} for i, t in
                 enumerate(['أصدقاء لطاف', 'حلويات سعيدة', 'حديقة مبتسمة', 'كنوز السكويشي'], 1)],

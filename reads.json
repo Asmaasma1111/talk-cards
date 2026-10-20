@@ -4389,6 +4389,14 @@
      "a"
     ],
     [
+     "stretch",
+     "at",
+     "cat",
+     "map",
+     "sad",
+     "apple"
+    ],
+    [
      "hear",
      "a"
     ],
@@ -4400,6 +4408,16 @@
      "me",
      "sound:a"
     ]
+   ],
+   "notes": [
+    {
+     "title": "The first sound",
+     "text": [
+      "Say the sound, not the letter name: A says /a/ as in apple. Keep it short and clean, with no \"uh\".",
+      "While she traces, she says the sound with every stroke.",
+      "Stretchy words are only heard today: say them slowly, then at normal speed, and let her copy you. She does not read them yet."
+     ]
+    }
    ],
    "ready": true
   },
@@ -4421,6 +4439,18 @@
      "b"
     ],
     [
+     "stretch",
+     "ab",
+     "bat",
+     "cab",
+     "bus"
+    ],
+    [
+     "action",
+     "a",
+     "b"
+    ],
+    [
      "hear",
      "b"
     ],
@@ -4432,6 +4462,15 @@
      "me",
      "sound:b"
     ]
+   ],
+   "notes": [
+    {
+     "title": "Two sounds",
+     "text": [
+      "/b/ is short: lips together, a little pop, no \"buh\".",
+      "Hear a Sound and Perform an Action: each sound has its own move. Join in with the moves, it makes the sounds stick."
+     ]
+    }
    ],
    "ready": true
   },
@@ -4458,9 +4497,32 @@
      "ba"
     ],
     [
+     "stretch",
+     "bat",
+     "tab",
+     "cab",
+     "sad"
+    ],
+    [
+     "hoops",
+     "ab",
+     "bat",
+     "cab"
+    ],
+    [
      "me",
      "word:ab"
     ]
+   ],
+   "notes": [
+    {
+     "title": "Blending begins",
+     "text": [
+      "Point and swipe: she taps A, then B, then swipes and says AB smoothly.",
+      "If she says the two sounds but cannot join them, say them slowly together and a little shorter each time.",
+      "Hopping Hoops: one hop for each sound, then out with the whole word. It is all listening: she does not need to see the word."
+     ]
+    }
    ],
    "ready": true
   },
@@ -4498,9 +4560,33 @@
      "cab"
     ],
     [
+     "swap",
+     "ab>cab"
+    ],
+    [
+     "spell",
+     "cab",
+     "ab"
+    ],
+    [
+     "run",
+     "a",
+     "b",
+     "k"
+    ],
+    [
      "me",
      "word:cab"
     ]
+   ],
+   "notes": [
+    {
+     "title": "C says /k/",
+     "text": [
+      "C and K share one sound, /k/. It is short, with no vowel after it.",
+      "Spelling: she hears CAB and builds it with the letter tiles, left to right."
+     ]
+    }
    ],
    "ready": true
   },
@@ -4534,10 +4620,28 @@
      "t"
     ],
     [
+     "action",
+     "k",
+     "t"
+    ],
+    [
      "read",
      "ab",
      "cab"
+    ],
+    [
+     "spell",
+     "cab"
     ]
+   ],
+   "notes": [
+    {
+     "title": "T says /t/",
+     "text": [
+      "/t/ is only air, no voice. Listen for any \"tuh\" and help her keep it crisp.",
+      "The action game now uses /k/ and /t/, two sounds that are easy to mix up."
+     ]
+    }
    ],
    "ready": true
   },
@@ -4571,6 +4675,18 @@
      "at>cat"
     ],
     [
+     "spell",
+     "at",
+     "bat",
+     "cat"
+    ],
+    [
+     "shop",
+     "cat",
+     "bat",
+     "cab"
+    ],
+    [
      "read",
      "cat",
      "at",
@@ -4580,6 +4696,15 @@
      "me",
      "word:cat"
     ]
+   ],
+   "notes": [
+    {
+     "title": "First real words",
+     "text": [
+      "AT, BAT, CAT, ACT: she sounds out every word, then reads it at normal speed.",
+      "The Shopping Game: she buys a thing by saying each of its sounds. One coin for each sound."
+     ]
+    }
    ],
    "ready": true
   },
@@ -4611,6 +4736,18 @@
      "cab>tab"
     ],
     [
+     "hoops",
+     "tab",
+     "bat",
+     "cat"
+    ],
+    [
+     "run",
+     "b",
+     "k",
+     "t"
+    ],
+    [
      "read",
      "cat",
      "cab",
@@ -4620,6 +4757,15 @@
      "me",
      "word:tab"
     ]
+   ],
+   "notes": [
+    {
+     "title": "Reading the other way",
+     "text": [
+      "BAT and TAB use the same letters in another order. This shows her why left to right matters.",
+      "In Hop to that Sound she hears a sound and finds its letter."
+     ]
+    }
    ],
    "ready": true
   },
@@ -4658,6 +4804,18 @@
      "cab>cat"
     ],
     [
+     "spell",
+     "tab",
+     "cab",
+     "bat"
+    ],
+    [
+     "shop",
+     "cab",
+     "cat",
+     "bat"
+    ],
+    [
      "hear",
      "t"
     ],
@@ -4665,6 +4823,15 @@
      "me",
      "word:bat"
     ]
+   ],
+   "notes": [
+    {
+     "title": "Review",
+     "text": [
+      "Everything so far, mixed together. Short and cheerful.",
+      "If a word is hard, go back to its sounds: tap, tap, tap, then swipe."
+     ]
+    }
    ],
    "ready": true
   },
@@ -6114,6 +6281,59 @@
    "case": "lower"
   }
  ],
+ "guide": {
+  "soundsIntro": "Say every sound short and clean. Stop sounds (b, c, d, g, j, k, p, t) are never stretched and never end in \"uh\". Long sounds (a, e, i, o, u, f, l, m, n, r, s, v, z) can be held.",
+  "pairsIntro": "Each pair is made the same way in the mouth. The first one has voice (put a hand on your throat: it buzzes); the second is only air. Arabic has some of these sounds but not all, so the ear games practise them.",
+  "pairs": [
+   [
+    "/b/ bat",
+    "/p/ pat"
+   ],
+   [
+    "/d/ dog",
+    "/t/ top"
+   ],
+   [
+    "/g/ go",
+    "/k/ cat"
+   ],
+   [
+    "/j/ jam",
+    "/ch/ chop"
+   ],
+   [
+    "/th/ this",
+    "/th/ thin"
+   ],
+   [
+    "/z/ zip",
+    "/s/ sun"
+   ],
+   [
+    "/v/ van",
+    "/f/ fan"
+   ]
+  ],
+  "stretchTalk": [
+   "\"Go and waaash your hands.\" Stretch one word a day in everyday talk.",
+   "\"Can you find the c-a-t?\" Say a word in sounds and let her join them.",
+   "\"What sound does sun start with?\" Play with first sounds in the car or at dinner.",
+   "\"Mmmilk or mmmuffin?\" Stretch the first sound of things you offer her."
+  ],
+  "bedtime": [
+   "Bedtime is for books, not lessons. Keep the lessons in the day.",
+   "While you read to her, point under the words as you read them, left to right.",
+   "Let her find a word she knows on the page, and praise it."
+  ],
+  "tips": [
+   "Two or three short sessions at the same times every day work better than one long one.",
+   "Praise what she did well, by name: \"You said every sound!\"",
+   "If she is tired, stop. A short break, then a happy finish, is better than pushing on.",
+   "Point under the words at bedtime, left to right, as you read to her.",
+   "\"Go and waaash your hands\": stretch one word a day in everyday talk.",
+   "Do not hold her back because blending is not perfect yet: it grows with practice."
+  ]
+ },
  "photos": [
   "act",
   "alligator",

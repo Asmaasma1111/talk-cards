@@ -38,3 +38,7 @@ _site/
 
 # the Cloudflare deploy hook (a private link that starts a build); scripts/publish.sh reads it
 .cloudflare-deploy-hook
+
+# local tests with the private pack (never committed, never deployed)
+_private/
+*-pack.json

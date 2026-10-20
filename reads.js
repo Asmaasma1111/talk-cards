@@ -25,16 +25,19 @@ const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;
 const PIECE_ORDER = [1, 6, 3, 4, 0, 7, 2, 5];     // the order the 8 pieces arrive in (4 across, 2 down)
 function blank() {
   return { v: 1, current: 1, lessons: {}, placement: null, use: [], opened: [], stars: { total: 0, days: {} }, minutes: {},
-           log: [], stuck: {}, seen: {}, speed: { best: 0, runs: [] }, settings: { slots: ['13:30', '17:30'], bedtime: '19:30', cues: true } };
+           log: [], stuck: {}, ok: {}, seen: {}, speed: { best: 0, runs: [] }, settings: { sessions: 2, bedtime: '19:30', cues: true } };
 }
 function clean(o) {
   const b = blank();
   if (!o || typeof o !== 'object') return b;
   const r = { ...b, ...o };
   r.settings = { ...b.settings, ...(o.settings || {}) };
+  // sessions a day, not clock times (her choice, 20 Oct 2026): older progress had reading times, kept as a count
+  if (Array.isArray(r.settings.slots)) { if (!(o.settings && o.settings.sessions)) r.settings.sessions = Math.max(1, Math.min(3, r.settings.slots.filter(Boolean).length || 2)); delete r.settings.slots; }
+  r.settings.sessions = Math.max(1, Math.min(3, Math.round(Number(r.settings.sessions)) || 2));
   r.stars = { ...b.stars, ...(o.stars || {}) };
   if (!r.stars.days || typeof r.stars.days !== 'object') r.stars.days = {};
-  ['lessons', 'minutes', 'stuck', 'seen'].forEach(k => { if (!r[k] || typeof r[k] !== 'object') r[k] = {}; });
+  ['lessons', 'minutes', 'stuck', 'ok', 'seen'].forEach(k => { if (!r[k] || typeof r[k] !== 'object') r[k] = {}; });
   ['use', 'opened', 'log'].forEach(k => { if (!Array.isArray(r[k])) r[k] = []; });
   r.speed = { ...b.speed, ...(o.speed || {}) }; if (!Array.isArray(r.speed.runs)) r.speed.runs = [];
   r.current = Math.max(1, Math.min(65, Math.round(Number(r.current)) || 1));
@@ -49,7 +52,9 @@ function minutesFor(D, n) { const t = D.timer.find(([a, b]) => n >= a && n <= b)
 function lessonSounds(D, n) {
   const L = D.lessons[n - 1], s = new Set(L.new || []);
   (L.words || []).forEach(w => D.words[w].says.forEach(x => s.add(x)));
-  (L.beats || []).forEach(b => b.slice(1).forEach(x => String(x).split('>').forEach(w => { if (D.words[w]) D.words[w].says.forEach(y => s.add(y)); })));
+  // only the words she reads (the listening games use words she only hears)
+  (L.beats || []).filter(b => ['read', 'spell', 'swap', 'diff', 'sight'].includes(b[0]))
+    .forEach(b => b.slice(1).forEach(x => String(x).split(/[>/]/).forEach(w => { if (D.words[w]) D.words[w].says.forEach(y => s.add(y)); })));
   return [...s];
 }
 // the sounds taught before lesson n (with upTo: lesson n's too), in teaching order
@@ -97,7 +102,7 @@ function finish(r, s, t) {
   if (s.mode === 'lesson') { if (!L.days.includes(t)) L.days.push(t); L.sessions++; }
   if (s.mode === 'review' && !L.review.includes(t)) L.review.push(t);
   r.stars.total += 1; r.stars.days[t] = (r.stars.days[t] || 0) + 1;
-  r.log.push({ day: t, n: s.n, mode: s.mode, secs: Math.round(s.secs || 0), tap: null, at: Date.now() });
+  r.log.push({ day: t, n: s.n, mode: s.mode, secs: Math.round(s.secs || 0), tap: null, at: Date.now(), ...(s.tired ? { tired: true } : {}) });
   if (r.log.length > 600) r.log = r.log.slice(-600);
   return { first };
 }
@@ -108,8 +113,38 @@ function applyTap(r, t, n, tap) {
   rec(r, n).taps.push({ day: t, tap, mode: last ? last.mode : 'lesson' });
   if (tap === 'alone') { r.stars.total += 1; r.stars.days[t] = (r.stars.days[t] || 0) + 1; }
 }
+// the Book Edition (Mama's private content pack, loaded on the iPad): same layout as reads.json, lesson by lesson
+const validPack = p => !!p && typeof p === 'object' && p.app === 'maria-reads' && p.edition === 'book' && p.v === 1 && !!p.lessons && typeof p.lessons === 'object';
+function applyPack(D, P) {
+  ['words', 'sentences', 'stories', 'ear', 'emoji', 'pairs'].forEach(k => { if (P[k] && typeof P[k] === 'object') D[k] = { ...(D[k] || {}), ...P[k] }; });
+  Object.entries(P.lessons).forEach(([n, x]) => { const L = D.lessons[Number(n) - 1]; if (L && x && typeof x === 'object') Object.assign(L, x); });
+  if (Array.isArray(P.reference)) D.reference = P.reference;
+  D.edition = 'book';
+  return D;
+}
+// every clip a lesson needs before it can open (the games skip a word that has no clip yet, so they are not counted)
+function lessonClips(D, L) {
+  if (!L || !Array.isArray(L.beats)) return null;
+  const ws = new Set(L.words || []), xs = new Set(), lines = [], snd = new Set(L.new || []);
+  for (const [t, ...a] of L.beats) {
+    if (t === 'read' || t === 'spell' || t === 'sight') a.forEach(w => ws.add(w));
+    else if (t === 'diff') a.forEach(x => String(x).split('/').forEach(w => ws.add(w)));
+    else if (t === 'swap') a.forEach(x => String(x).split('>').forEach(w => ws.add(w)));
+    else if ((t === 'hear' || t === 'where') && D.ear[a[0]]) { const e = D.ear[a[0]]; [...e.beg, ...e.mid, ...e.end, ...e.no].forEach(w => ws.add(w)); }
+    else if (t === 'pair' && D.pairs && D.pairs[a[0]]) D.pairs[a[0]].pairs.forEach(pr => pr.forEach(w => ws.add(w)));
+    else if (t === 'sent') a.forEach(x => xs.add(x));
+    else if (t === 'story' && D.stories[a[0]]) { const st = D.stories[a[0]]; st.pages.forEach(x => xs.add(x)); for (let i = 0; i <= st.questions.length; i++) lines.push(`qq-${a[0]}${i}`); }
+    else if (t === 'me') { const [k, v] = String(a[0]).split(':'); (k === 'word' ? ws : snd).add(v); }
+    else if (t === 'newsound') snd.add(a[0]);
+  }
+  xs.forEach(x => { const S = D.sentences[x]; if (S) S.words.forEach(w => ws.add(w)); lines.push('x-' + x); });
+  taught(D, L.n, true).forEach(x => snd.add(x));
+  return { words: [...ws].map(w => 'w-' + w), lines, sounds: [...snd] };
+}
+// Teach Mama day: every 4th day of use from lesson 3 on (or the day Mama picks): Maria is the teacher
+const teachDay = (r, t, n) => n >= 3 && (r.settings.teachDay === t || ((r.use.includes(t) ? r.use.indexOf(t) : r.use.length) + 1) % 4 === 0);
 const core = { blank, clean, valid, rec, stateOf, minutesFor, lessonSounds, taught, minDays, reviewToday, canAdvance, streakOf,
-  weekDay, piecesAt, puzzleOf, board, finish, applyTap, PIECE_ORDER, addDays };
+  weekDay, piecesAt, puzzleOf, board, finish, applyTap, PIECE_ORDER, addDays, validPack, applyPack, lessonClips, teachDay };
 
 /* ---------- letter shapes for tracing (capitals, viewBox 0 0 200 240), one path per stroke, in writing order ---------- */
 const STROKES = {
@@ -148,7 +183,13 @@ const CUE = {
   spell: 'اسمعي الكلمة، ثم ابنيها بالحروف من اليسار',
   sent: 'اقرئي كل كلمة، ثم اسحبي تحت الجملة',
   story: 'قصة! اقرئي كل صفحة',
-  pair: 'أي صوت تسمعين؟'
+  pair: 'أي صوت تسمعين؟',
+  stretch: 'اسمعي الكلمة الممطوطة، ثم قوليها',
+  action: 'اسمعي الصوت، ثم اعملي حركته',
+  run: 'اسمعي الصوت، ثم المسي حرفه',
+  shop: 'اشتري بقول الأصوات',
+  hoops: 'قفزة لكل صوت',
+  teach: 'أنتِ المعلّمة اليوم!'
 };
 
 /* =====================================================================================================
@@ -163,11 +204,42 @@ function mount(api) {
   function load() { try { return clean(JSON.parse(api.lsGet(KEY) || 'null')); } catch (e) { return blank(); } }
   function save() { api.lsSet(KEY, JSON.stringify(r)); }
   const SOUND = {};
+  /* ---------- the Book Edition: Mama's private content pack, kept in this iPad's own database (never online) ---------- */
+  const PACK_DB = 'maria-reads-pack';
+  function packDB() {
+    return new Promise((ok, bad) => {
+      if (!root.indexedDB) return bad(new Error('no IndexedDB'));
+      const q = indexedDB.open(PACK_DB, 1);
+      q.onupgradeneeded = () => { if (!q.result.objectStoreNames.contains('pack')) q.result.createObjectStore('pack'); };
+      q.onsuccess = () => ok(q.result); q.onerror = () => bad(q.error);
+    });
+  }
+  async function packGet() {
+    try { const d = await packDB(); return await new Promise(ok => { const g = d.transaction('pack').objectStore('pack').get('current'); g.onsuccess = () => ok(g.result || null); g.onerror = () => ok(null); }); }
+    catch (e) { return null; }
+  }
+  async function packPut(p) {
+    const d = await packDB();
+    return new Promise((ok, bad) => { const tx = d.transaction('pack', 'readwrite'); if (p) tx.objectStore('pack').put(p, 'current'); else tx.objectStore('pack').delete('current'); tx.oncomplete = () => ok(); tx.onerror = () => bad(tx.error); });
+  }
+  let PACK = null;
   const ready = Promise.all([
     fetch('reads.json').then(x => x.json()).then(d => { D = d; d.sounds.forEach(s => { SOUND[s.id] = s; }); }),
     fetch('audio/voice.json').then(x => (x.ok ? x.json() : null)).then(v => { CLIPS = (v && v.decks && v.decks.reads && v.decks.reads.clips) || {}; }).catch(() => {}),
-    loadSounds()
-  ]).catch(e => { console.warn('Maria Reads could not load', e); });
+    loadSounds(),
+    packGet().then(p => { PACK = validPack(p) ? p : null; })
+  ]).then(() => {
+    if (D && PACK) {
+      applyPack(D, PACK);
+      Object.entries(PACK.clips || {}).forEach(([id, c]) => { if (c && c.b64) CLIPS[id] = { d: c.d, b64: c.b64, type: c.type || 'audio/mp4' }; });
+    }
+    markReady();
+  }).catch(e => { console.warn('Maria Reads could not load', e); });
+  // a lesson opens once every clip it needs exists (the public voice, the pack's voice, or Mama's own sounds)
+  function markReady() {
+    if (!D) return;
+    D.lessons.forEach(L => { const need = lessonClips(D, L); L.ready = !!need && need.words.concat(need.lines).every(c => CLIPS[c]) && need.sounds.every(x => hasSound(x)); });
+  }
   const grapheme = id => (SOUND[id] ? SOUND[id].g.split(' ')[0] : id.toUpperCase());
   const TILE = { A: 'a', B: 'b', C: 'k', D: 'd', E: 'e', F: 'f', G: 'g', H: 'h', I: 'i', J: 'j', K: 'k', M: 'm', N: 'n', O: 'o', P: 'p', R: 'r', S: 's', T: 't', U: 'u',
                  CK: 'k', FF: 'f', SS: 's', GG: 'g' };
@@ -206,7 +278,8 @@ function mount(api) {
   function clipUrl(id) {
     const c = CLIPS[id]; if (!c) return Promise.resolve(null);
     if (!urls.has(id)) {
-      const p = fetch('audio/' + c.f).then(x => { if (!x.ok) throw new Error(x.status); return x.blob(); })
+      const p = c.b64 ? Promise.resolve(URL.createObjectURL(unb64(c.b64, c.type)))      // a clip from the Book Edition pack
+        : fetch('audio/' + c.f).then(x => { if (!x.ok) throw new Error(x.status); return x.blob(); })
         .then(b => URL.createObjectURL(new Blob([b], { type: 'audio/mp4' })));
       urls.set(id, p); p.catch(() => urls.delete(id));
     }
@@ -345,6 +418,7 @@ function mount(api) {
     <button class="quit" id="rdQuit" aria-label="الرئيسية">${ic('i-close')}</button>
     <div class="rd-timer" id="rdTimer"><svg viewBox="0 0 64 64" aria-hidden="true"><circle class="rd-ring-bg" cx="32" cy="32" r="26"/><circle class="rd-ring-fg" id="rdRing" cx="32" cy="32" r="26"/></svg></div>
     <div class="rd-cue" id="rdCue" dir="rtl" lang="ar"></div>
+    <button class="rd-tired" id="rdTired" hidden aria-label="تعبتُ">😴</button>
     ${flame('rdStreak2')}${starN('rdStars2')}
   </div>
   <div class="rd-stage" id="rdStage" dir="ltr"></div>
@@ -441,9 +515,9 @@ function mount(api) {
     const g = goInfo(t);
     const go = $('#rdGo'); go.textContent = g.label; go.disabled = !!g.off; go.dataset.mode = g.mode || '';
     $('#rdGoNote').textContent = g.note; $('#rdGoNote').classList.toggle('mama', !!g.mama);
-    const done = sessionsToday(t), slots = r.settings.slots || [];
-    const fmt = hm => { const [h, m] = hm.split(':').map(Number); return AR(`${((h + 11) % 12) + 1}:${pad2(m)}`); };
-    $('#rdSlots').innerHTML = slots.map((hm, i) => `<span class="rd-slot${done > i ? ' on' : ''}">${done > i ? ic('i-tick') : ''}${i === 0 ? 'بعد الغداء' : 'المساء'} <i>${fmt(hm)}</i></span>`).join('');
+    const done = sessionsToday(t);
+    $('#rdSlots').innerHTML = ['الجلسة الأولى', 'الجلسة الثانية', 'الجلسة الثالثة'].slice(0, r.settings.sessions)
+      .map((name, i) => `<span class="rd-slot${done > i ? ' on' : ''}">${done > i ? ic('i-tick') : ''}${name}</span>`).join('');
   }
   /* ---------- the puzzle board: real jigsaw pieces (knobs and sockets), 4 across and 2 down ----------
      Each inner edge has one knob, out on one piece and in on its neighbour; the pattern changes from puzzle to puzzle.
@@ -521,7 +595,13 @@ function mount(api) {
       beats = all.slice(base);
       if (base > 0 && beats[0][0] !== 'flash' && taught(D, n).length) { beats.unshift(['flash']); base--; }   // the rest of a long lesson starts with a quick review
     }
-    S = { n, mode, beats, bi: 0, base, timeUp: false, limit: minutesFor(D, n) * 60, items: [], startedDay: t, lessonLen: L.beats.length };
+    let taughtNow = false;
+    if (!only && mode !== 'replay' && teachDay(r, t, n)) {      // Teach Mama day: Teddy reads first, Maria is the teacher
+      const known = taught(D, n, true);
+      const ws = [...new Set(D.lessons.slice(0, n).flatMap(x => x.words || []))].filter(w => D.words[w] && !D.words[w].sight && !D.words[w].sound && D.words[w].says.every(x => known.includes(x)) && CLIPS['w-' + w]);
+      if (ws.length) { beats.unshift(['teach', ...pick(ws, 3)]); base--; taughtNow = true; }
+    }
+    S = { n, mode, beats, bi: 0, base, timeUp: false, limit: minutesFor(D, n) * 60, items: [], startedDay: t, lessonLen: L.beats.length, taught: taughtNow };
     preloadWords(Object.keys(D.words).concat(Object.keys(D.emoji)));
     L.beats.forEach(b => { if (b[0] === 'sent') b.slice(1).forEach(x => clipUrl('x-' + x)); if (b[0] === 'story') { const st = D.stories[b[1]]; st.pages.forEach(x => clipUrl('x-' + x)); st.questions.concat([0]).forEach((_, i) => clipUrl(`qq-${b[1]}${i}`)); } });
     taught(D, n, true).forEach(id => { if (!SND[id]) { clipUrl('p-' + id); if (CLIPS['q-' + id]) clipUrl('q-' + id); } });
@@ -538,6 +618,7 @@ function mount(api) {
     ring.style.strokeDasharray = `${C}`;
     ring.style.strokeDashoffset = `${C * Math.min(1, secs / S.limit)}`;
     $('#rdTimer').classList.toggle('low', secs > S.limit - 30);
+    $('#rdTired').hidden = secs < 60;
     if (!S.timeUp && secs >= S.limit) { S.timeUp = true; chime(); $('#rdTimer').classList.add('up'); }
     if (secs >= D.cap * 60) endSession();          // the hard cap: ten minutes, even in the middle of a word
   }
@@ -556,7 +637,8 @@ function mount(api) {
   }
   function moreBeats(s) {   // time is left after the lesson: more of what she knows
     const L = D.lessons[s.n - 1], known = taught(D, s.n, true);
-    const words = [...new Set(D.lessons.slice(0, s.n).flatMap(x => x.words || []))].filter(w => D.words[w].says.every(x => known.includes(x)));
+    const words = [...new Set(D.lessons.slice(0, s.n).flatMap(x => x.words || []))].filter(w => D.words[w] && D.words[w].says.every(x => known.includes(x)));
+    if (!s.taught && teachDay(r, today(), s.n) && words.length) { s.taught = true; return [['teach', ...pick(words.filter(w => !D.words[w].sight && !D.words[w].sound), 3)]]; }
     const ear = known.filter(x => D.ear[x]);
     const out = [];
     const sents = (L.beats || []).filter(b => b[0] === 'sent').flatMap(b => b.slice(1));
@@ -616,10 +698,11 @@ function mount(api) {
   /* ---------- a new sound: hear it, then trace the letter while the sound plays on every stroke ---------- */
   async function beatNewSound(s, [id]) {
     const g = grapheme(id), held = SOUND[id].kind === 'hold';
-    stage.innerHTML = `<div class="rd-new"><button class="rd-big enter" id="rdBig">${esc(g)}</button><p class="rd-ex" lang="en">${esc(SOUND[id].say)}</p></div>`;
+    stage.innerHTML = `<div class="rd-new"><button class="rd-big enter" id="rdBig">${esc(g)}</button><p class="rd-ex" lang="en">${esc(g.split(' ')[0])} · ${esc(SOUND[id].say)}</p></div>`;
     const big = $('#rdBig');
     big.addEventListener('click', () => { big.classList.remove('pulse'); void big.offsetWidth; big.classList.add('pulse'); sayLetter(id, held); });
     await sleep(400);
+    if (CLIPS['ln-' + id]) { await sayLine('ln-' + id); await sleep(250); }      // "This is the letter A." (the name, then the sound)
     for (let k = 0; k < 2 && s === S; k++) { big.classList.remove('pulse'); void big.offsetWidth; big.classList.add('pulse'); await sayLetter(id, held); await sleep(500); }
     if (!STROKES[g]) return;
     for (let k = 0; k < 2; k++) { if (!alive(s)) return; await trace(s, id, g); }
@@ -728,20 +811,75 @@ function mount(api) {
       <div class="rd-ltr" id="rdLtr" aria-hidden="true"><i></i></div>
       <div class="rd-swipe" id="rdSwipe"><span class="rd-sw-hint">${'›'.repeat(3)}</span><i class="rd-thumb" id="rdThumb"></i></div>
       <div class="rd-after" id="rdAfter"></div>
-      <div class="rd-mama" id="rdMama" hidden lang="ar" dir="rtl"><span>👩‍🦰 اسألي ماما</span><button id="rdMamaOk">ساعدتني ماما ✓</button></div></div>`;
+      <div class="rd-mama" id="rdMama" hidden lang="ar" dir="rtl"><span>👩‍🦰 اسألي ماما</span><button id="rdMamaOk">ساعدتني ماما ✓</button></div>
+      <p class="rd-mvcue" id="rdMvCue" lang="ar" dir="rtl"></p>
+      <button class="rd-mamab" id="rdMamaB" aria-label="Mama: what happened?">👩‍🏫</button>
+      <div class="rd-moves" id="rdMoves" hidden dir="ltr" lang="en">
+        <div class="rd-mvbtns">${sight ? '' : '<button data-mv="skip">Skipped a sound</button><button data-mv="add">Added a sound</button><button data-mv="wrong">Wrong sound</button>'}
+          <button data-mv="blend">Can't join her sounds</button>${sight || n < 3 ? '' : '<button data-mv="cv">Joins only the end (m… ap)</button>'}<button data-mv="close" aria-label="Close">✕</button></div>
+        <p class="rd-mvline" id="rdMvLine">What happened? Tap it, then help her try again.</p></div></div>`;
     const tiles = [...stage.querySelectorAll('.rd-tile')], sw = $('#rdSwipe'), thumb = $('#rdThumb');
     let next = sight || opts.quick ? n : 0, lv = 0, helped = false, finished = false;
     if (next === n) $('#rdSwipe').classList.add('ready');
     const ltr = () => { const a = $('#rdLtr'); a.classList.remove('go'); void a.offsetWidth; a.classList.add('go'); clearTimeout(a.t); a.t = setTimeout(() => a.classList.remove('go'), 1600); if (tiles[next]) { tiles[next].classList.remove('nudge'); void tiles[next].offsetWidth; tiles[next].classList.add('nudge'); } };
     const sweep = secs => tiles.forEach((t, i) => setTimeout(() => { t.classList.add('sing'); setTimeout(() => t.classList.remove('sing'), 380); }, (secs * 1000 / n) * i));
     return new Promise(done => {
-      const arm = () => { clearTimeout(helpTimer); if (!finished) helpTimer = setTimeout(stuck, 6000); };
+      const arm = () => { clearTimeout(helpTimer); if (!finished && $('#rdMoves') && $('#rdMoves').hidden) helpTimer = setTimeout(stuck, 6000); };
+      /* ---------- Mama's tutor moves (the book's troubleshooting): she taps what happened, the app does the move ---------- */
+      let mv = null;
+      const box = $('#rdMoves'), mvLine = $('#rdMvLine'), cue = $('#rdMvCue');
+      const restart = () => { next = sight || opts.quick ? n : 0; tiles.forEach(t => t.classList.remove('lit', 'nudge')); sw.classList.toggle('ready', next === n); };
+      const clearMove = () => { mv = null; stage.querySelectorAll('.rd-gap').forEach(g => g.remove()); };
+      const settle = async ms => { await sleep(ms); if (finished) return; tiles.forEach(t => t.classList.remove('hl')); cue.textContent = ''; box.hidden = true; clearMove(); restart(); arm(); };
+      $('#rdMamaB').addEventListener('click', () => { api.SFX.init(); clearMove(); box.hidden = !box.hidden; mvLine.textContent = 'What happened? Tap it, then help her try again.'; clearTimeout(helpTimer); if (box.hidden) arm(); });
+      box.addEventListener('click', async e => {
+        const b = e.target.closest('[data-mv]'); if (!b || finished) return;
+        const m = b.dataset.mv; clearMove();
+        if (m === 'close') { box.hidden = true; arm(); return; }
+        helped = true; clearTimeout(helpTimer);
+        if (m === 'skip' || m === 'wrong') { mv = m; mvLine.textContent = m === 'skip' ? 'Tap the letter she skipped.' : 'Tap the letter she said wrongly.'; return; }
+        if (m === 'add') {
+          mv = m; mvLine.textContent = 'Tap the place where she added a sound.';
+          tiles.forEach((t, i) => { if (i < n - 1) { const g = document.createElement('button'); g.className = 'rd-gap'; g.textContent = '·'; g.setAttribute('aria-label', 'here'); t.after(g); } });
+          return;
+        }
+        box.hidden = true;
+        if (m === 'blend') {           // her sounds, far apart, then closer and closer, then the word
+          cue.textContent = 'اسمعي: الأصوات تقترب حتى تصير كلمة 👂';
+          for (const gap of [700, 320]) { for (let i = 0; i < n; i++) { tiles[i].classList.add('hl'); await sayLetter(W.says[i]); await sleep(gap); tiles[i].classList.remove('hl'); } }
+          await sayStretchy(w); await sleep(300); await sayWord(w);
+        } else if (m === 'cv') {       // the first two sounds joined (/m/ + /a/ = /ma/), then the rest
+          cue.textContent = 'أول صوتين معاً، ثم الباقي 🤝';
+          tiles[0].classList.add('hl'); tiles[1].classList.add('hl');
+          await sayLetter(W.says[0]); await sayLetter(W.says[1], true); await sleep(500);
+          for (let i = 2; i < n; i++) { tiles[i].classList.add('hl'); await sayLetter(W.says[i]); await sleep(300); }
+          await sleep(200); await sayWord(w);
+        }
+        settle(900);
+      });
+      stage.querySelector('#rdWord').addEventListener('click', async e => {
+        const g = e.target.closest('.rd-gap'); if (!g || mv !== 'add') return;
+        g.classList.add('hl'); mv = null; mvLine.textContent = 'Say: "What is here? Nothing. So we say nothing."';
+        cue.textContent = 'هنا لا يوجد حرف، فلا نقول شيئاً ✋'; api.SFX.again();
+        settle(3200);
+      });
+      const tutorLetter = async i => {
+        const m = mv; mv = null; tiles[i].classList.add('hl');
+        if (m === 'skip') { mvLine.textContent = 'Say: "Look here. Every sound we see, we say."'; cue.textContent = 'انظري هنا: كل صوت نراه نقوله 👀'; }
+        else { mvLine.textContent = 'Say: "Look at this letter again. What sound does it make?"'; cue.textContent = 'انظري إلى هذا الحرف مرة أخرى 👀'; }
+        await sleep(1400); if (finished) return; await sayLetter(W.says[i]);
+        settle(1600);
+      };
       async function stuck() {
         if (finished || s !== S) return;
         helped = true;
         if (lv === 0) {                                         // (a) the first sound (a sight word: the word itself)
           if (sight) { tiles[0].classList.add('nudge'); await sayWord(w); }
-          else { const i = opts.quick ? 0 : Math.min(next, n - 1); tiles[i].classList.add('nudge'); await sayLetter(W.says[i]); }
+          else {
+            const i = opts.quick ? 0 : Math.min(next, n - 1); tiles[i].classList.add('nudge');
+            if (opts.before && opts.before.length && i === 0) { for (const b of opts.before) { await sayWord(b); await sleep(120); } }   // in a sentence: the words so far
+            await sayLetter(W.says[i]); await sleep(450); await sayLetter(W.says[i]);
+          }
         } else if (lv <= 3) {                                   // (b) the stretchy model, shorter each time
           const rate = [1, 1.3, 1.65][lv - 1];
           sweep(clipSecs(CLIPS['s-' + w] ? 's-' + w : 'w-' + w, rate)); await sayStretchy(w, rate);
@@ -750,6 +888,7 @@ function mount(api) {
       }
       tiles.forEach((t, i) => t.addEventListener('click', () => {
         if (finished) return; api.SFX.init();
+        if (mv === 'skip' || mv === 'wrong') { tutorLetter(i); return; }
         if (sight) { t.classList.add('lit'); sayWord(w); arm(); return; }
         if (opts.quick) { t.classList.add('lit'); sayLetter(W.says[i]); arm(); return; }
         if (i === next) { t.classList.add('lit'); t.classList.remove('nudge'); sayLetter(W.says[i]); next++; if (next === n) sw.classList.add('ready'); }
@@ -777,7 +916,7 @@ function mount(api) {
       sw.addEventListener('pointerup', up); sw.addEventListener('pointercancel', up);
       $('#rdMamaOk').addEventListener('click', () => { $('#rdMama').hidden = true; success(); });
       async function success() {
-        if (finished) return; finished = true; x0 = null; clearTimeout(helpTimer); $('#rdMama').hidden = true;
+        if (finished) return; finished = true; x0 = null; clearTimeout(helpTimer); $('#rdMama').hidden = true; box.hidden = true; clearMove();
         sw.classList.add('done'); thumb.style.left = '94%'; tiles.forEach(t => t.classList.add('lit'));
         sweep(clipSecs('w-' + w)); await sayWord(w);
         if (s !== S) return;
@@ -785,6 +924,7 @@ function mount(api) {
         if (opts.quiet) api.SFX.star(); else api.SFX.good();
         s.items.push({ w, helped });
         if (helped) { const k = r.stuck[w] || (r.stuck[w] = { n: 0, last: null }); k.n++; k.last = today(); save(); }
+        else if (!sight && !opts.quick) { r.ok[w] = (r.ok[w] || 0) + 1; save(); }
         await sleep(opts.quiet ? 450 : 1500); done();
       }
       arm();
@@ -982,7 +1122,8 @@ function mount(api) {
     const line = k => `${opts.page ? `<div class="rd-page">${esc(opts.page)}</div>` : ''}<div class="rd-line">${toks.map((t, i) => `<span class="rd-lw${i < k ? ' on' : i === k ? ' cur' : ''}">${esc(t)}</span>`).join(' ')}</div>`;
     for (let k = 0; k < X.words.length; k++) {
       if (s !== S) return;
-      await readWord(s, X.words[k], line(k), { quick: true, quiet: true });
+      const w = X.words[k], known = s.n >= 11 && (r.ok[w] || 0) >= 3;
+      await readWord(s, w, line(k), { quick: known, quiet: true, before: X.words.slice(0, k) });
     }
     if (s !== S) return;
     stage.innerHTML = `<div class="rd-read rd-sentence">${opts.page ? `<div class="rd-page">${esc(opts.page)}</div>` : ''}
@@ -1067,8 +1208,160 @@ function mount(api) {
     }
   }
 
+
+  /* ---------- stretchy words, heard only (lessons 1-3): the word slowly, then at normal speed; she says it too ---------- */
+  const nextBtn = (ms = 1800) => new Promise(ok => { const nb = $('#rdNext'); if (!nb) return ok(); const t = setTimeout(() => { nb.hidden = false; }, ms); nb.addEventListener('click', () => { clearTimeout(t); api.SFX.init(); ok(); }, { once: true }); });
+  async function beatStretch(s, words) {
+    for (const w of words) {
+      if (!alive(s) || !CLIPS['w-' + w]) continue;              // a word with no voice yet waits for its recording
+      stage.innerHTML = `<div class="rd-game rd-stretch"><button class="rd-replay big" id="rdAgain" aria-label="اسمعي مرة أخرى">${ic('i-speaker')}</button>
+        <div class="rd-snail" id="rdBar" aria-hidden="true"><i></i></div><p class="rd-sayit" id="rdSay" lang="ar" dir="rtl"></p>
+        <div class="rd-after" id="rdAfter"></div><button class="rd-next" id="rdNext" hidden>التالي ←</button></div>`;
+      const bar = $('#rdBar'), say = $('#rdSay');
+      const slow = async () => {
+        const id = CLIPS['s-' + w] ? 's-' + w : 'w-' + w;
+        bar.style.setProperty('--secs', `${clipSecs(id, CLIPS['s-' + w] ? 1 : 0.62)}s`); bar.classList.remove('go'); void bar.offsetWidth; bar.classList.add('go');
+        await sayStretchy(w);
+      };
+      $('#rdAgain').addEventListener('click', slow);
+      await sleep(300); say.textContent = 'اسمعي الكلمة ببطء 🐌'; await slow(); if (!alive(s)) return;
+      say.textContent = 'قوليها ببطء مثلي'; await sleep(2600); if (!alive(s)) return;
+      say.textContent = 'والآن بسرعتها العادية'; await sayWord(w); await sleep(300); if (!alive(s)) return;
+      $('#rdAfter').innerHTML = picFor(w); api.SFX.good(); say.textContent = 'قوليها أنتِ! 🗣️';
+      await nextBtn();
+    }
+  }
+
+  /* ---------- Hear a Sound and Perform an Action: two sounds, two actions; she hears one and does its action ---------- */
+  const ACTIONS = [['🦘', 'اقفزي'], ['👏', 'صفّقي'], ['🙆‍♀️', 'المسي رأسكِ'], ['💃', 'دوري']];
+  async function beatAction(s, ids) {
+    const two = ids.filter(id => SOUND[id] && hasSound(id)).slice(0, 2); if (two.length < 2) return;
+    const acts = pick(ACTIONS, 2);
+    stage.innerHTML = `<div class="rd-game rd-action"><div class="rd-acts">${two.map((id, i) => `<button class="rd-act" data-i="${i}"><b>${esc(grapheme(id))}</b><span class="rd-actic">${acts[i][0]}</span><span lang="ar">${acts[i][1]}</span></button>`).join('')}</div>
+      <p class="rd-sayit" id="rdSay" lang="ar" dir="rtl">لكل صوت حركة: اسمعي، ثم اعملي الحركة والمسيها</p></div>`;
+    const cards = [...stage.querySelectorAll('.rd-act')];
+    for (let i = 0; i < 2; i++) { cards[i].classList.add('lit'); await sayLetter(two[i]); await sleep(800); cards[i].classList.remove('lit'); if (!alive(s)) return; }
+    for (const k of shuffle([0, 1, 0, 1, 0, 1])) {
+      if (!alive(s)) return;
+      cards.forEach(b => { b.disabled = false; b.classList.remove('picked', 'right', 'shake'); });
+      await sleep(600); await sayLetter(two[k], SOUND[two[k]].kind === 'hold');
+      const ans = await choice('.rd-act');
+      if (Number(ans.dataset.i) === k) { ans.classList.add('right'); api.SFX.good(); }
+      else { ans.classList.add('shake'); api.SFX.again(); cards[k].classList.add('right'); await sleep(400); await sayLetter(two[k]); }
+      await sleep(1100);
+    }
+  }
+
+  /* ---------- Hop to that Sound: letters around the room; she hears a sound and the bunny hops to its letter ---------- */
+  async function beatRun(s, ids) {
+    const set = ids.filter(id => SOUND[id] && hasSound(id)).slice(0, 3); if (set.length < 2) return;
+    stage.innerHTML = `<div class="rd-game rd-run"><div class="rd-field">${shuffle(set).map((id, i) => `<button class="rd-spot s${i}" data-id="${id}"><b>${esc(grapheme(id))}</b></button>`).join('')}<span class="rd-runner" id="rdRunner">🐰</span></div>
+      <button class="rd-replay" id="rdAgain" aria-label="اسمعي مرة أخرى">${ic('i-speaker')}</button></div>`;
+    let cur = null; $('#rdAgain').addEventListener('click', () => { if (cur) sayLetter(cur); });
+    const runner = $('#rdRunner'), field = stage.querySelector('.rd-field');
+    const hopTo = b => { const f = field.getBoundingClientRect(), q = b.getBoundingClientRect(); runner.style.left = `${q.left - f.left + q.width / 2}px`; runner.style.top = `${q.top - f.top}px`; runner.classList.remove('hop'); void runner.offsetWidth; runner.classList.add('hop'); };
+    for (const id of shuffle([...set, ...set]).slice(0, 6)) {
+      if (!alive(s)) return;
+      cur = id; stage.querySelectorAll('.rd-spot').forEach(b => { b.disabled = false; b.classList.remove('picked', 'right'); });
+      await sleep(600); await sayLetter(id);
+      const ans = await choice('.rd-spot'); hopTo(ans);
+      if (ans.dataset.id === id) { ans.classList.add('right'); api.SFX.good(); }
+      else { api.SFX.again(); const want = stage.querySelector(`.rd-spot[data-id="${id}"]`); want.classList.add('right'); await sleep(500); hopTo(want); await sayLetter(id); }
+      await sleep(1000);
+    }
+  }
+
+  /* ---------- the Shopping Game: she buys a thing from the shop by saying each of its sounds (one coin a sound) ---------- */
+  async function beatShop(s, words) {
+    const items = words.filter(w => D.words[w] && !D.words[w].sight && CLIPS['w-' + w]).slice(0, 4); if (!items.length) return;
+    const basket = [];
+    const basketHTML = () => `<div class="rd-basket"><span class="rd-bask">🧺</span>${basket.map(x => `<span class="rd-inb">${picFor(x)}</span>`).join('')}</div>`;
+    while (basket.length < Math.min(3, items.length) && alive(s)) {
+      const left = items.filter(w => !basket.includes(w));
+      stage.innerHTML = `<div class="rd-game rd-shop"><p class="rd-sayit" lang="ar" dir="rtl">🛍️ ماذا تشترين؟</p>
+        <div class="rd-shelf">${left.map(w => `<button class="rd-item" data-w="${w}">${picFor(w)}<span class="rd-price">${'🪙'.repeat(D.words[w].says.length)}</span></button>`).join('')}</div>${basketHTML()}</div>`;
+      const b = await choice('.rd-item'); if (!alive(s)) return;
+      const w = b.dataset.w, W = D.words[w];
+      await sayWord(w);
+      stage.innerHTML = `<div class="rd-game rd-shop"><div class="rd-buy">${picFor(w)}</div><p class="rd-sayit" lang="ar" dir="rtl">قولي أصواتها واحداً واحداً لتدفعي</p>
+        <div class="rd-boxes" dir="ltr">${W.says.map((x, i) => `<button class="rd-box" data-i="${i}"></button>`).join('')}</div>${basketHTML()}</div>`;
+      await new Promise(ok => {
+        let i = 0; const boxes = [...stage.querySelectorAll('.rd-box')];
+        boxes.forEach((bx, k) => bx.addEventListener('click', async () => {
+          api.SFX.init();
+          if (k !== i) { boxes[i].classList.remove('nudge'); void boxes[i].offsetWidth; boxes[i].classList.add('nudge'); return; }
+          bx.classList.add('lit'); bx.textContent = '🪙'; i++; await sayLetter(W.says[k]);
+          if (i === boxes.length) { await sleep(450); await sayWord(w); api.SFX.good(); await sleep(600); ok(); }
+        }));
+      });
+      basket.push(w);
+    }
+    if (!alive(s)) return;
+    stage.innerHTML = `<div class="rd-game rd-shop"><p class="rd-sayit big" lang="ar" dir="rtl">اشتريتِ كل شيء! 🎉</p>${basketHTML()}</div>`;
+    api.SFX.unlock(); await sleep(1600);
+  }
+
+  /* ---------- Hopping Hoops: one hoop for each sound; the frog hops in for every sound, then out with the whole word ---------- */
+  async function beatHoops(s, words) {
+    for (const w of words) {
+      const W = D.words[w]; if (!alive(s) || !W || W.sight || !CLIPS['w-' + w]) continue;
+      stage.innerHTML = `<div class="rd-game rd-hoops"><button class="rd-replay" id="rdAgain" aria-label="اسمعي">${ic('i-speaker')}</button>
+        <p class="rd-sayit" lang="ar" dir="rtl">قفزة لكل صوت، ثم اخرجي بالكلمة 🐸</p>
+        <div class="rd-hooprow" dir="ltr">${W.says.map((x, i) => `<button class="rd-hoop" data-i="${i}" aria-label="hoop ${i + 1}"></button>`).join('')}<button class="rd-hoop out" data-i="${W.says.length}" aria-label="out">🏁</button><span class="rd-frog" id="rdFrog">🐸</span></div>
+        <div class="rd-after" id="rdAfter"></div></div>`;
+      $('#rdAgain').addEventListener('click', () => sayWord(w));
+      await sleep(300); await sayWord(w); if (!alive(s)) return;
+      const frog = $('#rdFrog'), row = stage.querySelector('.rd-hooprow');
+      const jump = el => { const f = row.getBoundingClientRect(), b = el.getBoundingClientRect(); frog.style.left = `${b.left - f.left + b.width / 2}px`; frog.classList.remove('hop'); void frog.offsetWidth; frog.classList.add('hop'); };
+      await new Promise(ok => {
+        let i = 0; const hs = [...stage.querySelectorAll('.rd-hoop')];
+        hs.forEach((h, k) => h.addEventListener('click', async () => {
+          api.SFX.init();
+          if (k !== i) { hs[i].classList.remove('nudge'); void hs[i].offsetWidth; hs[i].classList.add('nudge'); return; }
+          jump(h); h.classList.add('lit'); i++;
+          if (k < W.says.length) sayLetter(W.says[k]);
+          else { await sleep(250); await sayWord(w); $('#rdAfter').innerHTML = picFor(w); api.SFX.good(); await sleep(1300); ok(); }
+        }));
+      });
+    }
+  }
+
+  /* ---------- Teach Mama (role reversal): Teddy is the pupil and reads; Maria, the teacher, says if Teddy is right ---------- */
+  async function beatTeach(s, words) {
+    const known = taught(D, s.n, true);
+    const pool = Object.keys(D.words).filter(x => CLIPS['w-' + x] && !D.words[x].sight && !D.words[x].sound && D.words[x].says.every(y => known.includes(y)));
+    const near = w => { const A = D.words[w].tiles; return pool.filter(x => { const B = D.words[x].tiles; return x !== w && B.length === A.length && B.filter((t, i) => t !== A[i]).length === 1; }); };
+    stage.innerHTML = `<div class="rd-teach-intro enter"><span class="rd-teddy">🧸</span><p lang="ar" dir="rtl">اليوم أنتِ المعلّمة! دبدوب يقرأ: هل قرأ صحيحاً؟</p></div>`;
+    await sleep(2400);
+    for (const w of words) {
+      if (!alive(s) || !D.words[w] || !CLIPS['w-' + w]) continue;
+      const wrongs = near(w), wrong = Math.random() < 0.6 && wrongs.length ? wrongs[Math.floor(Math.random() * wrongs.length)] : null;
+      const T = D.words[w].tiles;
+      stage.innerHTML = `<div class="rd-game rd-teach"><span class="rd-teddy talk">🧸</span><div class="rd-word">${T.map((t, i) => `<button class="rd-tile" data-i="${i}">${esc(t)}</button>`).join('')}</div>
+        <div class="rd-choices"><button class="rd-yes" data-a="1"><b>✓</b><span>صحيح</span></button><button class="rd-no" data-a="0"><b>✗</b><span>خطأ</span></button></div>
+        <p class="rd-sayit" id="rdSay" lang="ar" dir="rtl"></p></div>`;
+      await sleep(600); await sayWord(wrong || w);
+      const ans = await choice('.rd-choices button'); if (!alive(s)) return;
+      const right = (ans.dataset.a === '1') === !wrong;
+      if (right) api.SFX.good(); else api.SFX.again();
+      if (wrong) {
+        const k = T.findIndex((t, i) => t !== D.words[wrong].tiles[i]);
+        stage.querySelector('.rd-choices').remove();
+        $('#rdSay').textContent = right ? 'أحسنتِ! أريه الحرف الذي أخطأ فيه 👆' : 'دبدوب أخطأ! أريه الحرف 👆';
+        await new Promise(ok => stage.querySelectorAll('.rd-tile').forEach(b => b.addEventListener('click', async () => {
+          api.SFX.init();
+          if (Number(b.dataset.i) !== k) { b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); return; }
+          b.classList.add('lit'); await sayLetter(D.words[w].says[k]); ok();
+        })));
+        await sleep(300); await sayWord(w); $('#rdSay').textContent = 'شكراً يا معلّمتي! 🧸💕';
+      } else { stage.querySelectorAll('.rd-tile').forEach(t => t.classList.add('lit')); $('#rdSay').textContent = right ? 'نعم! دبدوب قرأ صحيحاً 🌟' : 'دبدوب قرأها صحيحاً هذه المرة 🙂'; }
+      await sleep(1600);
+    }
+  }
+
   const BEAT = { flash: beatFlash, newsound: beatNewSound, hear: beatHear, where: beatWhere, read: beatRead, swap: beatSwap, me: beatMe,
-                 sight: beatSight, diff: beatDiff, spell: beatSpell, sent: beatSent, story: beatStory, pair: beatPair };
+                 sight: beatSight, diff: beatDiff, spell: beatSpell, sent: beatSent, story: beatStory, pair: beatPair,
+                 stretch: beatStretch, action: beatAction, run: beatRun, shop: beatShop, hoops: beatHoops, teach: beatTeach };
 
   /* =====================================================================================================
      The end of a session: Mama's tap, the stars, and on the first session of the day a puzzle piece
@@ -1079,12 +1372,12 @@ function mount(api) {
     S = null; clearInterval(ticker); ticker = null; stopAudio(); stopRec(); clearTimeout(helpTimer);
     const t = today();
     addMinutes(secs);
-    if (s.mode === 'lesson') { const done = s.base + s.bi >= s.lessonLen; rec(r, s.n).next = done ? 0 : Math.min(s.lessonLen - 1, s.base + s.bi); }
-    const res = finish(r, { n: s.n, mode: s.mode, secs }, t); save();
+    if (s.mode === 'lesson') { const done = s.base + s.bi >= s.lessonLen; rec(r, s.n).next = done ? 0 : Math.max(0, Math.min(s.lessonLen - 1, s.base + s.bi)); }
+    const res = finish(r, { n: s.n, mode: s.mode, secs, tired: !!s.tired }, t); save();
     api.SFX.unlock();
     $('#rdDone').innerHTML = `<h1 class="rd-donet">أحسنتِ! 🎉</h1>
       <div class="rd-doneline">${flame('rdStreak3')}${starN('rdStars3')}</div>
-      <div class="rd-mamatap" dir="ltr" lang="en"><p class="rd-hand" lang="ar" dir="rtl">ناولي الآيباد لماما 👩</p><p>Mama, how did Maria read?</p>
+      <div class="rd-mamatap" dir="ltr" lang="en"><p class="rd-hand" lang="ar" dir="rtl">ناولي الآيباد لماما 👩</p>${s.tired ? '<p class="rd-tirednote">She said she was tired and stopped early. Her lesson goes on from here next time.</p>' : ''}<p>Mama, how did Maria read?</p>
         <div><button data-tap="alone">Alone</button><button data-tap="help">With a little help</button><button data-tap="not">Not yet</button></div>
         <button class="rd-later" data-tap="">Mama later</button></div>`;
     $('#rdStreak3').textContent = AR(streakOf(r, t)); $('#rdStars3').textContent = AR(r.stars.total);
@@ -1302,6 +1595,17 @@ function mount(api) {
     if (fresh) setTimeout(open, 700);
   }
 
+  const STICK = ['⭐', '🌟', '🌸', '🦄', '🌈', '🍓', '🧁', '🎀', '💜', '🦋', '🍭', '🐱'];
+  function openStars() {
+    const days = Object.entries(r.stars.days).filter(([, n]) => n > 0).sort((a, b) => (a[0] < b[0] ? -1 : 1));
+    let k = 0;
+    const rows = days.slice(-40).map(([d, n]) => `<div class="rd-wallday"><span class="rd-walldate">${fmtAr(d)}</span><span class="rd-wallstk">${Array.from({ length: n }, () => `<i>${STICK[k++ % STICK.length]}</i>`).join('')}</span></div>`).join('');
+    $('#rdCelBox').innerHTML = `<div class="rd-wall"><h2 class="rd-celt">حائط نجومي ⭐</h2><p class="rd-celcap">${AR(r.stars.total)} نجمة حتى الآن</p>
+      <div class="rd-walllist">${rows || '<p class="rd-celcap">أول نجمة تصل بعد أول درس!</p>'}</div><button class="rd-homebtn" id="rdCelOk">رائع!</button></div>`;
+    $('#rdCel').hidden = false; api.SFX.star();
+    const wl = $('#rdCelBox .rd-walllist'); if (wl) wl.scrollTop = wl.scrollHeight;
+    $('#rdCelOk').addEventListener('click', () => { $('#rdCel').hidden = true; }, { once: true });
+  }
   function celebrate(kind) {
     if (kind !== 'lesson') return;
     const L = D.lessons[r.current - 1];
@@ -1386,8 +1690,15 @@ function mount(api) {
         <p>Day ${R.days.length} on this lesson (at least ${min} ${min === 1 ? 'day, fast lane' : 'days'}) · ${sessionsToday(t)} session${sessionsToday(t) === 1 ? '' : 's'} today${reviewToday(r, n, t) ? ' · <b>review day</b>' : ''}</p>
         <p>${R.mastered ? `Mastered on ${fmtDay(R.mastered)}.${canAdvance(r, D, n) ? '' : ` Lesson ${n + 1} opens after ${min - R.days.length} more day${min - R.days.length === 1 ? '' : 's'} of practice.`}` : 'Mastery not checked yet.'}</p>
         <div class="rp-row"><button class="rp-btn main" data-act="check">Mastery check</button>
-        <button class="rp-btn${miss.length ? ' warn' : ''}" data-act="rec">Record sounds${miss.length ? ` (${miss.length} needed)` : ''}</button></div>
-        ${miss.length ? `<p class="rp-warn">Needs recording: ${miss.map(x => `${esc(x.say)} (lesson ${x.lesson})`).join(', ')}</p>` : ''}</section>
+        <button class="rp-btn${miss.length ? ' warn' : ''}" data-act="rec">Record sounds${miss.length ? ` (${miss.length} needed)` : ''}</button>
+        <button class="rp-btn" data-act="ref">Parent reference</button></div>
+        ${miss.length ? `<p class="rp-warn">Needs recording: ${miss.map(x => `${esc(x.say)} (lesson ${x.lesson})`).join(', ')}</p>` : ''}
+        <p class="rp-teach">${teachDay(r, t, n) ? '🧸 Today is a <b>Teach Mama</b> day: Teddy reads first and Maria is the teacher.' : n >= 3 ? '🧸 Teach Mama days come every 4th day of use. <button class="rp-link" data-act="teach">Make today one</button>' : ''}</p>
+        ${tipHTML(t)}</section>
+      ${noteHTML(L)}
+      <section class="rp-card"><h2>Content</h2>
+        <p>${PACK ? `<b>Book Edition</b> is loaded on this iPad${PACK.made ? ` (made ${esc(PACK.made)})` : ''}: the book's words, sentences, stories and tutor notes. It stays on this iPad only and is not in the backup file.` : '<b>Original Edition</b>: our own words, in the book\'s lesson order. To use the book\'s own content, load your private Book Edition file (it stays on this iPad only).'}</p>
+        <div class="rp-row"><label class="rp-btn">${PACK ? 'Load a newer content pack' : 'Load content pack'}<input type="file" id="rpPack" accept="application/json,.json" hidden></label>${PACK ? '<button class="rp-btn" data-act="unpack">Back to the Original Edition</button>' : ''}</div></section>
       <section class="rp-card"><h2>Progress</h2>
         <div class="rp-stats"><span><b>${streakOf(r, t)}</b> ${streakOf(r, t) === 1 ? 'day' : 'days'} in a row</span><span><b>${r.stars.total}</b> ${r.stars.total === 1 ? 'star' : 'stars'}</span><span><b>${r.use.length}</b> ${r.use.length === 1 ? 'day' : 'days'} of use</span><span><b>${b.have}</b> of 8 puzzle pieces this week</span><span>Speed Round best: <b>${r.speed.best}</b></span></div>
         <div class="rp-bars">${days7.map(d => `<div class="rp-bar${d === t ? ' today' : ''}"><i style="height:${Math.round((r.minutes[d] || 0) / mx * 60)}px"></i><b>${Math.round((r.minutes[d] || 0) / 60)}m</b><span>${fmtDay(d).split(' ')[0]}</span></div>`).join('')}</div></section>
@@ -1397,8 +1708,7 @@ function mount(api) {
         <p>${new Set(mLog.map(x => x.day)).size} days of use · ${mLog.length} sessions · ${Math.round(Object.entries(r.minutes).filter(([d]) => d.startsWith(month)).reduce((a, [, v]) => a + v, 0) / 60)} minutes · lessons mastered: ${masteredM.length ? masteredM.join(', ') : 'none yet'}</p>
         <p>Your taps: Alone ${taps('alone')} · With a little help ${taps('help')} · Not yet ${taps('not')}</p></section>
       <section class="rp-card"><h2>Settings</h2>
-        <label class="rp-set">Reading time 1 (after lunch) <input type="time" id="rpSlot0" value="${esc(r.settings.slots[0] || '13:30')}"></label>
-        <label class="rp-set">Reading time 2 (early evening) <input type="time" id="rpSlot1" value="${esc(r.settings.slots[1] || '17:30')}"></label>
+        <label class="rp-set">Sessions a day <select id="rpSess">${[1, 2, 3].map(k => `<option value="${k}"${k === r.settings.sessions ? ' selected' : ''}>${k}</option>`).join('')}</select></label>
         <label class="rp-set">No lessons from (bedtime) <input type="time" id="rpBed" value="${esc(r.settings.bedtime)}"></label>
         <label class="rp-set">Arabic cue lines at the start <input type="checkbox" id="rpCues"${r.settings.cues ? ' checked' : ''}></label>
         <div class="rp-set">Current lesson <select id="rpLesson">${opts}</select><button class="rp-btn" data-act="setlesson">Set</button></div></section>
@@ -1410,6 +1720,39 @@ function mount(api) {
     api.show('rparent');
     fillMine();
   }
+  function noteHTML(L) {
+    const notes = (L && L.notes) || [];
+    if (!notes.length) return '';
+    return `<section class="rp-card rp-notes"><h2>Today's tutor note <small>${D.edition === 'book' ? 'from the book' : 'Original Edition'}</small></h2>
+      ${notes.map((x, i) => `<details class="rp-note"${i === 0 ? ' open' : ''}><summary>${esc(x.title || 'Note')}</summary>${(x.text || []).map(q => `<p>${esc(q)}</p>`).join('')}</details>`).join('')}</section>`;
+  }
+  function tipHTML(t) {
+    const tips = (D.guide && D.guide.tips) || []; if (!tips.length) return '';
+    const k = Math.abs([...t].reduce((a, c) => a * 31 + c.charCodeAt(0), 7)) % tips.length;
+    return `<p class="rp-tip">💡 ${esc(tips[k])}</p>`;
+  }
+  async function loadPack(file) {
+    let p = null;
+    try { p = JSON.parse(await file.text()); } catch (e) {}
+    if (!validPack(p)) { api.toast('That file is not a Maria Reads content pack.'); return; }
+    try { await packPut(p); } catch (e) { api.toast('The pack could not be saved on this iPad.'); return; }
+    api.toast('Book Edition loaded.'); setTimeout(() => location.reload(), 700);
+  }
+  function referenceScreen() {
+    const G = D.guide || {};
+    const sec = (title, body) => `<section class="rp-card"><h2>${esc(title)}</h2>${body}</section>`;
+    const sounds = D.sounds.map(x => `<tr><td><b>${esc(x.say)}</b></td><td>${esc(x.g)}</td><td lang="en">${esc(x.ex)}</td><td>${esc(x.tip)}</td></tr>`).join('');
+    $('#rref').innerHTML = `<div class="rp"><header class="rp-head"><h1>Parent reference</h1><button class="rp-x" data-act="back">${ic('i-close')}</button></header>
+      ${sec('How to say each sound', `<p>${esc(G.soundsIntro || '')}</p><table class="rp-table"><tr><th>Sound</th><th>Letters</th><th>As in</th><th>How</th></tr>${sounds}</table>`)}
+      ${sec('Voiced and unvoiced pairs', `<p>${esc(G.pairsIntro || '')}</p><table class="rp-table"><tr><th>Voiced (a buzz)</th><th>Unvoiced (only air)</th></tr>${(G.pairs || []).map(([a, b]) => `<tr><td>${esc(a)}</td><td>${esc(b)}</td></tr>`).join('')}</table>`)}
+      ${sec('Stretchy talk in everyday speech', `<ul>${(G.stretchTalk || []).map(x => `<li>${esc(x)}</li>`).join('')}</ul>`)}
+      ${sec('Bedtime books', `<ul>${(G.bedtime || []).map(x => `<li>${esc(x)}</li>`).join('')}</ul>`)}
+      ${(D.reference || []).length ? `<h2 class="rp-from">From the book</h2>${D.reference.map(x => `<details class="rp-card rp-note"><summary>${esc(x.heading)}</summary>${(x.text || []).map(q => `<p>${esc(q)}</p>`).join('')}</details>`).join('')}` : ''}
+    </div>`;
+    api.show('rref');
+  }
+  $('#rref') || document.body.insertAdjacentHTML('beforeend', '<section id="rref" class="screen rd rd-parent" dir="ltr" lang="en" hidden></section>');
+  $('#rref').addEventListener('click', e => { if (e.target.closest('[data-act="back"]')) openParent(); });
   async function fillMine() {
     let all = [];
     try { all = (await idb('mine', 'readonly', st => st.getAll())) || []; } catch (e) {}
@@ -1430,6 +1773,9 @@ function mount(api) {
       case 'close': home(); break;
       case 'check': masteryCheck(); break;
       case 'rec': recordScreen(); break;
+      case 'ref': referenceScreen(); break;
+      case 'teach': r.settings.teachDay = today(); save(); openParent(); break;
+      case 'unpack': if (confirm('Go back to the Original Edition? The Book Edition is removed from this iPad (your file stays where you keep it). Her progress does not change.')) packPut(null).then(() => location.reload()); break;
       case 'backup': api.backup(); break;
       case 'place': if (confirm('Run the placement check again? Her lessons stay as they are.')) placement(true); break;
       case 'setlesson': {
@@ -1443,7 +1789,8 @@ function mount(api) {
   $('#rparent').addEventListener('change', e => {
     const el = e.target;
     if (el.id === 'rpFile' && el.files[0]) { api.restore(el.files[0], openParent); el.value = ''; return; }
-    if (el.id === 'rpSlot0' || el.id === 'rpSlot1') { r.settings.slots[el.id === 'rpSlot0' ? 0 : 1] = el.value || r.settings.slots[0]; save(); }
+    if (el.id === 'rpSess') { r.settings.sessions = Math.max(1, Math.min(3, Number(el.value) || 2)); save(); }
+    if (el.id === 'rpPack' && el.files[0]) { loadPack(el.files[0]); el.value = ''; return; }
     if (el.id === 'rpBed' && el.value) { r.settings.bedtime = el.value; save(); }
     if (el.id === 'rpCues') { r.settings.cues = el.checked; save(); }
   });
@@ -1550,7 +1897,7 @@ function mount(api) {
         const item = { id: x.id, blob, type: blob.type, kind: x.kind, at: Date.now() };
         await useSound(item);
         await idb('sounds', 'readwrite', st => st.put(item));
-        recordScreen();
+        markReady(); recordScreen();
         await sayLetter(x.id, x.kind === 'hold');
       } catch (err) { console.warn(err); api.toast('That recording could not be used. Please try again.'); recordScreen(); }
     }
@@ -1569,11 +1916,21 @@ function mount(api) {
     startSession(n, 'replay');
   });
   $('#rdBoardBtn').addEventListener('click', () => { api.SFX.init(); viewPuzzle(); });
+  $('#rhome .rd-stats').addEventListener('click', e => { if (e.target.closest('.rd-starn')) { api.SFX.init(); openStars(); } });
   $('#rdSpeedBtn').addEventListener('click', startSpeed);
   $('#rdBookBtn').addEventListener('click', () => openBook(Math.max(0, finishedPuzzles().length - 1)));
   $('#rbClose').addEventListener('click', () => { bookSound('lib-close', 0.8); BK = null; home(); });
   $('#rdSpQuit').addEventListener('click', () => { if (SP) { clearInterval(SP.tick); SP = null; } stopAudio(); home(); });
   $('#rdQuit').addEventListener('click', () => { stopAll(); home(); });
+  $('#rdTired').addEventListener('click', () => {
+    if (!S) return; api.SFX.init();
+    $('#rdCelBox').innerHTML = `<div class="rd-tiredbox"><span class="rd-tiredic">😴</span><h2 class="rd-celt">تعبتِ؟ لا بأس أبداً</h2>
+      <p class="rd-celcap">نكمل الدرس من هنا في المرّة القادمة.</p>
+      <div class="rd-spbtns"><button class="rd-homebtn soft" id="rdTiredGo">أكمل قليلاً</button><button class="rd-homebtn" id="rdTiredStop">أتوقّف الآن</button></div></div>`;
+    $('#rdCel').hidden = false; clock.pause(); stopAudio();
+    $('#rdTiredGo').addEventListener('click', () => { $('#rdCel').hidden = true; clock.resume(); }, { once: true });
+    $('#rdTiredStop').addEventListener('click', () => { $('#rdCel').hidden = true; if (S) { S.tired = true; endSession(); } }, { once: true });
+  });
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) { clock.pause(); stopAudio(); } else clock.resume();
     if (SP) { if (document.hidden && SP.hid == null) { SP.acc += performance.now() - SP.t0; SP.hid = 1; } else if (!document.hidden && SP.hid != null) { SP.t0 = performance.now(); SP.hid = null; } }
@@ -1581,8 +1938,8 @@ function mount(api) {
 
   return {
     home, ready,
-    isOn: () => ['rhome', 'rsession', 'rdone', 'rparent', 'rrec', 'rcheck', 'rplace', 'rspeed', 'rbook'].some(id => !$('#' + id).hidden) || !$('#rdCel').hidden,
-    busy: () => !!S || !!SP || busy || ['rdone', 'rparent', 'rrec', 'rcheck', 'rplace', 'rspeed'].some(id => !$('#' + id).hidden) || !$('#rdCel').hidden,
+    isOn: () => ['rhome', 'rsession', 'rdone', 'rparent', 'rrec', 'rref', 'rcheck', 'rplace', 'rspeed', 'rbook'].some(id => !$('#' + id).hidden) || !$('#rdCel').hidden,
+    busy: () => !!S || !!SP || busy || ['rdone', 'rparent', 'rrec', 'rref', 'rcheck', 'rplace', 'rspeed'].some(id => !$('#' + id).hidden) || !$('#rdCel').hidden,
     leave: stopAll,
     doneToday: () => r.use.includes(today()),
     status: () => ({ done: r.use.includes(today()), lesson: r.current, sessions: sessionsToday(today()) }),
@@ -1597,7 +1954,7 @@ function mount(api) {
       }
     },
     // for tests (?dev=1)
-    get state() { return r; }, get data() { return D; }, get session() { return S; }, core, openParent, recordScreen, placement, masteryCheck,
+    get state() { return r; }, get data() { return D; }, get session() { return S; }, get pack() { return PACK; }, core, openParent, recordScreen, referenceScreen, placement, masteryCheck, openStars,
     _endSession: endSession, _book: openBook, _start: startSession, _useSound: useSound, SND, _try: (n, beats) => startSession(n, 'replay', beats), _speedEnd: () => endSpeed()
   };
 }
