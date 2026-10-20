@@ -483,28 +483,60 @@ function mount(api) {
     try { const vs = speechSynthesis.getVoices(); return vs.find(v => /^ar[-_]SA/i.test(v.lang)) || vs.find(v => /^ar/i.test(v.lang)) || null; } catch (e) { return null; }
   }
   // The recorded human voice (scripts/maths_voice.py → the 'maths' deck of audio/voice.json, cached offline by the
-  // service worker); the iPad's own Arabic voice reads any question that has no clip yet.
-  let mxClips = null;
+  // service worker). The iPad's own (robotic) voice is used only when there are no recordings at all.
+  // As in the English cards, each clip is first read into memory and played from a blob URL: an iPad playing a clip
+  // straight from its file through the offline cache often fails, and that used to bring the robotic voice in.
+  let mxClips = null, unlockUrl = null;
   const mxAudio = new Audio(); mxAudio.preload = 'auto';
+  const mxUrls = new Map();          // file -> Promise<blob URL> (the 100 clips are small, about 1 MB together)
+  function clipUrl(file) {
+    if (!mxUrls.has(file)) {
+      const p = fetch('audio/' + file).then(r => { if (!r.ok) throw new Error(r.status); return r.blob(); })
+        .then(b => URL.createObjectURL(new Blob([b], { type: 'audio/mp4' })));
+      mxUrls.set(file, p);
+      p.catch(() => mxUrls.delete(file));        // a failed load is tried again next time
+    }
+    return mxUrls.get(file);
+  }
+  function preload(ids) { if (mxClips) ids.forEach(id => { const c = mxClips[id]; if (c) clipUrl(c.f).catch(() => {}); }); }
   fetch('audio/voice.json').then(r => (r.ok ? r.json() : null)).then(j => { mxClips = (j && j.decks && j.decks.maths && j.decks.maths.clips) || null; }).catch(() => {});
+  clipUrl('_unlock.m4a').then(u => { unlockUrl = u; }).catch(() => {});
   // inside her tap on «ابدئي», so the iPad then lets each new card speak by itself
   function unlockSpeech() {
-    try { mxAudio.src = 'audio/_unlock.m4a'; mxAudio.play().catch(() => {}); } catch (e) {}
-    if (!canSpeak()) return; try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } catch (e) {}
+    try { mxAudio.src = unlockUrl || 'audio/_unlock.m4a'; mxAudio.play().catch(() => {}); } catch (e) {}
+    if (!mxClips && canSpeak()) { try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } catch (e) {} }
   }
+  let readTok = 0;                   // each reading has a number: a reading that was stopped or replaced stays silent
   function stopReading() {
+    readTok++;
     try { mxAudio.pause(); } catch (e) {}
     if (canSpeak()) { try { speechSynthesis.cancel(); } catch (e) {} }
   }
   function readSum(f) {
     if (!m.settings.read || !f) return;
-    const c = mxClips && mxClips[f.id];
-    if (c) {
-      stopReading();
-      try { mxAudio.src = 'audio/' + c.f; mxAudio.currentTime = 0; mxAudio.play().catch(() => sayWithDevice(f)); } catch (e) { sayWithDevice(f); }
-      return;
-    }
-    sayWithDevice(f);
+    if (!mxClips) return sayWithDevice(f);       // no recordings at all (voice.json missing): the iPad's voice
+    const c = mxClips[f.id]; if (!c) return;
+    stopReading();
+    const tok = ++readTok;
+    const go = tries => clipUrl(c.f).then(u => {
+      if (tok !== readTok) return;
+      mxAudio.src = u; mxAudio.currentTime = 0;
+      return mxAudio.play();
+    }).catch(err => {
+      if (tok !== readTok || (err && err.name === 'AbortError')) return;      // stopped on purpose: stay quiet
+      if (err && err.name === 'NotAllowedError') return replayOnTap(tok, c);  // the iPad wants a tap first
+      if (tries < 1) setTimeout(() => go(tries + 1), 300);                     // one more try, then silence (never the robot)
+    });
+    go(0);
+  }
+  // the iPad sometimes stops a sound that was not started by a tap (for example after the 🎤): her next tap plays it
+  function replayOnTap(tok, c) {
+    const once = () => {
+      document.removeEventListener('pointerdown', once, true);
+      if (tok !== readTok || !S || S.phase !== 'ask') return;
+      clipUrl(c.f).then(u => { if (tok === readTok) { mxAudio.src = u; mxAudio.currentTime = 0; mxAudio.play().catch(() => {}); } }).catch(() => {});
+    };
+    document.addEventListener('pointerdown', once, true);
   }
   function sayWithDevice(f) {
     if (!canSpeak()) return;
@@ -545,6 +577,7 @@ function mount(api) {
     S = { mode, queue: items.slice(), views: {}, answered: 0, stars: 0, starsAt: m.stars.total, celeb: [], item: null, typed: '', helped: false,
           phase: 'ask', shownAt: 0, hiddenAt: 0 };
     $('#mxStarNum').textContent = toAr(m.stars.day === today() ? m.stars.today : 0);
+    preload(items.map(it => it.id));               // this round's clips into memory before the first card speaks
     api.show('msession');
     nextCard();
   }
