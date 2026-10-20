@@ -1549,37 +1549,42 @@ function mount(api) {
     const next = n === fin.length;
     return `<div class="rb-pg empty"><div class="rb-ghost"><span>${next ? '🧩' : '؟'}</span></div><p class="rb-title soft">${next ? 'لغزكِ القادم: قطعة كل يوم' : 'صفحة تنتظر'}</p>${num}</div>`;
   }
-  function renderSpread() {
-    const st = $('#rbStage'), sp = BK.spread, total = D.bookPages || 12, last = Math.ceil(total / 2) - 1;
-    st.innerHTML = `<div class="rb-book open">
-        <div class="rb-half right" id="rbR">${bookPage(sp * 2)}</div><div class="rb-half left" id="rbL">${bookPage(sp * 2 + 1)}</div><div class="rb-spine"></div></div>
-      <button class="rb-arrow next" id="rbNext" dir="ltr" aria-label="الصفحة التالية"${sp >= last ? ' disabled' : ''}>‹</button>
-      <button class="rb-arrow prev" id="rbPrev" dir="ltr" aria-label="الصفحة السابقة"${sp <= 0 ? ' disabled' : ''}>›</button>`;
+  // one puzzle a page, the page wide; the book is bound at the top (rings), so a page lifts up to turn (her choice, 20 Oct 2026)
+  const RINGS = '<span class="rb-rings" aria-hidden="true">' + '<i></i>'.repeat(9) + '</span>';
+  function renderPage() {
+    const st = $('#rbStage'), pg = BK.page, last = (D.bookPages || 12) - 1;
+    st.innerHTML = `<div class="rb-book" id="rbBook"><div class="rb-sheet" id="rbSheet">${bookPage(pg)}</div>${RINGS}</div>
+      <div class="rb-arrows"><button class="rb-arrow" id="rbNext" aria-label="الصفحة التالية"${pg >= last ? ' disabled' : ''}>▲</button>
+        <button class="rb-arrow" id="rbPrev" aria-label="الصفحة السابقة"${pg <= 0 ? ' disabled' : ''}>▼</button></div>`;
     $('#rbNext').addEventListener('click', () => turn(1));
     $('#rbPrev').addEventListener('click', () => turn(-1));
-    const book = st.querySelector('.rb-book'); let x0 = null;
-    book.addEventListener('pointerdown', e => { x0 = e.clientX; });
-    book.addEventListener('pointerup', e => { if (x0 == null) return; const dx = e.clientX - x0; x0 = null; if (Math.abs(dx) > 60) turn(dx > 0 ? 1 : -1); });   // right to left: a swipe to the right turns forward
+    const book = $('#rbBook'); let y0 = null;
+    book.addEventListener('pointerdown', e => { y0 = e.clientY; });
+    book.addEventListener('pointerup', e => { if (y0 == null) return; const dy = e.clientY - y0; y0 = null; if (Math.abs(dy) > 50) turn(dy < 0 ? 1 : -1); });   // swipe up: the next page; down: back
   }
   async function turn(dir) {
-    const total = D.bookPages || 12, last = Math.ceil(total / 2) - 1, to = BK.spread + dir;
+    const last = (D.bookPages || 12) - 1, to = BK.page + dir;
     if (BK.busy || to < 0 || to > last) return;
     BK.busy = true; bookSound('lib-flip1');
-    const half = $(dir > 0 ? '#rbL' : '#rbR'), leaf = document.createElement('div');
-    leaf.className = 'rb-leaf ' + (dir > 0 ? 'fwd' : 'back');
-    leaf.innerHTML = `<div class="rb-face front">${half.innerHTML}</div><div class="rb-face backface">${bookPage(dir > 0 ? to * 2 : to * 2 + 1)}</div>`;
-    half.parentNode.appendChild(leaf);
-    half.innerHTML = bookPage(dir > 0 ? to * 2 + 1 : to * 2);     // what shows under the turning page
-    await sleep(30); leaf.classList.add('go');
-    await sleep(reducedMotion() ? 20 : 720);
-    BK.spread = to; renderSpread(); BK.busy = false;
+    const book = $('#rbBook'), sheet = $('#rbSheet'), leaf = document.createElement('div');
+    leaf.className = 'rb-leaf ' + (dir > 0 ? 'up' : 'down');
+    if (dir > 0) {   // this page lifts up over the rings, and the next one is underneath
+      leaf.innerHTML = `<div class="rb-face front">${sheet.innerHTML}</div><div class="rb-face backface"></div>`;
+      sheet.innerHTML = bookPage(to);
+    } else {         // the page before comes back down over the rings
+      leaf.innerHTML = `<div class="rb-face front">${bookPage(to)}</div><div class="rb-face backface"></div>`;
+    }
+    book.appendChild(leaf);
+    await sleep(40); leaf.classList.add('go');
+    await sleep(reducedMotion() ? 20 : 860);
+    BK.page = to; renderPage(); BK.busy = false;
   }
   const reducedMotion = () => (api.reduced ? api.reduced() : false);
   function openBook(page = 0, fresh = false) {
     stopAll(); api.SFX.init();
-    BK = { spread: Math.max(0, Math.floor(page / 2)), busy: false };
+    BK = { page: Math.max(0, Math.min((D.bookPages || 12) - 1, page)), busy: false };
     const fin = finishedPuzzles(), total = D.bookPages || 12, latest = fin[fin.length - 1];
-    $('#rbStage').innerHTML = `<button class="rb-cover" id="rbCover">
+    $('#rbStage').innerHTML = `<button class="rb-cover" id="rbCover">${RINGS}
         <span class="rb-cwin" dir="ltr">${latest ? pieceCells({ puzzle: latest.puzzle, have: 8 }) : '<span class="rb-cq">🧩</span>'}</span>
         <span class="rb-ctitle">كتاب ألغازي</span><span class="rb-cname" lang="en" dir="ltr">Maria's Puzzle Book</span>
         <span class="rb-ccount">${AR(fin.length)} من ${AR(total)}</span></button>`;
@@ -1588,8 +1593,8 @@ function mount(api) {
       const cv = $('#rbCover'); if (!cv || cv.classList.contains('opening')) return;
       cv.classList.add('opening'); bookSound('lib-open', 0.9);
       await sleep(reducedMotion() ? 20 : 650);
-      renderSpread();
-      if (fresh) { const pg = $(page % 2 ? '#rbL' : '#rbR'); if (pg) { pg.classList.add('newpage'); api.SFX.unlock(); api.confetti($('#rdConfetti')); setTimeout(() => api.stopConfetti($('#rdConfetti')), 2500); } }
+      renderPage();
+      if (fresh) { const pg = $('#rbSheet'); if (pg) { pg.classList.add('newpage'); api.SFX.unlock(); api.confetti($('#rdConfetti')); setTimeout(() => api.stopConfetti($('#rdConfetti')), 2500); } }
     };
     $('#rbCover').addEventListener('click', open);
     if (fresh) setTimeout(open, 700);
