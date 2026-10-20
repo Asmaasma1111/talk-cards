@@ -28,6 +28,7 @@ subs = [
     ('<script src="stickerbook.js"></script>\n', ''),    # and so does her sticker book
     ('<script src="library.js"></script>\n', ''),       # and her story library
     ('<script src="entrance.js"></script>\n', ''),      # and her entrance page
+    ('<script src="reads.js"></script>\n', ''),         # and Maria Reads
 ]
 for old, new in subs:
     if old not in page:

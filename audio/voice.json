@@ -9995,6 +9995,257 @@
      "d": 0.92
     }
    }
+  },
+  "reads": {
+   "voice": "Kore",
+   "model": "gemini-3.8-flash-tts",
+   "placeholder": false,
+   "clips": {
+    "w-ab": {
+     "f": "rd/w-ab.m4a",
+     "d": 0.57
+    },
+    "w-act": {
+     "f": "rd/w-act.m4a",
+     "d": 0.61
+    },
+    "w-alligator": {
+     "f": "rd/w-alligator.m4a",
+     "d": 0.84
+    },
+    "w-ant": {
+     "f": "rd/w-ant.m4a",
+     "d": 0.6
+    },
+    "w-apple": {
+     "f": "rd/w-apple.m4a",
+     "d": 0.57
+    },
+    "w-astronaut": {
+     "f": "rd/w-astronaut.m4a",
+     "d": 0.93
+    },
+    "w-at": {
+     "f": "rd/w-at.m4a",
+     "d": 0.65
+    },
+    "w-ba": {
+     "f": "rd/w-ba.m4a",
+     "d": 0.6
+    },
+    "w-ball": {
+     "f": "rd/w-ball.m4a",
+     "d": 0.6
+    },
+    "w-bat": {
+     "f": "rd/w-bat.m4a",
+     "d": 0.86
+    },
+    "w-bed": {
+     "f": "rd/w-bed.m4a",
+     "d": 0.58
+    },
+    "w-bee": {
+     "f": "rd/w-bee.m4a",
+     "d": 0.56
+    },
+    "w-boat": {
+     "f": "rd/w-boat.m4a",
+     "d": 0.67
+    },
+    "w-book": {
+     "f": "rd/w-book.m4a",
+     "d": 0.7
+    },
+    "w-bucket": {
+     "f": "rd/w-bucket.m4a",
+     "d": 0.9
+    },
+    "w-bus": {
+     "f": "rd/w-bus.m4a",
+     "d": 0.67
+    },
+    "w-cab": {
+     "f": "rd/w-cab.m4a",
+     "d": 0.57
+    },
+    "w-cap": {
+     "f": "rd/w-cap.m4a",
+     "d": 0.58
+    },
+    "w-car": {
+     "f": "rd/w-car.m4a",
+     "d": 0.71
+    },
+    "w-cat": {
+     "f": "rd/w-cat.m4a",
+     "d": 0.7
+    },
+    "w-clock": {
+     "f": "rd/w-clock.m4a",
+     "d": 0.68
+    },
+    "w-crab": {
+     "f": "rd/w-crab.m4a",
+     "d": 0.79
+    },
+    "w-cup": {
+     "f": "rd/w-cup.m4a",
+     "d": 0.54
+    },
+    "w-dog": {
+     "f": "rd/w-dog.m4a",
+     "d": 0.77
+    },
+    "w-duck": {
+     "f": "rd/w-duck.m4a",
+     "d": 0.66
+    },
+    "w-egg": {
+     "f": "rd/w-egg.m4a",
+     "d": 0.58
+    },
+    "w-fish": {
+     "f": "rd/w-fish.m4a",
+     "d": 0.87
+    },
+    "w-foot": {
+     "f": "rd/w-foot.m4a",
+     "d": 0.72
+    },
+    "w-guitar": {
+     "f": "rd/w-guitar.m4a",
+     "d": 0.82
+    },
+    "w-hat": {
+     "f": "rd/w-hat.m4a",
+     "d": 0.66
+    },
+    "w-hotel": {
+     "f": "rd/w-hotel.m4a",
+     "d": 0.77
+    },
+    "w-key": {
+     "f": "rd/w-key.m4a",
+     "d": 0.59
+    },
+    "w-kite": {
+     "f": "rd/w-kite.m4a",
+     "d": 0.67
+    },
+    "w-map": {
+     "f": "rd/w-map.m4a",
+     "d": 0.65
+    },
+    "w-monkey": {
+     "f": "rd/w-monkey.m4a",
+     "d": 0.76
+    },
+    "w-moon": {
+     "f": "rd/w-moon.m4a",
+     "d": 0.86
+    },
+    "w-net": {
+     "f": "rd/w-net.m4a",
+     "d": 0.73
+    },
+    "w-pen": {
+     "f": "rd/w-pen.m4a",
+     "d": 0.67
+    },
+    "w-rabbit": {
+     "f": "rd/w-rabbit.m4a",
+     "d": 0.9
+    },
+    "w-robot": {
+     "f": "rd/w-robot.m4a",
+     "d": 0.99
+    },
+    "w-rocket": {
+     "f": "rd/w-rocket.m4a",
+     "d": 0.91
+    },
+    "w-sad": {
+     "f": "rd/w-sad.m4a",
+     "d": 0.8
+    },
+    "w-sock": {
+     "f": "rd/w-sock.m4a",
+     "d": 0.76
+    },
+    "w-sun": {
+     "f": "rd/w-sun.m4a",
+     "d": 0.7
+    },
+    "w-tab": {
+     "f": "rd/w-tab.m4a",
+     "d": 0.59
+    },
+    "w-tea": {
+     "f": "rd/w-tea.m4a",
+     "d": 0.59
+    },
+    "w-ten": {
+     "f": "rd/w-ten.m4a",
+     "d": 0.59
+    },
+    "w-tent": {
+     "f": "rd/w-tent.m4a",
+     "d": 0.57
+    },
+    "w-tiger": {
+     "f": "rd/w-tiger.m4a",
+     "d": 0.68
+    },
+    "w-toy": {
+     "f": "rd/w-toy.m4a",
+     "d": 0.69
+    },
+    "w-tub": {
+     "f": "rd/w-tub.m4a",
+     "d": 0.65
+    },
+    "w-web": {
+     "f": "rd/w-web.m4a",
+     "d": 0.7
+    },
+    "w-zebra": {
+     "f": "rd/w-zebra.m4a",
+     "d": 0.83
+    },
+    "s-at": {
+     "f": "rd/s-at.m4a",
+     "d": 1.54
+    },
+    "s-cat": {
+     "f": "rd/s-cat.m4a",
+     "d": 1.47
+    },
+    "s-bat": {
+     "f": "rd/s-bat.m4a",
+     "d": 1.68
+    },
+    "s-tab": {
+     "f": "rd/s-tab.m4a",
+     "d": 1.39
+    },
+    "s-cab": {
+     "f": "rd/s-cab.m4a",
+     "d": 1.28
+    },
+    "s-ab": {
+     "f": "rd/s-ab.m4a",
+     "d": 1.14
+    },
+    "s-ba": {
+     "f": "rd/s-ba.m4a",
+     "d": 1.06
+    },
+    "s-act": {
+     "f": "rd/s-act.m4a",
+     "d": 1.5
+    }
+   }
   }
  }
 }

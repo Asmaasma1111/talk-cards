@@ -1,5 +1,5 @@
 /* تطبيقات ماريا اليوميّة: the entrance page of Talk Cards (Maria only).
-   Three big tiles open her three apps (Talk Cards, جدول الضرب, مكتبتي); each app has a «تطبيقاتي» chip back here.
+   Big tiles open her apps (Talk Cards, جدول الضرب, مكتبتي, ماريا تقرأ); each app has a «تطبيقاتي» chip back here.
    Her photo is chosen on the iPad, made small and kept in her progress (and her backup file), never in the app's files. */
 (function (root) {
 'use strict';
@@ -35,6 +35,7 @@ function mount(api) {
     <button class="ap-tile t-talk" data-app="talk"><span class="ap-art"><img src="assets/apps/talk.webp" alt=""></span><span class="ap-name">بطاقات الكلام</span><span class="ap-en" lang="en" dir="ltr">Talk Cards</span><span class="ap-state" id="apTalk"></span></button>
     <button class="ap-tile t-math" data-app="math"><span class="ap-art"><img src="assets/apps/math.webp" alt=""></span><span class="ap-name">جدول الضرب</span><span class="ap-en">أرقام وألعاب</span><span class="ap-state" id="apMath"></span></button>
     <button class="ap-tile t-lib" data-app="lib"><span class="ap-art"><img src="assets/apps/lib.webp" alt=""></span><span class="ap-name">مكتبتي</span><span class="ap-en">قصّة كلّ يوم</span><span class="ap-state" id="apLib"></span></button>
+    <button class="ap-tile t-reads" data-app="reads" hidden><span class="ap-art"><img src="assets/apps/reads.webp" alt=""></span><span class="ap-name">ماريا تقرأ</span><span class="ap-en" lang="en" dir="ltr">Maria Reads</span><span class="ap-state" id="apReads"></span></button>
   </div>
   <div class="ap-foot" lang="en" dir="ltr">Designed by Dr Asma Khattala</div>
   <input type="file" id="apFile" accept="image/*" hidden>
@@ -74,9 +75,13 @@ function mount(api) {
     state($('#apTalk'), s.talk.done, s.talk.done ? 'أنجزتِها اليوم' : s.talk.stars ? `${AR(s.talk.stars)} نجوم اليوم` : 'تنتظركِ اليوم');
     state($('#apMath'), s.math.done, s.math.done ? 'أنجزتِ هدف اليوم' : s.math.min ? `${AR(s.math.min)} من ${AR(s.math.goal)} دقائق` : 'تنتظركِ اليوم');
     state($('#apLib'), s.lib.done, s.lib.done ? 'قرأتِ قصّة اليوم' : s.lib.open ? 'قصّة اليوم مفتوحة' : 'قصّة اليوم تنتظركِ');
-    const n = [s.talk.done, s.math.done, s.lib.done].filter(Boolean).length;
-    $('#apToday').innerHTML = `<span class="ap-dots">${['talk', 'math', 'lib'].map(k => `<i class="d-${k}${s[k].done ? ' on' : ''}"></i>`).join('')}</span>`
-      + `<span>${n === 3 ? 'أنجزتِ تطبيقاتكِ الثلاثة اليوم! 🌸' : n ? `أنجزتِ ${n === 1 ? 'تطبيقاً واحداً' : 'تطبيقين'} من ثلاثة اليوم` : 'ثلاثة تطبيقات تنتظركِ اليوم'}</span>`;
+    const keys = ['talk', 'math', 'lib'].concat(s.reads ? ['reads'] : []);
+    $('#apps .t-reads').hidden = !s.reads; $('#apps .ap-tiles').classList.toggle('four', !!s.reads);
+    if (s.reads) state($('#apReads'), s.reads.done, s.reads.done ? 'قرأتِ اليوم' : `الدرس ${AR(s.reads.lesson)} ينتظركِ`);
+    const n = keys.filter(k => s[k].done).length, all = keys.length;
+    const ofAll = all === 4 ? 'أربعة' : 'ثلاثة';
+    $('#apToday').innerHTML = `<span class="ap-dots">${keys.map(k => `<i class="d-${k}${s[k].done ? ' on' : ''}"></i>`).join('')}</span>`
+      + `<span>${n === all ? `أنجزتِ تطبيقاتكِ ال${ofAll} اليوم! 🌸` : n ? `أنجزتِ ${n === 1 ? 'تطبيقاً واحداً' : n === 2 ? 'تطبيقين' : 'ثلاثة تطبيقات'} من ${ofAll} اليوم` : `${ofAll} تطبيقات تنتظركِ اليوم`}</span>`;
     api.show('apps');
   }
 

@@ -1,0 +1,1490 @@
+{
+ "v": 1,
+ "note": "Maria Reads: our own words, following the lesson order of Children Learning Reading. Phase 1 = lessons 1-8.",
+ "timer": [
+  [
+   1,
+   6,
+   3
+  ],
+  [
+   7,
+   19,
+   5
+  ],
+  [
+   20,
+   65,
+   7
+  ]
+ ],
+ "cap": 10,
+ "placement": {
+  "words": [
+   "MAP",
+   "SUN",
+   "DOG",
+   "BED",
+   "PIN"
+  ],
+  "letters": [
+   "A",
+   "B",
+   "C",
+   "D",
+   "E",
+   "F",
+   "G",
+   "H",
+   "I",
+   "J",
+   "K",
+   "L",
+   "M",
+   "N",
+   "O",
+   "P",
+   "Q",
+   "R",
+   "S",
+   "T",
+   "U",
+   "V",
+   "W",
+   "X",
+   "Y",
+   "Z"
+  ],
+  "letterSound": {
+   "A": "a",
+   "B": "b",
+   "C": "k",
+   "D": "d",
+   "E": "e",
+   "F": "f",
+   "G": "g",
+   "H": "h",
+   "I": "i",
+   "J": "j",
+   "K": "k",
+   "L": "l",
+   "M": "m",
+   "N": "n",
+   "O": "o",
+   "P": "p",
+   "Q": "qu",
+   "R": "r",
+   "S": "s",
+   "T": "t",
+   "U": "u",
+   "V": "v",
+   "W": "w",
+   "X": "x",
+   "Y": "ee",
+   "Z": "z"
+  }
+ },
+ "sounds": [
+  {
+   "id": "a",
+   "say": "/a/",
+   "g": "A",
+   "ex": "apple",
+   "kind": "hold",
+   "lesson": 1,
+   "tip": "The a in apple, mouth open. Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "b",
+   "say": "/b/",
+   "g": "B",
+   "ex": "bat",
+   "kind": "short",
+   "lesson": 2,
+   "tip": "Short and crisp, with no vowel after it. Say /b/, not \"buh\"."
+  },
+  {
+   "id": "k",
+   "say": "/k/",
+   "g": "C K",
+   "ex": "cat",
+   "kind": "short",
+   "lesson": 4,
+   "tip": "One sound for C and K. Short and crisp, with no vowel after it."
+  },
+  {
+   "id": "t",
+   "say": "/t/",
+   "g": "T",
+   "ex": "top",
+   "kind": "short",
+   "lesson": 5,
+   "tip": "Short and crisp, with no vowel after it. Just air, no voice: /t/, not \"tuh\"."
+  },
+  {
+   "id": "u",
+   "say": "/u/",
+   "g": "U",
+   "ex": "up",
+   "kind": "hold",
+   "lesson": 9,
+   "tip": "The u in up. Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "s",
+   "say": "/s/",
+   "g": "S",
+   "ex": "sun",
+   "kind": "hold",
+   "lesson": 10,
+   "tip": "A snake sound. Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "p",
+   "say": "/p/",
+   "g": "P",
+   "ex": "pot",
+   "kind": "short",
+   "lesson": 11,
+   "tip": "Short and crisp, with no vowel after it. A puff of air: /p/, not \"puh\"."
+  },
+  {
+   "id": "o",
+   "say": "/o/",
+   "g": "O",
+   "ex": "hot",
+   "kind": "hold",
+   "lesson": 13,
+   "tip": "American o, like \"awe\" in hot. Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "h",
+   "say": "/h/",
+   "g": "H",
+   "ex": "hat",
+   "kind": "short",
+   "lesson": 14,
+   "tip": "Just a soft breath out, short."
+  },
+  {
+   "id": "n",
+   "say": "/n/",
+   "g": "N",
+   "ex": "net",
+   "kind": "hold",
+   "lesson": 15,
+   "tip": "Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "g",
+   "say": "/g/",
+   "g": "G",
+   "ex": "go",
+   "kind": "short",
+   "lesson": 17,
+   "tip": "Short and crisp, with no vowel after it. /g/, not \"guh\"."
+  },
+  {
+   "id": "d",
+   "say": "/d/",
+   "g": "D",
+   "ex": "dog",
+   "kind": "short",
+   "lesson": 18,
+   "tip": "Short and crisp, with no vowel after it. /d/, not \"duh\"."
+  },
+  {
+   "id": "i",
+   "say": "/i/",
+   "g": "I",
+   "ex": "it",
+   "kind": "hold",
+   "lesson": 19,
+   "tip": "The i in it. Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "f",
+   "say": "/f/",
+   "g": "F",
+   "ex": "fan",
+   "kind": "hold",
+   "lesson": 20,
+   "tip": "Top teeth on the bottom lip. Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "r",
+   "say": "/r/",
+   "g": "R",
+   "ex": "run",
+   "kind": "hold",
+   "lesson": 21,
+   "tip": "A growl, no vowel before it. Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "m",
+   "say": "/m/",
+   "g": "M",
+   "ex": "map",
+   "kind": "hold",
+   "lesson": 22,
+   "tip": "Lips closed, a hum. Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "e",
+   "say": "/e/",
+   "g": "E",
+   "ex": "egg",
+   "kind": "hold",
+   "lesson": 23,
+   "tip": "The e in egg. Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "j",
+   "say": "/j/",
+   "g": "J",
+   "ex": "jam",
+   "kind": "short",
+   "lesson": 24,
+   "tip": "Short and crisp, with no vowel after it. /j/, not \"juh\"."
+  },
+  {
+   "id": "l",
+   "say": "/l/",
+   "g": "L",
+   "ex": "leg",
+   "kind": "hold",
+   "lesson": 26,
+   "tip": "Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "x",
+   "say": "/ks/",
+   "g": "X",
+   "ex": "box",
+   "kind": "short",
+   "lesson": 27,
+   "tip": "Quick /ks/, as at the end of box."
+  },
+  {
+   "id": "ee",
+   "say": "/ee/",
+   "g": "Y EE EA",
+   "ex": "funny",
+   "kind": "hold",
+   "lesson": 28,
+   "tip": "The y at the end of funny (also used for ee and ea later). Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "igh",
+   "say": "/igh/",
+   "g": "Y IGH",
+   "ex": "fly",
+   "kind": "hold",
+   "lesson": 28,
+   "tip": "The y in fly (also used for igh and i_e later). Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "qu",
+   "say": "/koo/",
+   "g": "QU",
+   "ex": "quick",
+   "kind": "short",
+   "lesson": 29,
+   "tip": "A quick /koo/."
+  },
+  {
+   "id": "w",
+   "say": "/woo/",
+   "g": "W WH",
+   "ex": "win",
+   "kind": "short",
+   "lesson": 30,
+   "tip": "A quick /woo/."
+  },
+  {
+   "id": "v",
+   "say": "/v/",
+   "g": "V",
+   "ex": "van",
+   "kind": "hold",
+   "lesson": 31,
+   "tip": "Like /f/ but with voice. Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "z",
+   "say": "/z/",
+   "g": "Z",
+   "ex": "zip",
+   "kind": "hold",
+   "lesson": 32,
+   "tip": "A buzzing bee. Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "dh",
+   "say": "voiced /th/",
+   "g": "TH",
+   "ex": "this",
+   "kind": "hold",
+   "lesson": 33,
+   "tip": "Tongue between the teeth, with voice. Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "ar",
+   "say": "/ar/",
+   "g": "AR",
+   "ex": "car",
+   "kind": "hold",
+   "lesson": 34,
+   "tip": "Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "sh",
+   "say": "/sh/",
+   "g": "SH",
+   "ex": "ship",
+   "kind": "hold",
+   "lesson": 35,
+   "tip": "Finger on the lips: shh. Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "er",
+   "say": "/er/",
+   "g": "ER IR UR",
+   "ex": "her",
+   "kind": "hold",
+   "lesson": 38,
+   "tip": "Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "ang",
+   "say": "/ang/",
+   "g": "ANG",
+   "ex": "bang",
+   "kind": "short",
+   "lesson": 41,
+   "tip": "Say it as one chunk."
+  },
+  {
+   "id": "ing",
+   "say": "/ing/",
+   "g": "ING",
+   "ex": "sing",
+   "kind": "short",
+   "lesson": 41,
+   "tip": "Say it as one chunk."
+  },
+  {
+   "id": "ong",
+   "say": "/ong/",
+   "g": "ONG",
+   "ex": "long",
+   "kind": "short",
+   "lesson": 41,
+   "tip": "Say it as one chunk."
+  },
+  {
+   "id": "ung",
+   "say": "/ung/",
+   "g": "UNG",
+   "ex": "hung",
+   "kind": "short",
+   "lesson": 41,
+   "tip": "Say it as one chunk."
+  },
+  {
+   "id": "ch",
+   "say": "/ch/",
+   "g": "CH TCH",
+   "ex": "chop",
+   "kind": "short",
+   "lesson": 42,
+   "tip": "Short and crisp, with no vowel after it. /ch/, not \"chuh\"."
+  },
+  {
+   "id": "ow",
+   "say": "/ow/",
+   "g": "OW OU",
+   "ex": "cow",
+   "kind": "hold",
+   "lesson": 43,
+   "tip": "As if something hurts: ow. Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "or",
+   "say": "/or/",
+   "g": "OR ORE",
+   "ex": "for",
+   "kind": "hold",
+   "lesson": 45,
+   "tip": "Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "th",
+   "say": "unvoiced /th/",
+   "g": "TH",
+   "ex": "thin",
+   "kind": "hold",
+   "lesson": 46,
+   "tip": "Tongue between the teeth, only air. Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "ooh",
+   "say": "short /oo/",
+   "g": "OO",
+   "ex": "book",
+   "kind": "short",
+   "lesson": 47,
+   "tip": "The oo in book, short."
+  },
+  {
+   "id": "oo",
+   "say": "long /oo/",
+   "g": "OO EW",
+   "ex": "moon",
+   "kind": "hold",
+   "lesson": 47,
+   "tip": "The oo in moon. Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "yoo",
+   "say": "/yoo/",
+   "g": "EW U_E",
+   "ex": "few",
+   "kind": "hold",
+   "lesson": 48,
+   "tip": "The ew in few. Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "ay",
+   "say": "/ay/",
+   "g": "AI AY A_E",
+   "ex": "rain",
+   "kind": "hold",
+   "lesson": 49,
+   "tip": "Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "oy",
+   "say": "/oy/",
+   "g": "OI OY",
+   "ex": "oil",
+   "kind": "hold",
+   "lesson": 51,
+   "tip": "Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "aw",
+   "say": "/aw/",
+   "g": "AW AU",
+   "ex": "saw",
+   "kind": "hold",
+   "lesson": 53,
+   "tip": "Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "oh",
+   "say": "/oh/",
+   "g": "OA OW O_E",
+   "ex": "boat",
+   "kind": "hold",
+   "lesson": 58,
+   "tip": "Hold it for about 2 seconds, smooth and steady."
+  },
+  {
+   "id": "ol",
+   "say": "/ol/",
+   "g": "OL",
+   "ex": "old",
+   "kind": "hold",
+   "lesson": 64,
+   "tip": "Hold it for about 2 seconds, smooth and steady."
+  }
+ ],
+ "words": {
+  "ab": {
+   "sound": true,
+   "tiles": [
+    "A",
+    "B"
+   ],
+   "says": [
+    "a",
+    "b"
+   ]
+  },
+  "ba": {
+   "sound": true,
+   "tiles": [
+    "B",
+    "A"
+   ],
+   "says": [
+    "b",
+    "a"
+   ]
+  },
+  "tab": {
+   "sound": true,
+   "tiles": [
+    "T",
+    "A",
+    "B"
+   ],
+   "says": [
+    "t",
+    "a",
+    "b"
+   ]
+  },
+  "at": {
+   "tiles": [
+    "A",
+    "T"
+   ],
+   "says": [
+    "a",
+    "t"
+   ]
+  },
+  "cab": {
+   "pic": "assets/reads/pics/cab.webp",
+   "e": "🚕",
+   "tiles": [
+    "C",
+    "A",
+    "B"
+   ],
+   "says": [
+    "k",
+    "a",
+    "b"
+   ]
+  },
+  "bat": {
+   "pic": "assets/reads/pics/bat.webp",
+   "e": "🦇",
+   "tiles": [
+    "B",
+    "A",
+    "T"
+   ],
+   "says": [
+    "b",
+    "a",
+    "t"
+   ]
+  },
+  "cat": {
+   "pic": "assets/reads/pics/cat.webp",
+   "e": "🐱",
+   "tiles": [
+    "C",
+    "A",
+    "T"
+   ],
+   "says": [
+    "k",
+    "a",
+    "t"
+   ]
+  },
+  "act": {
+   "pic": "assets/reads/pics/act.webp",
+   "e": "🎭",
+   "tiles": [
+    "A",
+    "C",
+    "T"
+   ],
+   "says": [
+    "a",
+    "k",
+    "t"
+   ]
+  }
+ },
+ "ear": {
+  "a": {
+   "beg": [
+    "apple",
+    "ant",
+    "alligator",
+    "astronaut"
+   ],
+   "mid": [
+    "cat",
+    "map",
+    "hat",
+    "cap",
+    "sad",
+    "bat"
+   ],
+   "end": [],
+   "no": [
+    "sun",
+    "dog",
+    "pen",
+    "bus",
+    "cup",
+    "fish",
+    "egg",
+    "moon",
+    "bed"
+   ]
+  },
+  "b": {
+   "beg": [
+    "bat",
+    "bus",
+    "ball",
+    "bed",
+    "bee"
+   ],
+   "mid": [
+    "rabbit",
+    "robot",
+    "zebra"
+   ],
+   "end": [
+    "tub",
+    "crab",
+    "web",
+    "cab"
+   ],
+   "no": [
+    "sun",
+    "fish",
+    "moon",
+    "cat",
+    "dog",
+    "cup",
+    "pen",
+    "egg"
+   ]
+  },
+  "k": {
+   "beg": [
+    "cat",
+    "cup",
+    "kite",
+    "car",
+    "key"
+   ],
+   "mid": [
+    "rocket",
+    "bucket",
+    "monkey"
+   ],
+   "end": [
+    "duck",
+    "book",
+    "sock",
+    "clock"
+   ],
+   "no": [
+    "sun",
+    "fish",
+    "moon",
+    "bed",
+    "ball",
+    "pen",
+    "egg",
+    "web"
+   ]
+  },
+  "t": {
+   "beg": [
+    "tea",
+    "ten",
+    "toy",
+    "tent",
+    "tiger"
+   ],
+   "mid": [
+    "hotel",
+    "guitar"
+   ],
+   "end": [
+    "cat",
+    "hat",
+    "boat",
+    "net",
+    "foot"
+   ],
+   "no": [
+    "sun",
+    "fish",
+    "moon",
+    "ball",
+    "dog",
+    "cup",
+    "bus",
+    "egg"
+   ]
+  }
+ },
+ "emoji": {
+  "apple": "🍎",
+  "ant": "🐜",
+  "alligator": "🐊",
+  "astronaut": "🧑‍🚀",
+  "cat": "🐱",
+  "map": "🗺️",
+  "hat": "👒",
+  "cap": "🧢",
+  "sad": "😢",
+  "bat": "🦇",
+  "sun": "☀️",
+  "dog": "🐶",
+  "pen": "🖊️",
+  "bus": "🚌",
+  "cup": "🥤",
+  "fish": "🐟",
+  "egg": "🥚",
+  "moon": "🌙",
+  "bed": "🛏️",
+  "ball": "⚽",
+  "bee": "🐝",
+  "rabbit": "🐰",
+  "robot": "🤖",
+  "zebra": "🦓",
+  "tub": "🛁",
+  "crab": "🦀",
+  "web": "🕸️",
+  "cab": "🚕",
+  "kite": "🪁",
+  "car": "🚗",
+  "key": "🔑",
+  "rocket": "🚀",
+  "bucket": "🪣",
+  "monkey": "🐒",
+  "duck": "🦆",
+  "book": "📖",
+  "sock": "🧦",
+  "clock": "⏰",
+  "tea": "🍵",
+  "ten": "🔟",
+  "toy": "🧸",
+  "tent": "⛺",
+  "tiger": "🐯",
+  "hotel": "🏨",
+  "guitar": "🎸",
+  "boat": "⛵",
+  "net": "🥅",
+  "foot": "🦶"
+ },
+ "lessons": [
+  {
+   "n": 1,
+   "label": "A",
+   "title": "A",
+   "stage": 1,
+   "case": "upper",
+   "new": [
+    "a"
+   ],
+   "beats": [
+    [
+     "newsound",
+     "a"
+    ],
+    [
+     "hear",
+     "a"
+    ],
+    [
+     "where",
+     "a"
+    ],
+    [
+     "me",
+     "sound:a"
+    ]
+   ],
+   "ready": true
+  },
+  {
+   "n": 2,
+   "label": "B",
+   "title": "B",
+   "stage": 1,
+   "case": "upper",
+   "new": [
+    "b"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "newsound",
+     "b"
+    ],
+    [
+     "hear",
+     "b"
+    ],
+    [
+     "where",
+     "b"
+    ],
+    [
+     "me",
+     "sound:b"
+    ]
+   ],
+   "ready": true
+  },
+  {
+   "n": 3,
+   "label": "AB",
+   "title": "AB, BA",
+   "stage": 1,
+   "case": "upper",
+   "new": [],
+   "words": [
+    "ab",
+    "ba"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "read",
+     "ab",
+     "ba",
+     "ab",
+     "ba"
+    ],
+    [
+     "me",
+     "word:ab"
+    ]
+   ],
+   "ready": true
+  },
+  {
+   "n": 4,
+   "label": "C",
+   "title": "C",
+   "stage": 1,
+   "case": "upper",
+   "new": [
+    "k"
+   ],
+   "words": [
+    "ab",
+    "cab",
+    "ba"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "newsound",
+     "k"
+    ],
+    [
+     "hear",
+     "k"
+    ],
+    [
+     "read",
+     "ab",
+     "cab",
+     "ba",
+     "cab"
+    ],
+    [
+     "me",
+     "word:cab"
+    ]
+   ],
+   "ready": true
+  },
+  {
+   "n": 5,
+   "label": "T",
+   "title": "T",
+   "stage": 1,
+   "case": "upper",
+   "new": [
+    "t"
+   ],
+   "words": [
+    "ab",
+    "cab"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "newsound",
+     "t"
+    ],
+    [
+     "hear",
+     "t"
+    ],
+    [
+     "where",
+     "t"
+    ],
+    [
+     "read",
+     "ab",
+     "cab"
+    ]
+   ],
+   "ready": true
+  },
+  {
+   "n": 6,
+   "label": "AT",
+   "title": "AT, BAT, CAT",
+   "stage": 1,
+   "case": "upper",
+   "new": [],
+   "words": [
+    "at",
+    "bat",
+    "cat",
+    "act"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "read",
+     "at",
+     "bat",
+     "cat",
+     "act"
+    ],
+    [
+     "swap",
+     "at>bat",
+     "at>cat"
+    ],
+    [
+     "read",
+     "cat",
+     "at",
+     "bat"
+    ],
+    [
+     "me",
+     "word:cat"
+    ]
+   ],
+   "ready": true
+  },
+  {
+   "n": 7,
+   "label": "TAB",
+   "title": "BAT, TAB",
+   "stage": 1,
+   "case": "upper",
+   "new": [],
+   "words": [
+    "bat",
+    "tab"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "read",
+     "bat",
+     "tab",
+     "bat",
+     "tab"
+    ],
+    [
+     "swap",
+     "cat>bat",
+     "cab>tab"
+    ],
+    [
+     "read",
+     "cat",
+     "cab",
+     "at"
+    ],
+    [
+     "me",
+     "word:tab"
+    ]
+   ],
+   "ready": true
+  },
+  {
+   "n": 8,
+   "label": "★",
+   "title": "Review",
+   "stage": 1,
+   "case": "upper",
+   "new": [],
+   "words": [
+    "at",
+    "bat",
+    "cat",
+    "ab",
+    "cab",
+    "tab"
+   ],
+   "beats": [
+    [
+     "flash"
+    ],
+    [
+     "read",
+     "at",
+     "bat",
+     "cat",
+     "ab",
+     "cab",
+     "tab"
+    ],
+    [
+     "swap",
+     "ab>cab",
+     "cab>tab",
+     "cab>cat"
+    ],
+    [
+     "hear",
+     "t"
+    ],
+    [
+     "me",
+     "word:bat"
+    ]
+   ],
+   "ready": true
+  },
+  {
+   "n": 9,
+   "label": "U",
+   "title": "U",
+   "stage": 1,
+   "case": "upper"
+  },
+  {
+   "n": 10,
+   "label": "S",
+   "title": "S",
+   "stage": 1,
+   "case": "upper"
+  },
+  {
+   "n": 11,
+   "label": "P",
+   "title": "P",
+   "stage": 1,
+   "case": "upper"
+  },
+  {
+   "n": 12,
+   "label": "THE",
+   "title": "THE",
+   "stage": 1,
+   "case": "upper"
+  },
+  {
+   "n": 13,
+   "label": "O",
+   "title": "O",
+   "stage": 1,
+   "case": "upper"
+  },
+  {
+   "n": 14,
+   "label": "H",
+   "title": "H",
+   "stage": 1,
+   "case": "upper"
+  },
+  {
+   "n": 15,
+   "label": "N",
+   "title": "N",
+   "stage": 1,
+   "case": "upper"
+  },
+  {
+   "n": 16,
+   "label": "★",
+   "title": "Review",
+   "stage": 1,
+   "case": "upper"
+  },
+  {
+   "n": 17,
+   "label": "G",
+   "title": "G",
+   "stage": 1,
+   "case": "upper"
+  },
+  {
+   "n": 18,
+   "label": "D",
+   "title": "D",
+   "stage": 1,
+   "case": "upper"
+  },
+  {
+   "n": 19,
+   "label": "I",
+   "title": "I",
+   "stage": 1,
+   "case": "upper"
+  },
+  {
+   "n": 20,
+   "label": "F",
+   "title": "F",
+   "stage": 1,
+   "case": "upper"
+  },
+  {
+   "n": 21,
+   "label": "R",
+   "title": "R",
+   "stage": 1,
+   "case": "upper"
+  },
+  {
+   "n": 22,
+   "label": "M",
+   "title": "M",
+   "stage": 1,
+   "case": "upper"
+  },
+  {
+   "n": 23,
+   "label": "E",
+   "title": "E",
+   "stage": 1,
+   "case": "upper"
+  },
+  {
+   "n": 24,
+   "label": "J K",
+   "title": "J, K",
+   "stage": 1,
+   "case": "upper"
+  },
+  {
+   "n": 25,
+   "label": "Aa",
+   "title": "Capital and small letters",
+   "stage": 1,
+   "case": "lower"
+  },
+  {
+   "n": 26,
+   "label": "l",
+   "title": "L",
+   "stage": 1,
+   "case": "lower"
+  },
+  {
+   "n": 27,
+   "label": "x",
+   "title": "X",
+   "stage": 1,
+   "case": "lower"
+  },
+  {
+   "n": 28,
+   "label": "y",
+   "title": "Y",
+   "stage": 1,
+   "case": "lower"
+  },
+  {
+   "n": 29,
+   "label": "qu",
+   "title": "QU",
+   "stage": 1,
+   "case": "lower"
+  },
+  {
+   "n": 30,
+   "label": "w",
+   "title": "W, WH",
+   "stage": 1,
+   "case": "lower"
+  },
+  {
+   "n": 31,
+   "label": "v",
+   "title": "V",
+   "stage": 1,
+   "case": "lower"
+  },
+  {
+   "n": 32,
+   "label": "z",
+   "title": "Z",
+   "stage": 1,
+   "case": "lower"
+  },
+  {
+   "n": 33,
+   "label": "th",
+   "title": "th (this)",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 34,
+   "label": "ar",
+   "title": "ar",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 35,
+   "label": "sh",
+   "title": "sh",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 36,
+   "label": "ee",
+   "title": "ee",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 37,
+   "label": "ea",
+   "title": "ea",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 38,
+   "label": "er",
+   "title": "er",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 39,
+   "label": "ir",
+   "title": "ir",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 40,
+   "label": "ur",
+   "title": "ur",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 41,
+   "label": "ng",
+   "title": "ng",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 42,
+   "label": "ch",
+   "title": "ch, tch",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 43,
+   "label": "ow",
+   "title": "ow (cow)",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 44,
+   "label": "ou",
+   "title": "ou",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 45,
+   "label": "or",
+   "title": "or, ore",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 46,
+   "label": "th",
+   "title": "th (thin)",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 47,
+   "label": "oo",
+   "title": "oo",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 48,
+   "label": "ew",
+   "title": "ew",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 49,
+   "label": "ai",
+   "title": "ai",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 50,
+   "label": "ay",
+   "title": "ay",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 51,
+   "label": "oi",
+   "title": "oi",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 52,
+   "label": "oy",
+   "title": "oy",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 53,
+   "label": "aw",
+   "title": "aw",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 54,
+   "label": "au",
+   "title": "au",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 55,
+   "label": "a_e",
+   "title": "a_e",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 56,
+   "label": "e_e",
+   "title": "e_e",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 57,
+   "label": "i_e",
+   "title": "i_e",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 58,
+   "label": "o_e",
+   "title": "o_e",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 59,
+   "label": "u_e",
+   "title": "u_e",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 60,
+   "label": "ce",
+   "title": "soft c",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 61,
+   "label": "igh",
+   "title": "igh",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 62,
+   "label": "oa",
+   "title": "oa",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 63,
+   "label": "ow",
+   "title": "ow (snow)",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 64,
+   "label": "ol",
+   "title": "ol",
+   "stage": 2,
+   "case": "lower"
+  },
+  {
+   "n": 65,
+   "label": "ph",
+   "title": "ph",
+   "stage": 2,
+   "case": "lower"
+  }
+ ],
+ "puzzles": [
+  {
+   "id": "p01",
+   "img": "assets/reads/puzzles/p01.webp"
+  },
+  {
+   "id": "p02",
+   "img": "assets/reads/puzzles/p02.webp"
+  },
+  {
+   "id": "p03",
+   "img": "assets/reads/puzzles/p03.webp"
+  },
+  {
+   "id": "p04",
+   "img": "assets/reads/puzzles/p04.webp"
+  }
+ ],
+ "puzzleRule": "one piece per day of use (days 1-6), the last two on day 7: the finished puzzle is the big reward"
+}

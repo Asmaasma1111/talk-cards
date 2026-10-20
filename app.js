@@ -13,7 +13,7 @@ const PROFILES = APP === 'prepositions' ? ['mama'] : ['maria'];   // profiles th
 const OLD_KEY = 'mariaTalkCards.v1';                    // single-profile version, moved into Maria's profile
 const PROFILE_KEY = { maria: 'tc:maria', mama: 'tc:mama' };
 const LAST_KEY = 'tc:last';
-const DECK_KEY = 'tc:deck';                              // Maria's last deck: 'talk' (English), 'math' (times tables) or 'lib' (her library)
+const DECK_KEY = 'tc:deck';                              // Maria's last deck: 'talk' (English), 'math' (times tables), 'lib' (her library) or 'reads'
 const DEV_KEY = 'mariaTalkCards.devOffset';
 const INTERVAL = [0, 1, 2, 4, 8, 16, 32, 64];          // days until next review, by box
 const SPEEDS = { slow: 0.75, standard: 0.85, normal: 0.95 };
@@ -636,7 +636,7 @@ function calendarHTML(active, days, reg, goalMin) {
 /* ---------- screens ---------- */
 function show(name) {     // every screen (the times-tables screens too): only the named one is visible
   document.querySelectorAll('body > .screen').forEach(el => { el.hidden = el.id !== name; });
-  if (['home', 'done', 'mhome', 'mdone', 'lhome', 'apps'].includes(name) && reloadForUpdate.pending) setTimeout(reloadForUpdate, 300);
+  if (['home', 'done', 'mhome', 'mdone', 'lhome', 'apps', 'rhome'].includes(name) && reloadForUpdate.pending) setTimeout(reloadForUpdate, 300);
 }
 function toast(msg) {
   const t = $('#toast'); t.textContent = msg; t.hidden = false;
@@ -713,7 +713,8 @@ let S = null;    // current session or practice round
 let MATHS = null;  // the times-tables deck (maths.js), Maria only
 let LIB = null;    // مكتبتي, her story library (library.js), Maria only
 let SB = null;     // Maria's sticker book (stickerbook.js): a sticker for every 7 days in a row
-let APPS = null;   // تطبيقات ماريا اليوميّة, the entrance page with her three apps (entrance.js), Maria only
+let APPS = null;   // تطبيقات ماريا اليوميّة, the entrance page with her apps (entrance.js), Maria only
+let READS = null;  // ماريا تقرأ, her phonics path (reads.js), Maria only
 function newSession(mode, ids, warm = []) {
   S = { mode, queue: ids.slice(), all: new Set(ids), good: new Set(), again: new Set(), hint: new Set(), rated: new Set(),
         cur: null, flipped: false, seenBack: false, flipping: false, busy: false, celeb: [], frontPlan: null, backPlan: null,
@@ -1345,7 +1346,7 @@ function backup() {
     if (p === prof) profiles[p] = st;
     else if ((APP === 'talk-cards' || PROFILES.includes(p)) && lsGet(PROFILE_KEY[p])) profiles[p] = readProfile(p);
   });
-  const data = JSON.stringify({ app: 'maria-talk-cards', v: 2, saved: new Date().toISOString(), profiles, ...(MATHS ? { math: MATHS.snapshot() } : {}), ...(LIB ? { lib: LIB.snapshot() } : {}) });
+  const data = JSON.stringify({ app: 'maria-talk-cards', v: 2, saved: new Date().toISOString(), profiles, ...(MATHS ? { math: MATHS.snapshot() } : {}), ...(LIB ? { lib: LIB.snapshot() } : {}), ...(READS ? { reads: READS.snapshot() } : {}) });
   const name = `${APP}-backup-${today()}.json`;
   let file = null;
   try { file = new File([data], name, { type: 'application/json' }); } catch (e) {}
@@ -1367,13 +1368,15 @@ async function restore(file, after = renderParent) {
     const ok = profiles ? Object.keys(profiles).filter(p => PROFILES.includes(p) && profiles[p] && typeof profiles[p].cards === 'object') : [];
     const math = MATHS && MATHS.valid(obj.math) ? obj.math : null;            // times tables (backups from October 2026 on)
     const libr = LIB && LIB.valid(obj.lib) ? obj.lib : null;                  // her library (from 13 October 2026)
-    if (!ok.length && !math && !libr) throw new Error('bad');
-    const what = [...ok.map(p => (p === 'mama' ? 'Mama' : 'Maria')), ...(math ? ['times tables'] : []), ...(libr ? ['library'] : [])];
+    const rds = READS && READS.valid(obj.reads) ? obj.reads : null;           // Maria Reads (from 20 October 2026)
+    if (!ok.length && !math && !libr && !rds) throw new Error('bad');
+    const what = [...ok.map(p => (p === 'mama' ? 'Mama' : 'Maria')), ...(math ? ['times tables'] : []), ...(libr ? ['library'] : []), ...(rds ? ['Maria Reads'] : [])];
     if (!confirm(APP === 'prepositions' ? 'Replace your progress on this device with this backup?'
       : `Replace the progress on this device with this backup (${what.join(' and ')})?`)) return;
     ok.forEach(p => lsSet(PROFILE_KEY[p], JSON.stringify(merge(profiles[p], p))));
     if (math) MATHS.replace(math);
     if (libr) LIB.replace(libr);
+    if (rds) await READS.replace(rds);
     load(prof); after(); toast('Progress restored.');
   } catch (e) { toast(APP === 'prepositions' ? 'That file has no Prepositions progress.' : 'That file is not a Talk Cards backup.'); }
 }
@@ -1392,6 +1395,7 @@ function onDevClick(e) {
   $('#celebrate').hidden = true;
   renderDev();
   if (APPS && APPS.isOn()) APPS.home();
+  else if (READS && READS.isOn()) READS.home();
   else if (MATHS && MATHS.isOn()) MATHS.home();
   else if (LIB && LIB.isOn()) LIB.home();
   else if ($('#picker').hidden) renderHome();
@@ -1434,7 +1438,7 @@ function wire() {
 
 function reloadForUpdate() {
   if (!reloadForUpdate.pending) return;
-  if (S || !$('#parent').hidden || !$('#celebrate').hidden || (MATHS && MATHS.busy()) || (SB && SB.busy()) || (LIB && LIB.busy())) return;   // wait until she is back on Home or Done
+  if (S || !$('#parent').hidden || !$('#celebrate').hidden || (MATHS && MATHS.busy()) || (SB && SB.busy()) || (LIB && LIB.busy()) || (READS && READS.busy())) return;   // wait until she is back on Home or Done
   location.reload();
 }
 
@@ -1486,6 +1490,15 @@ async function boot() {
       apps: () => { Speech.stop(); S = null; if (APPS) APPS.home(); else renderHome(); }
     });
   }
+  if (APP === 'talk-cards' && PROFILES.includes('maria') && window.MariaReads) {
+    READS = window.MariaReads.mount({
+      today, lsGet, lsSet, show, toast, SFX, confetti, stopConfetti, reduced, DEV, holdToOpen, backup, restore,
+      setDeck: d => lsSet(DECK_KEY, d),
+      stopEnglish: () => { Speech.stop(); S = null; },
+      appsChip: window.MariaApps ? () => window.MariaApps.chip() : null,
+      apps: () => { Speech.stop(); S = null; if (APPS) APPS.home(); else renderHome(); }
+    });
+  }
   if (APP === 'talk-cards' && PROFILES.includes('maria') && window.MariaApps) {
     APPS = window.MariaApps.mount({
       today, show, toast, SFX,
@@ -1497,18 +1510,19 @@ async function boot() {
         return {
           talk: { done: (st.days || []).includes(t), stars: starsToday() },
           math: { done: !!m && !!m.daily && m.daily.day === t && !!m.daily.hit, min: m ? Math.floor(((m.active || {})[t] || 0) / 60) : 0, goal: m ? m.settings.goalMin : 5 },
-          lib: { done: libDone, open: !!l && !libDone && !!l.today && l.today.day === t }
+          lib: { done: libDone, open: !!l && !libDone && !!l.today && l.today.day === t },
+          ...(READS ? { reads: READS.status() } : {})
         };
       },
-      open: k => { if (k === 'math' && MATHS) MATHS.home(); else if (k === 'lib' && LIB) LIB.home(); else renderHome(); },
+      open: k => { if (k === 'math' && MATHS) MATHS.home(); else if (k === 'lib' && LIB) LIB.home(); else if (k === 'reads' && READS) READS.home(); else renderHome(); },
       leaveTalk: () => { Speech.stop(); S = null; },
       leaveMath: () => {},
-      leaveAll: () => { Speech.stop(); S = null; }
+      leaveAll: () => { Speech.stop(); S = null; if (READS) READS.leave(); }
     });
   }
   if (DEV) {
     renderDev();
-    window.TC = { get MATHS() { return MATHS; }, get SB() { return SB; }, get LIB() { return LIB; }, get APPS() { return APPS; }, get st() { return st; }, get S() { return S; }, CARD, SET, SETS, today, buildQueue, newOrder, dueIds, eligible, trickyIds, funIds, flip, rate, save, Speech, SFX, setPracticeIds, get VOICE() { return VOICE; }, renderText, voiceEl, get prof() { return prof; }, openProfile, showPicker, PCARDS, weekStats, readProfile,
+    window.TC = { get MATHS() { return MATHS; }, get SB() { return SB; }, get LIB() { return LIB; }, get APPS() { return APPS; }, get READS() { return READS; }, get st() { return st; }, get S() { return S; }, CARD, SET, SETS, today, buildQueue, newOrder, dueIds, eligible, trickyIds, funIds, flip, rate, save, Speech, SFX, setPracticeIds, get VOICE() { return VOICE; }, renderText, voiceEl, get prof() { return prof; }, openProfile, showPicker, PCARDS, weekStats, readProfile,
       showCard(id) { if (!S) newSession('fun', [id]); else { S.queue = S.queue.filter(x => x !== id); S.cur = id; S.flipped = S.seenBack = S.flipping = S.busy = false; if (CARD[id].kind === 'gap') renderGapCard(CARD[id]); else renderCard(CARD[id]); } } };
   }
   if (APPS && prof === 'maria') APPS.home();                                   // her entrance page: she picks an app
