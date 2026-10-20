@@ -86,6 +86,15 @@ Always use the Home Screen icon. The icon and a Safari tab keep separate progres
 - **Tests:** `node scripts/test_library.js`.
 - **Next phases:** the studio (مرسمي) with its shelves, notebook, dictionary and mission board; the parent area on the lamp with a PIN; Baba's messages; the craft projects; voice recording; the reading-path design from her reference.
 
+## ماريا تقرأ (Maria Reads, her phonics path)
+
+- The fourth tile on her entrance page. One path of 65 lessons in the order of *Children Learning Reading*; every word, sentence and story is our own (`reads.json`, written by `scripts/make_reads.py`; Asma approved the word list for lessons 9 to 24 on 20 October 2026). A lesson opens only when all its voice clips exist.
+- **Code:** `reads.js` (rules in `MariaReads.core`, tested by `scripts/test_reads.js`), styles under "Maria Reads" in `style.css`. Progress is `tc:maria:reads`; Done, Current and Locked come from the current lesson number. The backup file carries it (key `reads`), with Mama's own sound recordings if she makes any.
+- **Sessions:** a timer ring (3, 5 or 7 minutes), the lesson's steps in order (review cards, new sound and tracing, ear games, point and swipe with the help ladder, what's the difference, swaps, spelling, sentences, stories, recording herself), then Mama's tap. Mama's view: hold the gear for 2 seconds.
+- **Rewards:** stars, the flame streak, the Speed Round, and a puzzle a week: one piece a day of use, which she drags into place over a faint picture; the last two come on day 7. Finished puzzles go into her puzzle book (كتاب ألغازي).
+- **Voice:** words and sentences in Kore (`gemini-3.8-flash-tts`) with a clean ending, by `scripts/reads_voice.py` (clips in `audio/rd/`, deck `reads` in `audio/voice.json`). Single sounds are built in, cut from those approved takes (`scripts/reads_cut_sounds.py`), so no "uh" follows a stop sound; Mama may record her own instead.
+- **Photos:** real photos (Pexels, free licence) by `scripts/reads_photos.py`; choices in `scripts/reads_photo_picks.json`, credits in `assets/reads/photos/CREDITS.md`.
+
 ## Changing the cards
 
 - Maria's cards are in `sets.json`; add new sets at the end. Mama's are in `prepositions.json` (keep each card `id` unchanged, because progress is stored by `id`), then run the export script for the Prepositions app.

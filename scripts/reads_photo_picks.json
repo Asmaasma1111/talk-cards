@@ -276,5 +276,525 @@
  "glass": {
   "i": 1,
   "dir": "glass-p"
+ },
+ "pat": {
+  "i": 3,
+  "dir": "pat-p"
+ },
+ "tap": {
+  "i": 0,
+  "dir": "tap-p"
+ },
+ "pup": {
+  "i": 1,
+  "dir": "pup-p"
+ },
+ "pot": {
+  "i": 3,
+  "dir": "pot-p"
+ },
+ "top": {
+  "i": 0,
+  "dir": "top-p"
+ },
+ "stop": {
+  "i": 3,
+  "dir": "stop-p"
+ },
+ "pop": {
+  "i": 1,
+  "dir": "pop-p"
+ },
+ "hut": {
+  "i": 0,
+  "dir": "hut-p"
+ },
+ "hot": {
+  "i": 4,
+  "dir": "hot-p"
+ },
+ "hop": {
+  "i": 0,
+  "dir": "hop-p"
+ },
+ "not": {
+  "i": 0,
+  "dir": "not-p"
+ },
+ "can": {
+  "i": 3,
+  "dir": "can-p"
+ },
+ "bun": {
+  "i": 1,
+  "dir": "bun-p"
+ },
+ "pan": {
+  "i": 3,
+  "dir": "pan-p"
+ },
+ "nut": {
+  "i": 1,
+  "dir": "nut-p"
+ },
+ "hug": {
+  "i": 0,
+  "dir": "hug-p"
+ },
+ "tug": {
+  "i": 2,
+  "dir": "tug-p"
+ },
+ "bag": {
+  "i": 2,
+  "dir": "bag-p"
+ },
+ "tag": {
+  "i": 1,
+  "dir": "tag-p"
+ },
+ "snug": {
+  "i": 0,
+  "dir": "snug-p"
+ },
+ "dad": {
+  "i": 3,
+  "dir": "dad-p"
+ },
+ "bad": {
+  "i": 1,
+  "dir": "bad-p"
+ },
+ "hand": {
+  "i": 1,
+  "dir": "hand-p"
+ },
+ "sand": {
+  "i": 0,
+  "dir": "sand-p"
+ },
+ "stand": {
+  "i": 2,
+  "dir": "stand-p"
+ },
+ "dug": {
+  "i": 2,
+  "dir": "dug-p"
+ },
+ "in": {
+  "i": 1,
+  "dir": "in-p"
+ },
+ "sit": {
+  "i": 1,
+  "dir": "sit-p"
+ },
+ "big": {
+  "i": 0,
+  "dir": "big-p"
+ },
+ "dig": {
+  "i": 4,
+  "dir": "dig-p"
+ },
+ "hid": {
+  "i": 1,
+  "dir": "hid-p"
+ },
+ "bin": {
+  "i": 0,
+  "dir": "bin-p"
+ },
+ "pin": {
+  "i": 0,
+  "dir": "pin-p",
+  "zoom": 2,
+  "fx": 0.55,
+  "fy": 0.5
+ },
+ "spin": {
+  "i": 1,
+  "dir": "spin-p"
+ },
+ "sip": {
+  "i": 4,
+  "dir": "sip-p"
+ },
+ "fan": {
+  "i": 2,
+  "dir": "fan-p"
+ },
+ "fun": {
+  "i": 1,
+  "dir": "fun-p"
+ },
+ "fog": {
+  "i": 1,
+  "dir": "fog-p"
+ },
+ "fast": {
+  "i": 1,
+  "dir": "fast-p"
+ },
+ "gift": {
+  "i": 1,
+  "dir": "gift-p"
+ },
+ "soft": {
+  "i": 0,
+  "dir": "soft-p"
+ },
+ "fin": {
+  "i": 2,
+  "dir": "fin-p"
+ },
+ "run": {
+  "i": 2,
+  "dir": "run-p"
+ },
+ "ran": {
+  "i": 2,
+  "dir": "ran-p"
+ },
+ "frog": {
+  "i": 0,
+  "dir": "frog-p"
+ },
+ "no": {
+  "i": 1,
+  "dir": "bad-p"
+ },
+ "drip": {
+  "i": 0,
+  "dir": "drip-p"
+ },
+ "drop": {
+  "i": 2,
+  "dir": "drop-p"
+ },
+ "trip": {
+  "i": 2,
+  "dir": "trip-p"
+ },
+ "grin": {
+  "i": 2,
+  "dir": "grin-p"
+ },
+ "grab": {
+  "i": 0,
+  "dir": "grab-p"
+ },
+ "crust": {
+  "i": 1,
+  "dir": "crust-p"
+ },
+ "man": {
+  "i": 1,
+  "dir": "man-p"
+ },
+ "mug": {
+  "i": 3,
+  "dir": "mug-p"
+ },
+ "mom": {
+  "i": 1,
+  "dir": "mom-p"
+ },
+ "mist": {
+  "i": 2,
+  "dir": "mist-p"
+ },
+ "hum": {
+  "i": 2,
+  "dir": "hum-p"
+ },
+ "muffin": {
+  "i": 1,
+  "dir": "muffin-p"
+ },
+ "red": {
+  "i": 3,
+  "dir": "red-p"
+ },
+ "pet": {
+  "i": 2,
+  "dir": "pet-p"
+ },
+ "met": {
+  "i": 0,
+  "dir": "met-p"
+ },
+ "end": {
+  "i": 2,
+  "dir": "end-p"
+ },
+ "best": {
+  "i": 0,
+  "dir": "best-p"
+ },
+ "rest": {
+  "i": 1,
+  "dir": "rest-p"
+ },
+ "test": {
+  "i": 1,
+  "dir": "test-p"
+ },
+ "hen": {
+  "i": 1,
+  "dir": "hen-p"
+ },
+ "naps": {
+  "i": 2,
+  "dir": "naps-p"
+ },
+ "jog": {
+  "i": 2,
+  "dir": "jog-p",
+  "zoom": 2.2,
+  "fx": 0.5,
+  "fy": 0.75
+ },
+ "jug": {
+  "i": 3,
+  "dir": "jug-p"
+ },
+ "jump": {
+  "i": 4,
+  "dir": "jump-p"
+ },
+ "jam": {
+  "i": 0,
+  "dir": "jam-p"
+ },
+ "jet": {
+  "i": 0,
+  "dir": "jet-p",
+  "zoom": 3.2,
+  "fx": 0.5,
+  "fy": 0.45
+ },
+ "kid": {
+  "i": 2,
+  "dir": "kid-p"
+ },
+ "kit": {
+  "i": 3,
+  "dir": "kit-p"
+ },
+ "pack": {
+  "i": 0,
+  "dir": "pack-p"
+ },
+ "backpack": {
+  "i": 4,
+  "dir": "backpack-p"
+ },
+ "jacket": {
+  "i": 2,
+  "dir": "jacket-p"
+ },
+ "pear": {
+  "i": 3,
+  "dir": "pear-p"
+ },
+ "puppy": {
+  "i": 3,
+  "dir": "puppy-p"
+ },
+ "mop": {
+  "i": 1,
+  "dir": "mop-p"
+ },
+ "on": {
+  "i": 4,
+  "dir": "on-p"
+ },
+ "octopus": {
+  "i": 4,
+  "dir": "octopus-p"
+ },
+ "olive": {
+  "i": 3,
+  "dir": "olive-p"
+ },
+ "box": {
+  "i": 0,
+  "dir": "box-p"
+ },
+ "horse": {
+  "i": 4,
+  "dir": "horse-p"
+ },
+ "house": {
+  "i": 0,
+  "dir": "house-p"
+ },
+ "nose": {
+  "i": 0,
+  "dir": "nose-p"
+ },
+ "nest": {
+  "i": 1,
+  "dir": "nest-p"
+ },
+ "banana": {
+  "i": 1,
+  "dir": "banana-p"
+ },
+ "panda": {
+  "i": 4,
+  "dir": "panda-p"
+ },
+ "goat": {
+  "i": 4,
+  "dir": "goat-p"
+ },
+ "gum": {
+  "i": 1,
+  "dir": "gum-p"
+ },
+ "dragon": {
+  "i": 3,
+  "dir": "dragon-p"
+ },
+ "door": {
+  "i": 1,
+  "dir": "door-p"
+ },
+ "ladder": {
+  "i": 2,
+  "dir": "ladder-p"
+ },
+ "bird": {
+  "i": 2,
+  "dir": "bird-p"
+ },
+ "insect": {
+  "i": 1,
+  "dir": "insect-p"
+ },
+ "igloo": {
+  "i": 1,
+  "dir": "igloo-p"
+ },
+ "six": {
+  "i": 1,
+  "dir": "six-p"
+ },
+ "milk": {
+  "i": 2,
+  "dir": "milk-p"
+ },
+ "fox": {
+  "i": 2,
+  "dir": "fox-p"
+ },
+ "coffee": {
+  "i": 2,
+  "dir": "coffee-p"
+ },
+ "leaf": {
+  "i": 1,
+  "dir": "leaf-p"
+ },
+ "scarf": {
+  "i": 1,
+  "dir": "scarf-p"
+ },
+ "giraffe": {
+  "i": 4,
+  "dir": "giraffe-p"
+ },
+ "ring": {
+  "i": 4,
+  "dir": "ring-p"
+ },
+ "rain": {
+  "i": 1,
+  "dir": "rain-p"
+ },
+ "carrot": {
+  "i": 3,
+  "dir": "carrot-p"
+ },
+ "parrot": {
+  "i": 3,
+  "dir": "parrot-p"
+ },
+ "star": {
+  "i": 0,
+  "dir": "star-p"
+ },
+ "mouse": {
+  "i": 4,
+  "dir": "mouse-p"
+ },
+ "lemon": {
+  "i": 2,
+  "dir": "lemon-p",
+  "zoom": 1.5,
+  "fx": 0.55,
+  "fy": 0.95
+ },
+ "camel": {
+  "i": 3,
+  "dir": "camel-p"
+ },
+ "drum": {
+  "i": 4,
+  "dir": "drum-p"
+ },
+ "elephant": {
+  "i": 2,
+  "dir": "elephant-p"
+ },
+ "juice": {
+  "i": 0,
+  "dir": "juice-p"
+ },
+ "orange": {
+  "i": 0,
+  "dir": "orange-p"
+ },
+ "bridge": {
+  "i": 3,
+  "dir": "bridge-p"
+ },
+ "bear": {
+  "i": 3,
+  "dir": "bear-p"
+ },
+ "pea": {
+  "i": 3,
+  "dir": "pea-p"
+ },
+ "back": {
+  "i": 2,
+  "dir": "back-p"
+ },
+ "tin": {
+  "i": 1,
+  "dir": "tin-p"
+ },
+ "yes": {
+  "i": 4,
+  "dir": "yes-p"
+ },
+ "sneakers": {
+  "i": 1,
+  "dir": "sneakers-p"
+ },
+ "spot": {
+  "i": 0,
+  "dir": "spot2-p"
+ },
+ "dot": {
+  "i": 1,
+  "dir": "dot2-p"
+ },
+ "grandma": {
+  "i": 0,
+  "dir": "grandma2-p"
  }
 }

@@ -3357,7 +3357,8 @@
     "the",
     "pup"
    ],
-   "e": "🐶"
+   "e": "🐶",
+   "photo": "pup"
   },
   "l12c": {
    "text": "THE BUS.",
@@ -3415,7 +3416,8 @@
     "the",
     "pup"
    ],
-   "e": "🤚🐶"
+   "e": "🤚🐶",
+   "photo": "pup"
   },
   "l14a": {
    "text": "HE HAS THE HAT.",
@@ -3435,7 +3437,8 @@
     "pup",
     "hops"
    ],
-   "e": "🐶"
+   "e": "🐶",
+   "photo": "hop"
   },
   "l14c": {
    "text": "HE HOPS UP.",
@@ -3454,7 +3457,8 @@
     "pup",
     "hop"
    ],
-   "e": "🐶"
+   "e": "🐶",
+   "photo": "hop"
   },
   "l15a": {
    "text": "HE CAN HOP.",
@@ -3463,7 +3467,8 @@
     "can",
     "hop"
    ],
-   "e": "👦"
+   "e": "👦",
+   "photo": "hop"
   },
   "l15b": {
    "text": "THE CAT SAT ON THE BUS.",
@@ -3487,7 +3492,8 @@
     "not",
     "stop"
    ],
-   "e": "🐶💨"
+   "e": "🐶💨",
+   "photo": "stop"
   },
   "l15d": {
    "text": "HE HAS THE BUN.",
@@ -3497,7 +3503,8 @@
     "the",
     "bun"
    ],
-   "e": "🥯"
+   "e": "🥯",
+   "photo": "bun"
   },
   "l16a": {
    "text": "THE CAT CAN HOP.",
@@ -3508,7 +3515,7 @@
     "hop"
    ],
    "e": "🐱",
-   "photo": "cat"
+   "photo": "hop"
   },
   "l16b": {
    "text": "STOP, BUS, STOP!",
@@ -3518,7 +3525,7 @@
     "stop"
    ],
    "e": "🚌🛑",
-   "photo": "bus"
+   "photo": "stop"
   },
   "l16c": {
    "text": "HE HAS THE HOT POT.",
@@ -3529,7 +3536,8 @@
     "hot",
     "pot"
    ],
-   "e": "🍲🔥"
+   "e": "🍲🔥",
+   "photo": "pot"
   },
   "l16d": {
    "text": "THE PUP SAT ON THE CAP.",
@@ -3551,7 +3559,8 @@
     "pup",
     "no"
    ],
-   "e": "🐶"
+   "e": "🐶",
+   "photo": "pup"
   },
   "l17b": {
    "text": "HE GOT THE BAG.",
@@ -3561,7 +3570,8 @@
     "the",
     "bag"
    ],
-   "e": "👜"
+   "e": "👜",
+   "photo": "bag"
   },
   "l17c": {
    "text": "THE BUG HOPS.",
@@ -3571,7 +3581,7 @@
     "hops"
    ],
    "e": "🐞",
-   "photo": "bug"
+   "photo": "hop"
   },
   "l17d": {
    "text": "HUG THE PUP.",
@@ -3580,7 +3590,8 @@
     "the",
     "pup"
    ],
-   "e": "🤗🐶"
+   "e": "🤗🐶",
+   "photo": "pup"
   },
   "l18a": {
    "text": "DAD AND THE DOG.",
@@ -3601,7 +3612,7 @@
     "dug"
    ],
    "e": "🐶⛏️",
-   "photo": "dog"
+   "photo": "dug"
   },
   "l18c": {
    "text": "STAND UP, DAD!",
@@ -3611,7 +3622,7 @@
     "dad"
    ],
    "e": "👨",
-   "photo": "up"
+   "photo": "dad"
   },
   "l18d": {
    "text": "THE CAT AND THE DOG SAT.",
@@ -3634,7 +3645,8 @@
     "is",
     "big"
    ],
-   "e": "🐶"
+   "e": "🐶",
+   "photo": "big"
   },
   "l19b": {
    "text": "IT IS IN THE BAG.",
@@ -3645,7 +3657,8 @@
     "the",
     "bag"
    ],
-   "e": "👜"
+   "e": "👜",
+   "photo": "bag"
   },
   "l19c": {
    "text": "SIT, PUP, SIT!",
@@ -3654,7 +3667,8 @@
     "pup",
     "sit"
    ],
-   "e": "🐶🪑"
+   "e": "🐶🪑",
+   "photo": "sit"
   },
   "l19d": {
    "text": "THE DOG CAN DIG.",
@@ -3665,7 +3679,7 @@
     "dig"
    ],
    "e": "🐶⛏️",
-   "photo": "dog"
+   "photo": "dig"
   },
   "l20a": {
    "text": "THE FAN IS ON.",
@@ -3675,7 +3689,8 @@
     "is",
     "on"
    ],
-   "e": "🪭"
+   "e": "🪭",
+   "photo": "on"
   },
   "l20b": {
    "text": "IT IS SO FUN!",
@@ -3685,7 +3700,8 @@
     "so",
     "fun"
    ],
-   "e": "🎉"
+   "e": "🎉",
+   "photo": "fun"
   },
   "l20c": {
    "text": "DON'T STOP!",
@@ -3693,7 +3709,8 @@
     "don't",
     "stop"
    ],
-   "e": "🛑"
+   "e": "🛑",
+   "photo": "stop"
   },
   "l20d": {
    "text": "THE CAT IS SO SOFT.",
@@ -3705,7 +3722,7 @@
     "soft"
    ],
    "e": "🐱",
-   "photo": "cat"
+   "photo": "soft"
   },
   "l21a": {
    "text": "THE FROG CAN HOP.",
@@ -3715,7 +3732,8 @@
     "can",
     "hop"
    ],
-   "e": "🐸"
+   "e": "🐸",
+   "photo": "hop"
   },
   "l21b": {
    "text": "RUN, DOG, RUN!",
@@ -3725,7 +3743,7 @@
     "run"
    ],
    "e": "🐶💨",
-   "photo": "dog"
+   "photo": "run"
   },
   "l21c": {
    "text": "THE CRAB IS ON THE SAND.",
@@ -3738,7 +3756,7 @@
     "sand"
    ],
    "e": "🦀🏖️",
-   "photo": "crab"
+   "photo": "sand"
   },
   "l22a": {
    "text": "MOM HAS THE MAP.",
@@ -3772,7 +3790,8 @@
     "the",
     "mug"
    ],
-   "e": "☕"
+   "e": "☕",
+   "photo": "mug"
   },
   "l22d": {
    "text": "IT CAN BE FUN.",
@@ -3782,7 +3801,8 @@
     "be",
     "fun"
    ],
-   "e": "🎉"
+   "e": "🎉",
+   "photo": "fun"
   },
   "l22e": {
    "text": "RUN TO MOM!",
@@ -3791,7 +3811,8 @@
     "to",
     "mom"
    ],
-   "e": "👩"
+   "e": "👩",
+   "photo": "mom"
   },
   "l23a": {
    "text": "THE HEN IS RED.",
@@ -3801,7 +3822,8 @@
     "is",
     "red"
    ],
-   "e": "🐔"
+   "e": "🐔",
+   "photo": "red"
   },
   "l23b": {
    "text": "GET IN BED!",
@@ -3823,7 +3845,8 @@
     "the",
     "den"
    ],
-   "e": "🐾"
+   "e": "🐾",
+   "photo": "in"
   },
   "l23d": {
    "text": "TEN HENS IN THE SUN!",
@@ -3844,7 +3867,8 @@
     "kid",
     "jump"
    ],
-   "e": "🤸‍♀️"
+   "e": "🤸‍♀️",
+   "photo": "jump"
   },
   "l24b": {
    "text": "THE JAM IS IN THE JUG.",
@@ -3856,7 +3880,8 @@
     "the",
     "jug"
    ],
-   "e": "🫙"
+   "e": "🫙",
+   "photo": "jug"
   },
   "l24c": {
    "text": "PACK YOUR BACKPACK.",
@@ -3865,7 +3890,8 @@
     "your",
     "backpack"
    ],
-   "e": "🎒"
+   "e": "🎒",
+   "photo": "backpack"
   },
   "gift1": {
    "text": "DAD HAS THE BIG GIFT.",
@@ -3876,7 +3902,8 @@
     "big",
     "gift"
    ],
-   "e": "👨🎁"
+   "e": "👨🎁",
+   "photo": "gift"
   },
   "gift2": {
    "text": "IT IS SO SOFT.",
@@ -3886,7 +3913,8 @@
     "so",
     "soft"
    ],
-   "e": "🎁"
+   "e": "🎁",
+   "photo": "soft"
   },
   "gift3": {
    "text": "IS IT THE HAT? NO!",
@@ -3909,7 +3937,8 @@
     "bag",
     "no"
    ],
-   "e": "👜"
+   "e": "👜",
+   "photo": "bag"
   },
   "gift5": {
    "text": "IT IS THE PUP!",
@@ -3919,7 +3948,8 @@
     "the",
     "pup"
    ],
-   "e": "🐶"
+   "e": "🐶",
+   "photo": "pup"
   },
   "gift6": {
    "text": "THE PUP HOPS ON DAD.",
@@ -3930,7 +3960,8 @@
     "on",
     "dad"
    ],
-   "e": "🐶👨"
+   "e": "🐶👨",
+   "photo": "dad"
   },
   "gift7": {
    "text": "IT IS SO FUN!",
@@ -3940,7 +3971,8 @@
     "so",
     "fun"
    ],
-   "e": "🎉"
+   "e": "🎉",
+   "photo": "fun"
   },
   "frog1": {
    "text": "THE FROG IS ON THE RUG.",
@@ -3952,7 +3984,8 @@
     "the",
     "rug"
    ],
-   "e": "🐸"
+   "e": "🐸",
+   "photo": "on"
   },
   "frog2": {
    "text": "HOP, FROG, HOP!",
@@ -3961,7 +3994,8 @@
     "frog",
     "hop"
    ],
-   "e": "🐸"
+   "e": "🐸",
+   "photo": "hop"
   },
   "frog3": {
    "text": "THE CRAB IS ON THE SAND.",
@@ -3974,7 +4008,7 @@
     "sand"
    ],
    "e": "🦀🏖️",
-   "photo": "crab"
+   "photo": "sand"
   },
   "frog4": {
    "text": "THE CRAB CAN NOT HOP.",
@@ -3986,7 +4020,7 @@
     "hop"
    ],
    "e": "🦀",
-   "photo": "crab"
+   "photo": "hop"
   },
   "frog5": {
    "text": "THE CRAB CAN RUN!",
@@ -3997,7 +4031,7 @@
     "run"
    ],
    "e": "🦀💨",
-   "photo": "crab"
+   "photo": "run"
   },
   "frog6": {
    "text": "THE FROG AND THE CRAB GRIN.",
@@ -4010,7 +4044,7 @@
     "grin"
    ],
    "e": "🐸🦀",
-   "photo": "crab"
+   "photo": "grin"
   },
   "bed1": {
    "text": "THE PUP IS SO SAD.",
@@ -4085,7 +4119,8 @@
     "the",
     "best"
    ],
-   "e": "🏆"
+   "e": "🏆",
+   "photo": "best"
   },
   "jet1": {
    "text": "THE KID HAS THE RED BACKPACK.",
@@ -4097,7 +4132,8 @@
     "red",
     "backpack"
    ],
-   "e": "🧒🎒"
+   "e": "🧒🎒",
+   "photo": "backpack"
   },
   "jet2": {
    "text": "IN IT IS THE JAM AND THE MUFFIN.",
@@ -4111,7 +4147,8 @@
     "the",
     "muffin"
    ],
-   "e": "🫙🧁"
+   "e": "🫙🧁",
+   "photo": "muffin"
   },
   "jet3": {
    "text": "THE KID AND MOM GET ON THE JET.",
@@ -4125,7 +4162,8 @@
     "the",
     "jet"
    ],
-   "e": "✈️"
+   "e": "✈️",
+   "photo": "jet"
   },
   "jet4": {
    "text": "THE JET IS BIG AND FAST.",
@@ -4137,7 +4175,8 @@
     "and",
     "fast"
    ],
-   "e": "✈️💨"
+   "e": "✈️💨",
+   "photo": "fast"
   },
   "jet5": {
    "text": "THE KID GRINS AND GRINS.",
@@ -4148,7 +4187,8 @@
     "and",
     "grins"
    ],
-   "e": "😁"
+   "e": "😁",
+   "photo": "grin"
   },
   "jet6": {
    "text": "IT IS SO FUN!",
@@ -4158,7 +4198,8 @@
     "so",
     "fun"
    ],
-   "e": "🎉"
+   "e": "🎉",
+   "photo": "fun"
   }
  },
  "stories": {
@@ -6079,67 +6120,194 @@
   "ant",
   "apple",
   "astronaut",
+  "back",
+  "backpack",
+  "bad",
+  "bag",
   "ball",
+  "banana",
   "basket",
   "bat",
   "bats",
+  "bear",
   "bed",
   "bee",
+  "best",
+  "big",
+  "bin",
+  "bird",
   "boat",
   "book",
+  "box",
+  "bridge",
   "bucket",
   "bug",
+  "bun",
   "bus",
   "cab",
+  "camel",
+  "can",
   "cap",
   "car",
+  "carrot",
   "cat",
   "cats",
   "clock",
+  "coffee",
   "crab",
+  "crust",
   "cub",
   "cubs",
   "cup",
   "cut",
   "cuts",
+  "dad",
+  "dig",
   "dog",
+  "door",
+  "dot",
+  "dragon",
   "dress",
+  "drip",
+  "drop",
+  "drum",
   "duck",
+  "dug",
   "egg",
+  "elephant",
+  "end",
+  "fan",
+  "fast",
+  "fin",
   "fish",
+  "fog",
   "foot",
+  "fox",
+  "frog",
+  "fun",
+  "gift",
+  "giraffe",
   "glass",
+  "goat",
+  "grab",
+  "grandma",
+  "grin",
   "guitar",
+  "gum",
+  "hand",
   "hat",
+  "hen",
+  "hid",
+  "hop",
+  "horse",
+  "hot",
   "hotel",
+  "house",
+  "hug",
+  "hum",
+  "hut",
+  "igloo",
+  "in",
+  "insect",
+  "jacket",
+  "jam",
+  "jet",
+  "jog",
+  "jug",
+  "juice",
+  "jump",
   "key",
+  "kid",
+  "kit",
   "kite",
+  "ladder",
+  "leaf",
+  "lemon",
+  "man",
   "map",
+  "met",
+  "milk",
+  "mist",
+  "mom",
   "monkey",
   "moon",
+  "mop",
+  "mouse",
   "mud",
+  "muffin",
+  "mug",
+  "naps",
+  "nest",
   "net",
+  "no",
+  "nose",
+  "not",
+  "nut",
+  "octopus",
+  "olive",
+  "on",
+  "orange",
+  "pack",
+  "pan",
+  "panda",
+  "parrot",
+  "pat",
+  "pea",
+  "pear",
   "pen",
+  "pet",
+  "pin",
+  "pop",
+  "pot",
+  "pup",
+  "puppy",
   "rabbit",
+  "rain",
+  "ran",
+  "red",
+  "rest",
+  "ring",
   "robot",
   "rocket",
+  "run",
   "sad",
+  "sand",
   "sat",
+  "scarf",
   "seal",
+  "sip",
+  "sit",
+  "six",
+  "sneakers",
+  "snug",
   "sock",
+  "soft",
+  "spin",
+  "spot",
+  "stand",
+  "star",
+  "stop",
   "sun",
+  "tag",
+  "tap",
   "tea",
   "ten",
   "tent",
+  "test",
   "tiger",
+  "tin",
+  "top",
   "toy",
+  "trip",
   "tub",
   "tubs",
+  "tug",
   "umbrella",
   "under",
   "up",
   "us",
   "web",
+  "yes",
   "zebra"
  ],
  "puzzles": [
