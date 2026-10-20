@@ -246,8 +246,14 @@ function mount(api) {
     for (let i = 0; i < n; i++) v.setInt16(44 + i * 2, Math.max(-1, Math.min(1, x[i] * g)) * 0x7FFF, true);
     return new Blob([buf], { type: 'audio/wav' });
   }
-  const hasSound = id => !!SND[id];
-  const sayLetter = (id, held) => play(SND[id] ? (held ? SND[id].held : SND[id].short) : null);
+  // a sound: Mama's own recording if she made one, otherwise the built-in one (cut from the approved voice, no "uh")
+  const builtIn = (id, held) => (CLIPS['p-' + id] ? (!held && CLIPS['q-' + id] ? 'q-' + id : 'p-' + id) : null);
+  const hasSound = id => !!SND[id] || !!CLIPS['p-' + id];
+  const sayLetter = (id, held) => {
+    if (SND[id]) return play(held ? SND[id].held : SND[id].short);
+    const b = builtIn(id, held);
+    return b ? clipUrl(b).then(u => play(u)) : play(null);
+  };
   const missingFor = n => (D ? [...new Set([...taught(D, n, true), ...lessonSounds(D, n)])].filter(id => !hasSound(id)) : []);
 
   /* ---------- the microphone (Mama's sounds, and Maria's own voice) ---------- */
@@ -448,6 +454,7 @@ function mount(api) {
     }
     S = { n, mode, beats, bi: 0, base, timeUp: false, limit: minutesFor(D, n) * 60, items: [], startedDay: t, lessonLen: L.beats.length };
     preloadWords(Object.keys(D.words).concat(Object.keys(D.emoji)));
+    taught(D, n, true).forEach(id => { if (!SND[id]) { clipUrl('p-' + id); if (CLIPS['q-' + id]) clipUrl('q-' + id); } });
     clock.start();
     $('#rdStreak2').textContent = AR(streakOf(r, t));
     $('#rdStars2').textContent = AR(r.stars.total);
@@ -1029,16 +1036,16 @@ function mount(api) {
   function recordScreen() {
     const n = r.current;
     const row = x => {
-      const has = hasSound(x.id), need = x.lesson <= n + 1;
+      const mine = !!SND[x.id], built = !mine && !!CLIPS['p-' + x.id], has = mine || built, need = x.lesson <= n + 1;
       return `<div class="rr-row${has ? ' has' : need ? ' need' : ''}" data-id="${x.id}">
         <div class="rr-say"><b>${esc(x.say)}</b><span>${esc(x.g)}</span></div>
         <div class="rr-info"><p><b lang="en">${esc(x.ex)}</b> · lesson ${x.lesson} · ${x.kind === 'hold' ? 'hold about 2 seconds' : 'short'}</p><p class="rr-tip">${esc(x.tip)}</p></div>
-        <span class="rr-state">${has ? 'Recorded ✓' : need ? 'Needs recording' : 'Later'}</span>
-        <div class="rr-btns"><button class="rp-btn rr-rec" data-rec="${x.id}">● ${has ? 'Again' : 'Record'}</button>
+        <span class="rr-state">${mine ? 'Your voice ✓' : built ? 'Built in ✓' : need ? 'Needs recording' : 'Later'}</span>
+        <div class="rr-btns"><button class="rp-btn rr-rec" data-rec="${x.id}">● ${mine ? 'Again' : built ? 'Record my own' : 'Record'}</button>
           ${has ? `<button class="rp-btn" data-play="${x.id}">▶ Short</button>${x.kind === 'hold' ? `<button class="rp-btn" data-play="${x.id}" data-held="1">▶ Held</button>` : ''}` : ''}</div></div>`;
     };
     $('#rrec').innerHTML = `<div class="rp"><header class="rp-head"><h1>Record sounds</h1><button class="rp-x" data-act="back">${ic('i-close')}</button></header>
-      <p class="rr-intro">Your voice is the only voice for single sounds. Tap ● Record, say the sound, and it stops on its own. Held sounds: one steady sound of about 2 seconds; the app cuts the short one from it. Short sounds: once, crisp, with no vowel after it. Lessons 1 to 8 need /a/, /b/, /k/ and /t/.</p>
+      <p class="rr-intro">Nothing to record: lessons 1 to 8 use built-in sounds (/a/, /b/, /k/ and /t/), cut from the approved voice so no "uh" follows a sound. Tap ▶ to listen. If you ever prefer your own voice for a sound, tap ● Record my own: held sounds are one steady sound of about 2 seconds, short sounds are said once, crisp, with no vowel after it.</p>
       <div class="rr-list">${D.sounds.map(row).join('')}</div></div>`;
     api.show('rrec');
   }

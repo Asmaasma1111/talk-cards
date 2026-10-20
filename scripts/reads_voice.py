@@ -7,8 +7,11 @@ Single sounds are never made with TTS: Mama records them on the iPad (the Record
                                                    with a clean ending (no API calls)
   python scripts/reads_voice.py words [--max N]    record every word in reads.json (reading words and ear-game words) in
                                                    batches, cut, clean ending, transcription check
+  python scripts/reads_voice.py sounds             the built-in single sounds, cut from the approved Voice A words so
+                                                   no "uh" follows a stop: /a/ (held, from "aaat"), /t/ (the end of "aaat"),
+                                                   /k/ (the start of "key"), /b/ (the end of "aaab"); then run build
   python scripts/reads_voice.py build              audio/rd/*.m4a and the 'reads' deck in audio/voice.json (words that
-                                                   passed, plus the stretchy models of the reading words)
+                                                   passed, the stretchy models, and the built-in sounds)
 Voice: Kore on gemini-3.8-flash-tts with the clean ending (her choice, 20 Oct 2026).
 
 Run it with the venv that has google-genai: ~/Downloads/06_Projects_and_Code/maria-tenses/.venv/bin/python
@@ -281,6 +284,13 @@ def cmd_build(a):
         src = os.path.join(WORK, f'3.8flashtts-{w}-clean.wav')
         enc(src, os.path.join(OUT, f's-{w}.m4a'))
         clips['s-' + w] = {'f': f'rd/s-{w}.m4a', 'd': round(V.duration(src), 2)}
+    if os.path.isdir(SOUNDS_DIR):   # the built-in single sounds: p-<id> held (or the only one), q-<id> short
+        for f in sorted(os.listdir(SOUNDS_DIR)):
+            if not f.endswith('.wav'):
+                continue
+            sid = f[:-4]; key = ('q-' + sid[:-6]) if sid.endswith('-short') else 'p-' + sid
+            enc(os.path.join(SOUNDS_DIR, f), os.path.join(OUT, f'snd-{sid}.m4a'))
+            clips[key] = {'f': f'rd/snd-{sid}.m4a', 'd': round(V.duration(os.path.join(SOUNDS_DIR, f)), 2)}
     vj = os.path.join(V.AUDIO, 'voice.json')
     manifest = V.load(vj, {'v': 2, 'decks': {}})
     manifest['decks']['reads'] = {'voice': 'Kore', 'model': 'gemini-3.8-flash-tts', 'placeholder': False, 'clips': clips}
@@ -288,11 +298,59 @@ def cmd_build(a):
     print(len(clips), "clips in audio/rd and the 'reads' deck of audio/voice.json")
 
 
+# ---------- built-in single sounds (her choice, 20 Oct 2026: no recording needed; Mama may still record her own) ----------
+SOUNDS_DIR = os.path.join(WORK, 'sounds', 'final')
+
+
+def _env(x):
+    h = int(0.01 * V.SR)
+    return np.array([np.sqrt(np.mean(x[i:i + h] ** 2)) for i in range(0, len(x) - h, h)]), h
+
+
+def _fade(y, a, b):
+    y = y.copy(); na, nb = max(1, int(a * V.SR)), max(1, int(b * V.SR))
+    y[:na] *= np.linspace(0, 1, na); y[-nb:] *= np.linspace(1, 0, nb)
+    return y
+
+
+def _norm(y):
+    y = y / (np.abs(y).max() + 1e-9) * 0.85
+    return np.concatenate([np.zeros(int(0.04 * V.SR), np.float32), y.astype(np.float32), np.zeros(int(0.06 * V.SR), np.float32)])
+
+
+def cmd_sounds(a):
+    os.makedirs(SOUNDS_DIR, exist_ok=True)
+    SR = V.SR
+    x = V.read_wav(os.path.join(WORK, '3.8flashtts-at-clean.wav')); e, h = _env(x); top = e.max()
+    on = int(np.argmax(e > 0.25 * top)); off = on
+    while off < len(e) and e[off] > 0.25 * top: off += 1
+    held = _fade(x[on * h:off * h], 0.01, 0.08)                        # /a/ held: the vowel of "aaat"
+    V.write_wav(os.path.join(SOUNDS_DIR, 'a.wav'), _norm(held))
+    V.write_wav(os.path.join(SOUNDS_DIR, 'a-short.wav'), _norm(_fade(held[:int(0.4 * SR)], 0.01, 0.1)))
+    last = len(e) - 1
+    while last > 0 and e[last] < 0.08 * top: last -= 1
+    st = last
+    while st > 0 and e[st - 1] >= 0.08 * top: st -= 1
+    V.write_wav(os.path.join(SOUNDS_DIR, 't.wav'), _norm(_fade(x[max(0, st - 1) * h:(last + 2) * h], 0.002, 0.03)))   # /t/: the release of "aaat"
+    x = V.read_wav(os.path.join(WORDS_DIR, 'raw-key.wav')); e, h = _env(x); top = e.max()
+    on = int(np.argmax(e > 0.06 * top))
+    z = np.array([np.mean(np.abs(np.diff(np.sign(x[i:i + h]))) > 0) for i in range(0, len(x) - h, h)])
+    endf = on
+    while endf < len(e) and endf < on + 14 and not (z[endf] < 0.2 and e[endf] > 0.35 * top): endf += 1
+    V.write_wav(os.path.join(SOUNDS_DIR, 'k.wav'), _norm(_fade(x[on * h:max(endf, on + 4) * h], 0.002, 0.02)))   # /k/: the burst of "key"
+    x = V.read_wav(os.path.join(WORK, '3.8flashtts-ab-clean.wav')); e, h = _env(x); top = e.max()
+    last = len(e) - 1
+    while last > 0 and e[last] < 0.03 * top: last -= 1
+    V.write_wav(os.path.join(SOUNDS_DIR, 'b.wav'), _norm(_fade(x[max(0, (last + 1) * h - int(0.09 * SR)):(last + 1) * h], 0.01, 0.012)))   # /b/: lips closed and the release, the end of "aaab"
+    for f in sorted(os.listdir(SOUNDS_DIR)):
+        print(f, f'{V.duration(os.path.join(SOUNDS_DIR, f)):.2f} s')
+
+
 if __name__ == '__main__':
     p = argparse.ArgumentParser(); sub = p.add_subparsers(dest='cmd', required=True)
     t = sub.add_parser('test'); t.add_argument('--model', default='gemini-3.8-flash-tts')
     sub.add_parser('compare')
     w = sub.add_parser('words'); w.add_argument('--max', type=int, default=0); w.add_argument('--only', default='')
-    sub.add_parser('build')
+    sub.add_parser('build'); sub.add_parser('sounds')
     a = p.parse_args()
-    {'test': cmd_test, 'compare': cmd_compare, 'words': cmd_words, 'build': cmd_build}[a.cmd](a)
+    {'test': cmd_test, 'compare': cmd_compare, 'words': cmd_words, 'build': cmd_build, 'sounds': cmd_sounds}[a.cmd](a)

@@ -65,4 +65,6 @@ D.lessons.filter(L => L.ready).forEach(L => {
   });
 });
 Object.values(D.ear).forEach(e => ['beg', 'mid', 'end', 'no'].forEach(k => e[k].forEach(w => assert(voice['w-' + w], `no clip for ${w}`))));
+// every sound lessons 1-8 use has a built-in clip, so no lesson waits for a recording
+D.lessons.filter(L => L.ready).forEach(L => core.taught(D, L.n, true).forEach(id => assert(voice['p-' + id], `no built-in sound /${id}/ for lesson ${L.n}`)));
 console.log('Maria Reads rules: all tests passed');
