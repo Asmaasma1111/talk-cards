@@ -30,7 +30,7 @@ const INTERVAL = [0, 1, 2, 4, 8, 16, 32, 64];                         // Talk Ca
    The rules (no DOM, so they can be tested in Node: scripts/test_algeria.js)
    ===================================================================================================== */
 function blank() {
-  return { v: 1, start: null, n: 0, days: {}, arrived: {}, stamps: {}, steps: {}, cards: {}, newq: [], pics: {},
+  return { v: 1, start: null, n: 0, days: {}, arrived: {}, stamps: {}, steps: {}, cards: {}, newq: [], pics: {}, corner: {},
            settings: { level: 0, newPerDay: 3, warmMax: 6, first: 'ar' } };
 }
 function clean(o) {
@@ -38,7 +38,7 @@ function clean(o) {
   if (!o || typeof o !== 'object') return b;
   const r = { ...b, ...o };
   r.settings = { ...b.settings, ...(o.settings || {}) };
-  ['days', 'arrived', 'stamps', 'steps', 'cards', 'pics'].forEach(k => { if (!r[k] || typeof r[k] !== 'object' || Array.isArray(r[k])) r[k] = {}; });
+  ['days', 'arrived', 'stamps', 'steps', 'cards', 'pics', 'corner'].forEach(k => { if (!r[k] || typeof r[k] !== 'object' || Array.isArray(r[k])) r[k] = {}; });
   if (!Array.isArray(r.newq)) r.newq = [];
   r.n = Math.max(0, Math.round(Number(r.n)) || 0);
   r.settings.level = Math.max(0, Math.min(6, Math.round(Number(r.settings.level)) || 0));
@@ -243,6 +243,7 @@ function mount(api) {
   const KEY = 'tc:maria:algeria';
   const today = () => api.today();
   let r = load(), D = null, CLIPS = {}, S = null;
+  let MC = null;   // the maths corner (algeria-maths.js), mounted below
   function load() { try { return clean(JSON.parse(api.lsGet(KEY) || 'null')); } catch (e) { return blank(); } }
   function save() { api.lsSet(KEY, JSON.stringify(r)); }
   const ready = Promise.all([
@@ -415,6 +416,7 @@ function mount(api) {
       <div class="dz-here" id="dzHere"></div>
       <button class="dz-go" id="dzGo"><span class="dz-plane" aria-hidden="true">✈️</span><b id="dzGoLabel"></b></button>
       <button class="dz-btn soft" id="dzPassBtn"><span aria-hidden="true">🛂</span> ${L.passport}</button>
+      <button class="dz-btn mc-btn" id="dzMathBtn"><span aria-hidden="true">🧮</span> ركن الرياضيات</button>
     </div>
   </div>
 </section>
@@ -895,6 +897,10 @@ function mount(api) {
         ${pages.length ? `<div class="dz-pages">${pages.map(p => `<figure><img src="${URL.createObjectURL(p.blob)}" alt="" data-big="1"><figcaption>${esc(p.day)} · level ${p.level || ''}
           ${clips.some(c => c.id === 'talk-' + p.day) ? `<button class="dz-pbtn soft" data-play="talk-${esc(p.day)}">▶ her reading</button>` : ''}</figcaption></figure>`).join('')}</div>` : '<p>No pages yet: she photographs her notebook on Arabic days.</p>'}</section>
       <section><h2>Her talks about the picture</h2>${clips.filter(c => c.kind === 'talk').length ? `<ul class="dz-talks">${clips.filter(c => c.kind === 'talk').map(c => `<li>${esc(c.day || '')} · ${Math.round((c.ms || 0) / 1000)} s <button class="dz-pbtn soft" data-play="${esc(c.id)}">▶ Play</button></li>`).join('')}</ul>` : '<p>No recordings yet (recording is optional).</p>'}</section>
+      <section><h2>The maths corner</h2>${(() => { const c = r.corner || {}, T = root.AlgeriaMaths ? root.AlgeriaMaths.core.TOPICS : [];
+        const rows = T.filter(t => c[t.id]).map(t => `<tr><td dir="rtl" lang="ar">${esc(t.title)}</td><td>${c[t.id].rounds}</td><td>${c[t.id].total ? Math.round(100 * c[t.id].right / c[t.id].total) : 0}%</td><td>${c[t.id].level} of 3</td><td>${c[t.id].last || ''}</td></tr>`).join('');
+        return rows ? `<table class="dz-ptab"><tr><th>Topic</th><th>Rounds</th><th>Right</th><th>Level</th><th>Last</th></tr>${rows}</table>` : '<p>Not used yet. She opens it from the trip\'s home: 15 topics, every maths gap of the report, practice as often as she likes.</p>'; })()}
+        <p class="dz-note">Practice only: it never moves the trip on or holds it back.</p></section>
       <section><h2>Backup</h2><p>Her trip, her cards, her pages and her recordings are in the one backup file of the entrance page.</p>
         <button class="dz-pbtn" data-act="backup">Back up all apps</button></section>
     </div>`;
@@ -917,18 +923,22 @@ function mount(api) {
   });
 
   /* ---------- leaving, and the wiring ---------- */
-  function leave() { S = null; stopRec(); stopAudio(); $('#dzCel').hidden = true; }
+  function leave() { S = null; stopRec(); stopAudio(); $('#dzCel').hidden = true; if (MC) MC.leave(); }
   api.holdToOpen($('#dzGear'), 2000, openParent);
   $('#dzGo').addEventListener('click', () => { if (!$('#dzGo').disabled) { unlock(); ac(); start(); } });
   $('#dzPassBtn').addEventListener('click', () => { api.SFX.init(); unlock(); openPassport(); });
+  // ركن الرياضيات (algeria-maths.js): all the maths gaps, a lesson and practice each, any day; it never moves the trip
+  MC = root.AlgeriaMaths ? root.AlgeriaMaths.mount({ api, state: () => r, save, back: home }) : null;
+  $('#dzMathBtn').hidden = !MC;
+  $('#dzMathBtn').addEventListener('click', () => { api.SFX.init(); unlock(); if (MC) MC.open(); });
   $('#dzQuit').addEventListener('click', () => { leave(); home(); });
   document.addEventListener('visibilitychange', () => { if (document.hidden) { stopRec(); stopAudio(); } });
 
   const SCREENS = ['dzhome', 'dzsess', 'dzpass', 'dzparent'];
   return {
     home, ready,
-    isOn: () => SCREENS.some(id => !$('#' + id).hidden) || !$('#dzCel').hidden,
-    busy: () => !!S || !!REC || ['dzsess', 'dzparent'].some(id => !$('#' + id).hidden) || !$('#dzCel').hidden,
+    isOn: () => SCREENS.some(id => !$('#' + id).hidden) || !$('#dzCel').hidden || !!(MC && MC.isOn()),
+    busy: () => !!S || !!REC || ['dzsess', 'dzparent'].some(id => !$('#' + id).hidden) || !$('#dzCel').hidden || !!(MC && MC.busy()),
     leave,
     status: () => { const t = today(), c = D && nextOnRoute(r, D); return { done: dayDone(r, t), started: !!r.days[t], city: c ? c.name : '' }; },
     snapshot: () => JSON.parse(JSON.stringify(r)),

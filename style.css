@@ -3038,3 +3038,58 @@ body[data-profile="mama"] .deck-apps { display: none; }
 .dz-count { margin: 0; padding: 2px 14px; border-radius: 99px; background: #fff; font-size: 18px; font-weight: 800; color: rgba(10, 59, 36, .55); }
 .dz-opts.three { flex-direction: row; justify-content: center; }
 .dz-opts.three .dz-opt { flex: 0 1 150px; }
+
+/* ركن الرياضيات (algeria-maths.js): the maths corner of the trip, in the trip's greens */
+.mc-btn { background: linear-gradient(180deg, #4FB0E8, #2F7FB8); box-shadow: 0 5px 0 #1F5B86; }
+.dz-mc { overflow-y: auto; padding-bottom: calc(var(--safe-b) + 24px); }
+.dz-mc .dz-top { justify-content: flex-start; gap: 14px; direction: rtl; }
+.dz-ptitle.sm { font-size: clamp(22px, 2.8vw, 30px); flex: 1; }
+.mc-sub { margin: 4px auto 14px; max-width: 760px; text-align: center; font-size: clamp(18px, 2.2vw, 22px); font-weight: 700; color: rgba(10, 59, 36, .65); }
+.mc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; width: min(100%, 1060px); margin: 0 auto; }
+.mc-tile { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 16px 10px 14px; border: 3px solid #fff; border-radius: 26px;
+  background: linear-gradient(170deg, #E3F6EA, #fff 70%); box-shadow: 0 8px 18px rgba(0, 98, 51, .12); font-family: var(--apfont); color: var(--g9); }
+.mc-tile:active { transform: scale(.97); }
+.mc-tile b { font-size: clamp(18px, 2vw, 21px); line-height: 1.3; text-align: center; }
+.mc-tile small { font-size: 14px; font-weight: 700; color: var(--g6); }
+.mc-ic { font-size: 40px; line-height: 1.1; }
+.mc-n { position: absolute; top: 8px; right: 12px; font: 800 15px 'Tajawal', var(--apfont); color: rgba(10, 59, 36, .4); }
+.mc-lesson { text-align: right; }
+.mc-lesson .mc-ex { border-color: #2F7FB8; background: #F1F8FD; font-family: 'Tajawal', var(--apfont); }
+.mc-lv { margin: 0; font-size: 19px; font-weight: 800; color: var(--g6); }
+.mc-tools { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-top: 8px; }
+.mc-svgopt { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 12px; border-radius: 18px; background: #fff; font-weight: 800; }
+.mc-svg { width: 150px; height: auto; display: block; }
+.mc-item { gap: 12px; }
+.mc-q { font-family: 'Tajawal', var(--apfont); line-height: 1.6; }
+.mc-qlines .mc-q { margin: 2px 0; direction: rtl; }
+.mc-hint { margin: 0; max-width: 760px; text-align: center; font-size: 18px; font-weight: 700; color: rgba(10, 59, 36, .6); }
+.mc-pic .mc-svg { width: min(86vw, 420px); }
+.dz-opt.svg { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px; }
+.dz-opt.svg b { font-size: 20px; }
+.dz-opts.three { flex-wrap: wrap; }
+.mc-blank { display: inline-block; min-width: 2.6em; padding: 0 8px; margin: 0 2px; border-radius: 12px; border: 3px dashed #C9DCCF; color: #9BB3A5; text-align: center; }
+.mc-blank.cur { border-color: var(--dzgold); color: #C8961C; background: #FFF9E6; }
+.mc-blank.done { border-style: solid; border-color: var(--g6); color: var(--g8); background: var(--g2); }
+.mc-blank.shown { border-color: #2F7FB8; color: #1F5B86; background: #E8F2FB; }
+.mc-ans { display: flex; align-items: baseline; gap: 10px; min-width: 200px; justify-content: center; padding: 6px 22px; border-radius: 20px; background: #fff; box-shadow: inset 0 0 0 3px #DCEBE2; }
+.mc-ans span { min-height: 1.2em; font: 800 clamp(36px, 5vw, 52px) 'Tajawal', var(--apfont); color: var(--g9); }
+.mc-ans small { font-size: 20px; font-weight: 800; color: var(--g6); }
+.mc-pad { display: grid; grid-template-columns: repeat(3, clamp(64px, 9vw, 86px)); gap: 10px; }
+.mc-pad button { height: clamp(56px, 8vh, 72px); border: 0; border-radius: 18px; background: #fff; box-shadow: 0 5px 0 #CFE6D7; font: 800 clamp(28px, 3.6vw, 36px) 'Tajawal', var(--apfont); color: var(--g9); }
+.mc-pad button:active { transform: translateY(3px); box-shadow: 0 2px 0 #CFE6D7; }
+.mc-pad .ok { background: var(--g6); color: #fff; box-shadow: 0 5px 0 var(--g8); }
+.mc-pad .del { color: #C0392B; }
+.mc-pad.off { opacity: .35; pointer-events: none; }
+.mc-col { display: grid; grid-template-columns: repeat(4, auto); gap: 4px 10px; font: 800 30px 'Tajawal', var(--apfont); color: rgba(10, 59, 36, .55); }
+.mc-grid-col { --cw: clamp(46px, 6vw, 60px); display: grid; gap: 2px 6px; justify-content: center; font: 800 clamp(30px, 4vw, 42px) 'Tajawal', var(--apfont); }
+.mc-c { height: 1.4em; display: grid; place-items: center; position: relative; color: var(--g9); }
+.mc-c.carry, .mc-c.plus { height: .9em; font-size: .55em; color: #D21034; }
+.mc-c.plus.on { color: #2F7FB8; }
+.mc-c.sign { color: var(--g6); }
+.mc-c.in { border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 3px #DCEBE2; }
+.mc-c.in.cur { box-shadow: inset 0 0 0 4px var(--dzgold); background: #FFF9E6; }
+.mc-c.in.done { background: var(--g2); box-shadow: inset 0 0 0 3px var(--g6); color: var(--g8); }
+.mc-c.in.shown { background: #E8F2FB; box-shadow: inset 0 0 0 3px #2F7FB8; color: #1F5B86; }
+.mc-c.shake { animation: dzShake .4s; }
+.mc-c.tenned .ten { font-style: normal; font-size: .55em; color: #D21034; vertical-align: top; margin-inline-end: 1px; }
+.mc-line { height: 4px; border-radius: 4px; background: var(--g8); }
