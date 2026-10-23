@@ -22,6 +22,8 @@ function three(rnd, right, wrongs) {
   const opts = shuffle([right, ...w], rnd);
   return { opts, ok: opts.findIndex(x => String(x) === String(right)) };
 }
+// the topic's picture, drawn in ChatGPT (her rule: "if there are any drawings, use ChatGPT"); the emoji if it is missing
+const pic = (t, cls = 'mc-pic-ic') => `<img class="${cls}" src="assets/algeria/corner/${t.id}.webp" alt="" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'mc-ic',textContent:'${t.icon}'}))">`;
 const TRIP = () => (root.AlgeriaTrip && root.AlgeriaTrip.core) || null;
 
 /* =====================================================================================================
@@ -204,7 +206,9 @@ function svgAngle(a) {
   return SV(160, 130, `<path d="M30 110 L130 110 M30 110 L${x.toFixed(1)} ${y.toFixed(1)}" stroke="#0B5530" stroke-width="5" stroke-linecap="round" fill="none"/>`
     + (a === 90 ? '<path d="M30 92 H48 V110" fill="none" stroke="#23A862" stroke-width="3"/>' : `<path d="M55 110 A25 25 0 0 0 ${(30 + 25 * Math.cos(a * Math.PI / 180)).toFixed(1)} ${(110 - 25 * Math.sin(a * Math.PI / 180)).toFixed(1)}" fill="none" stroke="#23A862" stroke-width="3"/>`));
 }
-function svgTool(t) {
+const TOOL_NAMES = { ruler: 'المسطرة', square: 'الكوس', compass: 'المدوَر' };
+function svgTool(t) { return `<img class="mc-tool" src="assets/algeria/corner/${t}.webp" alt=""><b>${TOOL_NAMES[t]}</b>`; }
+function svgToolDrawn(t) {   // the drawn tools, kept for when the pictures are not there
   if (t === 'ruler') return SV(160, 80, `<rect x="10" y="22" width="140" height="36" rx="6" fill="#FFE08A" stroke="#B8860B" stroke-width="3"/>${Array.from({ length: 13 }, (_, i) => `<line x1="${20 + i * 10}" y1="22" x2="${20 + i * 10}" y2="${i % 5 ? 32 : 40}" stroke="#7A5A10" stroke-width="2"/>`).join('')}`) + '<b>المسطرة</b>';
   if (t === 'square') return SV(160, 120, '<path d="M30 105 L30 15 L130 105 Z" fill="#CDEBFF" stroke="#2F7FB8" stroke-width="4" stroke-linejoin="round"/><path d="M50 85 L50 60 L77 85 Z" fill="#fff" stroke="#2F7FB8" stroke-width="2"/><path d="M30 92 H43 V105" fill="none" stroke="#2F7FB8" stroke-width="2"/>') + '<b>الكوس</b>';
   return SV(160, 130, '<circle cx="80" cy="18" r="8" fill="#D21034"/><path d="M80 24 L50 115 M80 24 L110 115" stroke="#0B5530" stroke-width="6" stroke-linecap="round"/><path d="M110 115 l-4 10" stroke="#555" stroke-width="3"/><circle cx="50" cy="116" r="3" fill="#333"/>') + '<b>المدوَر</b>';
@@ -288,14 +292,14 @@ function mount(ctx) {
     const c = corner();
     el.innerHTML = `<div class="dz-top"><button class="quit" id="mcQuit" aria-label="رحلتي"><svg aria-hidden="true"><use href="#i-close"/></svg></button><h1 class="dz-ptitle">🧮 ركن الرياضيات</h1></div>
       <p class="mc-sub">كلُّ ما في كتاب الرياضيات الجزائري ولم يأتِ في كتابكِ. اختاري درسًا، واقرئي، ثمّ تدرّبي كما تشائين.</p>
-      <div class="mc-grid">${TOPICS.map((t, i) => { const x = c[t.id]; return `<button class="mc-tile" data-t="${t.id}"><span class="mc-n">${AR(i + 1)}</span><span class="mc-ic">${t.icon}</span><b>${esc(t.title)}</b><small>${x ? `${stars(x)} · ${AR(x.rounds)} ${x.rounds === 1 ? 'جولة' : x.rounds === 2 ? 'جولتان' : x.rounds <= 10 ? 'جولات' : 'جولة'}` : 'جديد'}</small></button>`; }).join('')}</div>`;
+      <div class="mc-grid">${TOPICS.map((t, i) => { const x = c[t.id]; return `<button class="mc-tile" data-t="${t.id}"><span class="mc-n">${AR(i + 1)}</span>${pic(t)}<b>${esc(t.title)}</b><small>${x ? `${stars(x)} · ${AR(x.rounds)} ${x.rounds === 1 ? 'جولة' : x.rounds === 2 ? 'جولتان' : x.rounds <= 10 ? 'جولات' : 'جولة'}` : 'جديد'}</small></button>`; }).join('')}</div>`;
     $('#mcQuit').onclick = () => { api.SFX.init(); ctx.back(); };
     el.querySelectorAll('.mc-tile').forEach(b => { b.onclick = () => { api.SFX.init(); lesson(b.dataset.t); }; });
     api.show('dzmc');
   }
   function lesson(id) {
     const t = TOPICS.find(x => x.id === id), x = corner()[id];
-    el.innerHTML = `<div class="dz-top"><button class="quit" id="mcBack" aria-label="الركن"><svg aria-hidden="true"><use href="#i-close"/></svg></button><h1 class="dz-ptitle">${t.icon} ${esc(t.title)}</h1></div>
+    el.innerHTML = `<div class="dz-top"><button class="quit" id="mcBack" aria-label="الركن"><svg aria-hidden="true"><use href="#i-close"/></svg></button><h1 class="dz-ptitle">${pic(t, 'mc-pic-h')} ${esc(t.title)}</h1></div>
       <div class="dz-pane"><div class="dz-rule mc-lesson"><h3>تعلّمتُ</h3>${t.lesson.rule.map(l => `<p>${esc(l)}</p>`).join('')}
         ${t.lesson.ex.length ? `<h3>مثال</h3>${t.lesson.ex.map(l => `<p class="mc-ex">${esc(l)}</p>`).join('')}` : ''}
         ${id === 'tools' ? `<div class="mc-tools">${['ruler', 'square', 'compass'].map(k => `<span class="mc-svgopt">${svgTool(k)}</span>`).join('')}</div>` : ''}
@@ -315,7 +319,7 @@ function mount(ctx) {
     }
     if (!live(s)) return;
     const res = addRound(corner(), id, s.right, items.length, api.today()); ctx.save();
-    el.innerHTML = `<div class="dz-top"><span></span><h1 class="dz-ptitle">${t.icon} ${esc(t.title)}</h1></div><div class="dz-pane"><div class="dz-result ok"><span class="dz-reic">${s.right >= 7 ? '🌟' : '✓'}</span>
+    el.innerHTML = `<div class="dz-top"><span></span><h1 class="dz-ptitle">${pic(t, 'mc-pic-h')} ${esc(t.title)}</h1></div><div class="dz-pane"><div class="dz-result ok"><span class="dz-reic">${s.right >= 7 ? '🌟' : '✓'}</span>
       <p>${AR(s.right)} من ${AR(items.length)}${res.up ? '<br>مستوى جديد! 🎉' : ''}</p></div>
       <div class="dz-row"><button class="dz-btn soft" id="mcList">إلى الركن</button><button class="dz-big" id="mcAgain">جولة أخرى ✏️</button></div></div>`;
     if (s.right >= 7) api.SFX.good();
@@ -325,7 +329,7 @@ function mount(ctx) {
 
   /* ---------- one item; resolves true if right at the first try. Her rule: «التالي» after every answer ---------- */
   function frame(t, i, n, body) {
-    el.innerHTML = `<div class="dz-top"><button class="quit" id="mcStop" aria-label="الركن"><svg aria-hidden="true"><use href="#i-close"/></svg></button><h1 class="dz-ptitle sm">${t.icon} ${esc(t.title)}</h1><p class="dz-count">${AR(i + 1)} من ${AR(n)}</p></div>
+    el.innerHTML = `<div class="dz-top"><button class="quit" id="mcStop" aria-label="الركن"><svg aria-hidden="true"><use href="#i-close"/></svg></button><h1 class="dz-ptitle sm">${pic(t, 'mc-pic-h')} ${esc(t.title)}</h1><p class="dz-count">${AR(i + 1)} من ${AR(n)}</p></div>
       <div class="dz-pane mc-item">${body}<div class="dz-fb" id="mcFb"></div><div class="dz-row dz-nextrow" id="mcNextRow"></div></div>`;
     $('#mcStop').onclick = () => { api.SFX.init(); S = null; open(); };
   }
