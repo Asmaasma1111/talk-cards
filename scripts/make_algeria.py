@@ -257,7 +257,9 @@ def build():
             c['photo'] = f"assets/algeria/photos/{c['photo']}.webp"
         if c.get('n'):
             c['num'] = num(c.pop('n'))
-        add(f'c-{cid_}-f', (c['ask'] + ' ' + c['f']) if c.get('mark') else c['f'] if not c.get('num') else c['f'])
+        # the number cards all ask the same «اقرئي العدد»: one clip serves them all
+        c['fid'] = 'c-num-f' if c.get('num') else f'c-{cid_}-f'
+        add(c['fid'], (c['ask'] + ' ' + c['f']) if c.get('mark') else c['f'])
         add(f'c-{cid_}-b', c['b'] + ('. ' + c['s'] if c.get('s') else ''))
         cards[cid_] = c
     pics = {}

@@ -490,7 +490,7 @@ function mount(api) {
         <div class="face back"><span class="dz-deck">${esc(D.decks[c.deck])}</span>${cardBack(c)}</div></div></div></div>`;
       $('#dzRate').hidden = true; $('#dzFlip').hidden = false;
       await sleep(250); if (!live(s)) return;
-      say(`c-${id}-f`);
+      say(c.fid || `c-${id}-f`);
       await new Promise(ok => {
         const flip = () => { api.SFX.init(); $('#dzCard').classList.add('flipped'); $('#dzFlip').hidden = true; $('#dzRate').hidden = false; say(`c-${id}-b`); ok(); };
         $('#dzCard').addEventListener('click', flip, { once: true }); $('#dzFlip').onclick = flip;
