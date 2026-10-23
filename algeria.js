@@ -8,6 +8,9 @@
      4 a last item that is always easy, then «عودي غداً 🌟».
    Arabic and maths take turns; a step is passed after two different days with at most one mistake alone; when both
    steps of a city are passed she gets the city's stamp in her passport (the one quiet reward) and the city lights up.
+   Her rules (23 Oct 2026): after every answer she taps «التالي» to move on (the app never moves on by itself), and the
+   voice reads a text only once: instructions, the worked example, the rule (first day) and the model description;
+   everything she answers or reads herself (postcard, cards, practice sentences, numbers, choices) is not read for her.
    Content: algeria.json (scripts/make_algeria.py). Progress: 'tc:maria:algeria'. Her recordings and the photos of her
    pages stay on the iPad, in IndexedDB 'algeria-trip' (they travel only inside the backup file). */
 (function (root) {
@@ -438,6 +441,15 @@ function mount(api) {
     await endScreen(s);
   }
   const waitClick = (el, sel) => new Promise(ok => el.querySelector(sel).addEventListener('click', () => { api.SFX.init(); ok(); }, { once: true }));
+  // after an answer: «التالي» appears and she taps it herself (her rule: the app never moves on by itself)
+  function tapNext(P) {
+    let row = P.querySelector('.dz-nextrow');
+    if (!row) { row = document.createElement('div'); row.className = 'dz-row dz-nextrow'; P.append(row); }
+    row.innerHTML = `<button class="dz-big" id="dzNextA">${L.next}</button>`;
+    return waitClick(row, '#dzNextA').then(() => { stopAudio(); row.innerHTML = ''; });
+  }
+  // a part of the session that plays in steps stops when she moves on before it ends
+  const partOf = s => { const k = (s.part = (s.part || 0) + 1); return () => live(s) && s.part === k; };
 
   /* ---------- the postcard: the first day in a city ---------- */
   async function postcard(s) {
@@ -449,17 +461,8 @@ function mount(api) {
         <p class="dz-hint">${L.readPost}</p>
         <div class="dz-post-text" id="dzPostText">${c.post.map(p => `<p data-id="${p.id}">${esc(p.t)}</p>`).join('')}</div>
       </div>
-      <div class="dz-row"><button class="dz-btn soft" id="dzPostListen">🔊 ${L.listen}</button><button class="dz-big" id="dzNext">${L.next}</button></div>`, 'post');
-    sayFor(uiClip('readPost'), 600);
-    P.querySelector('#dzPostListen').addEventListener('click', async () => {
-      api.SFX.init();
-      for (const el of P.querySelectorAll('#dzPostText p')) {
-        if (!live(s)) return;
-        P.querySelectorAll('#dzPostText p').forEach(x => x.classList.toggle('on', x === el));
-        await sayFor(el.dataset.id, 2200);
-      }
-      P.querySelectorAll('#dzPostText p').forEach(x => x.classList.remove('on'));
-    });
+      <div class="dz-row"><button class="dz-big" id="dzNext">${L.next}</button></div>`, 'post');
+    say(uiClip('readPost'));
     await waitClick(P, '#dzNext'); stopAudio();
     r.arrived[c.id] = s.t; teach(r, D, c.cards); save();
   }
@@ -490,9 +493,8 @@ function mount(api) {
         <div class="face back"><span class="dz-deck">${esc(D.decks[c.deck])}</span>${cardBack(c)}</div></div></div></div>`;
       $('#dzRate').hidden = true; $('#dzFlip').hidden = false;
       await sleep(250); if (!live(s)) return;
-      say(c.fid || `c-${id}-f`);
       await new Promise(ok => {
-        const flip = () => { api.SFX.init(); $('#dzCard').classList.add('flipped'); $('#dzFlip').hidden = true; $('#dzRate').hidden = false; say(`c-${id}-b`); ok(); };
+        const flip = () => { api.SFX.init(); $('#dzCard').classList.add('flipped'); $('#dzFlip').hidden = true; $('#dzRate').hidden = false; ok(); };
         $('#dzCard').addEventListener('click', flip, { once: true }); $('#dzFlip').onclick = flip;
       });
       const good = await new Promise(ok => { $('#dzGood').onclick = () => ok(true); $('#dzAgain').onclick = () => ok(false); });
@@ -531,43 +533,40 @@ function mount(api) {
     // 1 watch and listen: the sentence, then each word lights up with its kind
     const sid = st.worked[k % st.worked.length], ws = D.sent[sid], shown = ws.map(() => false);
     let P = pane(`${head(L.watch)}<div class="dz-sentence" id="dzSent">${wordChips(ws, shown, -1)}</div><div id="dzRuleSlot"></div>
-      <div class="dz-row"><button class="dz-btn soft" id="dzAgainEx">🔊 ${L.listen}</button><button class="dz-big" id="dzNext" disabled>${L.next}</button></div>`, 'step');
-    const showWorked = async () => {
-      await sayFor(uiClip('watch'), 700); if (!live(s)) return;
+      <div class="dz-row"><button class="dz-big" id="dzNext">${L.next}</button></div>`, 'step');
+    const next = waitClick(P, '#dzNext').then(() => stopAudio());
+    const alive = partOf(s);
+    (async () => {
+      await sayFor(uiClip('watch'), 700); if (!alive()) return;
       await sayFor('s-' + sid, 2000);
-      for (let i = 0; i < ws.length && live(s); i++) {
-        shown[i] = true; $('#dzSent').innerHTML = wordChips(ws, shown, i);
-        await sayFor(ws[i].id, 600); if (!live(s)) return;
+      for (let i = 0; i < ws.length && alive(); i++) {
+        shown[i] = true; P.querySelector('#dzSent').innerHTML = wordChips(ws, shown, i);
+        await sayFor(ws[i].id, 600); if (!alive()) return;
         await sayFor('y-' + ws[i].k, 1500);
       }
-      $('#dzSent').innerHTML = wordChips(ws, shown, -1);
-    };
-    await showWorked(); if (!live(s)) return;
-    $('#dzRuleSlot').innerHTML = ruleBox(st);
-    if (first || k < 2) { await readRule(P); if (!live(s)) return; }
-    P.querySelector('#dzNext').disabled = false;
-    P.querySelector('#dzAgainEx').addEventListener('click', () => { api.SFX.init(); ws.forEach((_, i) => { shown[i] = false; }); showWorked(); });
-    await waitClick(P, '#dzNext'); stopAudio(); if (!live(s)) return;
+      if (!alive()) return;
+      P.querySelector('#dzSent').innerHTML = wordChips(ws, shown, -1);
+      P.querySelector('#dzRuleSlot').innerHTML = ruleBox(st);
+    if (first) { await readRule(P); if (!alive()) return; }
+    })();
+    await next; partOf(s); if (!live(s)) return;
 
     // 2 your turn: every word has its kind but one
     const [gid, gi] = st.guided[k % st.guided.length], gw = D.sent[gid], gshown = gw.map((_, i) => i !== gi);
     P = pane(`${head(L.yourTurn)}<div class="dz-sentence" id="dzSent">${wordChips(gw, gshown, gi)}</div><p class="dz-q">${L.whatKind}</p>${catBtns(st)}<div class="dz-fb" id="dzFb"></div>`, 'step');
-    sayFor(uiClip('yourTurn'), 600).then(() => live(s) && say('s-' + gid));
+    say(uiClip('yourTurn'));
     await askKind(s, P, gw[gi], false, () => { gshown[gi] = true; $('#dzSent').innerHTML = wordChips(gw, gshown, -1); });
     if (!live(s)) return;
-    await sleep(900);
 
     // 3 alone: two sentences, every word
     const pair = st.alone[k % st.alone.length];
     for (let n = 0; n < pair.length && live(s); n++) {
       const aw = D.sent[pair[n]], ash = aw.map(() => false);
       P = pane(`${head(L.alone)}<div class="dz-sentence" id="dzSent">${wordChips(aw, ash, 0)}</div><p class="dz-q">${L.whatKind}</p>${catBtns(st)}<div class="dz-fb" id="dzFb"></div>`, 'step');
-      if (n === 0) await sayFor(uiClip('alone'), 600);
-      say('s-' + pair[n]);
+      if (n === 0) say(uiClip('alone'));
       for (let i = 0; i < aw.length && live(s); i++) {
         $('#dzSent').innerHTML = wordChips(aw, ash, i);
         await askKind(s, P, aw[i], true, () => { ash[i] = true; $('#dzSent').innerHTML = wordChips(aw, ash, -1); });
-        await sleep(350);
       }
     }
   }
@@ -585,14 +584,14 @@ function mount(api) {
         if (b.dataset.k === want) {
           b.classList.add('yes'); onRight(); api.SFX.good(); fb.textContent = L.well;
           box.onclick = null; box.querySelectorAll('button').forEach(x => { x.disabled = true; });
-          await sayFor(w.id, 500); await sayFor('y-' + w.k, 1200); ok(); return;
+          await tapNext(P); ok(); return;
         }
         b.classList.add('no'); b.disabled = true;
         if (alone || tries >= 2) {
           if (alone) s.wrong++;
           box.onclick = null; box.querySelectorAll('button').forEach(x => { x.disabled = true; if (x.dataset.k === want) x.classList.add('yes'); });
           fb.textContent = L.look; onRight();
-          await sayFor(w.id, 500); await sayFor('y-' + w.k, 1500); await sleep(500); ok(); return;
+          await tapNext(P); ok(); return;
         }
         fb.textContent = L.think; say(uiClip('think'));
       };
@@ -610,55 +609,51 @@ function mount(api) {
     const ex = st.worked[k % st.worked.length], [th, un] = ex.parts;
     let P = pane(`${head(L.watch)}<div class="dz-numrow"><p class="dz-bignum">${N(ex.n)}</p>${placeTable(ex.n, '')}</div>
       <div class="dz-read"><span class="dz-grp th" id="dzTh">${th[1] ? esc(th[1]) : ''}</span> <span class="dz-grp un" id="dzUn">${esc(un[1])}</span></div>
-      <div id="dzRuleSlot"></div><div class="dz-row"><button class="dz-btn soft" id="dzAgainEx">🔊 ${L.listen}</button><button class="dz-big" id="dzNext" disabled>${L.next}</button></div>`, 'step num');
+      <div id="dzRuleSlot"></div><div class="dz-row"><button class="dz-big" id="dzNext">${L.next}</button></div>`, 'step num');
+    const next = waitClick(P, '#dzNext').then(() => stopAudio());
+    const alive = partOf(s), live_ = live;
     const showWorked = async () => {
+      const live = () => alive();
       await sayFor(uiClip('watch'), 700); if (!live(s)) return;
       if (th[0]) { P.querySelector('.dz-places').outerHTML = placeTable(ex.n, 'th'); $('#dzTh').classList.add('on'); }
-      if (first || k < 2) { await sayFor('r-ma1-2', 2200); if (!live(s)) return; }
+      if (first) { await sayFor('r-ma1-2', 2200); if (!live(s)) return; }
       await sleep(400);
       if (th[0]) { P.querySelector('.dz-places').outerHTML = placeTable(ex.n, 'un'); $('#dzTh').classList.remove('on'); }
       $('#dzUn').classList.add('on');
-      if (first || k < 2) { await sayFor('r-ma1-3', 1800); if (!live(s)) return; }
+      if (first) { await sayFor('r-ma1-3', 1800); if (!live(s)) return; }
       $('#dzTh').classList.add('on');
       await sayFor('n-' + ex.n, 2600);
       $('#dzTh').classList.remove('on'); $('#dzUn').classList.remove('on');
       P.querySelector('.dz-places').outerHTML = placeTable(ex.n, '');
+      P.querySelector('#dzRuleSlot').innerHTML = ruleBox(st);
     };
-    if (first || k < 2) { await sayFor('r-ma1-1', 2400); if (!live(s)) return; }
-    await showWorked(); if (!live(s)) return;
-    $('#dzRuleSlot').innerHTML = ruleBox(st);
-    P.querySelector('#dzNext').disabled = false;
-    P.querySelector('#dzAgainEx').addEventListener('click', () => { api.SFX.init(); showWorked(); });
-    await waitClick(P, '#dzNext'); stopAudio(); if (!live(s)) return;
+    (async () => { if (first) { await sayFor('r-ma1-1', 2400); if (!alive()) return; } await showWorked(); })();
+    await next; partOf(s); if (!live_(s)) return;
 
     // 2 your turn: one part of the words is missing
     const g = st.guided[k % st.guided.length];
     P = pane(`${head(L.yourTurn)}<p class="dz-bignum">${N(g.n)}</p>
       <p class="dz-words">${g.parts.map((w, i) => (i === g.blank ? '<span class="dz-blank" id="dzBlank">؟</span>' : `<span>${esc(w)}</span>`)).join(' ')}</p>
       <div class="dz-opts" id="dzOpts">${g.opts.map((o, i) => `<button class="dz-opt" data-i="${i}">${esc(o)}</button>`).join('')}</div><div class="dz-fb" id="dzFb"></div>`, 'step num');
-    sayFor(uiClip('yourTurn'), 600);
-    await choose(s, P, g.opts.indexOf(g.parts[g.blank]), false, () => { $('#dzBlank').textContent = g.parts[g.blank]; $('#dzBlank').classList.add('filled'); }, 'n-' + g.n);
-    if (!live(s)) return; await sleep(800);
+    say(uiClip('yourTurn'));
+    await choose(s, P, g.opts.indexOf(g.parts[g.blank]), false, () => { $('#dzBlank').textContent = g.parts[g.blank]; $('#dzBlank').classList.add('filled'); });
+    if (!live(s)) return;
 
     // 3 alone: four items
     const items = st.alone[k % st.alone.length];
     for (let n = 0; n < items.length && live(s); n++) {
       const it = items[n];
       if (it.t === 'space') { P = pane(`${head(L.alone)}<p class="dz-q">${L.wherSpace}</p><div class="dz-digits" id="dzDigits" dir="ltr"></div><div class="dz-fb" id="dzFb"></div>`, 'step num');
-        if (n === 0) await sayFor(uiClip('alone'), 600);
-        say(uiClip('wherSpace'));
+        say(uiClip(n === 0 ? 'alone' : 'wherSpace'));
         await spaceItem(s, P, it.n); continue; }
       const q = it.t === 'n2w' ? `<p class="dz-q">${L.pickWords}</p><p class="dz-bignum">${N(it.n)}</p>` : `<p class="dz-q">${L.pickNum}</p><p class="dz-words big">${esc(it.w)}</p>`;
       const opts = it.opts.map((o, i) => `<button class="dz-opt${it.t === 'w2n' ? ' n' : ''}" data-i="${i}">${it.t === 'w2n' ? N(o) : esc(o)}</button>`).join('');
       P = pane(`${head(L.alone)}${q}<div class="dz-opts" id="dzOpts">${opts}</div><div class="dz-fb" id="dzFb"></div>`, 'step num');
-      if (n === 0) await sayFor(uiClip('alone'), 600);
-      say(uiClip(it.t === 'n2w' ? 'pickWords' : 'pickNum'));
-      const n0 = it.t === 'n2w' ? it.n : it.opts[it.ok];
-      await choose(s, P, it.ok, true, () => {}, 'n-' + n0);
-      await sleep(500);
+      say(uiClip(n === 0 ? 'alone' : it.t === 'n2w' ? 'pickWords' : 'pickNum'));
+      await choose(s, P, it.ok, true, () => {});
     }
   }
-  function choose(s, P, ok, alone, onRight, clip) {
+  function choose(s, P, ok, alone, onRight) {
     return new Promise(done => {
       let tries = 0; const box = P.querySelector('#dzOpts'), fb = P.querySelector('#dzFb');
       box.onclick = async e => {
@@ -668,13 +663,13 @@ function mount(api) {
         if (Number(b.dataset.i) === ok) {
           b.classList.add('yes'); onRight(); api.SFX.good(); fb.textContent = L.well; box.onclick = null;
           box.querySelectorAll('button').forEach(x => { x.disabled = true; });
-          await sayFor(clip, 1600); done(); return;
+          await tapNext(P); done(); return;
         }
         b.classList.add('no'); b.disabled = true;
         if (alone || tries >= 2) {
           if (alone) s.wrong++;
           box.onclick = null; box.querySelectorAll('button').forEach(x => { x.disabled = true; if (Number(x.dataset.i) === ok) x.classList.add('yes'); });
-          fb.textContent = L.look; onRight(); await sayFor(clip, 2000); await sleep(600); done(); return;
+          fb.textContent = L.look; onRight(); await tapNext(P); done(); return;
         }
         fb.textContent = L.think; say(uiClip('think'));
       };
@@ -695,7 +690,7 @@ function mount(api) {
         el.querySelectorAll('.dz-gap').forEach(x => { x.disabled = true; if (Number(x.dataset.i) === want) x.classList.add('yes'); });
         P.querySelector('#dzFb').textContent = right ? L.well : L.look;
         if (right) api.SFX.good();
-        await sayFor('n-' + n, 1800); await sleep(600); done();
+        await tapNext(P); done();
       };
     });
   }
@@ -740,14 +735,13 @@ function mount(api) {
         <div class="dz-photo"><img src="${p.photo}" alt="">${page ? `<img class="dz-pagephoto" src="${URL.createObjectURL(page.blob)}" alt="${L.myPage}">` : ''}</div>
         <div class="dz-picside"><h2 class="dz-h">${L.model}</h2>
           <div class="dz-model" id="dzModel">${lines.map((x, i) => `<p data-id="m-${pid}-${i + 1}">${esc(x)}</p>`).join('')}</div>
-          <div class="dz-row">${mine ? `<button class="dz-btn soft" id="dzMine">🎧 ${L.mine}</button>` : ''}<button class="dz-btn soft" id="dzModelAgain">🔊 ${L.listen}</button></div>
+          <div class="dz-row">${mine ? `<button class="dz-btn soft" id="dzMine">🎧 ${L.mine}</button>` : ''}</div>
           <button class="dz-big" id="dzNext">${L.next}</button></div></div>`, 'pic');
     const readModel = async () => {
       for (const el of Q.querySelectorAll('#dzModel p')) { if (!live(s)) return; Q.querySelectorAll('#dzModel p').forEach(x => x.classList.toggle('on', x === el)); await sayFor(el.dataset.id, 2600); }
       Q.querySelectorAll('#dzModel p').forEach(x => x.classList.remove('on'));
     };
     await sayFor(uiClip('model'), 700); if (live(s)) readModel();
-    Q.querySelector('#dzModelAgain').addEventListener('click', () => { api.SFX.init(); readModel(); });
     if (mine) Q.querySelector('#dzMine').addEventListener('click', () => { api.SFX.init(); playMine(recId); });
     const pp = Q.querySelector('.dz-pagephoto'); if (pp) pp.addEventListener('click', () => pp.classList.toggle('big'));
     await waitClick(Q, '#dzNext'); stopAudio();
@@ -760,10 +754,8 @@ function mount(api) {
     const st = D.steps[id] || D.steps.ar1, k = r.n % st.easy.length, e = st.easy[k];
     const P = pane(`<h2 class="dz-h">${L.easy}</h2><p class="dz-q">${esc(e.ask)}</p>
       <div class="dz-opts two" id="dzOpts">${e.opts.map((o, i) => `<button class="dz-opt${/\d/.test(o) ? ' n' : ''}" data-i="${i}">${/\d/.test(o) ? `<span class="dz-n" dir="ltr">${esc(o)}</span>` : esc(o)}</button>`).join('')}</div><div class="dz-fb" id="dzFb"></div>`, 'easy');
-    await sayFor(uiClip('easy'), 600); if (!live(s)) return;
-    say(`e-${st.id}-${k + 1}`);
-    await choose(s, P, e.ok, false, () => {}, null);
-    await sleep(400);
+    say(uiClip('easy'));
+    await choose(s, P, e.ok, false, () => {});
   }
 
   /* ---------- the stamp: the one quiet reward ---------- */
