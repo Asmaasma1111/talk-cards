@@ -147,8 +147,8 @@ T('tools', '🧰', 'الأدوات الهندسية', {
   ex: [] },
   (rnd, lv) => {
     if (lv >= 2 && rnd() < 0.5) {
-      const angles = shuffle([90, pick(rnd, [45, 60, 70]), pick(rnd, [110, 120, 135])], rnd);
-      return { k: 'mc', q: 'أيُّ زاويةٍ قائمة؟', opts: angles.map(a => svgAngle(a)), ok: angles.indexOf(90), show: 'svg' };
+      const right = pick(rnd, ['ang90a', 'ang90b']), opts = shuffle([right, 'ang45', 'ang135'], rnd);
+      return { k: 'mc', q: 'أيُّ زاويةٍ قائمة؟', opts: opts.map(paperImg), ok: opts.indexOf(right), show: 'svg' };
     }
     const qs = [['بماذا نرسمُ دائرة؟', 'compass'], ['بماذا نتحقّقُ من الزاوية القائمة؟', 'square'], ['بماذا نقيسُ طولَ قطعةٍ مستقيمة؟', 'ruler']];
     const [q, right] = pick(rnd, qs), opts = shuffle(['ruler', 'square', 'compass'], rnd);
@@ -169,8 +169,8 @@ T('lines', '➕', 'المستقيمات المتوازية والمتعامدة'
   rule: ['المستقيمان المتوازيان لا يلتقيان أبدًا.', 'المستقيمان المتعامدان يلتقيان ويصنعان زاويةً قائمة.'],
   ex: [] },
   (rnd) => {
-    const want = pick(rnd, ['par', 'perp']), kinds = shuffle(['par', 'perp', 'cross'], rnd), rot = int(rnd, -25, 25);
-    return { k: 'mc', q: want === 'par' ? 'أيُّ مستقيمين متوازيان؟' : 'أيُّ مستقيمين متعامدان؟', opts: kinds.map(k => svgLines(k, rot)), ok: kinds.indexOf(want), show: 'svg' };
+    const par = pick(rnd, ['par', 'parv']), want = pick(rnd, [par, 'perp']), opts = shuffle([par, 'perp', 'cross'], rnd);
+    return { k: 'mc', q: want === 'perp' ? 'أيُّ مستقيمين متعامدان؟' : 'أيُّ مستقيمين متوازيان؟', opts: opts.map(paperImg), ok: opts.indexOf(want), show: 'svg' };
   });
 
 T('program', '📝', 'برنامج إنشاء', {
@@ -189,9 +189,8 @@ T('net', '🎲', 'منشور المكعب', {
   rule: ['منشورُ المكعب: ستّةُ مربعاتٍ متلاصقة، إذا طويناها صنعنا مكعبًا.', 'ليس كلُّ شكلٍ من ستّة مربعات منشورًا لمكعب.'],
   ex: [] },
   (rnd) => {
-    const good = cubeNet(int(rnd, 0, 3), int(rnd, 0, 3)), bads = shuffle([NET_BAD.block, NET_BAD.five, NET_BAD.six, sameSide(rnd)], rnd).slice(0, 2);
-    const opts = shuffle([good, ...bads], rnd);
-    return { k: 'mc', q: 'أيُّ شكلٍ نطويه فنحصلُ على مكعب؟', opts: opts.map(svgNet), ok: opts.indexOf(good), show: 'svg' };
+    const opts = shuffle(['net_cross', 'net_block', 'net_row'], rnd);
+    return { k: 'mc', q: 'أيُّ شكلٍ نطويه فنحصلُ على مكعب؟', opts: opts.map(paperImg), ok: opts.indexOf('net_cross'), show: 'svg' };
   });
 
 /* ---------- the cube nets: a row of four with one square above and one below is always a net; others are not ---------- */
@@ -199,8 +198,18 @@ const cubeNet = (i, j) => [[i, 0], [0, 1], [1, 1], [2, 1], [3, 1], [j, 2]];
 const NET_BAD = { block: [[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1]], five: [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [1, 0]], six: [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0]] };
 function sameSide(rnd) { const i = int(rnd, 0, 2); return [[i, 0], [i + 1, 0], [0, 1], [1, 1], [2, 1], [3, 1]]; }   // both on the same side: they meet
 
-/* ---------- the drawings (plain textbook diagrams, green and white) ---------- */
-const SV = (w, h, body) => `<svg class="mc-svg" viewBox="0 0 ${w} ${h}" aria-hidden="true">${body}</svg>`;
+/* ---------- the drawings, as she draws them on paper (her rule): pencil and ruler on squared exercise-book paper.
+   The fixed ones are ChatGPT's paper pictures (scripts/corner_pics.py, checked exact); the ones whose lengths change with
+   each question are drawn here in the same look, one square of the paper for one centimetre. ---------- */
+const paperImg = id => `<img class="mc-paper" src="assets/algeria/corner/${id}.webp" alt="">`;
+const PENCIL = '#3A3A3A', GRID = 22;
+const SV = (w, h, body) => `<svg class="mc-svg paper" viewBox="0 0 ${w} ${h}" aria-hidden="true"><rect width="${w}" height="${h}" fill="#FBFBF8"/>`
+  + Array.from({ length: Math.ceil(w / GRID) + 1 }, (_, i) => `<line x1="${i * GRID}" y1="0" x2="${i * GRID}" y2="${h}" stroke="#BFD6EF" stroke-width="1"/>`).join('')
+  + Array.from({ length: Math.ceil(h / GRID) + 1 }, (_, i) => `<line x1="0" y1="${i * GRID}" x2="${w}" y2="${i * GRID}" stroke="#BFD6EF" stroke-width="1"/>`).join('')
+  + `${body}</svg>`;
+const pen = (x1, y1, x2, y2, w = 2.6) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${PENCIL}" stroke-width="${w}" stroke-linecap="round"/>`;
+const label = (x, y, t) => `<text x="${x}" y="${y}" text-anchor="middle" font-size="18" font-weight="700" fill="${PENCIL}" font-family="Tajawal, sans-serif">${t}</text>`;
+const endCross = (x, y) => pen(x, y - 7, x, y + 7, 2.2);
 function svgAngle(a) {
   const r = 70, x = 30 + r * Math.cos(a * Math.PI / 180), y = 110 - r * Math.sin(a * Math.PI / 180);
   return SV(160, 130, `<path d="M30 110 L130 110 M30 110 L${x.toFixed(1)} ${y.toFixed(1)}" stroke="#0B5530" stroke-width="5" stroke-linecap="round" fill="none"/>`
@@ -213,27 +222,25 @@ function svgToolDrawn(t) {   // the drawn tools, kept for when the pictures are 
   if (t === 'square') return SV(160, 120, '<path d="M30 105 L30 15 L130 105 Z" fill="#CDEBFF" stroke="#2F7FB8" stroke-width="4" stroke-linejoin="round"/><path d="M50 85 L50 60 L77 85 Z" fill="#fff" stroke="#2F7FB8" stroke-width="2"/><path d="M30 92 H43 V105" fill="none" stroke="#2F7FB8" stroke-width="2"/>') + '<b>الكوس</b>';
   return SV(160, 130, '<circle cx="80" cy="18" r="8" fill="#D21034"/><path d="M80 24 L50 115 M80 24 L110 115" stroke="#0B5530" stroke-width="6" stroke-linecap="round"/><path d="M110 115 l-4 10" stroke="#555" stroke-width="3"/><circle cx="50" cy="116" r="3" fill="#333"/>') + '<b>المدوَر</b>';
 }
-function svgSegment(L, marks) {
-  const W = 320, x0 = 20, u = (W - 40) / L, names = ['م', 'ن', 'هـ'];
-  const ticks = Array.from({ length: L + 1 }, (_, i) => `<line x1="${x0 + i * u}" y1="70" x2="${x0 + i * u}" y2="${i % 2 ? 78 : 82}" stroke="#7A8F80" stroke-width="2"/>`).join('');
-  const pts = marks.map((m, i) => `<circle cx="${x0 + m * u}" cy="50" r="6" fill="#D21034"/><text x="${x0 + m * u}" y="34" text-anchor="middle" font-size="20" font-weight="800" fill="#0B5530">${names[i]}</text>`).join('');
-  return SV(W, 100, `<line x1="${x0}" y1="50" x2="${W - 20}" y2="50" stroke="#0B5530" stroke-width="5"/><text x="${W - 20}" y="34" text-anchor="middle" font-size="20" font-weight="800">أ</text><text x="${x0}" y="34" text-anchor="middle" font-size="20" font-weight="800">ب</text>${ticks}${pts}`);
+function svgSegment(L, marks) {   // [أب] of L cm: one square a centimetre, أ on the right
+  const u = GRID, x0 = u, y = 3 * u, W = (L + 2) * u, names = ['م', 'ن', 'هـ'];
+  const pts = marks.map((m, i) => `<circle cx="${x0 + m * u}" cy="${y}" r="5" fill="#D9393F"/>${label(x0 + m * u, y - 12, names[i])}`).join('');
+  return SV(W, 5 * u, pen(x0, y, x0 + L * u, y) + endCross(x0, y) + endCross(x0 + L * u, y) + label(x0 + L * u, y + 26, 'أ') + label(x0, y + 26, 'ب') + pts);
 }
 function svgLines(k, rot) {
   const l = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#0B5530" stroke-width="5" stroke-linecap="round"/>`;
   const body = k === 'par' ? l(20, 45, 140, 45) + l(20, 85, 140, 85) : k === 'perp' ? l(20, 65, 140, 65) + l(80, 10, 80, 120) + '<path d="M80 50 H95 V65" fill="none" stroke="#23A862" stroke-width="3"/>' : l(20, 30, 140, 100) + l(20, 100, 140, 50);
   return SV(160, 130, `<g transform="rotate(${rot} 80 65)">${body}</g>`);
 }
-function svgProgSeg(L, o) {
-  const u = 22, len = o === 'len' ? L + 2 : L, mid = o === 'mid' ? len / 2 + 1 : len / 2, x0 = 15;
-  return SV(len * u + 30, 70, `<line x1="${x0}" y1="40" x2="${x0 + len * u}" y2="40" stroke="#0B5530" stroke-width="4"/><circle cx="${x0 + mid * u}" cy="40" r="5" fill="#D21034"/><text x="${x0 + mid * u}" y="24" text-anchor="middle" font-size="16" font-weight="800">م</text>`
-    + Array.from({ length: len + 1 }, (_, i) => `<line x1="${x0 + i * u}" y1="48" x2="${x0 + i * u}" y2="56" stroke="#7A8F80" stroke-width="2"/>`).join(''));
+function svgProgSeg(L, o) {   // her drawing of the programme: right, or with the midpoint or the length wrong
+  const u = GRID, len = o === 'len' ? L + 2 : L, mid = o === 'mid' ? len / 2 + 1 : len / 2, x0 = u, y = 2 * u;
+  return SV((L + 4) * u, 4 * u, pen(x0, y, x0 + len * u, y) + endCross(x0, y) + endCross(x0 + len * u, y)
+    + `<circle cx="${x0 + mid * u}" cy="${y}" r="5" fill="#D9393F"/>` + label(x0 + mid * u, y - 12, 'م') + label(x0 + len * u, y + 26, 'أ') + label(x0, y + 26, 'ب'));
 }
-function svgProgSq(s, o) {
-  const u = 28, w = (o === 'rect' ? s + 1.5 : s) * u, h = s * u, x0 = 15, y0 = 12;
-  const grid = Array.from({ length: Math.ceil(w / u) + 1 }, (_, i) => `<line x1="${x0 + i * u}" y1="${y0}" x2="${x0 + i * u}" y2="${y0 + h}" stroke="#E1EEE6" stroke-width="1"/>`).join('');
-  const mid = o === 'nomid' ? '' : `<circle cx="${x0 + w / 2}" cy="${y0 + h}" r="5" fill="#D21034"/>`;
-  return SV(w + 30, h + 30, `${grid}<rect x="${x0}" y="${y0}" width="${w}" height="${h}" fill="none" stroke="#0B5530" stroke-width="4"/>${mid}`);
+function svgProgSq(s, o) {   // a square of s cm on the squared paper (or a rectangle, or no midpoint marked)
+  const u = GRID, w = (o === 'rect' ? s + 2 : s) * u, h = s * u, x0 = u, y0 = u;
+  const mid = o === 'nomid' ? '' : `<circle cx="${x0 + w / 2}" cy="${y0 + h}" r="5" fill="#D9393F"/>`;
+  return SV(w + 2 * u, h + 2 * u, pen(x0, y0, x0 + w, y0) + pen(x0 + w, y0, x0 + w, y0 + h) + pen(x0 + w, y0 + h, x0, y0 + h) + pen(x0, y0 + h, x0, y0) + mid);
 }
 function svgNet(cells) {
   const u = 26, W = (Math.max(...cells.map(c => c[0])) + 1) * u, H = (Math.max(...cells.map(c => c[1])) + 1) * u;
@@ -303,7 +310,9 @@ function mount(ctx) {
       <div class="dz-pane"><div class="dz-rule mc-lesson"><h3>تعلّمتُ</h3>${t.lesson.rule.map(l => `<p>${esc(l)}</p>`).join('')}
         ${t.lesson.ex.length ? `<h3>مثال</h3>${t.lesson.ex.map(l => `<p class="mc-ex">${esc(l)}</p>`).join('')}` : ''}
         ${id === 'tools' ? `<div class="mc-tools">${['ruler', 'square', 'compass'].map(k => `<span class="mc-svgopt">${svgTool(k)}</span>`).join('')}</div>` : ''}
-        ${id === 'net' ? `<div class="mc-tools"><span class="mc-svgopt">${svgNet(cubeNet(1, 1))}<b>منشور مكعب ✓</b></span></div>` : ''}</div>
+        ${id === 'net' ? `<div class="mc-tools"><span class="mc-svgopt">${paperImg('net_cross')}<b>منشور مكعب ✓</b></span></div>` : ''}
+        ${id === 'lines' ? `<div class="mc-tools"><span class="mc-svgopt">${paperImg('par')}<b>متوازيان</b></span><span class="mc-svgopt">${paperImg('perp')}<b>متعامدان</b></span></div>` : ''}
+        ${id === 'midpoint' ? `<div class="mc-tools"><span class="mc-svgopt">${paperImg('seg_mid')}<b>المنتصف</b></span></div>` : ''}</div>
         <p class="mc-lv">مستواكِ في هذا الدرس: ${AR(x ? x.level : 1)} من ٣</p>
         <div class="dz-row"><button class="dz-big" id="mcGo">ابدئي التدريب ✏️</button></div></div>`;
     $('#mcBack').onclick = () => { api.SFX.init(); open(); };

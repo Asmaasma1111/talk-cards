@@ -40,8 +40,25 @@ def columns(row, C):
     return [(edges[i], edges[i + 1]) for i in range(C)]
 
 
+# the geometry drawn as on paper (her rule, 23 Oct 2026: "as we draw them on the paper"): pencil and ruler on squared paper.
+# Kept on its paper (no cut-out), each cell of the 4 x 3 sheet as it is; checked exact before use.
+PAPER = ['ang90a', 'ang45', 'ang135', 'ang90b', 'par', 'perp', 'cross', 'parv', 'net_cross', 'net_block', 'net_row', 'seg_mid']
+
+
+def paper_sheet():
+    p = os.path.join(SRC, 'geometry-paper-chatgpt.png')
+    if not os.path.exists(p):
+        return print('geometry-paper not drawn yet')
+    src = Image.open(p).convert('RGB'); w, h = src.width // 4, src.height // 3
+    for k, gid in enumerate(PAPER):
+        c, r = k % 4, k // 4
+        print('paper', gid, webp(src.crop((c * w, r * h, (c + 1) * w, (r + 1) * h)).resize((360, 320), Image.LANCZOS),
+                                 os.path.join(OUT, f'{gid}.webp'), q=84), 'KB')
+
+
 if __name__ == '__main__':
     os.makedirs(OUT, exist_ok=True)
+    paper_sheet()
     for sheet, (ids, per) in SHEETS.items():
         p = os.path.join(SRC, f'{sheet}-chatgpt.png')
         if not os.path.exists(p):
