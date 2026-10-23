@@ -307,22 +307,42 @@ function mount(ctx) {
 
   const lessonsLeft = n => (n === 1 ? 'درسٌ واحد ينتظركِ' : n === 2 ? 'درسان ينتظرانكِ' : n <= 10 ? `${AR(n)} دروس تنتظركِ` : `${AR(n)} درسًا ينتظركِ`);
   const rounds = n => `${AR(n)} ${n === 1 ? 'جولة' : n === 2 ? 'جولتان' : n <= 10 ? 'جولات' : 'جولة'}`;
+  /* the maths door (her choice, 23 Oct 2026): a train across Algeria, from the sea in the north to the Hoggar in the
+     south (ChatGPT's clay panorama, assets/algeria/rail.webp); each lesson is a station on the rail, from right to left.
+     The train waits at the station she is on; finished stations are ticked; the next ones stay grey until she gets there. */
+  const stationX = i => 86 - i * (80 / (TOPICS.length - 1));     // % across the picture, right to left (room for the train)
+  const stationsLeft = n => (n === 1 ? 'محطّةٌ واحدة تنتظركِ' : n === 2 ? 'محطّتان تنتظرانكِ' : n <= 10 ? `${AR(n)} محطّات تنتظركِ` : `${AR(n)} محطّةً تنتظركِ`);
   function open() {
     S = null;
     const c = corner(), ids = openTopics(c, ctx.tripTopics ? ctx.tripTopics() : [], !!ctx.allOpen && ctx.allOpen());
-    const shown = TOPICS.filter(t => ids.includes(t.id)), now = shown.find(t => !mastered(c, t.id));
-    const tile = (t, big) => { const x = c[t.id], i = TOPICS.indexOf(t), done = mastered(c, t.id);
-      return `<button class="mc-tile${big ? ' now' : ''}${done ? ' done' : ''}" data-t="${t.id}"><span class="mc-n">${AR(i + 1)}</span>${done ? '<span class="mc-done">✓</span>' : ''}${pic(t)}<b>${esc(t.title)}</b>
-        <small>${x ? `${stars(x)} · ${rounds(x.rounds)}` : 'درسكِ الجديد'}</small>${big ? '<span class="mc-go">ابدئي ←</span>' : ''}</button>`; };
-    const left = TOPICS.length - shown.length;
-    el.innerHTML = `<div class="dz-top"><button class="quit" id="mcQuit" aria-label="رحلتي"><svg aria-hidden="true"><use href="#i-close"/></svg></button><h1 class="dz-ptitle">🧮 ركن الرياضيات</h1></div>
-      <p class="mc-sub">درسٌ بعد درس: إذا أتقنتِ الدرس (٧ من ٨ في يومين مختلفين) فُتح الدرسُ التالي.</p>
-      ${now ? `<div class="mc-nowrow">${tile(now, true)}</div>` : ''}
-      ${shown.filter(t => t !== now).length ? `<h2 class="mc-h">دروسي</h2><div class="mc-grid">${shown.filter(t => t !== now).map(t => tile(t, false)).join('')}</div>` : ''}
-      ${left ? `<p class="mc-left">🔒 ${lessonsLeft(left)}</p>` : '<p class="mc-left">🌟 فتحتِ كلَّ الدروس!</p>'}`;
+    const now = TOPICS.find(t => ids.includes(t.id) && !mastered(c, t.id)), ni = now ? TOPICS.indexOf(now) : TOPICS.length - 1;
+    const st = TOPICS.map((t, i) => { const done = mastered(c, t.id), here = t === now, open_ = ids.includes(t.id);
+      return `<button class="tr-st ${done ? 'done' : here ? 'now' : open_ ? 'open' : 'locked'}" data-t="${t.id}" style="left:${stationX(i)}%" aria-label="${esc(t.title)}">
+        <img class="tr-post" src="assets/algeria/station.webp" alt=""><span class="tr-sign">${done ? '✓' : AR(i + 1)}</span>${here ? `<span class="tr-name">${esc(t.title)}</span>` : ''}</button>`; }).join('');
+    const train = `<img class="tr-train" src="assets/algeria/train.webp" alt="" style="left:${stationX(ni)}%" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'tr-train em',textContent:'🚂'}))">`;
+    const done = TOPICS.filter(t => mastered(c, t.id)), left = TOPICS.length - ids.length;
+    const x = now && c[now.id];
+    el.innerHTML = `<div class="dz-top"><button class="quit" id="mcQuit" aria-label="الجزائر"><svg aria-hidden="true"><use href="#i-close"/></svg></button><h1 class="dz-ptitle">🚂 قطار الرياضيات</h1></div>
+      <div class="tr-wrap"><div class="tr-scene"><img class="tr-bg" src="assets/algeria/rail.webp" alt="">${st}${train}</div></div>
+      ${now ? `<button class="tr-now" data-t="${now.id}">${pic(now, 'mc-pic-ic')}<span class="tr-nowtxt"><small>المحطّة ${AR(ni + 1)} من ${AR(TOPICS.length)}</small><b>${esc(now.title)}</b>
+        <em>${x ? `${stars(x)} · ${rounds(x.rounds)}` : 'محطّتكِ الجديدة'}</em></span><span class="mc-go">انطلقي ←</span></button>` : '<p class="mc-left">🌟 وصل القطارُ إلى آخر محطّة!</p>'}
+      ${done.length ? `<h2 class="mc-h">محطّاتٌ مررتُ بها</h2><div class="tr-donelist">${done.map(t => `<button class="tr-chip" data-t="${t.id}">${pic(t, 'mc-pic-h')} ${esc(t.title)} ✓</button>`).join('')}</div>` : ''}
+      ${left ? `<p class="mc-left">🔒 ${stationsLeft(left)}</p>` : ''}`;
     $('#mcQuit').onclick = () => { api.SFX.init(); ctx.back(); };
-    el.querySelectorAll('.mc-tile').forEach(b => { b.onclick = () => { api.SFX.init(); lesson(b.dataset.t); }; });
+    el.querySelectorAll('[data-t]').forEach(b => { b.onclick = () => {
+      api.SFX.init();
+      if (b.classList.contains('locked')) { api.toast('تُفتحُ هذه المحطّة عندما يصلُ إليها القطار 🚂'); return; }
+      lesson(b.dataset.t);
+    }; });
     api.show('dzmc');
+    const sc = el.querySelector('.tr-wrap'), here = el.querySelector('.tr-st.now');
+    if (sc && here) requestAnimationFrame(() => { sc.scrollLeft = here.offsetLeft - sc.clientWidth / 2; });
+  }
+  // for the doors: the station she is on, and whether she practised today
+  function status() {
+    const c = corner(), ids = openTopics(c, ctx.tripTopics ? ctx.tripTopics() : [], !!ctx.allOpen && ctx.allOpen());
+    const now = TOPICS.find(t => ids.includes(t.id) && !mastered(c, t.id)) || TOPICS[TOPICS.length - 1];
+    return { n: TOPICS.indexOf(now) + 1, title: now.title, today: Object.values(c).some(x => x && x.last === api.today()) };
   }
   function lesson(id) {
     const t = TOPICS.find(x => x.id === id), x = corner()[id];
@@ -474,7 +494,7 @@ function mount(ctx) {
       };
     });
   }
-  return { open, isOn: () => !el.hidden, busy: () => !!S, leave: () => { S = null; } };
+  return { open, status, isOn: () => !el.hidden, busy: () => !!S, leave: () => { S = null; } };
 }
 
 root.AlgeriaMaths = { core, mount };

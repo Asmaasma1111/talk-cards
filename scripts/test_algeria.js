@@ -19,7 +19,7 @@ function session(r, t, { wrong = 0, cards = true } = {}) {
   return { d, res, stamp };
 }
 
-ok('the first day: the capital, Arabic first, with its postcard and a picture', () => {
+ok('the first day: the capital, its Arabic step, with its postcard and a picture', () => {
   const r = C.blank();
   const d = C.openDay(r, D, '2026-11-01');
   assert.strictEqual(d.city, 'alg'); assert.strictEqual(d.subj, 'ar'); assert.strictEqual(d.step, 'ar1');
@@ -28,54 +28,41 @@ ok('the first day: the capital, Arabic first, with its postcard and a picture', 
   assert.strictEqual(C.openDay(r, D, '2026-11-01'), d, 'the plan of a day never changes once opened');
 });
 
-ok('Arabic and maths take turns; writing on the Arabic turn; a missed day loses nothing', () => {
+ok('the trip is Arabic every day (maths has its own door); writing and speaking take turns; a missed day loses nothing', () => {
   const r = C.blank();
-  const a = session(r, '2026-11-01').d, b = session(r, '2026-11-02').d, c = session(r, '2026-11-05').d;
-  assert.deepStrictEqual([a.subj, b.subj, c.subj], ['ar', 'ma', 'ar']);
+  const a = session(r, '2026-11-01', { wrong: 3 }).d, b = session(r, '2026-11-02', { wrong: 3 }).d, c = session(r, '2026-11-05', { wrong: 3 }).d;
+  assert.deepStrictEqual([a.subj, b.subj, c.subj], ['ar', 'ar', 'ar']);
   assert.deepStrictEqual([a.write, b.write, c.write], [true, false, true]);
   assert.strictEqual(r.n, 3);
 });
 
-ok('Mama can swap the subjects', () => {
-  const r = C.blank(); r.settings.first = 'ma';
-  assert.strictEqual(C.openDay(r, D, '2026-11-01').subj, 'ma');
+ok('Mama can swap writing and speaking', () => {
+  const r = C.blank(); r.settings.first = 'say';
+  assert.strictEqual(C.openDay(r, D, '2026-11-01').write, false);
 });
 
-ok('a step is passed after two different days with at most one mistake; the city gets its stamp after both steps', () => {
+ok('a step is passed after two different days with at most one mistake; then the city gets its stamp', () => {
   const r = C.blank();
-  let t = '2026-11-01';
-  const out = [];
-  for (let i = 0; i < 4; i++) { out.push(session(r, t)); t = C.addDays(t, 1); }
-  assert.deepStrictEqual(out.map(o => o.d.step), ['ar1', 'ma1', 'ar1', 'ma1']);
-  assert.strictEqual(out[0].res.passes, 1); assert.strictEqual(out[2].res.done, true);
-  assert.ok(!out[2].stamp, 'no stamp before the maths step is passed');
-  assert.strictEqual(out[3].stamp.id, 'alg');
-  assert.strictEqual(r.stamps.alg, '2026-11-04');
+  const a = session(r, '2026-11-01'), b = session(r, '2026-11-02');
+  assert.deepStrictEqual([a.d.step, b.d.step], ['ar1', 'ar1']);
+  assert.strictEqual(a.res.passes, 1); assert.ok(!a.stamp);
+  assert.strictEqual(b.res.done, true); assert.strictEqual(b.stamp.id, 'alg');
+  assert.strictEqual(r.stamps.alg, '2026-11-02');
 });
 
 ok('two mistakes alone is not a pass; it comes back on its next day', () => {
   const r = C.blank();
   const a = session(r, '2026-11-01', { wrong: 2 });
   assert.strictEqual(a.res.ok, false); assert.strictEqual(r.steps.ar1.pass.length, 0);
-  session(r, '2026-11-02');
   const c = session(r, '2026-11-03', { wrong: 1 });
   assert.strictEqual(c.d.step, 'ar1'); assert.strictEqual(c.res.ok, true); assert.strictEqual(c.res.passes, 1);
   assert.strictEqual(C.stepDayIx(r, 'ar1', '2026-11-05'), 2, 'the third day takes the third example');
 });
 
-ok('when one subject is passed, the other step comes on both turns', () => {
-  const r = C.blank();
-  ['2026-11-01', '2026-11-03'].forEach(t => { C.openDay(r, D, t); });
-  r.days = {}; r.n = 0;
-  r.steps.ar1 = { days: ['a', 'b'], pass: ['a', 'b'], done: 'b', log: [] };
-  const d = C.openDay(r, D, '2026-11-10');
-  assert.strictEqual(d.turn, 'ar'); assert.strictEqual(d.step, 'ma1'); assert.strictEqual(d.write, true, 'writing still follows the turn');
-});
-
 ok('after the stamp, with the next city not built: no step, the pictures keep coming, cards still due', () => {
   const r = C.blank();
   let t = '2026-11-01';
-  for (let i = 0; i < 4; i++) { session(r, t); t = C.addDays(t, 1); }
+  for (let i = 0; i < 2; i++) { session(r, t); t = C.addDays(t, 1); }
   const d = C.openDay(r, D, t);
   assert.strictEqual(d.city, null); assert.strictEqual(d.step, null); assert.ok(D.pics[d.pic]);
   assert.strictEqual(C.nextOnRoute(r, D).id, 'orn');

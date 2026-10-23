@@ -3,7 +3,7 @@ style of the entrance icons (her decision, 23 Oct 2026: ChatGPT only for the tri
 
     ~/Downloads/06_Projects_and_Code/maria-tenses/.venv/bin/python -I scripts/algeria_art.py
 
-Reads (local only) content/algeria/art/: icon-chatgpt.png, map-chatgpt.png, stamp-<city>-chatgpt.png. Writes:
+Reads (local only) content/algeria/art/: icon-chatgpt.png, map-texture-chatgpt.png, stamp-<city>-chatgpt.png, rail-chatgpt.png, train-chatgpt.png. Writes:
   assets/apps/algeria.webp            the entrance tile icon, 360 px, cut out of its white background
   assets/algeria/map.webp             the map, cut out and fitted to the box of the real border (1000 x 990, the box the
                                       cities are placed in, scripts/make_algeria.py), so the city dots sit where they are
@@ -102,6 +102,18 @@ def main():
     p = os.path.join(SRC, 'map-texture-chatgpt.png')
     if os.path.exists(p):
         webp(clay_map(Image.open(p).convert('RGB')), os.path.join(ROOT, 'assets', 'algeria', 'map.webp'), q=88)
+    # the maths door (her choice: a train across Algeria): the panorama with its rail, and the train with a station sign
+    p = os.path.join(SRC, 'rail-chatgpt.png')
+    if os.path.exists(p):
+        webp(Image.open(p).convert('RGB'), os.path.join(ROOT, 'assets', 'algeria', 'rail.webp'), q=84)
+    p = os.path.join(SRC, 'train-chatgpt.png')
+    if os.path.exists(p):
+        im, sub = cutout(Image.open(p))
+        cols = np.nonzero(sub.any(axis=0))[0]; gaps = np.diff(cols); k = int(np.argmax(gaps))   # the widest gap: train | sign
+        cut = (cols[k] + cols[k + 1]) // 2
+        for name, part in (('train', im.crop((0, 0, cut, im.height))), ('station', im.crop((cut, 0, im.width, im.height)))):
+            part = part.crop(part.getbbox()); k2 = 300 / part.height
+            webp(part.resize((round(part.width * k2), 300), Image.LANCZOS), os.path.join(ROOT, 'assets', 'algeria', f'{name}.webp'))
     for p in sorted(glob.glob(os.path.join(SRC, 'stamp-*-chatgpt.png'))):
         cid = os.path.basename(p).split('-')[1]
         im, _ = cutout(Image.open(p)); webp(square(im, 400, 0.02), os.path.join(ROOT, 'assets', 'algeria', 'stamps', f'{cid}.webp'))

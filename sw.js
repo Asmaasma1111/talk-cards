@@ -2,7 +2,7 @@
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
 // The same file serves both apps: Talk Cards registers sw.js, Prepositions registers sw.js?app=prepositions.
 const APP = new URL(location.href).searchParams.get('app') === 'prepositions' ? 'prepositions' : 'talk-cards';
-const VERSION = APP + '-v123';
+const VERSION = APP + '-v124';
 const FILES = APP === 'prepositions' ? [
   './',
   'index.html',
@@ -169,7 +169,7 @@ async function cacheAlgeria(cache) {
   if (APP !== 'talk-cards') return;
   try {
     const d = await (await fetch('algeria.json', { cache: 'no-cache' })).json();
-    const files = ['assets/apps/algeria.webp', 'assets/algeria/map.webp', 'assets/algeria/outline.svg', ...d.cities.map(c => `assets/algeria/stamps/${c.id}.webp`), ...d.photos];
+    const files = ['assets/apps/algeria.webp', 'assets/algeria/map.webp', 'assets/algeria/outline.svg', 'assets/algeria/rail.webp', 'assets/algeria/train.webp', 'assets/algeria/station.webp', ...d.cities.map(c => `assets/algeria/stamps/${c.id}.webp`), ...d.photos];
     await Promise.all(files.map(f => cache.add(new Request(f, { cache: 'no-cache' })).catch(() => {})));
   } catch (e) { /* the pictures still load when online */ }
 }

@@ -44,7 +44,7 @@ function clean(o) {
   r.settings.level = Math.max(0, Math.min(6, Math.round(Number(r.settings.level)) || 0));
   r.settings.newPerDay = Math.max(1, Math.min(6, Math.round(Number(r.settings.newPerDay)) || 3));
   r.settings.warmMax = Math.max(2, Math.min(10, Math.round(Number(r.settings.warmMax)) || 6));
-  if (!['ar', 'ma'].includes(r.settings.first)) r.settings.first = 'ar';
+  if (!['ar', 'say'].includes(r.settings.first)) r.settings.first = 'ar';
   return r;
 }
 const valid = o => !!o && typeof o === 'object' && !!o.steps && typeof o.steps === 'object' && !!o.cards && typeof o.cards === 'object';
@@ -60,16 +60,15 @@ function lastStamped(r, D) { return [...D.cities].reverse().find(x => r.stamps[x
 
 // today's plan: Arabic and maths take turns (by sessions done, so a missed day loses nothing); writing on the Arabic turn.
 // If the city's step for that subject is already passed, the other subject's step comes instead.
+// Her two doors (23 Oct 2026): the trip is the Arabic door, the maths has its own door (the train, algeria-maths.js).
+// A session is the city's Arabic step; free writing every other session (her rule), speaking about the picture between.
 function plan(r, D) {
-  const turn = (r.n % 2 === 0) === (r.settings.first === 'ar') ? 'ar' : 'ma';
-  const out = { turn, write: turn === 'ar', city: null, subj: null, step: null };
+  const write = (r.n % 2 === 0) === (r.settings.first !== 'say');
+  const out = { turn: 'ar', write, city: null, subj: null, step: null };
   const c = currentCity(r, D); if (!c) return out;
   out.city = c.id;
-  const of = s => c.steps.find(id => D.steps[id] && D.steps[id].subj === s);
-  for (const s of [turn, turn === 'ar' ? 'ma' : 'ar']) {
-    const id = of(s);
-    if (id && !stepDone(r, id)) { out.subj = s; out.step = id; break; }
-  }
+  const id = c.steps.find(x => D.steps[x] && D.steps[x].subj === 'ar' && !stepDone(r, x));
+  if (id) { out.subj = 'ar'; out.step = id; }
   return out;
 }
 // the picture of the day: the city's next unseen picture, then the one seen longest ago
@@ -402,6 +401,16 @@ function mount(api) {
   const ic = (id, cls = '') => `<svg class="${cls}" aria-hidden="true"><use href="#${id}"/></svg>`;
   const N = n => `<span class="dz-n" dir="ltr">${esc(num(n))}</span>`;
   document.body.insertAdjacentHTML('beforeend', `
+<section id="dzdoor" class="screen dz dz-door" dir="rtl" lang="ar" hidden>
+  <header class="dz-head">
+    <img class="dz-logo" src="assets/apps/algeria.webp" alt="" onerror="this.style.visibility='hidden'">
+    <div class="dz-titles"><h1>${L.title}</h1><p>اختاري: العربية أم الرياضيات؟</p></div>
+  </header>
+  <div class="dz-doors">
+    <button class="dz-doorbtn ar" id="dzDoorAr"><img src="assets/algeria/map.webp" alt="" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'dz-doorem',textContent:'🗺️'}))"><b>العربية</b><small>رحلةٌ مدينةً بعد مدينة</small><span class="dz-doorst" id="dzDoorArSt"></span></button>
+    <button class="dz-doorbtn ma" id="dzDoorMa"><img src="assets/algeria/train.webp" alt="" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'dz-doorem',textContent:'🚂'}))"><b>الرياضيات</b><small>قطارٌ محطّةً بعد محطّة</small><span class="dz-doorst" id="dzDoorMaSt"></span></button>
+  </div>
+</section>
 <section id="dzhome" class="screen dz dz-home" dir="rtl" lang="ar" hidden>
   <button class="gear" id="dzGear" aria-label="Mama: press and hold">
     <svg class="ring" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="24"/></svg>${ic('i-gear', 'cog')}
@@ -416,7 +425,7 @@ function mount(api) {
       <div class="dz-here" id="dzHere"></div>
       <button class="dz-go" id="dzGo"><span class="dz-plane" aria-hidden="true">✈️</span><b id="dzGoLabel"></b></button>
       <button class="dz-btn soft" id="dzPassBtn"><span aria-hidden="true">🛂</span> ${L.passport}</button>
-      <button class="dz-btn mc-btn" id="dzMathBtn"><span aria-hidden="true">🧮</span> ركن الرياضيات</button>
+
     </div>
   </div>
 </section>
@@ -435,11 +444,14 @@ function mount(api) {
 
   const stage = $('#dzStage');
   const pane = (html, cls = '') => { stage.innerHTML = `<div class="dz-pane ${cls}">${html}</div>`; return stage.firstElementChild; };
-  if (api.appsChip) {   // the way back to her entrance page
+  if (api.appsChip) {   // the way back to her entrance page, from the doors
     const row = document.createElement('div'); row.className = 'deck-row';
     const b = api.appsChip(); b.addEventListener('click', () => { leave(); api.apps(); });
-    row.append(b); $('#dzhome').append(row);
+    row.append(b); $('#dzdoor').append(row);
   }
+  // from the trip, the way back to the two doors
+  const backDoor = () => { const b = document.createElement('button'); b.className = 'deck-chip deck-apps dz-backdoor'; b.lang = 'ar'; b.dir = 'rtl'; b.textContent = '🚪 العربية والرياضيات'; return b; };
+  { const row = document.createElement('div'); row.className = 'deck-row'; const b = backDoor(); b.addEventListener('click', () => { leave(); home(); }); row.append(b); $('#dzhome').append(row); }
 
   /* =====================================================================================================
      The map: Algeria (the trip-world picture made in ChatGPT, or the outline drawn from the country's border),
@@ -460,6 +472,7 @@ function mount(api) {
   /* =====================================================================================================
      Home
      ===================================================================================================== */
+  // the two doors (her request, 23 Oct 2026): العربية (the trip) and الرياضيات (the train)
   async function home() {
     await ready;
     leave();
@@ -467,6 +480,18 @@ function mount(api) {
     if (api.setDeck) api.setDeck('dz');
     document.body.dataset.profile = 'maria';
     if (!D) { api.toast('هذا التطبيق لم يفتح. اتصلي بالإنترنت مرة واحدة.'); return; }
+    const t = today(), here = nextOnRoute(r, D);
+    $('#dzDoorArSt').textContent = dayDone(r, t) ? '✓ أنجزتِ رحلة اليوم' : here && here.ready ? `${here.name} تنتظركِ` : 'رحلة اليوم تنتظركِ';
+    $('#dzDoorArSt').classList.toggle('done', dayDone(r, t));
+    const ms = MC && MC.status ? MC.status() : null;
+    $('#dzDoorMaSt').textContent = ms ? (ms.today ? '✓ تدرّبتِ اليوم' : `المحطّة ${num(ms.n)}: ${ms.title}`) : '';
+    $('#dzDoorMaSt').classList.toggle('done', !!(ms && ms.today));
+    api.show('dzdoor');
+  }
+  async function homeTrip() {
+    await ready;
+    leave();
+    if (!D) return;
     const t = today(), done = dayDone(r, t), here = nextOnRoute(r, D);
     $('#dzMap').innerHTML = mapHTML();
     $('#dzHere').innerHTML = here && here.ready
@@ -476,6 +501,8 @@ function mount(api) {
     $('#dzGo').disabled = done; $('#dzGo').classList.toggle('done', done);
     api.show('dzhome');
   }
+  $('#dzDoorAr').addEventListener('click', () => { api.SFX.init(); unlock(); homeTrip(); });
+  $('#dzDoorMa').addEventListener('click', () => { api.SFX.init(); unlock(); if (MC) MC.open(); });
 
   /* =====================================================================================================
      The daily session
@@ -847,7 +874,7 @@ function mount(api) {
       <button class="dz-big" id="dzNext">${L.toMap}</button></div>`, 'end');
     sayFor(uiClip('end'), 600);
     await waitClick(P, '#dzNext'); stopAudio();
-    S = null; home();
+    S = null; homeTrip();
   }
 
   /* =====================================================================================================
@@ -859,7 +886,7 @@ function mount(api) {
       <div class="dz-passbook"><div class="dz-passgrid">${D.cities.map(c => r.stamps[c.id]
         ? `<div class="dz-slot got"><img src="assets/algeria/stamps/${c.id}.webp" alt="" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'dz-stampfall',textContent:'${esc(c.name)}'}))"><b>${esc(c.name)}</b><small>${esc(dAr(r.stamps[c.id]))}</small></div>`
         : `<div class="dz-slot"><span class="dz-slotname">${esc(c.name)}</span><small>${esc(c.nick)}</small></div>`).join('')}</div></div>`;
-    $('#dzPassQuit').addEventListener('click', home);
+    $('#dzPassQuit').addEventListener('click', homeTrip);
     api.show('dzpass');
   }
 
@@ -881,8 +908,8 @@ function mount(api) {
       <section><h2>The trip</h2><p>Sessions done: <b>${r.n}</b>. Today: ${dayDone(r, t) ? 'done ✓' : r.days[t] ? 'started' : 'not yet'}.
         ${here ? `Visiting: <span lang="ar">${esc(here.name)}</span>${here.ready ? '' : ' (not built yet: she reviews her cards and gets a picture each day)'}.` : 'Every city stamped.'}</p>
         <p>Stamps: ${Object.keys(r.stamps).length ? D.cities.filter(c => r.stamps[c.id]).map(c => `<span lang="ar">${esc(c.name)}</span> (${r.stamps[c.id]})`).join(', ') : 'none yet'}.</p>
-        <p>Next session: <b>${plan(r, D).turn === 'ar' ? 'Arabic step + free writing' : 'maths step + speaking about the picture'}</b>.
-          <button class="dz-pbtn soft" data-act="swap">Swap Arabic / maths</button></p></section>
+        <p>Next session: <b>${plan(r, D).write ? 'free writing about the picture' : 'speaking about the picture'}</b> (they take turns).
+          <button class="dz-pbtn soft" data-act="swap">Swap writing / speaking</button></p></section>
       <section><h2>The steps</h2><table class="dz-ptab"><tr><th>Subject</th><th>Step</th><th>Days</th><th>Passed on</th><th></th></tr>
         ${Object.values(D.steps).map(stepRow).join('')}</table>
         <p class="dz-note">A step is passed after two different days with at most one mistake when she works alone.</p></section>
@@ -914,7 +941,7 @@ function mount(api) {
     if (b.dataset.play) { playMine(b.dataset.play); return; }
     const act = b.dataset.act, st = b.dataset.id && r.steps[b.dataset.id];
     if (act === 'backup') return api.backup && api.backup();
-    if (act === 'swap') { r.settings.first = r.settings.first === 'ar' ? 'ma' : 'ar'; }
+    if (act === 'swap') { r.settings.first = r.settings.first === 'say' ? 'ar' : 'say'; }
     if (act === 'npd') r.settings.newPerDay = Math.max(1, Math.min(6, r.settings.newPerDay + Number(b.dataset.d)));
     if (act === 'lv') r.settings.level = Math.max(1, Math.min(6, level(r) + Number(b.dataset.d)));
     if (act === 'lv0') r.settings.level = 0;
@@ -934,12 +961,11 @@ function mount(api) {
     // the corner never falls behind the trip: a topic the trip has reached is open there too
     tripTopics: () => Object.values(D ? D.steps : {}).filter(st => st.corner && r.steps[st.id]).map(st => st.corner),
     allOpen: () => !!r.settings.cornerAll }) : null;
-  $('#dzMathBtn').hidden = !MC;
-  $('#dzMathBtn').addEventListener('click', () => { api.SFX.init(); unlock(); if (MC) MC.open(); });
-  $('#dzQuit').addEventListener('click', () => { leave(); home(); });
+
+  $('#dzQuit').addEventListener('click', () => { leave(); homeTrip(); });
   document.addEventListener('visibilitychange', () => { if (document.hidden) { stopRec(); stopAudio(); } });
 
-  const SCREENS = ['dzhome', 'dzsess', 'dzpass', 'dzparent'];
+  const SCREENS = ['dzdoor', 'dzhome', 'dzsess', 'dzpass', 'dzparent'];
   return {
     home, ready,
     isOn: () => SCREENS.some(id => !$('#' + id).hidden) || !$('#dzCel').hidden || !!(MC && MC.isOn()),
@@ -950,7 +976,7 @@ function mount(api) {
     valid,
     replace(obj) { r = clean(obj); save(); },
     // for tests (?dev=1)
-    get state() { return r; }, get data() { return D; }, core, openParent, openPassport, start,
+    get state() { return r; }, get data() { return D; }, core, openParent, openPassport, start, homeTrip,
     async _part(name, over = {}) {   // run one part of today's session on its own (tests only)
       await ready; const t = today(); const day = { ...openDay(r, D, t), ...over };
       S = { t, day, wrong: 0, total: 0 }; api.show('dzsess');

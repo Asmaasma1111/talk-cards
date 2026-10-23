@@ -238,7 +238,8 @@ def build():
         x, y = place(lon, lat)
         c = dict(id=cid, n=k + 1, name=name, nick=nick, x=x, y=y, ready=cid == 'alg', **({'mine': True} if cid == 'stf' else {}))
         if cid == 'alg':
-            c.update(steps=['ar1', 'ma1'], pics=list(PICS), cards=['dz1', 'dz2', 'dz3', 'dz4', 'dz5', 'dz6', 'dz7'],
+            c.update(steps=['ar1'], pics=list(PICS),   # the trip is the Arabic door; the maths has its own (the train)
+                     cards=['dz1', 'dz2', 'dz3', 'dz4', 'dz5', 'dz6', 'dz7'],
                      post=[dict(id=f'pc-alg-{i + 1}', t=AR(t)) for i, t in enumerate(POST_ALG)])     # she reads it herself
         cities.append(c)
     cards = {}
