@@ -2734,3 +2734,285 @@ body[data-profile="mama"] .deck-apps { display: none; }
 
 /* ماريا تقرأ: a story page's own picture (drawn in ChatGPT), shown after she reads the page */
 .rd-storypic { display: block; height: min(46vh, 560px); max-width: 80vw; width: auto; object-fit: contain; border-radius: 26px; border: 5px solid #fff; box-shadow: 0 14px 30px rgba(158, 47, 99, .18); animation: rdPop .5s ease both; }
+
+/* ===================== هيا نتعلم في الجزائر (the trip to Algeria, algeria.js) =====================
+   Her rule (23 Oct 2026): green is the theme of the whole app. Algeria's flag green with soft mint, cream paper and a
+   touch of the flag's red for the stamps only. */
+.dz { --g9: #0A3B24; --g8: #0B5530; --g7: #006233; --g6: #128A4C; --g5: #23A862; --g4: #5CC98C; --g3: #A6E5C1; --g2: #D3F2DF; --g1: #EEFAF2;
+  --dzred: #D21034; --dzgold: #F2C14E; --paper: #FFFDF6; --apfont: 'Baloo Bhaijaan 2', 'Tajawal', 'Geeza Pro', sans-serif;
+  background: radial-gradient(120% 70% at 50% 0%, #F3FBF5 0%, #E8F6EC 45%, #DDF1E4 100%); font-family: var(--apfont); color: var(--g9); }
+.dz button { cursor: pointer; font-family: inherit; }
+.dz .gear .ring circle { stroke: var(--g6); }
+.dz .quit { opacity: .55; color: var(--g8); }
+.dz-n { font-family: 'Tajawal', var(--apfont); font-weight: 800; unicode-bidi: isolate; white-space: nowrap; }
+
+/* home */
+.dz-home { align-items: center; gap: clamp(6px, 1.4vh, 14px); padding-top: calc(var(--safe-t) + 64px); overflow-y: auto; }
+.dz-head { display: flex; align-items: center; justify-content: center; gap: 16px; }
+.dz-logo { width: clamp(66px, 9vh, 92px); filter: drop-shadow(0 8px 12px rgba(0, 98, 51, .25)); }
+.dz-titles h1 { margin: 0; font: 700 clamp(34px, 4.4vw, 50px)/1.15 'Marhey', var(--apfont); color: var(--g7); text-shadow: 0 3px 0 #fff; }
+.dz-titles p { margin: 2px 0 0; font-size: 19px; font-weight: 700; color: rgba(10, 59, 36, .55); }
+.dz-main { flex: 1; width: 100%; max-width: 1140px; display: flex; align-items: center; justify-content: center; gap: clamp(18px, 4vw, 54px); flex-wrap: wrap; min-height: 0; }
+.dz-mapbox { flex: 1 1 380px; max-width: 600px; display: flex; justify-content: center; }
+.dz-map { width: min(100%, 60vh); }
+.dz-mapart { position: relative; width: 100%; aspect-ratio: 1000 / 990; }
+/* the map pictures hold the country's box plus 40 px on every side (scripts/algeria_art.py), so the cities line up */
+.dz-mapart > img { position: absolute; left: -4%; top: -4.04%; width: 108%; height: 108.08%; object-fit: fill; filter: drop-shadow(0 18px 22px rgba(0, 98, 51, .22)); }
+.dz-route { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.dz-route polyline { fill: none; stroke: #fff; stroke-width: 4px; stroke-dasharray: 8 7; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.dz-city { position: absolute; transform: translate(-50%, -50%); display: block; pointer-events: none; }
+.dz-city i { display: block; }
+.dz-city b { position: absolute; top: 100%; left: 50%; translate: -50% 4px; }
+.dz-city i { width: 18px; height: 18px; border-radius: 50%; background: #fff; border: 4px solid var(--g4); box-shadow: 0 2px 6px rgba(0, 0, 0, .18); }
+.dz-city b { padding: 1px 10px; border-radius: 99px; background: rgba(255, 255, 255, .92); font-size: 14px; font-weight: 800; color: rgba(10, 59, 36, .55); white-space: nowrap; box-shadow: 0 2px 6px rgba(0, 98, 51, .12); }
+.dz-city.later i { border-color: #C9D8CF; background: #F4F7F5; }
+.dz-city.done i { background: var(--dzgold); border-color: #fff; box-shadow: 0 0 0 4px rgba(242, 193, 78, .45), 0 0 18px 6px rgba(255, 225, 120, .75); }
+.dz-city.done b { color: var(--g8); }
+.dz-city.here i { width: 24px; height: 24px; background: var(--dzred); border-color: #fff; animation: dzPulse 1.8s ease-out infinite; }
+.dz-city.here b { color: #fff; background: var(--g7); font-size: 16px; }
+@keyframes dzPulse { 0% { box-shadow: 0 0 0 0 rgba(210, 16, 52, .55); } 100% { box-shadow: 0 0 0 18px rgba(210, 16, 52, 0); } }
+.dz-myplane { position: absolute; transform: translate(-30%, -125%) rotate(-12deg); font-size: 34px; filter: drop-shadow(0 4px 4px rgba(0, 0, 0, .2)); animation: dzFloat 3s ease-in-out infinite; pointer-events: none; }
+@keyframes dzFloat { 0%, 100% { translate: 0 0; } 50% { translate: 0 -6px; } }
+.dz-side { display: flex; flex-direction: column; align-items: stretch; gap: 16px; width: min(340px, 90vw); }
+.dz-here { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 16px 18px 18px; border-radius: 28px; background: var(--paper); text-align: center;
+  border: 3px solid var(--g2); box-shadow: 0 10px 24px rgba(0, 98, 51, .12); }
+.dz-here small { font-size: 17px; font-weight: 700; color: rgba(10, 59, 36, .55); }
+.dz-here strong { font: 700 clamp(28px, 3.4vw, 36px)/1.25 'Marhey', var(--apfont); color: var(--g7); }
+.dz-here em { font-style: normal; font-size: 19px; font-weight: 800; color: var(--g6); }
+.dz-here:empty { display: none; }
+.dz-go { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 26px 22px; border: 0; border-radius: 36px;
+  background: linear-gradient(180deg, #34C276, #0E8044); color: #fff; font: 800 30px var(--apfont);
+  box-shadow: 0 8px 0 #0A5C31, 0 18px 30px rgba(0, 98, 51, .28); }
+.dz-go:active:not(:disabled) { transform: translateY(5px); box-shadow: 0 3px 0 #0A5C31; }
+.dz-go.done, .dz-go:disabled { background: #E3EEE7; color: rgba(10, 59, 36, .5); box-shadow: 0 6px 0 #C9DCCF; cursor: default; }
+.dz-plane { font-size: 54px; line-height: 1; }
+.dz-go:not(:disabled) .dz-plane { animation: dzFloat 2.4s ease-in-out infinite; }
+.dz-btn { min-height: 62px; padding: 0 24px; border: 0; border-radius: 31px; background: var(--g6); color: #fff; font: 800 23px var(--apfont); box-shadow: 0 5px 0 var(--g8); }
+.dz-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--g8); }
+.dz-btn.soft { background: #fff; color: var(--g7); box-shadow: 0 5px 0 #CFE6D7; }
+.dz-big { min-height: 80px; min-width: 220px; padding: 0 42px; border: 0; border-radius: 40px; background: linear-gradient(180deg, #34C276, #0E8044); color: #fff; font: 800 31px var(--apfont);
+  box-shadow: 0 7px 0 #0A5C31, 0 14px 26px rgba(0, 98, 51, .22); }
+.dz-big:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 3px 0 #0A5C31; }
+.dz-big:disabled { opacity: .35; cursor: default; }
+.dz-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px; }
+
+/* the session */
+.dz-sess { padding-top: calc(var(--safe-t) + 8px); }
+.dz-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; direction: ltr; min-height: 72px; }
+.dz-steps { display: flex; gap: 8px; direction: rtl; }
+.dz-steps i { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 50%; background: #fff; font-size: 22px; font-style: normal; opacity: .4; }
+.dz-steps i.on { opacity: 1; box-shadow: 0 0 0 4px var(--g4); }
+.dz-steps i.done { opacity: .9; background: var(--g2); }
+.dz-cityname { min-width: 44px; padding: 6px 16px; border-radius: 99px; background: #fff; font-size: 19px; font-weight: 800; color: var(--g7); box-shadow: 0 3px 10px rgba(0, 98, 51, .12); }
+.dz-cityname:empty { visibility: hidden; }
+.dz-stage { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; padding: 6px 0 12px; overflow-y: auto; }
+.dz-pane { width: 100%; max-width: 1100px; margin: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(10px, 2vh, 20px);
+  animation: dzIn .35s ease-out backwards; }
+@keyframes dzIn { from { opacity: 0; transform: translateY(10px); } }
+.dz-h { margin: 0; font: 700 clamp(28px, 3.6vw, 40px)/1.2 'Marhey', var(--apfont); color: var(--g7); }
+.dz-hint { margin: 0; font-size: 19px; font-weight: 700; color: rgba(10, 59, 36, .6); }
+.dz-q { margin: 0; font-size: clamp(24px, 3vw, 32px); font-weight: 800; color: var(--g8); text-align: center; }
+.dz-fb { min-height: 40px; font-size: 26px; font-weight: 800; color: var(--g6); }
+
+/* the postcard */
+.dz-post { position: relative; width: min(92vw, 860px); padding: 22px clamp(20px, 4vw, 44px) 20px; border-radius: 30px; background: var(--paper);
+  border: 3px solid var(--g2); box-shadow: 0 18px 36px rgba(0, 98, 51, .16);
+  background-image: repeating-linear-gradient(135deg, var(--g7) 0 14px, #fff 14px 28px, var(--dzred) 28px 42px, #fff 42px 56px);
+  background-size: 100% 10px; background-repeat: no-repeat; background-position: top; }
+.dz-post h2 { margin: 6px 0 4px; font: 700 clamp(28px, 3.6vw, 40px)/1.3 'Marhey', var(--apfont); color: var(--g7); }
+.dz-post h2 span { color: var(--g9); }
+.dz-post-stamp { position: absolute; top: 18px; left: 22px; width: 110px; transform: rotate(8deg); }
+.dz-post-stamp img { width: 100%; display: block; filter: drop-shadow(0 6px 8px rgba(0, 0, 0, .15)); }
+.dz-post-text { margin-top: 14px; }
+.dz-post-text p { margin: 0 0 4px; padding: 2px 10px; border-radius: 12px; font: 400 clamp(22px, min(2.7vw, 3.6vh), 31px)/1.75 'Noto Naskh Arabic', var(--ar); color: var(--g9); transition: background .2s; }
+.dz-post-text p.on { background: var(--g2); }
+
+/* the warm-up: Talk Cards' flip card, in the trip's greens */
+.dz-pane.warm { gap: 12px; }
+.dz-pane.step { gap: clamp(8px, 1.4vh, 16px); }
+.dz-cardstage { width: 100%; display: flex; justify-content: center; }
+.dz .card-wrap { width: min(88vw, 640px); height: min(48vh, 440px); max-height: none; }
+.dz .face { align-items: center; justify-content: center; text-align: center; border-color: var(--g8); }
+.dz .front { background: linear-gradient(180deg, #F6FCF8, var(--g2)); }
+.dz .back { background: linear-gradient(180deg, #FFFFFF, #FFF8E3); }
+.dz .card-shadow { background: rgba(0, 70, 36, .28); }
+.dz-deck { position: absolute; top: 14px; right: 20px; padding: 2px 14px; border-radius: 99px; background: #fff; font-size: 16px; font-weight: 800; color: var(--g6); box-shadow: 0 2px 6px rgba(0, 98, 51, .12); }
+.dz-cq, .dz-ca { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 26px 10px 6px; }
+.dz-ask { margin: 0; font-size: clamp(24px, 3vw, 32px); font-weight: 800; color: var(--g8); }
+.dz-ask.big { font-size: clamp(30px, 4vw, 42px); line-height: 1.35; color: var(--g9); }
+.dz-sent { margin: 0; font: 400 clamp(32px, 4.4vw, 46px)/1.8 'Noto Naskh Arabic', var(--ar); color: var(--g9); }
+.dz-sent mark { padding: 0 8px; border-radius: 12px; background: var(--dzgold); color: var(--g9); }
+.dz-ans { margin: 0; font: 700 clamp(34px, 5vw, 54px)/1.35 'Marhey', var(--apfont); color: var(--g7); }
+.dz-ca .dz-ans .dz-n { font-family: 'Tajawal', var(--apfont); }
+.dz-more { margin: 0; max-width: 92%; font-size: clamp(20px, 2.4vw, 26px); font-weight: 700; color: rgba(10, 59, 36, .7); }
+.dz-cphoto { width: min(70%, calc(26vh * 4 / 3)); aspect-ratio: 4 / 3; object-fit: cover; border-radius: 18px; border: 4px solid #fff; box-shadow: 0 8px 16px rgba(0, 98, 51, .18); }
+.dz-cphoto.sm { width: min(46%, calc(16vh * 4 / 3)); }
+.dz-bignum { margin: 0; font-size: clamp(50px, min(8vw, 10vh), 96px); line-height: 1.05; color: var(--g7); letter-spacing: .02em; }
+.dz-cardacts { display: flex; justify-content: center; width: min(680px, 94vw); }
+.dz-cardacts .btn { min-height: 76px; font-family: var(--apfont); font-size: 28px; border-color: var(--g8); box-shadow: 0 6px 0 var(--g8); }
+.dz-cardacts .btn:active { box-shadow: 0 2px 0 var(--g8); }
+.dz-cardacts .btn-good { background: var(--g6); }
+.dz-flip { background: #fff; color: var(--g8); min-width: 300px; }
+
+/* the new step */
+.dz-stephead { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.dz-stephead h2 { margin: 0; font: 700 clamp(26px, 3.4vw, 38px)/1.25 'Marhey', var(--apfont); color: var(--g7); }
+.dz-chip { padding: 2px 14px; border-radius: 99px; font-size: 16px; font-weight: 800; color: #fff; background: var(--g6); }
+.dz-chip.ma { background: #2F7FB8; }
+.dz-part { font-size: clamp(20px, 2.4vw, 26px); font-weight: 800; color: rgba(10, 59, 36, .65); }
+.dz-sentence { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 14px; max-width: 94vw; }
+.dz-w { display: flex; flex-direction: column; align-items: center; min-width: 88px; padding: 8px 16px 6px; border-radius: 22px; background: #fff; border: 3px solid #E1EEE6;
+  box-shadow: 0 5px 0 #E1EEE6; transition: transform .2s, background .25s, border-color .25s; }
+.dz-w b { font: 400 clamp(32px, 4.6vw, 50px)/1.6 'Noto Naskh Arabic', var(--ar); color: var(--g9); }
+.dz-w small { min-height: 26px; font-size: 20px; font-weight: 800; }
+.dz-w.cur { border-color: var(--dzgold); box-shadow: 0 5px 0 #E3B640, 0 0 0 6px rgba(242, 193, 78, .25); transform: translateY(-4px); }
+/* the three kinds: noun green, verb blue, particle orange */
+.dz { --kn: #1F9D57; --kf: #2F7FB8; --kh: #E0782B; }
+.dz-w.c-n { background: #E3F6EA; border-color: var(--kn); box-shadow: 0 5px 0 var(--kn); } .dz-w.c-n small { color: var(--kn); }
+.dz-w.c-f { background: #E2EFFA; border-color: var(--kf); box-shadow: 0 5px 0 var(--kf); } .dz-w.c-f small { color: var(--kf); }
+.dz-w.c-h { background: #FDEEDF; border-color: var(--kh); box-shadow: 0 5px 0 var(--kh); } .dz-w.c-h small { color: var(--kh); }
+.dz-cats { display: flex; gap: clamp(12px, 2.4vw, 26px); justify-content: center; }
+.dz-cat { min-width: clamp(130px, 18vw, 190px); min-height: 92px; border: 0; border-radius: 30px; color: #fff; font: 800 clamp(32px, 4vw, 42px) var(--apfont); transition: transform .12s, opacity .2s; }
+.dz-cat.c-n { background: var(--kn); box-shadow: 0 7px 0 #146B3B; } .dz-cat.c-f { background: var(--kf); box-shadow: 0 7px 0 #1F5B86; } .dz-cat.c-h { background: var(--kh); box-shadow: 0 7px 0 #A9561C; }
+.dz-cat:active:not(:disabled) { transform: translateY(4px); }
+.dz-cat:disabled { opacity: .35; cursor: default; }
+.dz-cat.yes { opacity: 1; outline: 5px solid var(--dzgold); outline-offset: 3px; }
+.dz-cat.no, .dz-opt.no { animation: dzShake .4s; }
+@keyframes dzShake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+.dz-rule { width: min(92vw, 780px); padding: 10px 20px 12px; border-radius: 24px; background: var(--paper); border: 3px dashed var(--g3); }
+.dz-rule h3 { margin: 0 0 6px; font-size: 20px; font-weight: 800; color: var(--g6); }
+.dz-rule p { margin: 0 0 3px; padding: 1px 10px; border-radius: 12px; font-size: clamp(19px, min(2.4vw, 3vh), 25px); font-weight: 700; line-height: 1.5; border-inline-start: 6px solid var(--g4); transition: background .2s; }
+.dz-rule p.c-n { border-color: var(--kn); } .dz-rule p.c-f { border-color: var(--kf); } .dz-rule p.c-h { border-color: var(--kh); }
+.dz-rule p.on { background: var(--g2); }
+
+/* numbers in words */
+.dz-numrow { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px clamp(20px, 4vw, 48px); }
+/* as in the Algerian book (p. 86): منزلة الآلاف on the left, منزلة الوحدات on the right, so the digits read as the number is written */
+.dz-places { border-collapse: separate; border-spacing: 6px; direction: ltr; }
+.dz-places caption { font-size: 17px; font-weight: 800; color: rgba(10, 59, 36, .55); }
+.dz-places th, .dz-places td { width: clamp(54px, 7vw, 74px); text-align: center; border-radius: 14px; }
+.dz-places th { padding: 4px 0; font-size: 20px; font-weight: 800; color: #fff; }
+.dz-places th.th { background: #2F7FB8; } .dz-places th.un { background: var(--g6); }
+.dz-places td { height: clamp(48px, min(6vw, 7vh), 64px); background: #fff; font: 800 clamp(30px, 4vw, 42px) 'Tajawal', var(--apfont); color: var(--g9); box-shadow: inset 0 0 0 3px #E1EEE6; transition: background .3s; }
+.dz-places td.lit.th { background: #DCEBF8; box-shadow: inset 0 0 0 3px #2F7FB8; } .dz-places td.lit.un { background: var(--g2); box-shadow: inset 0 0 0 3px var(--g6); }
+.dz-read { max-width: 92vw; text-align: center; font-size: clamp(26px, 3.4vw, 38px); font-weight: 800; line-height: 1.5; }
+.dz-grp { padding: 0 8px; border-radius: 12px; transition: background .3s, color .3s; color: rgba(10, 59, 36, .45); }
+.dz-grp.on.th { background: #DCEBF8; color: #1F5B86; } .dz-grp.on.un { background: var(--g2); color: var(--g8); }
+.dz-words { margin: 0; max-width: 92vw; text-align: center; font-size: clamp(26px, 3.4vw, 38px); font-weight: 800; line-height: 1.7; color: var(--g9); }
+.dz-words.big { font-size: clamp(30px, 4vw, 44px); }
+.dz-blank { display: inline-block; min-width: 140px; padding: 0 16px; border-radius: 14px; border: 3px dashed var(--dzgold); color: #C8961C; }
+.dz-blank.filled { border-style: solid; background: #FFF6D8; color: var(--g8); }
+.dz-opts { display: flex; flex-direction: column; align-items: stretch; gap: 12px; width: min(92vw, 720px); }
+.dz-opts.two { flex-direction: row; justify-content: center; }
+.dz-opts.two .dz-opt { flex: 1; max-width: 300px; }
+.dz-opt { min-height: 74px; padding: 6px 22px; border: 3px solid #DCEBE2; border-radius: 26px; background: #fff; color: var(--g9); font: 800 clamp(24px, 3vw, 32px)/1.4 var(--apfont);
+  box-shadow: 0 5px 0 #DCEBE2; transition: transform .12s, background .2s; }
+.dz-opt.n { font-size: clamp(34px, 4.4vw, 46px); }
+.dz-opt:active:not(:disabled) { transform: translateY(3px); }
+.dz-opt.yes { background: var(--g2); border-color: var(--g6); box-shadow: 0 5px 0 var(--g6); }
+.dz-opt.no { background: #FFF0F0; border-color: #F2B8B8; box-shadow: 0 5px 0 #F2B8B8; opacity: .7; }
+.dz-opt:disabled { cursor: default; }
+.dz-digits { display: flex; align-items: center; justify-content: center; gap: 0; direction: ltr; }
+.dz-dg { width: clamp(58px, 8vw, 84px); height: clamp(76px, 10vw, 104px); display: grid; place-items: center; border-radius: 18px; background: #fff; box-shadow: 0 5px 0 #DCEBE2;
+  font: 800 clamp(44px, 6vw, 64px) 'Tajawal', var(--apfont); color: var(--g9); }
+.dz-gap { width: clamp(30px, 4vw, 42px); height: clamp(76px, 10vw, 104px); margin: 0 4px; border: 0; border-radius: 14px; background: transparent; position: relative; }
+.dz-gap::after { content: ''; position: absolute; left: 50%; top: 18%; bottom: 18%; width: 4px; translate: -50% 0; border-radius: 4px; background: var(--g3); }
+.dz-gap:active::after, .dz-gap.yes::after { background: var(--g6); width: 10px; }
+.dz-gap.yes { background: var(--g2); } .dz-gap.no { background: #FFE6E6; }
+.dz-result { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 26px 36px; border-radius: 32px; background: var(--paper); box-shadow: 0 14px 30px rgba(0, 98, 51, .14); text-align: center; }
+.dz-result p { margin: 0; max-width: 80vw; font-size: clamp(26px, 3.4vw, 36px); font-weight: 800; color: var(--g8); }
+.dz-reic { font-size: 76px; line-height: 1; color: var(--g6); }
+
+/* the picture of the day */
+.dz-pic { width: 100%; display: flex; align-items: center; justify-content: center; gap: clamp(16px, 3vw, 40px); flex-wrap: wrap; }
+.dz-photo { position: relative; flex: 0 1 auto; }
+.dz-photo > img:first-child { display: block; width: min(92vw, 600px, calc(56vh * 4 / 3)); aspect-ratio: 4 / 3; object-fit: cover; border-radius: 28px; border: 7px solid #fff;
+  box-shadow: 0 18px 36px rgba(0, 70, 36, .22); animation: dzRise .6s cubic-bezier(.3, 1.4, .5, 1) both; }
+@keyframes dzRise { from { opacity: 0; transform: translateY(20px) scale(.96); } }
+.dz-pagephoto { position: absolute; left: -14px; bottom: -14px; width: 34%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 14px; border: 5px solid #fff; transform: rotate(-5deg);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, .2); cursor: zoom-in; transition: width .3s, transform .3s; z-index: 2; }
+.dz-pagephoto.big { width: 92%; transform: rotate(0); cursor: zoom-out; }
+.dz-picside { flex: 1 1 340px; max-width: 480px; display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
+.dz-picside .dz-h { font-size: clamp(26px, 3vw, 34px); }
+.dz-picside .dz-ask { font-size: clamp(24px, 2.8vw, 30px); line-height: 1.45; }
+.dz-cues { margin: 0; padding: 0 1.4em 0 0; display: flex; flex-direction: column; gap: 2px; font-size: clamp(21px, min(2.4vw, 3.2vh), 27px); font-weight: 800; color: var(--g8); }
+.dz-cues li::marker { color: var(--g5); }
+.dz-wsteps { list-style: none; margin: 4px 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.dz-wsteps li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; padding: 8px 12px; border-radius: 20px; background: #fff; font-size: clamp(20px, 2.4vw, 24px); font-weight: 800; color: var(--g9); box-shadow: 0 3px 10px rgba(0, 98, 51, .08); }
+.dz-wsteps li > b { flex: none; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; background: var(--g2); color: var(--g7); font: 800 19px 'Tajawal', var(--apfont); }
+.dz-wsteps li > span:not(.dz-thumb) { flex: 1 1 160px; }
+.dz-wsteps li.ok > b { background: var(--g6); color: #fff; }
+.dz-wsteps .dz-btn { min-height: 50px; font-size: 20px; padding: 0 18px; }
+.dz-thumb img { display: block; width: 64px; height: 64px; object-fit: cover; border-radius: 12px; border: 3px solid var(--g3); }
+.dz-mic { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 76px; padding: 0 24px; border: 0; border-radius: 38px; background: #fff; color: var(--g8);
+  font: 800 24px var(--apfont); box-shadow: 0 6px 0 #CFE6D7, 0 10px 20px rgba(0, 98, 51, .1); }
+.dz-mic.small { min-height: 50px; font-size: 19px; padding: 0 16px; box-shadow: 0 4px 0 #CFE6D7; }
+.dz-micdot { width: 30px; height: 30px; border-radius: 50%; background: var(--dzred); box-shadow: 0 0 0 calc(var(--lv, 0) * 16px) rgba(210, 16, 52, .2); transition: box-shadow .08s; }
+.dz-mic.small .dz-micdot { width: 22px; height: 22px; }
+.dz-mic.rec { background: #FFF1F3; color: var(--dzred); }
+.dz-mic.rec .dz-micdot { border-radius: 8px; }
+.dz-model p { margin: 0 0 6px; padding: 4px 12px; border-radius: 14px; font: 400 clamp(24px, 2.8vw, 31px)/1.75 'Noto Naskh Arabic', var(--ar); color: var(--g9); background: var(--paper); transition: background .2s; }
+.dz-model p.on { background: var(--g2); }
+.dz-picside .dz-big { margin-top: 6px; }
+
+/* the end, the stamp, the passport */
+.dz-end { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+.dz-endmap { width: min(50vw, 38vh, 380px); }
+.dz-end h2 { margin: 0; font: 700 clamp(34px, 4.6vw, 52px)/1.2 'Marhey', var(--apfont); color: var(--g7); }
+.dz-tom { margin: 0 0 8px; font-size: clamp(26px, 3.2vw, 34px); font-weight: 800; color: var(--g6); }
+.dz-cel { flex-direction: column; background: radial-gradient(circle at 50% 40%, rgba(255, 253, 246, .98), rgba(220, 242, 228, .98)); }
+.dz-cel canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.dz-celbox { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+.dz-celbox h2 { margin: 0; max-width: 90vw; font: 700 clamp(32px, 4.4vw, 48px)/1.25 'Marhey', var(--apfont); color: var(--g7); }
+.dz-celbox p { margin: 0; font-size: clamp(22px, 2.8vw, 28px); font-weight: 800; color: var(--g8); }
+.dz-nx b { color: var(--g6); }
+.dz-stampbig { width: min(52vw, 300px); animation: dzStamp .8s cubic-bezier(.2, 1.6, .4, 1) both; }
+.dz-stampbig img { width: 100%; display: block; filter: drop-shadow(0 14px 18px rgba(0, 0, 0, .2)); }
+@keyframes dzStamp { 0% { transform: scale(2.4) rotate(-18deg); opacity: 0; } 60% { transform: scale(.92) rotate(6deg); opacity: 1; } 100% { transform: scale(1) rotate(4deg); } }
+.dz-stampfall { display: grid; place-items: center; width: 100%; aspect-ratio: 1; border-radius: 50%; border: 8px double var(--dzred); color: var(--dzred); font: 700 clamp(22px, 3vw, 34px)/1.2 'Marhey', var(--apfont); transform: rotate(-8deg); background: #FFF7F7; }
+.dz-pass .dz-top { justify-content: flex-start; gap: 16px; }
+.dz-ptitle { margin: 0; font: 700 clamp(30px, 4vw, 44px) 'Marhey', var(--apfont); color: var(--g7); }
+.dz-passbook { flex: 1; overflow-y: auto; display: flex; justify-content: center; padding: 10px 0 30px; }
+.dz-passgrid { width: min(96vw, 980px); display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; padding: 24px; border-radius: 30px;
+  background: linear-gradient(180deg, #FFFDF6, #F4FAF1); border: 3px solid var(--g2); box-shadow: 0 16px 34px rgba(0, 98, 51, .14); }
+.dz-slot { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border-radius: 26px; border: 3px dashed #CFE0D5; text-align: center; padding: 10px; }
+.dz-slotname { font-size: 22px; font-weight: 800; color: rgba(10, 59, 36, .35); }
+.dz-slot small { font-size: 15px; font-weight: 700; color: rgba(10, 59, 36, .35); }
+.dz-slot.got { border-style: solid; border-color: transparent; background: #fff; box-shadow: 0 6px 14px rgba(0, 98, 51, .12); }
+.dz-slot.got img, .dz-slot.got .dz-stampfall { width: 76%; transform: rotate(-4deg); }
+.dz-slot.got b { font-size: 20px; color: var(--g7); }
+.dz-slot.got small { color: var(--g6); }
+
+/* Mama's view */
+.dz-parent { font-family: var(--en); overflow-y: auto; background: #F6FAF7; }
+.dz-ptop { display: flex; align-items: center; gap: 12px; }
+.dz-ptop h1 { margin: 0; font-size: 26px; color: var(--g7); }
+.dz-pbody { max-width: 900px; width: 100%; margin: 0 auto; padding-bottom: 40px; }
+.dz-pbody section { margin: 14px 0; padding: 14px 18px; border-radius: 18px; background: #fff; box-shadow: 0 2px 8px rgba(0, 98, 51, .08); }
+.dz-pbody h2 { margin: 0 0 8px; font-size: 20px; color: var(--g8); }
+.dz-pbody h2[lang="ar"] { font-family: var(--apfont); }
+.dz-pbody p { margin: 6px 0; font-size: 17px; line-height: 1.5; }
+.dz-pbody [lang="ar"] { font-family: var(--apfont); }
+.dz-note { color: rgba(10, 59, 36, .6); font-size: 15px !important; }
+.dz-ptab { width: 100%; border-collapse: collapse; font-size: 16px; }
+.dz-ptab th, .dz-ptab td { padding: 6px 8px; border-bottom: 1px solid #E4EEE8; text-align: left; }
+.dz-ptab td[dir="rtl"] { text-align: right; }
+.dz-pbtn { min-height: 38px; padding: 0 14px; border: 0; border-radius: 19px; background: var(--g6); color: #fff; font: 700 15px var(--en); }
+.dz-pbtn.soft { background: var(--g1); color: var(--g8); border: 1px solid var(--g3); }
+.dz-pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.dz-pages figure { margin: 0; }
+.dz-pages img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 12px; cursor: zoom-in; }
+.dz-pages img.big { position: fixed; inset: 4vh 4vw; width: 92vw; height: 92vh; object-fit: contain; background: rgba(0, 0, 0, .85); z-index: 60; cursor: zoom-out; border-radius: 0; }
+.dz-pages figcaption { font-size: 14px; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.dz-talks { margin: 0; padding-left: 20px; font-size: 16px; } .dz-talks li { margin: 4px 0; }
+
+/* the sixth tile on her entrance page: six tiles in two rows of three */
+.t-dz { background: linear-gradient(170deg, #D9F3E2 0%, #FFFFFF 70%); }
+.t-dz .ap-art { animation-delay: -1s; }
+.ap-dots .d-dz { color: #128A4C; } .ap-dots i.d-dz.on { background: #5CC98C; }
+.ap-tiles.six { max-width: 900px; margin: 0 auto; gap: clamp(12px, 1.8vw, 22px); }
+.ap-tiles.six .ap-tile { width: clamp(150px, calc((min(100vw, 900px) - 110px) / 3), 260px); padding: 12px 10px 14px; }
+.ap-tiles.six .ap-art { width: clamp(84px, 11vh, 122px); }
+.ap-tiles.six .ap-name { font-size: clamp(21px, 2.3vw, 27px); }
+.ap-tiles.six .ap-state { font-size: 15px; padding: 4px 12px; margin-top: 6px; }
+@media (prefers-reduced-motion: reduce) { .dz-city.here i, .dz-myplane, .dz-plane, .dz-pane, .dz-stampbig { animation: none !important; } }
