@@ -2,7 +2,7 @@
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
 // The same file serves both apps: Talk Cards registers sw.js, Prepositions registers sw.js?app=prepositions.
 const APP = new URL(location.href).searchParams.get('app') === 'prepositions' ? 'prepositions' : 'talk-cards';
-const VERSION = APP + '-v111';
+const VERSION = APP + '-v113';
 const FILES = APP === 'prepositions' ? [
   './',
   'index.html',
@@ -32,6 +32,8 @@ const FILES = APP === 'prepositions' ? [
   'reads.json',
   'curiosity.js',
   'curiosity.json',
+  'algeria.js',
+  'algeria.json',
   'assets/apps/curiosity.svg',
   'assets/curiosity/sounds/h1.m4a',
   'assets/apps/talk.webp',
@@ -149,6 +151,16 @@ async function cacheReads(cache) {
   } catch (e) { /* the pictures still load when online */ }
 }
 
+// هيا نتعلم في الجزائر: the trip-world pictures (map, icon, stamps, passport) and the real photos listed in algeria.json, one by one
+async function cacheAlgeria(cache) {
+  if (APP !== 'talk-cards') return;
+  try {
+    const d = await (await fetch('algeria.json', { cache: 'no-cache' })).json();
+    const files = ['assets/apps/algeria.webp', 'assets/algeria/map.webp', 'assets/algeria/outline.svg', ...d.cities.map(c => `assets/algeria/stamps/${c.id}.webp`), ...d.photos];
+    await Promise.all(files.map(f => cache.add(new Request(f, { cache: 'no-cache' })).catch(() => {})));
+  } catch (e) { /* the pictures still load when online */ }
+}
+
 // علبة الفضول: the real photos listed in curiosity.json, one by one
 async function cacheCuriosity(cache) {
   if (APP !== 'talk-cards') return;
@@ -159,7 +171,7 @@ async function cacheCuriosity(cache) {
 }
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSION).then(async c => { await c.addAll(FILES); await cacheVoice(c); await cacheStickers(c); await cacheStories(c); await cacheColour(c); await cacheReads(c); await cacheCuriosity(c); }).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(VERSION).then(async c => { await c.addAll(FILES); await cacheVoice(c); await cacheStickers(c); await cacheStories(c); await cacheColour(c); await cacheReads(c); await cacheCuriosity(c); await cacheAlgeria(c); }).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {

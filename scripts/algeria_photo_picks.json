@@ -1,0 +1,12 @@
+{
+ "_note": "City 1 (الجزائر العاصمة): the picture of the day alg1-alg8 and the flag card. dir = candidate folder (-p = Pexels).",
+ "alg1": {"dir": "alg1", "i": 0},
+ "alg2": {"dir": "prais-p", "i": 2},
+ "alg3": {"dir": "pmosque-p", "i": 0, "fy": 0.35},
+ "alg4": {"dir": "pport-p", "i": 3},
+ "alg5": {"dir": "pstreet-p", "i": 0, "fy": 0.6},
+ "alg6": {"dir": "alg6", "i": 6},
+ "alg7": {"dir": "pflag-p", "i": 1},
+ "alg8": {"dir": "alg5", "i": 6},
+ "flag": {"dir": "pflag-p", "i": 0}
+}
