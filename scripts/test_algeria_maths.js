@@ -9,7 +9,7 @@ const W = s => Number(String(s).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.
 const nums = q => (q.match(/[٠-٩]+/g) || []).map(W);
 
 ok('every gap of the maths report is a topic, in the ladder order', () => {
-  assert.deepStrictEqual(M.TOPICS.map(t => t.id), ['words', 'x10', 'double', 'distrib', 'mul1', 'mul2', 'subadd', 'time', 'length', 'mass', 'tools', 'midpoint', 'lines', 'program', 'net']);
+  assert.deepStrictEqual(M.TOPICS.map(t => t.id), ['words', 'x10', 'double', 'distrib', 'mul1', 'mul2', 'subadd', 'length', 'mass', 'time', 'tools', 'midpoint', 'lines', 'program', 'net']);
   M.TOPICS.forEach(t => { assert.ok(t.lesson.rule.length >= 1, t.id); assert.ok(!/[0-9]/.test(JSON.stringify(t.lesson)), t.id + ': Saudi digits only'); });
 });
 
@@ -55,6 +55,18 @@ ok('a round with 7 of 8 or more moves her level up, to 3 at most; the corner nev
   assert.strictEqual(M.addRound(c, 'x10', 7, 8, 'd').level, 2);
   M.addRound(c, 'x10', 8, 8, 'd'); assert.strictEqual(M.addRound(c, 'x10', 8, 8, 'd').level, 3);
   assert.strictEqual(c.x10.rounds, 4); assert.strictEqual(c.x10.best, 8);
+});
+
+ok('one by one: only the first topic at the start; the next opens after two good rounds on two days; the trip and Mama open more', () => {
+  const c = {};
+  assert.deepStrictEqual(M.openTopics(c), ['words']);
+  M.addRound(c, 'words', 8, 8, 'd1'); M.addRound(c, 'words', 8, 8, 'd1');
+  assert.deepStrictEqual(M.openTopics(c), ['words'], 'two good rounds on the same day are not enough');
+  M.addRound(c, 'words', 3, 8, 'd2'); assert.ok(!M.mastered(c, 'words'));
+  M.addRound(c, 'words', 7, 8, 'd3'); assert.ok(M.mastered(c, 'words'));
+  assert.deepStrictEqual(M.openTopics(c), ['words', 'x10']);
+  assert.deepStrictEqual(M.openTopics(c, ['double']), ['words', 'x10', 'double'], 'the trip has reached it');
+  assert.strictEqual(M.openTopics({}, [], true).length, M.TOPICS.length, 'Mama opens them all');
 });
 
 console.log(n, 'tests passed');

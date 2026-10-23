@@ -449,7 +449,7 @@ function mount(api) {
     const here = nextOnRoute(r, D);
     const dots = D.cities.map(c => {
       const cls = r.stamps[c.id] ? 'done' : here && c.id === here.id ? 'here' : 'later';
-      return `<span class="dz-city ${cls}" style="left:${c.x}%;top:${c.y}%"><i></i>${small || cls === 'later' ? '' : `<b>${esc(c.name)}</b>`}</span>`;
+      return `<span class="dz-city ${cls}${c.mine ? ' mine' : ''}" style="left:${c.x}%;top:${c.y}%"><i></i>${small || (cls === 'later' && !c.mine) ? '' : `<b>${c.mine ? '💚 ' : ''}${esc(c.name)}</b>`}</span>`;
     }).join('');
     const path = D.cities.filter(c => r.stamps[c.id] || (here && c.id === here.id));
     const line = path.length > 1 ? `<svg class="dz-route" viewBox="0 0 100 100" preserveAspectRatio="none"><polyline points="${path.map(c => `${c.x},${c.y}`).join(' ')}"/></svg>` : '';
@@ -900,7 +900,8 @@ function mount(api) {
       <section><h2>The maths corner</h2>${(() => { const c = r.corner || {}, T = root.AlgeriaMaths ? root.AlgeriaMaths.core.TOPICS : [];
         const rows = T.filter(t => c[t.id]).map(t => `<tr><td dir="rtl" lang="ar">${esc(t.title)}</td><td>${c[t.id].rounds}</td><td>${c[t.id].total ? Math.round(100 * c[t.id].right / c[t.id].total) : 0}%</td><td>${c[t.id].level} of 3</td><td>${c[t.id].last || ''}</td></tr>`).join('');
         return rows ? `<table class="dz-ptab"><tr><th>Topic</th><th>Rounds</th><th>Right</th><th>Level</th><th>Last</th></tr>${rows}</table>` : '<p>Not used yet. She opens it from the trip\'s home: 15 topics, every maths gap of the report, practice as often as she likes.</p>'; })()}
-        <p class="dz-note">Practice only: it never moves the trip on or holds it back.</p></section>
+        <p class="dz-note">Practice only: it never moves the trip on or holds it back. The topics open one by one (two good rounds, 7 of 8, on two different days open the next; a topic the trip has reached is open too).</p>
+        <p><button class="dz-pbtn soft" data-act="cornerAll">${r.settings.cornerAll ? 'Back to one by one' : 'Open every topic'}</button></p></section>
       <section><h2>Backup</h2><p>Her trip, her cards, her pages and her recordings are in the one backup file of the entrance page.</p>
         <button class="dz-pbtn" data-act="backup">Back up all apps</button></section>
     </div>`;
@@ -917,6 +918,7 @@ function mount(api) {
     if (act === 'npd') r.settings.newPerDay = Math.max(1, Math.min(6, r.settings.newPerDay + Number(b.dataset.d)));
     if (act === 'lv') r.settings.level = Math.max(1, Math.min(6, level(r) + Number(b.dataset.d)));
     if (act === 'lv0') r.settings.level = 0;
+    if (act === 'cornerAll') r.settings.cornerAll = !r.settings.cornerAll;
     if (act === 'pass') { const x = stepRec(r, b.dataset.id); x.done = x.done || today(); }
     if (act === 'redo') { if (st && !confirm('Start this step again? Its passed days are cleared (her cards stay).')) return; r.steps[b.dataset.id] = { days: [], pass: [], done: null, log: (st && st.log) || [] }; }
     save(); openParent();
@@ -928,7 +930,10 @@ function mount(api) {
   $('#dzGo').addEventListener('click', () => { if (!$('#dzGo').disabled) { unlock(); ac(); start(); } });
   $('#dzPassBtn').addEventListener('click', () => { api.SFX.init(); unlock(); openPassport(); });
   // ركن الرياضيات (algeria-maths.js): all the maths gaps, a lesson and practice each, any day; it never moves the trip
-  MC = root.AlgeriaMaths ? root.AlgeriaMaths.mount({ api, state: () => r, save, back: home }) : null;
+  MC = root.AlgeriaMaths ? root.AlgeriaMaths.mount({ api, state: () => r, save, back: home,
+    // the corner never falls behind the trip: a topic the trip has reached is open there too
+    tripTopics: () => Object.values(D ? D.steps : {}).filter(st => st.corner && r.steps[st.id]).map(st => st.corner),
+    allOpen: () => !!r.settings.cornerAll }) : null;
   $('#dzMathBtn').hidden = !MC;
   $('#dzMathBtn').addEventListener('click', () => { api.SFX.init(); unlock(); if (MC) MC.open(); });
   $('#dzQuit').addEventListener('click', () => { leave(); home(); });

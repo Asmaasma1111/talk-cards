@@ -27,8 +27,9 @@ CITIES = [
     ('alg', 'الجزائر العاصمة', 'الجزائر البيضاء', 3.06, 36.75),
     ('orn', 'وهران', 'وهران الباهية', -0.64, 35.70),
     ('tlm', 'تلمسان', 'لؤلؤة المغرب', -1.32, 34.88),
-    ('cst', 'قسنطينة', 'مدينة الجسور المعلّقة', 6.61, 36.36),
     ('bja', 'بجاية', 'بجاية الناصرية', 5.08, 36.75),
+    ('stf', 'سطيف', 'عاصمة الهضاب العليا', 5.41, 36.19),     # Maria lived here (Mama, 23 Oct 2026): her own city on the map
+    ('cst', 'قسنطينة', 'مدينة الجسور المعلّقة', 6.61, 36.36),
     ('btn', 'باتنة', 'عاصمة الأوراس', 6.17, 35.56),
     ('bsk', 'بسكرة', 'عروس الزيبان', 5.73, 34.85),
     ('ghr', 'غرداية', 'وادي ميزاب', 3.67, 32.49),
@@ -202,7 +203,7 @@ def split(n):          # the thousands and the rest, each with its words: the wo
     return [[str(th), w[:k] if k > 0 else w], [f'{rest:03d}', w[k + 1:] if k > 0 else '']]
 
 MA1 = dict(
-    id='ma1', subj='ma', kind='numwords', title='أكتب العدد بالحروف', city='alg',
+    id='ma1', subj='ma', kind='numwords', title='أكتب العدد بالحروف', city='alg', corner='words',
     rule=[dict(id='r-ma2-1', t='نقسمُ العددَ منزلتين: منزلةَ الآلافِ ومنزلةَ الوحدات.'),
           dict(id='r-ma2-2', t='نقرأُ الآلافَ أوّلًا، ونقولُ بعدَها: ألف.'),
           dict(id='r-ma2-3', t='ثمّ نقرأُ المئاتِ والعشراتِ والآحاد.')],
@@ -235,7 +236,7 @@ def build():
     cities = []
     for k, (cid, name, nick, lon, lat) in enumerate(CITIES):
         x, y = place(lon, lat)
-        c = dict(id=cid, n=k + 1, name=name, nick=nick, x=x, y=y, ready=cid == 'alg')
+        c = dict(id=cid, n=k + 1, name=name, nick=nick, x=x, y=y, ready=cid == 'alg', **({'mine': True} if cid == 'stf' else {}))
         if cid == 'alg':
             c.update(steps=['ar1', 'ma1'], pics=list(PICS), cards=['dz1', 'dz2', 'dz3', 'dz4', 'dz5', 'dz6', 'dz7'],
                      post=[dict(id=f'pc-alg-{i + 1}', t=AR(t)) for i, t in enumerate(POST_ALG)])     # she reads it herself

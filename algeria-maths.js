@@ -106,18 +106,6 @@ T('subadd', '➖', 'الطرح بالإضافة', {
     }
   });
 
-T('time', '⏰', 'المُدَد الزمنية', {
-  rule: ['الساعةُ ستّون دقيقة.', 'لنحسبَ المدّة: نعدُّ الدقائقَ من البداية إلى النهاية، ونكملُ إلى الساعة أوّلًا.'],
-  ex: ['من ١٠:٣٠ إلى ١١:١٥: إلى ١١:٠٠ ثلاثون دقيقة، ثمّ ١٥ دقيقة. المدّة ٤٥ دقيقة.'] },
-  (rnd, lv) => {
-    const step = lv === 1 ? 30 : lv === 2 ? 15 : 5, h = int(rnd, 7, 16), m = int(rnd, 0, 60 / step - 1) * step;
-    const dur = int(rnd, 1, lv === 1 ? 3 : lv === 2 ? 6 : 24) * (lv === 3 ? 5 : step);
-    const end = h * 60 + m + dur, tt = x => AR(`${Math.floor(x / 60)}:${String(x % 60).padStart(2, '0')}`);
-    if (rnd() < 0.5) return { k: 'pad', q: `بدأ الدرسُ الساعة ${tt(h * 60 + m)} وانتهى الساعة ${tt(end)}. كم دقيقةً دام؟`, ans: dur, unit: 'دقيقة' };
-    const r3 = three(rnd, tt(end), [tt(end + 60), tt(end - step), tt(end + step), tt(h * 60 + m + 100)]);
-    return { k: 'mc', q: `خرجنا الساعة ${tt(h * 60 + m)} ووصلنا بعد ${AR(dur)} دقيقة. متى وصلنا؟`, ...r3, show: 'num' };
-  });
-
 // lengths: كلم, م, دسم, سم, ملم (each 10 times the next, and the kilometre 1000 metres)
 const LEN = [['كلم', 'كيلومتر'], ['م', 'متر'], ['دسم', 'ديسيمتر'], ['سم', 'سنتيمتر'], ['ملم', 'مليمتر']], LF = [1000, 10, 10, 10];
 T('length', '📏', 'وحدات الطول', {
@@ -141,6 +129,18 @@ function convert(rnd, lv, U, F) {
   if (rnd() < 0.3) return { k: 'pad', q: `${AR(a * f)} ${U[j][0]} = ؟ ${U[i][0]}`, ans: a, unit: U[i][0] };
   return { k: 'pad', q: `${AR(a)} ${U[i][0]} = ؟ ${U[j][0]}`, ans: a * f, unit: U[j][0] };
 }
+
+T('time', '⏰', 'المُدَد الزمنية', {
+  rule: ['الساعةُ ستّون دقيقة.', 'لنحسبَ المدّة: نعدُّ الدقائقَ من البداية إلى النهاية، ونكملُ إلى الساعة أوّلًا.'],
+  ex: ['من ١٠:٣٠ إلى ١١:١٥: إلى ١١:٠٠ ثلاثون دقيقة، ثمّ ١٥ دقيقة. المدّة ٤٥ دقيقة.'] },
+  (rnd, lv) => {
+    const step = lv === 1 ? 30 : lv === 2 ? 15 : 5, h = int(rnd, 7, 16), m = int(rnd, 0, 60 / step - 1) * step;
+    const dur = int(rnd, 1, lv === 1 ? 3 : lv === 2 ? 6 : 24) * (lv === 3 ? 5 : step);
+    const end = h * 60 + m + dur, tt = x => AR(`${Math.floor(x / 60)}:${String(x % 60).padStart(2, '0')}`);
+    if (rnd() < 0.5) return { k: 'pad', q: `بدأ الدرسُ الساعة ${tt(h * 60 + m)} وانتهى الساعة ${tt(end)}. كم دقيقةً دام؟`, ans: dur, unit: 'دقيقة' };
+    const r3 = three(rnd, tt(end), [tt(end + 60), tt(end - step), tt(end + step), tt(h * 60 + m + 100)]);
+    return { k: 'mc', q: `خرجنا الساعة ${tt(h * 60 + m)} ووصلنا بعد ${AR(dur)} دقيقة. متى وصلنا؟`, ...r3, show: 'num' };
+  });
 
 T('tools', '🧰', 'الأدوات الهندسية', {
   rule: ['المسطرةُ المدرّجة: نقيسُ بها الطولَ ونرسمُ قطعةً مستقيمة.', 'الكوس: نرسمُ به الزاويةَ القائمةَ ونتحقّقُ منها.', 'المدوَر (الفرجار): نرسمُ به الدائرة.'],
@@ -257,6 +257,8 @@ function cleanCorner(o) { return o && typeof o === 'object' && !Array.isArray(o)
 function addRound(c, topicId, right, total, day) {
   const x = c[topicId] || (c[topicId] = { rounds: 0, best: 0, right: 0, total: 0, level: 1, last: null });
   x.rounds++; x.right += right; x.total += total; x.best = Math.max(x.best, right); x.last = day;
+  if (!Array.isArray(x.good)) x.good = [];
+  if (right >= total - 1 && !x.good.includes(day)) x.good.push(day);
   const up = right >= total - 1 && x.level < 3;
   if (up) x.level++;
   return { up, level: x.level };
@@ -280,7 +282,16 @@ function colSteps(a, b, op) {
   }
   return steps;
 }
-const core = { TOPICS, round, addRound, cleanCorner, cubeNet, NET_BAD, colSteps, rng, seedOf, AR };
+// one by one (her request, 23 Oct 2026): the topics open in order; the next opens when the one before is mastered (two good
+// rounds on two different days, the trip's own rule). A topic the trip has reached is open too, and Mama can open them all.
+const mastered = (c, id) => !!(c[id] && Array.isArray(c[id].good) && c[id].good.length >= 2);
+function openTopics(c, trip = [], all = false) {
+  if (all) return TOPICS.map(t => t.id);
+  const out = [];
+  TOPICS.forEach((t, i) => { if (i === 0 || mastered(c, TOPICS[i - 1].id) || trip.includes(t.id) || (c[t.id] && c[t.id].rounds)) out.push(t.id); });
+  return out;
+}
+const core = { TOPICS, round, addRound, mastered, openTopics, cleanCorner, cubeNet, NET_BAD, colSteps, rng, seedOf, AR };
 
 /* =====================================================================================================
    The screens. ctx from algeria.js: api, state() (the trip's progress), save(), back() (the trip's home), say(id).
@@ -294,12 +305,21 @@ function mount(ctx) {
   const live = s => S === s;
   const stars = x => (!x ? '' : '⭐'.repeat(x.level - 1) + (x.level < 3 ? '☆'.repeat(3 - x.level) : ''));
 
+  const lessonsLeft = n => (n === 1 ? 'درسٌ واحد ينتظركِ' : n === 2 ? 'درسان ينتظرانكِ' : n <= 10 ? `${AR(n)} دروس تنتظركِ` : `${AR(n)} درسًا ينتظركِ`);
+  const rounds = n => `${AR(n)} ${n === 1 ? 'جولة' : n === 2 ? 'جولتان' : n <= 10 ? 'جولات' : 'جولة'}`;
   function open() {
     S = null;
-    const c = corner();
+    const c = corner(), ids = openTopics(c, ctx.tripTopics ? ctx.tripTopics() : [], !!ctx.allOpen && ctx.allOpen());
+    const shown = TOPICS.filter(t => ids.includes(t.id)), now = shown.find(t => !mastered(c, t.id));
+    const tile = (t, big) => { const x = c[t.id], i = TOPICS.indexOf(t), done = mastered(c, t.id);
+      return `<button class="mc-tile${big ? ' now' : ''}${done ? ' done' : ''}" data-t="${t.id}"><span class="mc-n">${AR(i + 1)}</span>${done ? '<span class="mc-done">✓</span>' : ''}${pic(t)}<b>${esc(t.title)}</b>
+        <small>${x ? `${stars(x)} · ${rounds(x.rounds)}` : 'درسكِ الجديد'}</small>${big ? '<span class="mc-go">ابدئي ←</span>' : ''}</button>`; };
+    const left = TOPICS.length - shown.length;
     el.innerHTML = `<div class="dz-top"><button class="quit" id="mcQuit" aria-label="رحلتي"><svg aria-hidden="true"><use href="#i-close"/></svg></button><h1 class="dz-ptitle">🧮 ركن الرياضيات</h1></div>
-      <p class="mc-sub">كلُّ ما في كتاب الرياضيات الجزائري ولم يأتِ في كتابكِ. اختاري درسًا، واقرئي، ثمّ تدرّبي كما تشائين.</p>
-      <div class="mc-grid">${TOPICS.map((t, i) => { const x = c[t.id]; return `<button class="mc-tile" data-t="${t.id}"><span class="mc-n">${AR(i + 1)}</span>${pic(t)}<b>${esc(t.title)}</b><small>${x ? `${stars(x)} · ${AR(x.rounds)} ${x.rounds === 1 ? 'جولة' : x.rounds === 2 ? 'جولتان' : x.rounds <= 10 ? 'جولات' : 'جولة'}` : 'جديد'}</small></button>`; }).join('')}</div>`;
+      <p class="mc-sub">درسٌ بعد درس: إذا أتقنتِ الدرس (٧ من ٨ في يومين مختلفين) فُتح الدرسُ التالي.</p>
+      ${now ? `<div class="mc-nowrow">${tile(now, true)}</div>` : ''}
+      ${shown.filter(t => t !== now).length ? `<h2 class="mc-h">دروسي</h2><div class="mc-grid">${shown.filter(t => t !== now).map(t => tile(t, false)).join('')}</div>` : ''}
+      ${left ? `<p class="mc-left">🔒 ${lessonsLeft(left)}</p>` : '<p class="mc-left">🌟 فتحتِ كلَّ الدروس!</p>'}`;
     $('#mcQuit').onclick = () => { api.SFX.init(); ctx.back(); };
     el.querySelectorAll('.mc-tile').forEach(b => { b.onclick = () => { api.SFX.init(); lesson(b.dataset.t); }; });
     api.show('dzmc');
