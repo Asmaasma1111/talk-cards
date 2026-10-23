@@ -1902,7 +1902,9 @@ body[data-profile="mama"] .deck-lib { display: none; }
 .ap-state.done { background: #DDF7EA; color: #1E7A50; }
 .ap-state svg { width: 20px; height: 20px; }
 .ap-foot { position: absolute; bottom: calc(var(--safe-b) + 10px); left: 0; right: 0; text-align: center; font: 600 13px var(--en); color: rgba(43, 35, 64, .4); }
-.ap-keep { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 18px auto 46px; }
+.ap-sep { margin: 0 8px; }
+.ap-footlink { padding: 4px 2px; border: 0; background: none; font: inherit; color: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.ap-keep { display: none; }
 .ap-keepbtn { display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 6px 20px; border: 0; border-radius: 99px; cursor: pointer;
   font: 800 18px var(--apfont, inherit); color: #8A2E5E; background: rgba(255, 255, 255, .9); box-shadow: 0 4px 14px rgba(158, 47, 99, .14); }
 .ap-keepbtn span { font-size: 22px; }

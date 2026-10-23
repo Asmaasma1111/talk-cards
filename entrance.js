@@ -39,11 +39,8 @@ function mount(api) {
     <button class="ap-tile t-cbox" data-app="cbox" hidden><span class="ap-art"><img src="assets/apps/curiosity.webp" alt=""></span><span class="ap-name">علبة الفضول</span><span class="ap-en">سؤال كلّ يوم</span><span class="ap-state" id="apCbox"></span></button>
     <button class="ap-tile t-dz" data-app="dz" hidden><span class="ap-art"><img src="assets/apps/algeria.webp" alt=""></span><span class="ap-name">هيا نتعلم في الجزائر</span><span class="ap-en">مدينة بعد مدينة</span><span class="ap-state" id="apDz"></span></button>
   </div>
-  <div class="ap-keep">
-    <button class="ap-keepbtn" id="apBackup"><span aria-hidden="true">💾</span>نسخة احتياطية لكل التطبيقات<small lang="en" dir="ltr">Back up all apps</small></button>
-    <label class="ap-keepbtn soft"><span aria-hidden="true">📂</span>استعادة من ملف<small lang="en" dir="ltr">Restore</small><input type="file" id="apRestore" accept="application/json,.json" hidden></label>
-  </div>
-  <div class="ap-foot" lang="en" dir="ltr">Designed by Dr Asma Khattala</div>
+  <!-- backup and restore: one small grey line in English at the foot, for Mama (her request, 23 Oct 2026: Maria was tapping the big buttons) -->
+  <div class="ap-foot" lang="en" dir="ltr">Designed by Dr Asma Khattala<span class="ap-sep">·</span><button class="ap-footlink" id="apBackup">Back up</button><span class="ap-sep">·</span><label class="ap-footlink">Restore<input type="file" id="apRestore" accept="application/json,.json" hidden></label></div>
   <input type="file" id="apFile" accept="image/*" hidden>
 </section>`);
 
