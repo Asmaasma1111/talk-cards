@@ -23,7 +23,7 @@ CV.STYLE = ('a warm, kind woman teacher speaking clear Modern Standard Arabic to
             'gentle and encouraging, at an easy pace, each line said once')
 # the prompts she hears (keys of the L block in algeria.js); the app plays them as u-<key>
 UI = ['readPost', 'warm', 'watch', 'yourTurn', 'alone', 'think', 'okToday', 'okDone', 'notYet', 'pickWords',
-      'pickNum', 'pickDigit', 'model', 'easy', 'stamp', 'end']
+      'pickNum', 'pickDigit', 'findJar', 'fillJar', 'pickEnd', 'model', 'easy', 'stamp', 'end']
 
 
 def ui_lines():

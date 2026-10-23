@@ -203,11 +203,28 @@ function mathItems(seed, count, digits) {
   }
   return out;
 }
+/* ---------- حروف الجرّ (وهران): practice that does not run out, from the banks in algeria.json ----------
+   find: tap the حرف in a sentence; fill: the حرف that fits a gap; end: the noun after the حرف with its right ending */
+const KASRA = '\u0650', DAMMA = '\u064F', FATHA = '\u064E';
+const endings = w => (w.endsWith(KASRA) ? [w, w.slice(0, -1) + DAMMA, w.slice(0, -1) + FATHA] : [w]);
+const JKINDS = ['find', 'fill', 'end', 'fill', 'find', 'end', 'fill', 'find'];
+function jarrItems(st, seed, count = st.perDay || 8) {
+  const rnd = rng(seed), ids = shuffleR(Object.keys(st.jarr), rnd), fills = shuffleR(st.fill.map((_, i) => i), rnd), out = [];
+  let a = 0, b = 0;
+  for (let i = 0; i < count; i++) {
+    const t = JKINDS[i % JKINDS.length];
+    if (t === 'fill') { const [q, right, wrong] = st.fill[fills[b++ % fills.length]]; const opts = shuffleR([right, ...wrong], rnd); out.push({ t, q, opts, ok: opts.indexOf(right) }); continue; }
+    const id = ids[a++ % ids.length], j = st.jarr[id];
+    if (t === 'find') { out.push({ t, s: id, ok: j.w.indexOf(j.jar) }); continue; }
+    const opts = shuffleR(endings(j.maj), rnd); out.push({ t, s: id, opts, ok: opts.indexOf(j.maj) });
+  }
+  return out;
+}
 const expanded = n => String(n).split('').map((d, i, a) => d + '0'.repeat(a.length - 1 - i)).filter(x => x[0] !== '0');
 
 const core = { blank, clean, valid, addDays, num, level, plan, pickPic, openDay, dayDone, currentCity, nextOnRoute, cityDone, stepDone,
                teach, warmIds, rate, deckCounts, startStep, finishStep, stepDayIx, stampIfDone, finishDay, INTERVAL,
-               numWords, mathItems, nearMisses, expanded, PLACE_NAMES, seedOf };
+               numWords, mathItems, nearMisses, expanded, PLACE_NAMES, seedOf, jarrItems, endings };
 
 /* =====================================================================================================
    What she sees and hears. Each spoken line has a clip in audio/voice.json, deck 'dz' (scripts/algeria_voice.py);
@@ -220,7 +237,8 @@ const L = {
   warm: 'هيا نتذكّر!', newCard: 'بطاقة جديدة', flip: 'اقلبي البطاقة', good: 'عرفتُها', again: 'مرّةً أخرى',
   step: 'خطوة جديدة', watch: 'انظري واستمعي.', yourTurn: 'دورُكِ! أكملي الجزء الناقص.', alone: 'والآن وحدَكِ!',
   well: 'أحسنتِ!', think: 'فكّري مرّةً أخرى.', look: 'انظري إلى الجواب.', rule: 'تعلّمتُ',
-  whatKind: 'ما نوعُ الكلمة؟', pickWords: 'اختاري الكتابةَ الصحيحة.', pickNum: 'اختاري العدد الصحيح.', pickDigit: 'اختاري الرقم الصحيح.', more: 'تدرّبي أكثر ✏️',
+  whatKind: 'ما نوعُ الكلمة؟', findJar: 'اضغطي على حرفِ الجرّ.', fillJar: 'اختاري حرفَ الجرّ المناسب.', pickEnd: 'اختاري الكلمةَ الصحيحة.',
+  pickWords: 'اختاري الكتابةَ الصحيحة.', pickNum: 'اختاري العدد الصحيح.', pickDigit: 'اختاري الرقم الصحيح.', more: 'تدرّبي أكثر ✏️',
   okToday: 'أحسنتِ! نجحتِ اليوم في هذه الخطوة.', okDone: 'أتقنتِ هذه الخطوة! 🌟', notYet: 'سنتدرّب عليها مرّةً أخرى، وستصيرُ سهلة.',
   pic: 'صورة اليوم', talkAbout: 'تكلّمي عن:', writeAbout: 'اكتبي عن:', startWith: 'ابدئي بكلمة: أرى…', mic: 'اضغطي وتكلّمي', micStop: 'انتهيتُ من الكلام',
   mine: 'صوتي', done: 'انتهيتُ ✓', model: 'اسمعي هذا الوصف.', w1: 'اكتبي في كرّاستِكِ', w2: 'صوّري صفحتَكِ', w3: 'اقرئي ما كتبتِ (إن شئتِ)',
@@ -604,7 +622,9 @@ function mount(api) {
     startStep(r, D, st.id, s.t); save();
     s.wrong = 0; s.total = 0;
     const head = part => `<div class="dz-stephead"><span class="dz-chip ${st.subj}">${st.subj === 'ar' ? 'عربية' : 'رياضيات'}</span><h2>${esc(st.title)}</h2><span class="dz-part">${part}</span></div>`;
-    if (st.kind === 'tag') await tagStep(s, st, k, first, head); else await numStep(s, st, k, first, head);
+    if (st.kind === 'tag') await tagStep(s, st, k, first, head);
+    else if (st.kind === 'jarr') await jarrStep(s, st, k, first, head);
+    else await numStep(s, st, k, first, head);
     if (!live(s)) return;
     const res = finishStep(r, D, st.id, s.t, s.wrong, s.total); save();
     let round = 0;
@@ -671,6 +691,62 @@ function mount(api) {
         await askKind(s, P, aw[i], true, () => { ash[i] = true; $('#dzSent').innerHTML = wordChips(aw, ash, -1); });
       }
     }
+  }
+  /* ---------- حروف الجرّ: watch (the حرف lights up, then its اسم مجرور), one gap to fill, then practice alone ---------- */
+  const jarrChips = (j, lit) => j.w.map((w, i) => { const k = w === j.jar ? 'h' : w === j.maj ? 'n' : '';
+    const on = lit && ((lit >= 1 && k === 'h') || (lit >= 2 && k === 'n'));
+    return `<span class="dz-w${on ? ' c-' + k : ''}" data-i="${i}"><b>${esc(w)}</b><small>${on ? (k === 'h' ? 'حرف جرّ' : 'اسم مجرور') : ''}</small></span>`; }).join('');
+  async function jarrStep(s, st, k, first, head) {
+    const wk = st.worked[k % st.worked.length], j = st.jarr[wk.s];
+    let P = pane(`${head(L.watch)}<div class="dz-sentence" id="dzSent">${jarrChips(j, 0)}</div><p class="dz-q" id="dzWhy"></p><div id="dzRuleSlot"></div>
+      <div class="dz-row"><button class="dz-big" id="dzNext">${L.next}</button></div>`, 'step');
+    const next = waitClick(P, '#dzNext').then(() => stopAudio());
+    const alive = partOf(s);
+    (async () => {
+      await sayFor(uiClip('watch'), 700); if (!alive()) return;
+      await sayFor('s-' + wk.s, 2000); if (!alive()) return;
+      P.querySelector('#dzSent').innerHTML = jarrChips(j, 1); await sleep(700); if (!alive()) return;
+      P.querySelector('#dzSent').innerHTML = jarrChips(j, 2);
+      P.querySelector('#dzWhy').textContent = wk.t;
+      await sayFor(wk.id, 2600); if (!alive()) return;
+      P.querySelector('#dzRuleSlot').innerHTML = ruleBox(st);
+      if (first) await readRule(P);
+    })();
+    await next; partOf(s); if (!live(s)) return;
+    // one gap, with two tries; then eight alone
+    const items = jarrItems(st, seedOf(s.t + st.id)), g = jarrItems(st, seedOf(s.t + st.id + 'g'), 2)[1];
+    await jarrItem(s, st, g, head(L.yourTurn), false, 'yourTurn');
+    if (!live(s)) return;
+    for (let n = 0; n < items.length && live(s); n++) await jarrItem(s, st, items[n], head(L.alone) + `<p class="dz-count">${num(n + 1)} من ${num(items.length)}</p>`, true, n === 0 ? 'alone' : null);
+  }
+  function jarrItem(s, st, it, top, alone, clip) {
+    if (it.t === 'find') {
+      const j = st.jarr[it.s];
+      const P = pane(`${top}<p class="dz-q">${L.findJar}</p><div class="dz-sentence tap" id="dzSent">${jarrChips(j, 0)}</div><div class="dz-fb" id="dzFb"></div>`, 'step');
+      if (clip) say(uiClip(clip));
+      return new Promise(done => {
+        let tries = 0;
+        P.querySelector('#dzSent').onclick = async e => {
+          const c = e.target.closest('[data-i]'); if (!c || !live(s)) return;
+          api.SFX.init(); tries++;
+          if (alone && tries === 1) s.total++;
+          const right = Number(c.dataset.i) === it.ok;
+          if (!right) { c.classList.add('no'); setTimeout(() => c.classList.remove('no'), 400); }
+          if (!right && !alone && tries < 2) { P.querySelector('#dzFb').textContent = L.think; say(uiClip('think')); return; }
+          if (!right && alone) s.wrong++;
+          P.querySelector('#dzSent').onclick = null;
+          P.querySelector('#dzSent').innerHTML = jarrChips(j, 2);
+          P.querySelector('#dzFb').textContent = right ? L.well : L.look; if (right) api.SFX.good();
+          await tapNext(P); done();
+        };
+      });
+    }
+    const q = it.t === 'fill' ? esc(it.q).replace('___', '<span class="dz-blank" id="dzBlank">؟</span>')
+      : esc(st.jarr[it.s].w.join(' ') + '.').replace(esc(st.jarr[it.s].maj), '<span class="dz-blank" id="dzBlank">؟</span>');
+    const P = pane(`${top}<p class="dz-q">${it.t === 'fill' ? L.fillJar : L.pickEnd}</p><p class="dz-words big">${q}</p>
+      <div class="dz-opts${it.t === 'fill' ? ' three' : ''}" id="dzOpts">${it.opts.map((o, i) => `<button class="dz-opt" data-i="${i}">${esc(o)}</button>`).join('')}</div><div class="dz-fb" id="dzFb"></div>`, 'step');
+    if (clip) say(uiClip(clip));
+    return choose(s, P, it.ok, alone, () => { const b = P.querySelector('#dzBlank'); b.textContent = it.opts[it.ok]; b.classList.add('filled'); });
   }
   // one word: she taps a kind. Guided: two tries, then the answer. Alone: one try (a mistake is counted), then the answer.
   function askKind(s, P, w, alone, onRight) {

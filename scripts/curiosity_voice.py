@@ -200,6 +200,8 @@ def pieces_fit(x, texts):
     the take follows its length in letters, and a longer pause is a better cut (a line can hold a short pause inside,
     as after «ما رأيكِ؟»). Dynamic programming over the pauses, in order."""
     env = V.envelope(x); n = len(env); K = len(texts)
+    if K == 1:
+        return [V.trim(x)]                             # one line: the whole take is its clip
     thr = max(0.004, 0.06 * np.percentile(env, 95))
     gaps = [(s, e) for s, e in V.runs(env < thr) if (e - s) * 0.01 >= 0.22 and s > 0 and e < n]
     if len(gaps) < K - 1:

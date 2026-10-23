@@ -59,13 +59,30 @@ ok('two mistakes alone is not a pass; it comes back on its next day', () => {
   assert.strictEqual(C.stepDayIx(r, 'ar1', '2026-11-05'), 2, 'the third day takes the third example');
 });
 
-ok('after the stamp, with the next city not built: no step, the pictures keep coming, cards still due', () => {
+ok('after the capital comes Oran with its own step (حروف الجر), postcard and pictures; after Oran, Tlemcen is not built yet', () => {
   const r = C.blank();
   let t = '2026-11-01';
   for (let i = 0; i < 2; i++) { session(r, t); t = C.addDays(t, 1); }
   const d = C.openDay(r, D, t);
-  assert.strictEqual(d.city, null); assert.strictEqual(d.step, null); assert.ok(D.pics[d.pic]);
-  assert.strictEqual(C.nextOnRoute(r, D).id, 'orn');
+  assert.strictEqual(d.city, 'orn'); assert.strictEqual(d.step, 'ar2'); assert.strictEqual(d.arrive, true); assert.strictEqual(d.pic, 'orn1');
+  C.finishDay(r, t); r.days[t].done = true;
+  for (let i = 0; i < 2; i++) { t = C.addDays(t, 1); const x = session(r, t); if (i === 1) assert.strictEqual(x.stamp.id, 'orn'); }
+  t = C.addDays(t, 1);
+  const e = C.openDay(r, D, t);
+  assert.strictEqual(e.city, null); assert.strictEqual(e.step, null); assert.ok(D.pics[e.pic]);
+  assert.strictEqual(C.nextOnRoute(r, D).id, 'tlm');
+});
+
+ok('حروف الجر: every bank sentence has its حرف and its اسم مجرور ending in a kasra; practice is always well made', () => {
+  const st = D.steps.ar2;
+  Object.entries(st.jarr).forEach(([id, j]) => { assert.ok(j.w.includes(j.jar), id); assert.ok(j.w.includes(j.maj), id); assert.ok(j.maj.endsWith('\u0650'), id + ' kasra');
+    assert.ok(j.w.indexOf(j.maj) === j.w.indexOf(j.jar) + 1, id + ': the noun comes right after the حرف'); });
+  st.fill.forEach(([q, right, wrong]) => { assert.ok(q.includes('___')); assert.ok(!wrong.includes(right)); assert.strictEqual(new Set(wrong).size, 2); });
+  for (let seed = 1; seed < 300; seed++) C.jarrItems(st, seed).forEach(it => {
+    if (it.t === 'find') assert.strictEqual(st.jarr[it.s].w[it.ok], st.jarr[it.s].jar);
+    else { assert.strictEqual(new Set(it.opts).size, 3, JSON.stringify(it)); if (it.t === 'end') assert.strictEqual(it.opts[it.ok], st.jarr[it.s].maj); }
+  });
+  st.worked.forEach(w => assert.ok(st.jarr[w.s]));
 });
 
 ok('cards: Talk Cards boxes (1, 2, 4 ... days), cross = tomorrow, at most 3 new a day, at most 6 in the warm-up', () => {
@@ -124,7 +141,7 @@ ok('every card, picture, sentence and step the app needs is in algeria.json', ()
   st.worked.concat(st.guided.map(g => g[0]), ...st.alone).forEach(sid => assert.ok(D.sent[sid], sid));
   st.guided.forEach(([sid, i]) => assert.ok(D.sent[sid][i], sid));
   D.steps.ma1.guided.forEach(g => assert.ok(g.opts.includes(g.parts[g.blank]), g.n));
-  assert.strictEqual(D.cities.filter(x => x.ready).length, 1);
+  assert.deepStrictEqual(D.cities.filter(x => x.ready).map(x => x.id), ['alg', 'orn']);
   D.photos.forEach(p => assert.ok(require('fs').existsSync(path.join(__dirname, '..', p)), p));
 });
 
