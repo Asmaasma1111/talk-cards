@@ -2735,6 +2735,19 @@ body[data-profile="mama"] .deck-apps { display: none; }
 /* ماريا تقرأ: a story page's own picture (drawn in ChatGPT), shown after she reads the page */
 .rd-storypic { display: block; height: min(46vh, 560px); max-width: 80vw; width: auto; object-fit: contain; border-radius: 26px; border: 5px solid #fff; box-shadow: 0 14px 30px rgba(158, 47, 99, .18); animation: rdPop .5s ease both; }
 
+/* علبة الفضول: the gift box drawn in ChatGPT (her request, 23 Oct 2026): closed on the start button and in step 1; it opens into
+   the box with the question mark popping out */
+.cb-go-img { width: 112px; height: 112px; object-fit: contain; filter: drop-shadow(0 8px 10px rgba(150, 60, 40, .22)); }
+.cb-go:not(:disabled) .cb-go-img { animation: cbWiggle 2.4s ease-in-out infinite; }
+.cb-go.done .cb-go-img, .cb-go:disabled .cb-go-img { filter: grayscale(.7) opacity(.55); }
+.cb-gift.art { width: clamp(240px, 32vw, 340px); aspect-ratio: 1; }
+.cb-gift.art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; z-index: 2; filter: drop-shadow(0 16px 18px rgba(150, 60, 40, .22));
+  transition: transform .7s cubic-bezier(.3, 1.5, .5, 1), opacity .45s; }
+.cb-gift.art .g-open { opacity: 0; transform: scale(.82); }
+.cb-boxwrap.open .cb-gift.art .g-closed { opacity: 0; transform: scale(1.12); }
+.cb-boxwrap.open .cb-gift.art .g-open { opacity: 1; transform: scale(1.06); }
+.cb-gift.art .glow { position: absolute; z-index: 1; }
+
 /* ===================== هيا نتعلم في الجزائر (the trip to Algeria, algeria.js) =====================
    Her rule (23 Oct 2026): green is the theme of the whole app. Algeria's flag green with soft mint, cream paper and a
    touch of the flag's red for the stamps only. */

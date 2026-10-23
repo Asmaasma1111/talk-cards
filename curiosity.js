@@ -321,7 +321,7 @@ function mount(api) {
     <svg class="ring" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="24"/></svg>${ic('i-gear', 'cog')}
   </button>
   <header class="cb-head">
-    <img class="cb-logo" src="assets/apps/curiosity.svg" alt="">
+    <img class="cb-logo" src="assets/apps/curiosity.webp" alt="">
     <div class="cb-titles"><h1>علبة الفضول</h1><p>نتدرّب لنكون سائلات ماهرات</p></div>
     <span class="cb-flame" id="cbFlame">${ic('i-flame')}<b id="cbStreak"></b></span>
   </header>
@@ -329,7 +329,7 @@ function mount(api) {
     <div class="cb-treebox"><div class="cb-tree" id="cbTree"></div><p class="cb-treecap">${L.tree}</p></div>
     <div class="cb-side">
       <button class="cb-surprise" id="cbSurprise" hidden><span>🎁</span>${L.surprise}</button>
-      <button class="cb-go" id="cbGo"><span class="cb-go-box" aria-hidden="true"><i class="lid"></i><i class="base"></i><i class="rib"></i></span><b id="cbGoLabel"></b></button>
+      <button class="cb-go" id="cbGo"><img class="cb-go-img" src="assets/curiosity/gift-closed.webp" alt=""><b id="cbGoLabel"></b></button>
       <div class="cb-wait" id="cbWait" hidden><p>${L.wait}</p><button class="cb-btn" id="cbFindBtn">${L.together}</button></div>
       <button class="cb-btn soft" id="cbBookBtn">📒 ${L.book}</button>
     </div>
@@ -505,7 +505,7 @@ function mount(api) {
   async function stepBox(s) {
     stepsBar('box'); $('#cbTimer').hidden = true; $('#cbCount').hidden = true;
     stage.innerHTML = `<p class="cb-goal">${esc(D.goal)}</p>
-      <div class="cb-boxwrap" id="cbBoxWrap"><button class="cb-gift" id="cbGift" aria-label="${L.open}"><i class="lid"></i><i class="base"></i><i class="rib"></i><i class="bow"></i><i class="glow"></i></button>
+      <div class="cb-boxwrap" id="cbBoxWrap"><button class="cb-gift art" id="cbGift" aria-label="${L.open}"><i class="glow"></i><img class="g-closed" src="assets/curiosity/gift-closed.webp" alt=""><img class="g-open" src="assets/curiosity/gift-open.webp" alt=""></button>
       <p class="cb-opencap">${L.open}</p></div>`;
     say('goal');
     await new Promise(ok => $('#cbGift').addEventListener('click', ok, { once: true }));
