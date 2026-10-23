@@ -40,7 +40,7 @@ WORDS_DIR = os.path.join(WORK, 'words')
 WPLAN = os.path.join(WORDS_DIR, 'plan.json')
 OUT = os.path.join(V.AUDIO, 'rd')
 SAY = {'ab': 'abb', 'ba': 'baa'}                    # pretend words, spelled so the voice reads them as one syllable
-HEARD_OK = {'ab': {'ab', 'abb', 'abe'}, 'ba': {'ba', 'baa', 'bah'}, 'bee': {'b'}, 'tea': {'t'}, 'bin': {'been'}, 'pea': {'p', 'pee'}}   # bee and tea sound like the letter names
+HEARD_OK = {'ab': {'ab', 'abb', 'abe'}, 'ba': {'ba', 'baa', 'bah'}, 'bee': {'b'}, 'tea': {'t'}, 'bin': {'been'}, 'pea': {'p', 'pee'}, 'pear': {'pair'}, 'past': {'passed'}}   # bee and tea sound like the letter names; pear/pair and past/passed sound the same
 STRETCHY = ['at', 'cat', 'bat', 'tab', 'cab', 'ab', 'ba', 'act']   # from the approved test take (Voice A)
 BATCH = 18
 V.DECKS['readsx'] = {'voice': 'Kore', 'say_rate': 160,
@@ -290,6 +290,12 @@ def cmd_build(a):
             continue
         enc(os.path.join(WORDS_DIR, f'w-{w}.wav'), os.path.join(OUT, f'w-{w}.m4a'))
         clips['w-' + w] = {'f': f'rd/w-{w}.m4a', 'd': c['seconds']}
+    lplan = V.load(LPLAN, {'batches': {}, 'clips': {}})   # the sentences, story pages and story questions (x-..., qq-...)
+    for k, c in sorted(lplan['clips'].items()):
+        if not c.get('ok'):
+            continue
+        enc(os.path.join(LINES_DIR, f'{k}.wav'), os.path.join(OUT, f'{k}.m4a'))
+        clips[k] = {'f': f'rd/{k}.m4a', 'd': c['seconds']}
     for w in STRETCHY:   # the stretchy models: Voice A test take, clean ending
         src = os.path.join(WORK, f'3.8flashtts-{w}-clean.wav')
         enc(src, os.path.join(OUT, f's-{w}.m4a'))

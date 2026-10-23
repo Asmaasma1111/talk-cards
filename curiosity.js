@@ -142,6 +142,7 @@ const L = {
   newQ: 'سؤال جديد! 🌿', hint: 'فكرة'
 };
 const RULES_IC = ['❓❓❓', '⏩', '💬', '🔄'];
+const L_TREE = 'شجرة أسئلتي';
 // «سؤالاً واحداً», «سؤالين», «٣ أسئلة» ... «١٠ أسئلة», «١١ سؤالاً»
 const qCount = n => (n === 1 ? 'سؤالاً واحداً' : n === 2 ? 'سؤالين' : n >= 3 && n <= 10 ? `${AR(n)} أسئلة` : `${AR(n)} سؤالاً`);
 const TIPS_EN = ['Give real explanations, never just "because".', 'Show your own surprise.', 'Say «لا أعرف... هيا نبحث معًا» ("I don\'t know, let\'s find out together").', 'Praise the question, not the answer.'];
@@ -158,8 +159,10 @@ function mount(api) {
   function load() { try { return clean(JSON.parse(api.lsGet(KEY) || 'null')); } catch (e) { return blank(); } }
   function save() { api.lsSet(KEY, JSON.stringify(r)); }
   const PH = {};      // Mama's photos (her drawing, her own mystery, a photo of her own for any mystery): blob URLs
+  let TREE = null;    // the tree Mama chose (drawn in ChatGPT): its picture, its pieces and the places where they grow
   const ready = Promise.all([
     fetch('curiosity.json').then(x => x.json()).then(d => { D = d; }),
+    fetch('assets/curiosity/tree/tree.json').then(x => (x.ok ? x.json() : null)).then(t => { TREE = t; }).catch(() => {}),
     fetch('audio/voice.json').then(x => (x.ok ? x.json() : null)).then(v => { CLIPS = (v && v.decks && v.decks.cbox && v.decks.cbox.clips) || {}; }).catch(() => {}),
     loadPhotos()
   ]).catch(e => { console.warn('Curiosity Box could not load', e); });
@@ -387,9 +390,38 @@ function mount(api) {
     const trunk = cnt.leaves ? `<path d="M186 352 C190 300 192 262 196 ${200 + R * 0.2} L204 ${200 + R * 0.2} C208 262 210 300 214 352 Z" fill="#B07A4F"/><path d="M198 260 C178 236 160 222 146 ${206 - R * 0.05}" stroke="#B07A4F" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M202 248 C222 228 240 214 254 ${204 - R * 0.05}" stroke="#B07A4F" stroke-width="9" fill="none" stroke-linecap="round"/>` : '';
     return `<svg viewBox="0 0 400 380" class="${big ? 'big' : ''}" role="img" aria-label="${L.tree}"><ellipse cx="200" cy="352" rx="150" ry="18" fill="#CDEFD6"/>${crown}${trunk}${sprout}${leaves.join('')}${flowers.join('')}${fruits.join('')}</svg>`;
   }
+  // the drawn tree: a leaf for every question on the places along its branches (buds first), a blossom for every flipped
+  // question and a fruit for every question found out together; each new one grows in from its stem
+  function treeArt(cnt, seen) {
+    const T = TREE, P = T.places, N = P.length, dir = 'assets/curiosity/tree/';
+    const kind = k => T.pieces.filter(p => p.kind === k);
+    const L = kind('leaf'), F = kind('flower'), R = kind('fruit');
+    const fresh = (i, k) => i >= (seen[k] || 0);
+    const late = (i, k) => (fresh(i, k) ? ` style="animation-delay:${Math.min(2.4, (i - (seen[k] || 0)) * 0.12).toFixed(2)}s"` : '');
+    const img = (p, h, cls, i, k, anchor) => {
+      const w = Math.round(h * p.w / p.h), x = -w / 2, y = anchor === 'stem' ? -h + 4 : -h / 2;
+      return `<image class="${cls}${fresh(i, k) ? ' new' : ''}"${late(i, k)} href="${dir}${p.id}.webp" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+    };
+    const out = [];
+    for (let i = 0; i < Math.min(cnt.leaves, N); i++) {
+      const [x, y, a] = P[i];
+      const size = Math.round(60 + ((i * 37) % 17) - 6);            // 54 to 70, so the leaves are not all alike
+      out.push(`<g transform="translate(${x} ${y}) rotate(${a})">${img(L[(i * 5) % L.length], size, 'lf', i, 'leaves', 'stem')}</g>`);
+    }
+    const twigs = P.filter(p => p[3] > 0), M = twigs.length;
+    for (let i = 0; i < Math.min(cnt.flowers, 80); i++) {
+      const [x, y, a] = P[(i * 13 + 5) % N];
+      out.push(`<g transform="translate(${x} ${y}) rotate(${Math.round(a * 0.4)})">${img(F[i % F.length], 52, 'fl', i, 'flowers')}</g>`);
+    }
+    for (let i = 0; i < Math.min(cnt.fruits, 60); i++) {
+      const [x, y] = twigs[(i * 11 + 3) % M];
+      out.push(`<g transform="translate(${x} ${y + 18})">${img(R[i % R.length], 54, 'fr', i, 'fruits')}</g>`);
+    }
+    return `<svg viewBox="0 0 ${T.size} ${T.size}" role="img" aria-label="${L_TREE}"><image href="${T.image}" width="${T.size}" height="${T.size}"/>${out.join('')}</svg>`;
+  }
   function renderTree(el, animate = true) {
     const cnt = treeCounts(r);
-    el.innerHTML = treeSVG(cnt, animate ? r.seen : cnt);
+    el.innerHTML = TREE && TREE.pieces && TREE.pieces.length ? treeArt(cnt, animate ? r.seen : cnt) : treeSVG(cnt, animate ? r.seen : cnt);
     if (animate && (cnt.leaves > r.seen.leaves || cnt.flowers > r.seen.flowers || cnt.fruits > r.seen.fruits)) {
       r.seen = { leaves: cnt.leaves, flowers: cnt.flowers, fruits: cnt.fruits }; save();
     }
@@ -1102,7 +1134,8 @@ function mount(api) {
     valid,
     replace(obj) { r = clean(obj); save(); },
     // for tests (?dev=1)
-    get state() { return r; }, get data() { return D; }, core, openParent, openFind, openBook, start, _mystery: id => M(id)
+    get state() { return r; }, get data() { return D; }, core, openParent, openFind, openBook, start, _mystery: id => M(id),
+    _treeArt: cnt => (TREE ? treeArt(cnt, cnt) : '')
   };
 }
 

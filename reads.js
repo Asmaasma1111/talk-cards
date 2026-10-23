@@ -1172,8 +1172,9 @@ function mount(api) {
     await sayLine('x-' + id);
     ws.forEach(x => x.classList.remove('say'));
     if (s !== S) return;
-    $('#rdAfter').innerHTML = X.photo && PHOTO().has(X.photo) ? photoImg(X.photo) : X.e ? `<span class="rd-emo">${X.e}</span>` : '<span class="rd-sparkle">⭐</span>';
-    api.SFX.good(); await sleep(1400);
+    $('#rdAfter').innerHTML = X.pic ? `<img class="rd-storypic" src="${esc(X.pic)}" alt="">`      // a story page's own picture
+      : X.photo && PHOTO().has(X.photo) ? photoImg(X.photo) : X.e ? `<span class="rd-emo">${X.e}</span>` : '<span class="rd-sparkle">⭐</span>';
+    api.SFX.good(); await sleep(X.pic ? 2600 : 1400);      // a story picture stays a little longer, to be enjoyed
   }
   // the line so far (THE FAT): she swipes under it and hears its words one after another
   async function buildUp(s, toks, k, opts = {}) {

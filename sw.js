@@ -2,7 +2,7 @@
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
 // The same file serves both apps: Talk Cards registers sw.js, Prepositions registers sw.js?app=prepositions.
 const APP = new URL(location.href).searchParams.get('app') === 'prepositions' ? 'prepositions' : 'talk-cards';
-const VERSION = APP + '-v111';
+const VERSION = APP + '-v112';
 const FILES = APP === 'prepositions' ? [
   './',
   'index.html',
@@ -34,6 +34,11 @@ const FILES = APP === 'prepositions' ? [
   'curiosity.json',
   'assets/apps/curiosity.svg',
   'assets/curiosity/sounds/h1.m4a',
+  // her question tree (drawn in ChatGPT): the tree, its leaves, blossoms and fruits, and where they grow
+  'assets/curiosity/tree/tree.json',
+  'assets/curiosity/tree/tree.webp',
+  ...[1, 2, 3, 4, 5, 6].map(n => `assets/curiosity/tree/leaf-${n}.webp`),
+  ...[1, 2, 3].flatMap(n => [`assets/curiosity/tree/flower-${n}.webp`, `assets/curiosity/tree/fruit-${n}.webp`]),
   'assets/apps/talk.webp',
   'assets/apps/math.webp',
   'assets/apps/lib.webp',
@@ -146,6 +151,7 @@ async function cacheReads(cache) {
   try {
     const d = await (await fetch('reads.json', { cache: 'no-cache' })).json();
     await Promise.all((d.photos || []).map(k => cache.add(new Request(`assets/reads/photos/${k}.webp`, { cache: 'no-cache' })).catch(() => {})));
+    await Promise.all(Object.values(d.sentences || {}).filter(x => x.pic).map(x => cache.add(new Request(x.pic, { cache: 'no-cache' })).catch(() => {})));
   } catch (e) { /* the pictures still load when online */ }
 }
 

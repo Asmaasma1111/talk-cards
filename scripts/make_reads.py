@@ -360,6 +360,13 @@ def photo_of(w):
 for x in SENT.values():
     ph = [photo_of(w) for w in x['words'] if not WORDS[w].get('sight') and photo_of(w)]
     if ph: x['photo'] = ph[-1]
+# the stories' own pictures (her request, 21 Oct 2026: drawn in ChatGPT in the clay style of her apps, one per page):
+# assets/reads/story/<page id>.webp, shown after she has read the page, in place of the word photo
+STORY_DIR = os.path.join(os.path.dirname(OUT), 'assets', 'reads', 'story')
+for st in STORIES.values():
+    for pid in st['pages']:
+        if os.path.exists(os.path.join(STORY_DIR, pid + '.webp')):
+            SENT[pid]['pic'] = f'assets/reads/story/{pid}.webp'
 QOPT = {'🐶': 'pup', '👒': 'hat', '👜': 'bag', '🐱': 'cat', '👨': 'dad', '👵': 'grandma', '🐸': 'frog', '🦀': 'crab', '👍': 'yes', '👎': 'no',
         '🛏️': 'bed', '🚌': 'bus', '🧸': 'toy', '🧁': 'muffin', '👟': 'sneakers', '👩‍👧': 'mom'}
 for st in STORIES.values():
