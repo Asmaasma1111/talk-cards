@@ -3032,3 +3032,9 @@ body[data-profile="mama"] .deck-apps { display: none; }
 .ap-tiles.six .ap-name { font-size: clamp(21px, 2.3vw, 27px); }
 .ap-tiles.six .ap-state { font-size: 15px; padding: 4px 12px; margin-top: 6px; }
 @media (prefers-reduced-motion: reduce) { .dz-city.here i, .dz-myplane, .dz-plane, .dz-pane, .dz-stampbig { animation: none !important; } }
+/* the trip's maths in Saudi digits (her rule, 23 Oct 2026): the thousands blue, the units green, as in the place table */
+.dz-n .g-th { color: #2F7FB8; } .dz-n .g-un { color: var(--g7); }
+.dz-bignum.sm { font-size: clamp(40px, min(6vw, 8vh), 72px); }
+.dz-count { margin: 0; padding: 2px 14px; border-radius: 99px; background: #fff; font-size: 18px; font-weight: 800; color: rgba(10, 59, 36, .55); }
+.dz-opts.three { flex-direction: row; justify-content: center; }
+.dz-opts.three .dz-opt { flex: 0 1 150px; }

@@ -137,18 +137,39 @@ ok('every card, picture, sentence and step the app needs is in algeria.json', ()
   st.worked.concat(st.guided.map(g => g[0]), ...st.alone).forEach(sid => assert.ok(D.sent[sid], sid));
   st.guided.forEach(([sid, i]) => assert.ok(D.sent[sid][i], sid));
   D.steps.ma1.guided.forEach(g => assert.ok(g.opts.includes(g.parts[g.blank]), g.n));
-  D.steps.ma1.alone.flat().forEach(it => { if (it.t !== 'space') assert.ok(it.ok >= 0 && it.ok < it.opts.length, JSON.stringify(it)); });
   assert.strictEqual(D.cities.filter(x => x.ready).length, 1);
   D.photos.forEach(p => assert.ok(require('fs').existsSync(path.join(__dirname, '..', p)), p));
 });
 
-ok('numbers are written the Algerian way, and every spoken line has an id once', () => {
-  assert.strictEqual(C.num(23519), '23 519'); assert.strictEqual(C.num(265), '265'); assert.strictEqual(C.num(1962), '1 962');
+ok('numbers in Saudi digits (her rule); every spoken line has an id once; nothing she reads herself is recorded', () => {
+  assert.strictEqual(C.num(23519), '٢٣٥١٩'); assert.strictEqual(C.num(265), '٢٦٥');
   const ids = D.lines.map(l => l[0]);
   assert.strictEqual(new Set(ids).size, ids.length);
   D.steps.ma1.worked.forEach(w => assert.ok(ids.includes('n-' + w.n)));
-  D.steps.ma1.alone.flat().forEach(it => assert.ok(ids.includes('n-' + (it.t === 'w2n' ? it.opts[it.ok] : it.n)), JSON.stringify(it)));
-  D.steps.ma1.guided.forEach(g => assert.ok(ids.includes('n-' + g.n)));
+  assert.ok(!ids.some(i => /^(c-|e-|pc-)/.test(i)), 'cards, easy items and the postcard are read by her');
+  Object.values(D.cards).forEach(c => ['f', 'b', 's', 'num'].forEach(k => assert.ok(!/[0-9]/.test(c[k] || ''), c.id + ' ' + k)));   // no Western digits on a card
+});
+
+ok('number words: the generator reads every number of the book as the book does', () => {
+  Object.entries(D.words).forEach(([n, w]) => assert.strictEqual(C.numWords(+n), w, n));
+  assert.strictEqual(C.numWords(11000), 'أحد عشر ألفًا'); assert.strictEqual(C.numWords(100000 - 1), 'تسعة وتسعون ألفًا وتسعمائة وتسعة وتسعون');
+  assert.strictEqual(C.numWords(3010), 'ثلاثة آلاف وعشرة'); assert.strictEqual(C.numWords(212), 'مئتان واثنا عشر');
+  assert.deepStrictEqual(C.expanded(4205), ['4000', '200', '5']);
+});
+
+ok('practice is generated: eight a day, the right answer always among three different options, the same on the same day', () => {
+  for (let seed = 1; seed < 400; seed++) {
+    const items = C.mathItems(seed, 8, [3, 5]);
+    assert.strictEqual(items.length, 8);
+    items.forEach(it => {
+      assert.strictEqual(it.opts.length, 3, JSON.stringify(it)); assert.strictEqual(new Set(it.opts.map(String)).size, 3, JSON.stringify(it));
+      assert.ok(it.n >= 100 && it.n <= 99999);
+      if (it.t === 'place') assert.strictEqual(it.opts[it.ok], String(it.n).split('').reverse()[it.p]);
+      else if (it.t === 'n2w') assert.strictEqual(it.opts[it.ok], C.numWords(it.n));
+      else assert.strictEqual(it.opts[it.ok], it.n);
+    });
+  }
+  assert.deepStrictEqual(C.mathItems(C.seedOf('2026-11-02ma1'), 8, [4, 4]), C.mathItems(C.seedOf('2026-11-02ma1'), 8, [4, 4]));
 });
 
 console.log(n, 'tests passed');

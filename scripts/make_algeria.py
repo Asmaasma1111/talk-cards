@@ -7,14 +7,17 @@ Every Arabic line here is listed for Mama to check (Algeria_Week1_Checklist.md).
 
   python3 -I scripts/make_algeria.py        -> algeria.json (and the list of voice lines inside it)
 
-Numbers are written with Western digits and a space between the thousands and the hundreds (23 519), as in Algeria.
+Numbers are shown with Saudi (Arabic-Indic) digits and no separator, ٢٣٥١٩ (her rule, 23 Oct 2026: "I'm focusing more on the
+content and learning rather than the symbols"). The maths practice is generated in algeria.js (as much as she wants).
+Only the lines the voice really says are listed for recording: the voice reads a text once, never what she reads herself.
 """
 import hashlib, json, os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, 'algeria.json')
 wid = lambda w: 'k-' + hashlib.md5(w.encode('utf-8')).hexdigest()[:8]   # single words: recorded 40 to a take
-num = lambda n: f'{n:,}'.replace(',', ' ')          # 23519 -> "23 519"
+AR = lambda t: str(t).translate(str.maketrans('0123456789', '٠١٢٣٤٥٦٧٨٩'))   # Saudi digits (her rule)
+num = lambda n: AR(n)                                # 23519 -> "٢٣٥١٩"
 
 DECKS = {'qw': 'قواعدي', 'dz': 'جزائري', 'nm': 'أكتب العدد'}
 
@@ -71,7 +74,7 @@ CARDS = {
     'nm2': dict(deck='nm', n=1954, f='اقرئي العدد:', b='ألف وتسعمائة وأربعة وخمسون', s='سنةُ بدايةِ الثورة.'),
     'nm3': dict(deck='nm', n=23519, f='اقرئي العدد:', b='ثلاثة وعشرون ألفًا وخمسمائة وتسعة عشر', s=''),
     'nm4': dict(deck='nm', n=265, f='اقرئي العدد:', b='مئتان وخمسة وستون', s='طولُ مئذنةِ جامعِ الجزائرِ بالمتر.'),
-    'nm5': dict(deck='nm', f='كيف نكتبُ هذا العددَ في الجزائر؟ 23519', b='23 519', s='نتركُ فراغًا بينَ الآلافِ والمئات.'),
+    'nm5': dict(deck='nm', f='في العدد ٢٣٥١٩، ما رقمُ الآلاف؟', b='٣', s='٢ عشراتُ الآلاف، ٣ آلاف، ٥ مئات، ١ عشرات، ٩ آحاد.'),
     'nm6': dict(deck='nm', n=4205, f='اقرئي العدد:', b='أربعة آلاف ومئتان وخمسة', s=''),
 }
 
@@ -200,31 +203,20 @@ def split(n):          # the thousands and the rest, each with its words: the wo
 
 MA1 = dict(
     id='ma1', subj='ma', kind='numwords', title='أكتب العدد بالحروف', city='alg',
-    rule=[dict(id='r-ma1-1', t='في الجزائرِ نتركُ فراغًا صغيرًا بينَ الآلافِ والمئات.'),
-          dict(id='r-ma1-2', t='نقرأُ العددَ الذي قبلَ الفراغِ، ونقولُ بعدَه: ألف.'),
-          dict(id='r-ma1-3', t='ثمّ نقرأُ العددَ الذي بعدَ الفراغ.')],
-    worked=[dict(n=n, parts=split(n)) for n in (23519, 1962, 4205, 15540)],
+    rule=[dict(id='r-ma2-1', t='نقسمُ العددَ منزلتين: منزلةَ الآلافِ ومنزلةَ الوحدات.'),
+          dict(id='r-ma2-2', t='نقرأُ الآلافَ أوّلًا، ونقولُ بعدَها: ألف.'),
+          dict(id='r-ma2-3', t='ثمّ نقرأُ المئاتِ والعشراتِ والآحاد.')],
+    worked=[dict(n=n, parts=split(n)) for n in (23519, 1962, 4205, 15540)],   # worked parts keep plain digits; the app shows Saudi ones
     guided=[dict(n=2640, parts=['ألفان', 'وستمائة', 'وأربعون'], blank=1, opts=['وستمائة', 'وستون', 'وستة']),
             dict(n=30708, parts=['ثلاثون ألفًا', 'وسبعمائة', 'وثمانية'], blank=1, opts=['وسبعون', 'وسبعمائة', 'وسبعة']),
             dict(n=1954, parts=['ألف', 'وتسعمائة', 'وأربعة', 'وخمسون'], blank=2, opts=['وأربعون', 'وأربعمائة', 'وأربعة']),
             dict(n=12350, parts=['اثنا عشر ألفًا', 'وثلاثمائة', 'وخمسون'], blank=0, opts=['اثنا عشر ألفًا', 'اثنان ألفًا', 'عشرون ألفًا'])],
-    alone=[
-        [dict(t='n2w', n=265, opts=['مئتان وخمسة وستون', 'مئتان وستة وخمسون', 'خمسمائة وستة وعشرون'], ok=0),
-         dict(t='w2n', w=WORDS[5300], opts=[5030, 5300, 53000], ok=1),
-         dict(t='space', n=15540),
-         dict(t='n2w', n=7042, opts=['سبعمائة واثنان وأربعون', 'سبعة آلاف وأربعمائة واثنان', 'سبعة آلاف واثنان وأربعون'], ok=2)],
-        [dict(t='n2w', n=1830, opts=['ألف وثلاثمائة وثمانون', 'ألف وثمانمائة وثلاثون', 'ثمانية آلاف وثلاثمائة'], ok=1),
-         dict(t='w2n', w=WORDS[90417], opts=[90417, 9417, 90471], ok=0),
-         dict(t='space', n=2897),
-         dict(t='n2w', n=10001, opts=['ألف وواحد', 'عشرة آلاف ومائة', 'عشرة آلاف وواحد'], ok=2)],
-        [dict(t='n2w', n=48600, opts=['ثمانية وأربعون ألفًا وستمائة', 'أربعة وثمانون ألفًا وستمائة', 'ثمانية وأربعون ألفًا وستون'], ok=0),
-         dict(t='w2n', w=WORDS[52390], opts=[25390, 52309, 52390], ok=2),
-         dict(t='space', n=88096),
-         dict(t='n2w', n=1962, opts=['ألف وتسعمائة وستة وعشرون', 'ألف وتسعمائة واثنان وستون', 'تسعة آلاف ومئتان وستون'], ok=1)],
-    ],
-    easy=[dict(ask='أيُّ عددٍ مكتوبٌ كما في الجزائر؟', opts=['1 962', '1962'], ok=0),
-          dict(ask='كم هو: ألف؟', opts=['100', '1 000'], ok=1),
-          dict(ask='كيف نقرأ: 2 000؟', opts=['ألفان', 'ألف'], ok=0)],
+    # alone: generated in algeria.js (core.mathItems): eight a day, from three-digit numbers on her first day to five digits;
+    # then «تدرّبي أكثر» gives more, as often as she likes
+    practice=dict(perDay=8, more=6, digits=[[3, 4], [4, 4], [4, 5], [5, 5]]),
+    easy=[dict(ask='ما رقمُ المئات في العدد ٣٥٢؟', opts=['٣', '٥'], ok=0),
+          dict(ask='كم هو: ألف؟', opts=['١٠٠', '١٠٠٠'], ok=1),
+          dict(ask='كيف نقرأ: ٢٠٠٠؟', opts=['ألفان', 'ألف'], ok=0)],
     teachDay1=['nm1', 'nm5', 'nm2'], teachPass=['nm3', 'nm4', 'nm6'])
 
 # the place-value table of the Algerian book (p. 86): منزلة الآلاف (ع.آ، آ) and منزلة الوحدات (م، ع، و)
@@ -238,58 +230,50 @@ WRITE = ['اكتبي في كرّاستِكِ جملةً واحدةً عن الص
 
 
 def build():
-    lines = []                                   # [clip id, words said]; the voice script records these
-    add = lambda i, t: lines.append([i, t]) if all(x[0] != i for x in lines) else None
+    lines = []                                   # [clip id, words said]: only what the voice says (her rule: a text once,
+    add = lambda i, t: lines.append([i, t]) if all(x[0] != i for x in lines) else None   # never what she reads herself)
     cities = []
     for k, (cid, name, nick, lon, lat) in enumerate(CITIES):
         x, y = place(lon, lat)
         c = dict(id=cid, n=k + 1, name=name, nick=nick, x=x, y=y, ready=cid == 'alg')
         if cid == 'alg':
             c.update(steps=['ar1', 'ma1'], pics=list(PICS), cards=['dz1', 'dz2', 'dz3', 'dz4', 'dz5', 'dz6', 'dz7'],
-                     post=[dict(id=f'pc-alg-{i + 1}', t=t) for i, t in enumerate(POST_ALG)])
-            for p in c['post']:
-                add(p['id'], p['t'])
+                     post=[dict(id=f'pc-alg-{i + 1}', t=AR(t)) for i, t in enumerate(POST_ALG)])     # she reads it herself
         cities.append(c)
     cards = {}
-    for cid_, c in CARDS.items():
+    for cid_, c in CARDS.items():                # she reads her cards herself: no voice
         c = dict(c); c['id'] = cid_
+        for k in ('f', 'b', 's'):
+            if c.get(k):
+                c[k] = AR(c[k])
         if c.get('photo'):
             c['photo'] = f"assets/algeria/photos/{c['photo']}.webp"
         if c.get('n'):
             c['num'] = num(c.pop('n'))
-        # the number cards all ask the same «اقرئي العدد»: one clip serves them all
-        c['fid'] = 'c-num-f' if c.get('num') else f'c-{cid_}-f'
-        add(c['fid'], (c['ask'] + ' ' + c['f']) if c.get('mark') else c['f'])
-        add(f'c-{cid_}-b', c['b'] + ('. ' + c['s'] if c.get('s') else ''))
         cards[cid_] = c
     pics = {}
-    for pid, p in PICS.items():
-        p = dict(p, id=pid, photo=f'assets/algeria/photos/{pid}.webp')
+    for pid, p in PICS.items():                  # the model description: heard once
         for i, t in enumerate(p['model']):
             add(f'm-{pid}-{i + 1}', t)
-        pics[pid] = p
-    sent = {}
-    for sid, ws in SENT.items():
-        sent[sid] = [dict(w, id=wid(w['w'])) for w in ws]
-        add(f's-{sid}', ' '.join(w['w'] for w in ws) + '.')
+        pics[pid] = dict(p, id=pid, photo=f'assets/algeria/photos/{pid}.webp', model=[AR(t) for t in p['model']])
+    sent = {sid: [dict(w, id=wid(w['w'])) for w in ws] for sid, ws in SENT.items()}
+    for sid in AR1['worked']:                    # the worked examples are read; the practice sentences she reads herself
+        add(f's-{sid}', ' '.join(w['w'] for w in SENT[sid]) + '.')
+        for w in sent[sid]:
+            add(w['id'], w['w'])
     for k, t in WHY.items():
         add(f'y-{k}', t)
     for st in (AR1, MA1):
         for r in st['rule']:
             add(r['id'], r['t'])
-        for e in st['easy']:
-            add(f"e-{st['id']}-{st['easy'].index(e) + 1}", e['ask'])
-    for n, w in WORDS.items():
-        add(f'n-{n}', w)
-    for st_ in SENT.values():
-        for w in st_:
-            add(wid(w['w']), w['w'])
+    for w in MA1['worked']:
+        add(f"n-{w['n']}", WORDS[w['n']])
     for i, t in enumerate(SAY):
         add(f'lv-say-{i + 1}', t)
     for i, t in enumerate(WRITE):
         add(f'lv-write-{i + 1}', t)
     D = dict(v=1, decks=DECKS, cities=cities, cards=cards, pics=pics, sent=sent, why=WHY, steps={'ar1': AR1, 'ma1': MA1},
-             places=PLACES, say=SAY, write=WRITE,
+             places=PLACES, say=SAY, write=WRITE, words={str(n): w for n, w in WORDS.items()},
              photos=sorted({p['photo'] for p in pics.values()} | {c['photo'] for c in cards.values() if c.get('photo')}),
              lines=lines)
     json.dump(D, open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)

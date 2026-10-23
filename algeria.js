@@ -22,7 +22,8 @@ const fmt = x => `${x.getFullYear()}-${pad2(x.getMonth() + 1)}-${pad2(x.getDate(
 function addDays(ds, n) { const x = toDate(ds); x.setDate(x.getDate() + n); return fmt(x); }
 const sleep = ms => new Promise(ok => setTimeout(ok, ms));
 const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
-const num = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');     // 23519 -> "23 519", as in Algeria
+// Saudi digits, no separator (her rule, 23 Oct 2026: "the content and learning rather than the symbols"): 23519 -> ٢٣٥١٩
+const num = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
 const INTERVAL = [0, 1, 2, 4, 8, 16, 32, 64];                         // Talk Cards' boxes (app.js): days until the next look
 
 /* =====================================================================================================
@@ -142,8 +143,72 @@ function stampIfDone(r, D, t) {
 }
 function finishDay(r, t) { const d = r.days[t]; if (d && !d.done) { d.done = true; r.n++; } }
 
+/* ---------- numbers in words (1 to 99 999), as the Algerian book reads them: «خمسمائة» joined, «مئتان», «ألفًا» ---------- */
+const UNITS = ['', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة'];
+const TENS = ['', 'عشرة', 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون'];
+const HUNDREDS = ['', 'مائة', 'مئتان', 'ثلاثمائة', 'أربعمائة', 'خمسمائة', 'ستمائة', 'سبعمائة', 'ثمانمائة', 'تسعمائة'];
+function below100(n) {
+  if (n < 10) return UNITS[n];
+  if (n === 10) return 'عشرة';
+  if (n === 11) return 'أحد عشر';
+  if (n === 12) return 'اثنا عشر';
+  if (n < 20) return `${UNITS[n - 10]} عشر`;
+  const u = n % 10, t = TENS[Math.floor(n / 10)];
+  return u ? `${UNITS[u]} و${t}` : t;
+}
+const joinW = parts => parts.filter(Boolean).join(' و');
+const below1000 = n => joinW([HUNDREDS[Math.floor(n / 100)], below100(n % 100)]);
+function numWords(n) {
+  const th = Math.floor(n / 1000), rest = n % 1000;
+  const thw = !th ? '' : th === 1 ? 'ألف' : th === 2 ? 'ألفان' : th <= 10 ? `${below100(th)} آلاف` : `${below1000(th)} ألفًا`;
+  return joinW([thw, below1000(rest)]);
+}
+// the places, from the units up (the Algerian book's table: منزلة الوحدات then منزلة الآلاف)
+const PLACE_NAMES = ['الوحدات', 'العشرات', 'المئات', 'الآلاف', 'عشرات الآلاف'];
+function rng(seed) { let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const seedOf = str => [...String(str)].reduce((h, c) => (Math.imul(h, 31) + c.charCodeAt(0)) | 0, 7);
+function shuffleR(a, rnd) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function randNum(rnd, digits) {
+  let s = String(1 + Math.floor(rnd() * 9));
+  for (let i = 1; i < digits; i++) s += rnd() < 0.25 ? '0' : String(Math.floor(rnd() * 10));
+  return Number(s);
+}
+// near misses: two digits swapped, one digit changed, a zero too many or too few
+function nearMisses(n, rnd) {
+  const d = String(n).split(''), out = new Set();
+  for (let tries = 0; out.size < 6 && tries < 80; tries++) {
+    const k = Math.floor(rnd() * 3), x = [...d];
+    if (k === 0) { const i = Math.floor(rnd() * x.length), j = Math.floor(rnd() * x.length); [x[i], x[j]] = [x[j], x[i]]; }
+    else if (k === 1) { const i = Math.floor(rnd() * x.length); x[i] = String((Number(x[i]) + 1 + Math.floor(rnd() * 8)) % 10); }
+    else if (x.length > 3 && rnd() < 0.5) x.splice(1 + Math.floor(rnd() * (x.length - 1)), 1); else if (x.length < 5) x.splice(1, 0, '0');
+    const m = Number(x.join(''));
+    if (x[0] !== '0' && m !== n && m >= 100 && m <= 99999) out.add(m);
+  }
+  return [...out];
+}
+// the practice she does alone: generated, so there is always more. Kinds: number -> words, words -> number, the digit in a
+// place, the expanded number (٤٠٠٠ + ٢٠٠ + ٥). Each item: {t, n, opts, ok, (p)}
+const KINDS = ['n2w', 'w2n', 'place', 'n2w', 'expand', 'w2n', 'place', 'n2w'];
+function mathItems(seed, count, digits) {
+  const rnd = rng(seed), out = [];
+  for (let i = 0; i < count; i++) {
+    const t = KINDS[i % KINDS.length], n = randNum(rnd, digits[0] + Math.floor(rnd() * (digits[1] - digits[0] + 1)));
+    if (t === 'place') {
+      const ds = String(n).split('').reverse(), p = Math.floor(rnd() * ds.length), right = ds[p];
+      const others = shuffleR([...new Set([...ds, ...'0123456789'])].filter(x => x !== right), rnd).slice(0, 2);
+      const opts = shuffleR([right, ...others], rnd);
+      out.push({ t, n, p, opts, ok: opts.indexOf(right) }); continue;
+    }
+    const nums = shuffleR([n, ...shuffleR(nearMisses(n, rnd), rnd).slice(0, 2)], rnd);
+    out.push({ t, n, opts: t === 'n2w' ? nums.map(numWords) : nums, ok: nums.indexOf(n) });
+  }
+  return out;
+}
+const expanded = n => String(n).split('').map((d, i, a) => d + '0'.repeat(a.length - 1 - i)).filter(x => x[0] !== '0');
+
 const core = { blank, clean, valid, addDays, num, level, plan, pickPic, openDay, dayDone, currentCity, nextOnRoute, cityDone, stepDone,
-               teach, warmIds, rate, deckCounts, startStep, finishStep, stepDayIx, stampIfDone, finishDay, INTERVAL };
+               teach, warmIds, rate, deckCounts, startStep, finishStep, stepDayIx, stampIfDone, finishDay, INTERVAL,
+               numWords, mathItems, nearMisses, expanded, PLACE_NAMES, seedOf };
 
 /* =====================================================================================================
    What she sees and hears. Each spoken line has a clip in audio/voice.json, deck 'dz' (scripts/algeria_voice.py);
@@ -156,7 +221,7 @@ const L = {
   warm: 'هيا نتذكّر!', newCard: 'بطاقة جديدة', flip: 'اقلبي البطاقة', good: 'عرفتُها', again: 'مرّةً أخرى',
   step: 'خطوة جديدة', watch: 'انظري واستمعي.', yourTurn: 'دورُكِ! أكملي الجزء الناقص.', alone: 'والآن وحدَكِ!',
   well: 'أحسنتِ!', think: 'فكّري مرّةً أخرى.', look: 'انظري إلى الجواب.', rule: 'تعلّمتُ',
-  whatKind: 'ما نوعُ الكلمة؟', pickWords: 'اختاري الكتابةَ الصحيحة.', pickNum: 'اختاري العدد الصحيح.', wherSpace: 'أين نضعُ الفراغ؟',
+  whatKind: 'ما نوعُ الكلمة؟', pickWords: 'اختاري الكتابةَ الصحيحة.', pickNum: 'اختاري العدد الصحيح.', pickDigit: 'اختاري الرقم الصحيح.', more: 'تدرّبي أكثر ✏️',
   okToday: 'أحسنتِ! نجحتِ اليوم في هذه الخطوة.', okDone: 'أتقنتِ هذه الخطوة! 🌟', notYet: 'سنتدرّب عليها مرّةً أخرى، وستصيرُ سهلة.',
   pic: 'صورة اليوم', talkAbout: 'تكلّمي عن:', writeAbout: 'اكتبي عن:', startWith: 'ابدئي بكلمة: أرى…', mic: 'اضغطي وتكلّمي', micStop: 'انتهيتُ من الكلام',
   mine: 'صوتي', done: 'انتهيتُ ✓', model: 'اسمعي هذا الوصف.', w1: 'اكتبي في كرّاستِكِ', w2: 'صوّري صفحتَكِ', w3: 'اقرئي ما كتبتِ (إن شئتِ)',
@@ -470,12 +535,11 @@ function mount(api) {
   /* ---------- the warm-up: Talk Cards' flip card, tick and cross ---------- */
   function cardFront(c) {
     if (c.mark) return `<div class="dz-cq"><p class="dz-sent">${esc(c.f).replace(esc(c.mark), `<mark>${esc(c.mark)}</mark>`)}</p><p class="dz-ask">${esc(c.ask)}</p></div>`;
-    if (c.num) return `<div class="dz-cq"><p class="dz-ask">${esc(c.f)}</p><p class="dz-bignum">${N(c.num.replace(/ /g, ''))}</p></div>`;
-    if (c.id === 'nm5') return `<div class="dz-cq"><p class="dz-ask">كيف نكتبُ هذا العددَ في الجزائر؟</p><p class="dz-bignum"><span class="dz-n" dir="ltr">23519</span></p></div>`;
+    if (c.num) return `<div class="dz-cq"><p class="dz-ask">${esc(c.f)}</p><p class="dz-bignum"><span class="dz-n" dir="ltr">${esc(c.num)}</span></p></div>`;
     return `<div class="dz-cq">${c.photo ? `<img class="dz-cphoto" src="${c.photo}" alt="">` : ''}<p class="dz-ask big">${esc(c.f)}</p></div>`;
   }
   function cardBack(c) {
-    const b = c.id === 'nm5' ? `<span class="dz-n" dir="ltr">23 519</span>` : esc(c.b);
+    const b = esc(c.b);
     return `<div class="dz-ca">${c.photo && c.deck === 'dz' && c.id !== 'dz2' ? `<img class="dz-cphoto sm" src="${c.photo}" alt="">` : ''}<p class="dz-ans">${b}</p>${c.s ? `<p class="dz-more">${esc(c.s)}</p>` : ''}</div>`;
   }
   async function warmUp(s) {
@@ -514,11 +578,20 @@ function mount(api) {
     if (st.kind === 'tag') await tagStep(s, st, k, first, head); else await numStep(s, st, k, first, head);
     if (!live(s)) return;
     const res = finishStep(r, D, st.id, s.t, s.wrong, s.total); save();
-    const P = pane(`<div class="dz-result ${res.ok ? 'ok' : ''}"><span class="dz-reic">${res.done ? '🌟' : res.ok ? '✓' : '🌱'}</span>
-      <p>${res.done ? L.okDone : res.ok ? L.okToday : L.notYet}</p></div><div class="dz-row"><button class="dz-big" id="dzNext">${L.next}</button></div>`);
-    if (res.ok) api.SFX.good();
-    sayFor(uiClip(res.done ? 'okDone' : res.ok ? 'okToday' : 'notYet'), 900);
-    await waitClick(P, '#dzNext'); stopAudio();
+    let round = 0;
+    for (;;) {
+      const P = pane(`<div class="dz-result ${res.ok ? 'ok' : ''}"><span class="dz-reic">${res.done ? '🌟' : res.ok ? '✓' : '🌱'}</span>
+        <p>${res.done ? L.okDone : res.ok ? L.okToday : L.notYet}</p></div>
+        <div class="dz-row">${st.subj === 'ma' ? `<button class="dz-btn soft" id="dzMore">${L.more}</button>` : ''}<button class="dz-big" id="dzNext">${L.next}</button></div>`);
+      if (!round) { if (res.ok) api.SFX.good(); sayFor(uiClip(res.done ? 'okDone' : res.ok ? 'okToday' : 'notYet'), 900); }
+      const more = await new Promise(ok => { P.querySelector('#dzNext').onclick = () => ok(false); const m = P.querySelector('#dzMore'); if (m) m.onclick = () => ok(true); });
+      api.SFX.init(); stopAudio();
+      if (!more || !live(s)) break;
+      round++;   // more practice, as often as she likes: it never counts against the step
+      const pr = st.practice, dg = pr.digits[Math.min(k + 1, pr.digits.length - 1)];
+      await mathRound(s, mathItems(seedOf(s.t + st.id + round), pr.more, dg), head(L.more), false);
+      if (!live(s)) return;
+    }
   }
   // three coloured buttons: اسم / فعل / حرف
   const catBtns = st => `<div class="dz-cats">${st.cats.map(([k, t]) => `<button class="dz-cat c-${k}" data-k="${k}">${t}</button>`).join('')}</div>`;
@@ -602,12 +675,17 @@ function mount(api) {
   function placeTable(n, lit) {
     const digits = String(n).padStart(5, ' ').split('');
     return `<table class="dz-places"><caption>${L.places}</caption><tr>${D.places.map((p, i) => `<th class="${i < 2 ? 'th' : 'un'}">${p[0]}</th>`).join('')}</tr>
-      <tr dir="ltr">${digits.map((d, i) => `<td class="${i < 2 ? 'th' : 'un'}${lit === 'th' && i < 2 ? ' lit' : lit === 'un' && i >= 2 ? ' lit' : ''}">${d.trim()}</td>`).join('')}</tr></table>`;
+      <tr dir="ltr">${digits.map((d, i) => `<td class="${i < 2 ? 'th' : 'un'}${lit === 'th' && i < 2 ? ' lit' : lit === 'un' && i >= 2 ? ' lit' : ''}">${num(d.trim())}</td>`).join('')}</tr></table>`;
+  }
+  // the number with its thousands (blue) and its units (green), as in the place-value table
+  function grouped(n) {
+    const s = String(n), k = Math.max(0, s.length - 3);
+    return `<span class="dz-n" dir="ltr">${k ? `<b class="g-th">${num(s.slice(0, k))}</b>` : ''}<b class="g-un">${num(s.slice(k))}</b></span>`;
   }
   async function numStep(s, st, k, first, head) {
     // 1 watch and listen
     const ex = st.worked[k % st.worked.length], [th, un] = ex.parts;
-    let P = pane(`${head(L.watch)}<div class="dz-numrow"><p class="dz-bignum">${N(ex.n)}</p>${placeTable(ex.n, '')}</div>
+    let P = pane(`${head(L.watch)}<div class="dz-numrow"><p class="dz-bignum">${grouped(ex.n)}</p>${placeTable(ex.n, '')}</div>
       <div class="dz-read"><span class="dz-grp th" id="dzTh">${th[1] ? esc(th[1]) : ''}</span> <span class="dz-grp un" id="dzUn">${esc(un[1])}</span></div>
       <div id="dzRuleSlot"></div><div class="dz-row"><button class="dz-big" id="dzNext">${L.next}</button></div>`, 'step num');
     const next = waitClick(P, '#dzNext').then(() => stopAudio());
@@ -616,18 +694,18 @@ function mount(api) {
       const live = () => alive();
       await sayFor(uiClip('watch'), 700); if (!live(s)) return;
       if (th[0]) { P.querySelector('.dz-places').outerHTML = placeTable(ex.n, 'th'); $('#dzTh').classList.add('on'); }
-      if (first) { await sayFor('r-ma1-2', 2200); if (!live(s)) return; }
+      if (first) { await sayFor('r-ma2-2', 2200); if (!live(s)) return; }
       await sleep(400);
       if (th[0]) { P.querySelector('.dz-places').outerHTML = placeTable(ex.n, 'un'); $('#dzTh').classList.remove('on'); }
       $('#dzUn').classList.add('on');
-      if (first) { await sayFor('r-ma1-3', 1800); if (!live(s)) return; }
+      if (first) { await sayFor('r-ma2-3', 1800); if (!live(s)) return; }
       $('#dzTh').classList.add('on');
       await sayFor('n-' + ex.n, 2600);
       $('#dzTh').classList.remove('on'); $('#dzUn').classList.remove('on');
       P.querySelector('.dz-places').outerHTML = placeTable(ex.n, '');
       P.querySelector('#dzRuleSlot').innerHTML = ruleBox(st);
     };
-    (async () => { if (first) { await sayFor('r-ma1-1', 2400); if (!alive()) return; } await showWorked(); })();
+    (async () => { if (first) { await sayFor('r-ma2-1', 2400); if (!alive()) return; } await showWorked(); })();
     await next; partOf(s); if (!live_(s)) return;
 
     // 2 your turn: one part of the words is missing
@@ -639,18 +717,29 @@ function mount(api) {
     await choose(s, P, g.opts.indexOf(g.parts[g.blank]), false, () => { $('#dzBlank').textContent = g.parts[g.blank]; $('#dzBlank').classList.add('filled'); });
     if (!live(s)) return;
 
-    // 3 alone: four items
-    const items = st.alone[k % st.alone.length];
+    // 3 alone: generated practice, from smaller numbers on her first day to five digits
+    const pr = st.practice, dg = pr.digits[Math.min(k, pr.digits.length - 1)];
+    await mathRound(s, mathItems(seedOf(s.t + st.id), pr.perDay, dg), head(L.alone), true);
+  }
+  // a round of practice items; alone = mistakes count for the step (the «تدرّبي أكثر» rounds never count)
+  async function mathRound(s, items, top, alone) {
     for (let n = 0; n < items.length && live(s); n++) {
       const it = items[n];
-      if (it.t === 'space') { P = pane(`${head(L.alone)}<p class="dz-q">${L.wherSpace}</p><div class="dz-digits" id="dzDigits" dir="ltr"></div><div class="dz-fb" id="dzFb"></div>`, 'step num');
-        say(uiClip(n === 0 ? 'alone' : 'wherSpace'));
-        await spaceItem(s, P, it.n); continue; }
-      const q = it.t === 'n2w' ? `<p class="dz-q">${L.pickWords}</p><p class="dz-bignum">${N(it.n)}</p>` : `<p class="dz-q">${L.pickNum}</p><p class="dz-words big">${esc(it.w)}</p>`;
-      const opts = it.opts.map((o, i) => `<button class="dz-opt${it.t === 'w2n' ? ' n' : ''}" data-i="${i}">${it.t === 'w2n' ? N(o) : esc(o)}</button>`).join('');
-      P = pane(`${head(L.alone)}${q}<div class="dz-opts" id="dzOpts">${opts}</div><div class="dz-fb" id="dzFb"></div>`, 'step num');
-      say(uiClip(n === 0 ? 'alone' : it.t === 'n2w' ? 'pickWords' : 'pickNum'));
-      await choose(s, P, it.ok, true, () => {});
+      let q, opts;
+      if (it.t === 'place') {
+        q = `<p class="dz-q">ما رقمُ ${PLACE_NAMES[it.p]} في العدد:</p><p class="dz-bignum">${N(it.n)}</p>`;
+        opts = it.opts.map((o, i) => `<button class="dz-opt n" data-i="${i}"><span class="dz-n">${num(o)}</span></button>`).join('');
+      } else if (it.t === 'n2w') {
+        q = `<p class="dz-q">${L.pickWords}</p><p class="dz-bignum">${N(it.n)}</p>`;
+        opts = it.opts.map((o, i) => `<button class="dz-opt" data-i="${i}">${esc(o)}</button>`).join('');
+      } else {
+        q = it.t === 'w2n' ? `<p class="dz-q">${L.pickNum}</p><p class="dz-words big">${esc(numWords(it.n))}</p>`
+          : `<p class="dz-q">${L.pickNum}</p><p class="dz-bignum sm"><span class="dz-n" dir="ltr">${expanded(it.n).map(num).join(' + ')}</span></p>`;
+        opts = it.opts.map((o, i) => `<button class="dz-opt n" data-i="${i}">${N(o)}</button>`).join('');
+      }
+      const P = pane(`${top}<p class="dz-count">${num(n + 1)} من ${num(items.length)}</p>${q}<div class="dz-opts${it.t === 'place' ? ' three' : ''}" id="dzOpts">${opts}</div><div class="dz-fb" id="dzFb"></div>`, 'step num');
+      if (n === 0 && alone) say(uiClip('alone'));
+      await choose(s, P, it.ok, alone, () => {});
     }
   }
   function choose(s, P, ok, alone, onRight) {
@@ -675,26 +764,6 @@ function mount(api) {
       };
     });
   }
-  // the digits with a gap between each two: she taps the gap where the space goes (between the thousands and the hundreds)
-  function spaceItem(s, P, n) {
-    const ds = String(n).split(''), want = ds.length - 3;
-    const el = P.querySelector('#dzDigits');
-    el.innerHTML = ds.map((d, i) => (i ? `<button class="dz-gap" data-i="${i}" aria-label="هنا"></button>` : '') + `<span class="dz-dg">${d}</span>`).join('');
-    s.total++;
-    return new Promise(done => {
-      el.onclick = async e => {
-        const b = e.target.closest('.dz-gap'); if (!b || !live(s)) return;
-        api.SFX.init(); el.onclick = null;
-        const right = Number(b.dataset.i) === want;
-        if (!right) { s.wrong++; b.classList.add('no'); }
-        el.querySelectorAll('.dz-gap').forEach(x => { x.disabled = true; if (Number(x.dataset.i) === want) x.classList.add('yes'); });
-        P.querySelector('#dzFb').textContent = right ? L.well : L.look;
-        if (right) api.SFX.good();
-        await tapNext(P); done();
-      };
-    });
-  }
-
   /* ---------- the picture of the day ---------- */
   async function picture(s) {
     const pid = s.day.pic, p = pid && D.pics[pid]; if (!p) return;

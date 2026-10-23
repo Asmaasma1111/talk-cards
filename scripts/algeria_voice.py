@@ -22,8 +22,8 @@ OUT = os.path.join(V.AUDIO, 'dz')
 CV.STYLE = ('a warm, kind woman teacher speaking clear Modern Standard Arabic to an eight-year-old girl; natural and human, '
             'gentle and encouraging, at an easy pace, each line said once')
 # the prompts she hears (keys of the L block in algeria.js); the app plays them as u-<key>
-UI = ['readPost', 'warm', 'watch', 'yourTurn', 'alone', 'think', 'okToday', 'okDone', 'notYet', 'wherSpace', 'pickWords',
-      'pickNum', 'model', 'easy', 'stamp', 'end']
+UI = ['readPost', 'warm', 'watch', 'yourTurn', 'alone', 'think', 'okToday', 'okDone', 'notYet', 'pickWords',
+      'pickNum', 'pickDigit', 'model', 'easy', 'stamp', 'end']
 
 
 def ui_lines():
