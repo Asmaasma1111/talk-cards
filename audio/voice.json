@@ -10599,93 +10599,441 @@
    "model": "gemini TTS",
    "placeholder": false,
    "clips": {
-    "c-dz1-b": {
-     "f": "dz/c-dz1-b.m4a",
-     "d": 4.52
+    "k-0985d27c": {
+     "f": "dz/k-0985d27c.m4a",
+     "d": 0.8
     },
-    "c-dz1-f": {
-     "f": "dz/c-dz1-f.m4a",
-     "d": 2.59
+    "k-1eb922d4": {
+     "f": "dz/k-1eb922d4.m4a",
+     "d": 0.86
     },
-    "c-dz10-b": {
-     "f": "dz/c-dz10-b.m4a",
-     "d": 4.11
+    "k-28b702cc": {
+     "f": "dz/k-28b702cc.m4a",
+     "d": 0.54
     },
-    "c-dz10-f": {
-     "f": "dz/c-dz10-f.m4a",
-     "d": 1.22
+    "k-3afa8c90": {
+     "f": "dz/k-3afa8c90.m4a",
+     "d": 0.66
     },
-    "c-dz2-b": {
-     "f": "dz/c-dz2-b.m4a",
-     "d": 5.19
+    "k-3e6fa0ae": {
+     "f": "dz/k-3e6fa0ae.m4a",
+     "d": 0.71
     },
-    "c-dz2-f": {
-     "f": "dz/c-dz2-f.m4a",
-     "d": 1.81
+    "k-74b8efda": {
+     "f": "dz/k-74b8efda.m4a",
+     "d": 0.65
     },
-    "c-dz3-b": {
-     "f": "dz/c-dz3-b.m4a",
-     "d": 6.58
+    "k-a128b0c7": {
+     "f": "dz/k-a128b0c7.m4a",
+     "d": 0.69
     },
-    "c-dz3-f": {
-     "f": "dz/c-dz3-f.m4a",
-     "d": 2.0
+    "k-a5e3c846": {
+     "f": "dz/k-a5e3c846.m4a",
+     "d": 0.92
     },
-    "c-dz4-b": {
-     "f": "dz/c-dz4-b.m4a",
-     "d": 3.15
+    "k-a7b695aa": {
+     "f": "dz/k-a7b695aa.m4a",
+     "d": 0.35
     },
-    "c-dz4-f": {
-     "f": "dz/c-dz4-f.m4a",
-     "d": 2.05
+    "k-b7597f84": {
+     "f": "dz/k-b7597f84.m4a",
+     "d": 0.77
     },
-    "c-dz5-b": {
-     "f": "dz/c-dz5-b.m4a",
-     "d": 3.68
+    "k-c092b0e2": {
+     "f": "dz/k-c092b0e2.m4a",
+     "d": 0.9
     },
-    "c-dz5-f": {
-     "f": "dz/c-dz5-f.m4a",
-     "d": 2.06
+    "k-c863b6e8": {
+     "f": "dz/k-c863b6e8.m4a",
+     "d": 0.74
     },
-    "c-dz7-b": {
-     "f": "dz/c-dz7-b.m4a",
-     "d": 3.34
+    "k-d0c1c28b": {
+     "f": "dz/k-d0c1c28b.m4a",
+     "d": 0.87
     },
-    "c-dz7-f": {
-     "f": "dz/c-dz7-f.m4a",
-     "d": 1.92
+    "k-d1cb95c7": {
+     "f": "dz/k-d1cb95c7.m4a",
+     "d": 0.64
     },
-    "c-dz8-b": {
-     "f": "dz/c-dz8-b.m4a",
-     "d": 3.84
+    "k-e2b3f96e": {
+     "f": "dz/k-e2b3f96e.m4a",
+     "d": 0.93
     },
-    "c-dz8-f": {
-     "f": "dz/c-dz8-f.m4a",
-     "d": 1.19
+    "k-ff104f46": {
+     "f": "dz/k-ff104f46.m4a",
+     "d": 0.76
     },
-    "c-dz9-b": {
-     "f": "dz/c-dz9-b.m4a",
+    "lv-say-1": {
+     "f": "dz/lv-say-1.m4a",
+     "d": 2.29
+    },
+    "lv-say-2": {
+     "f": "dz/lv-say-2.m4a",
+     "d": 1.9
+    },
+    "lv-say-3": {
+     "f": "dz/lv-say-3.m4a",
+     "d": 2.4
+    },
+    "lv-say-4": {
+     "f": "dz/lv-say-4.m4a",
+     "d": 2.4
+    },
+    "lv-say-5": {
+     "f": "dz/lv-say-5.m4a",
+     "d": 2.31
+    },
+    "lv-say-6": {
+     "f": "dz/lv-say-6.m4a",
+     "d": 2.26
+    },
+    "lv-write-1": {
+     "f": "dz/lv-write-1.m4a",
+     "d": 4.13
+    },
+    "lv-write-5": {
+     "f": "dz/lv-write-5.m4a",
+     "d": 3.25
+    },
+    "lv-write-6": {
+     "f": "dz/lv-write-6.m4a",
+     "d": 3.57
+    },
+    "m-alg1-1": {
+     "f": "dz/m-alg1-1.m4a",
+     "d": 3.46
+    },
+    "m-alg1-2": {
+     "f": "dz/m-alg1-2.m4a",
+     "d": 3.67
+    },
+    "m-alg1-3": {
+     "f": "dz/m-alg1-3.m4a",
+     "d": 3.59
+    },
+    "m-alg1-4": {
+     "f": "dz/m-alg1-4.m4a",
      "d": 4.07
     },
-    "c-dz9-f": {
-     "f": "dz/c-dz9-f.m4a",
-     "d": 1.64
+    "m-alg1-5": {
+     "f": "dz/m-alg1-5.m4a",
+     "d": 2.87
     },
-    "c-nm5-b": {
-     "f": "dz/c-nm5-b.m4a",
-     "d": 6.62
+    "m-alg1-6": {
+     "f": "dz/m-alg1-6.m4a",
+     "d": 4.06
     },
-    "c-qw1-b": {
-     "f": "dz/c-qw1-b.m4a",
-     "d": 11.25
+    "m-alg2-1": {
+     "f": "dz/m-alg2-1.m4a",
+     "d": 3.37
     },
-    "c-qw2-b": {
-     "f": "dz/c-qw2-b.m4a",
-     "d": 8.32
+    "m-alg2-2": {
+     "f": "dz/m-alg2-2.m4a",
+     "d": 3.77
     },
-    "c-qw2-f": {
-     "f": "dz/c-qw2-f.m4a",
-     "d": 0.83
+    "m-alg2-3": {
+     "f": "dz/m-alg2-3.m4a",
+     "d": 1.86
+    },
+    "m-alg2-4": {
+     "f": "dz/m-alg2-4.m4a",
+     "d": 3.43
+    },
+    "m-alg2-5": {
+     "f": "dz/m-alg2-5.m4a",
+     "d": 3.6
+    },
+    "m-alg2-6": {
+     "f": "dz/m-alg2-6.m4a",
+     "d": 3.04
+    },
+    "m-alg3-1": {
+     "f": "dz/m-alg3-1.m4a",
+     "d": 3.26
+    },
+    "m-alg3-2": {
+     "f": "dz/m-alg3-2.m4a",
+     "d": 3.96
+    },
+    "m-alg3-3": {
+     "f": "dz/m-alg3-3.m4a",
+     "d": 2.77
+    },
+    "m-alg3-4": {
+     "f": "dz/m-alg3-4.m4a",
+     "d": 3.33
+    },
+    "m-alg3-5": {
+     "f": "dz/m-alg3-5.m4a",
+     "d": 2.93
+    },
+    "m-alg3-6": {
+     "f": "dz/m-alg3-6.m4a",
+     "d": 3.84
+    },
+    "m-alg4-1": {
+     "f": "dz/m-alg4-1.m4a",
+     "d": 2.31
+    },
+    "m-alg4-2": {
+     "f": "dz/m-alg4-2.m4a",
+     "d": 3.32
+    },
+    "m-alg4-3": {
+     "f": "dz/m-alg4-3.m4a",
+     "d": 2.92
+    },
+    "m-alg4-4": {
+     "f": "dz/m-alg4-4.m4a",
+     "d": 4.82
+    },
+    "m-alg4-5": {
+     "f": "dz/m-alg4-5.m4a",
+     "d": 2.97
+    },
+    "m-alg4-6": {
+     "f": "dz/m-alg4-6.m4a",
+     "d": 2.73
+    },
+    "m-alg5-1": {
+     "f": "dz/m-alg5-1.m4a",
+     "d": 2.47
+    },
+    "m-alg5-2": {
+     "f": "dz/m-alg5-2.m4a",
+     "d": 3.85
+    },
+    "m-alg5-3": {
+     "f": "dz/m-alg5-3.m4a",
+     "d": 3.04
+    },
+    "m-alg5-4": {
+     "f": "dz/m-alg5-4.m4a",
+     "d": 3.14
+    },
+    "m-alg5-5": {
+     "f": "dz/m-alg5-5.m4a",
+     "d": 3.31
+    },
+    "m-alg5-6": {
+     "f": "dz/m-alg5-6.m4a",
+     "d": 3.96
+    },
+    "m-alg6-1": {
+     "f": "dz/m-alg6-1.m4a",
+     "d": 2.86
+    },
+    "m-alg6-2": {
+     "f": "dz/m-alg6-2.m4a",
+     "d": 3.79
+    },
+    "m-alg6-3": {
+     "f": "dz/m-alg6-3.m4a",
+     "d": 3.27
+    },
+    "m-alg6-4": {
+     "f": "dz/m-alg6-4.m4a",
+     "d": 2.91
+    },
+    "m-alg6-5": {
+     "f": "dz/m-alg6-5.m4a",
+     "d": 3.36
+    },
+    "m-alg6-6": {
+     "f": "dz/m-alg6-6.m4a",
+     "d": 3.18
+    },
+    "m-alg7-1": {
+     "f": "dz/m-alg7-1.m4a",
+     "d": 2.55
+    },
+    "m-alg7-2": {
+     "f": "dz/m-alg7-2.m4a",
+     "d": 4.64
+    },
+    "m-alg7-3": {
+     "f": "dz/m-alg7-3.m4a",
+     "d": 2.34
+    },
+    "m-alg7-4": {
+     "f": "dz/m-alg7-4.m4a",
+     "d": 3.8
+    },
+    "m-alg7-5": {
+     "f": "dz/m-alg7-5.m4a",
+     "d": 4.77
+    },
+    "m-alg7-6": {
+     "f": "dz/m-alg7-6.m4a",
+     "d": 3.49
+    },
+    "m-alg8-1": {
+     "f": "dz/m-alg8-1.m4a",
+     "d": 2.32
+    },
+    "m-alg8-2": {
+     "f": "dz/m-alg8-2.m4a",
+     "d": 4.2
+    },
+    "m-alg8-3": {
+     "f": "dz/m-alg8-3.m4a",
+     "d": 4.17
+    },
+    "m-alg8-4": {
+     "f": "dz/m-alg8-4.m4a",
+     "d": 2.03
+    },
+    "m-alg8-5": {
+     "f": "dz/m-alg8-5.m4a",
+     "d": 4.06
+    },
+    "m-alg8-6": {
+     "f": "dz/m-alg8-6.m4a",
+     "d": 4.99
+    },
+    "n-15540": {
+     "f": "dz/n-15540.m4a",
+     "d": 3.15
+    },
+    "n-1962": {
+     "f": "dz/n-1962.m4a",
+     "d": 3.13
+    },
+    "n-23519": {
+     "f": "dz/n-23519.m4a",
+     "d": 4.41
+    },
+    "n-4205": {
+     "f": "dz/n-4205.m4a",
+     "d": 2.5
+    },
+    "r-ar1-1": {
+     "f": "dz/r-ar1-1.m4a",
+     "d": 6.06
+    },
+    "r-ar1-2": {
+     "f": "dz/r-ar1-2.m4a",
+     "d": 3.21
+    },
+    "r-ar1-3": {
+     "f": "dz/r-ar1-3.m4a",
+     "d": 9.51
+    },
+    "r-ma2-1": {
+     "f": "dz/r-ma2-1.m4a",
+     "d": 5.41
+    },
+    "r-ma2-2": {
+     "f": "dz/r-ma2-2.m4a",
+     "d": 4.17
+    },
+    "r-ma2-3": {
+     "f": "dz/r-ma2-3.m4a",
+     "d": 3.95
+    },
+    "s-s1": {
+     "f": "dz/s-s1.m4a",
+     "d": 2.84
+    },
+    "s-s2": {
+     "f": "dz/s-s2.m4a",
+     "d": 2.32
+    },
+    "s-s3": {
+     "f": "dz/s-s3.m4a",
+     "d": 2.17
+    },
+    "s-s4": {
+     "f": "dz/s-s4.m4a",
+     "d": 2.26
+    },
+    "u-alone": {
+     "f": "dz/u-alone.m4a",
+     "d": 1.74
+    },
+    "u-easy": {
+     "f": "dz/u-easy.m4a",
+     "d": 1.36
+    },
+    "u-end": {
+     "f": "dz/u-end.m4a",
+     "d": 1.24
+    },
+    "u-model": {
+     "f": "dz/u-model.m4a",
+     "d": 1.18
+    },
+    "u-notYet": {
+     "f": "dz/u-notYet.m4a",
+     "d": 3.66
+    },
+    "u-okDone": {
+     "f": "dz/u-okDone.m4a",
+     "d": 1.65
+    },
+    "u-okToday": {
+     "f": "dz/u-okToday.m4a",
+     "d": 3.63
+    },
+    "u-pickDigit": {
+     "f": "dz/u-pickDigit.m4a",
+     "d": 1.55
+    },
+    "u-pickNum": {
+     "f": "dz/u-pickNum.m4a",
+     "d": 1.77
+    },
+    "u-pickWords": {
+     "f": "dz/u-pickWords.m4a",
+     "d": 1.91
+    },
+    "u-readPost": {
+     "f": "dz/u-readPost.m4a",
+     "d": 2.27
+    },
+    "u-stamp": {
+     "f": "dz/u-stamp.m4a",
+     "d": 2.35
+    },
+    "u-think": {
+     "f": "dz/u-think.m4a",
+     "d": 1.41
+    },
+    "u-warm": {
+     "f": "dz/u-warm.m4a",
+     "d": 1.12
+    },
+    "u-watch": {
+     "f": "dz/u-watch.m4a",
+     "d": 1.66
+    },
+    "u-yourTurn": {
+     "f": "dz/u-yourTurn.m4a",
+     "d": 2.53
+    },
+    "y-f": {
+     "f": "dz/y-f.m4a",
+     "d": 2.93
+    },
+    "y-h": {
+     "f": "dz/y-h.m4a",
+     "d": 2.99
+    },
+    "y-hay": {
+     "f": "dz/y-hay.m4a",
+     "d": 2.12
+    },
+    "y-ins": {
+     "f": "dz/y-ins.m4a",
+     "d": 2.28
+    },
+    "y-mak": {
+     "f": "dz/y-mak.m4a",
+     "d": 2.16
+    },
+    "y-shay": {
+     "f": "dz/y-shay.m4a",
+     "d": 1.99
     }
    }
   }
