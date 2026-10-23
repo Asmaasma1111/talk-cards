@@ -8,6 +8,8 @@
 'use strict';
 
 const PER = 50;   // stars for one step
+// the drawings that have their ChatGPT picture (assets/garden/<id>.webp); sw.js caches the same list
+const PICS = new Set('p0 p1 p3 p4 pp p5 rumF rumP rum strF strP straw b0 b1 b2 b3 f0 f1 f3 f4 nest0 nest1 nest2 sparrow hog hopper worm leaves humus bee can sun cloud tree mag'.split(' '));
 const SPRITE = `<svg id="gdSprite" width="0" height="0" style="position:absolute" aria-hidden="true">
 <defs>
   <radialGradient id="g-gSoil" cx="50%" cy="30%" r="70%"><stop offset="0" stop-color="#B07A52"/><stop offset="1" stop-color="#6E4127"/></radialGradient>
@@ -160,7 +162,10 @@ function mount(api) {
   const earned = () => stepsFor(M().stars.total);
   const done = () => Math.min(M().garden.done, earned());
   const pending = () => Math.max(0, earned() - done());
-  const ic = (id, cls = '') => `<svg class="gd-ic ${cls}" aria-hidden="true"><use href="#g-${id}"/></svg>`;
+  // a drawing: the ChatGPT clay picture when it exists (assets/garden, scripts/garden_pics.py; her request 23 Oct 2026),
+  // else the SVG drawing of the sprite
+  const ic = (id, cls = '') => (PICS.has(id) ? `<img class="gd-ic gd-pic ${cls}" src="assets/garden/${id}.webp" alt="" draggable="false">`
+    : `<svg class="gd-ic ${cls}" aria-hidden="true"><use href="#g-${id}"/></svg>`);
   // counting in Arabic: ١ خطوة، خطوتان، ٣ خطوات … ١٠ خطوات، ١١ خطوة
   const stepsTxt = (n, em) => n === 1 ? 'خطوة جديدة' : n === 2 ? 'خطوتان جديدتان'
     : `${em ? `<em>${AR(n)}</em>` : AR(n)} ${n <= 10 ? 'خطوات' : 'خطوة'} جديدة`;
