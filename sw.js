@@ -2,7 +2,7 @@
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
 // The same file serves both apps: Talk Cards registers sw.js, Prepositions registers sw.js?app=prepositions.
 const APP = new URL(location.href).searchParams.get('app') === 'prepositions' ? 'prepositions' : 'talk-cards';
-const VERSION = APP + '-v134';
+const VERSION = APP + '-v135';
 const FILES = APP === 'prepositions' ? [
   './',
   'index.html',
@@ -56,7 +56,7 @@ const FILES = APP === 'prepositions' ? [
   'assets/apps/reads.webp',
   // ماريا تقرأ: the meaning pictures and the weekly puzzles (her words are in audio/voice.json, deck 'reads')
   ...['cat', 'bat', 'cab', 'act'].map(n => `assets/reads/pics/${n}.webp`),
-  ...['p01', 'p02', 'p03', 'p04'].map(n => `assets/reads/puzzles/${n}.webp`),
+  ...Array.from({ length: 24 }, (_, i) => `assets/reads/puzzles/p${String(i + 1).padStart(2, '0')}.webp`),
   'assets/reads/book/cover.webp', 'assets/reads/book/page.webp',   // كتاب ألغازي (ChatGPT, scripts/book_art.py)
   'stories.json',
   'stickers/stickers.json',
