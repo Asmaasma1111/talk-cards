@@ -10,7 +10,8 @@
    steps of a city are passed she gets the city's stamp in her passport (the one quiet reward) and the city lights up.
    Her rules (23 Oct 2026): after every answer she taps «التالي» to move on (the app never moves on by itself), and the
    voice reads a text only once: instructions, the worked example, the rule (first day) and the model description;
-   everything she answers or reads herself (postcard, cards, practice sentences, numbers, choices) is not read for her.
+   everything she answers or reads herself (cards, practice sentences, numbers, choices) is not read for her; the postcard
+   is heard once in full first (no skip, no replay), then she reads it herself.
    Content: algeria.json (scripts/make_algeria.py). Progress: 'tc:maria:algeria'. Her recordings and the photos of her
    pages stay on the iPad, in IndexedDB 'algeria-trip' (they travel only inside the backup file). */
 (function (root) {
@@ -233,7 +234,7 @@ const core = { blank, clean, valid, addDays, num, level, plan, pickPic, openDay,
 const L = {
   title: 'هيا نتعلم في الجزائر', sub: 'مدينة بعد مدينة', go: 'ابدئي رحلة اليوم', tomorrow: 'عودي غداً 🌟', passport: 'جواز سفري',
   visiting: 'أنتِ الآن في', coming: 'المدينة التالية قريبًا', comingSub: 'ماما تُحضّر لكِ المدينة التالية.',
-  arrive: 'وصلنا!', readPost: 'اقرئي البطاقة بصوتٍ عالٍ.', listen: 'اسمعي', next: 'التالي',
+  arrive: 'وصلنا!', readPost: 'اقرئي البطاقة بصوتٍ عالٍ.', listenPost: 'اسمعي البطاقة مرّةً واحدة، ثمّ اقرئيها أنتِ.', listen: 'اسمعي', next: 'التالي',
   warm: 'هيا نتذكّر!', newCard: 'بطاقة جديدة', flip: 'اقلبي البطاقة', good: 'عرفتُها', again: 'مرّةً أخرى',
   step: 'خطوة جديدة', watch: 'انظري واستمعي.', yourTurn: 'دورُكِ! أكملي الجزء الناقص.', alone: 'والآن وحدَكِ!',
   well: 'أحسنتِ!', think: 'فكّري مرّةً أخرى.', look: 'انظري إلى الجواب.', rule: 'تعلّمتُ',
@@ -570,10 +571,20 @@ function mount(api) {
       <div class="dz-post">
         <div class="dz-post-stamp" aria-hidden="true"><img src="assets/algeria/stamps/${c.id}.webp" alt="" onerror="this.remove()"></div>
         <h2>${L.arrive} ✈️ <span>${esc(c.name)}</span></h2>
-        <p class="dz-hint">${L.readPost}</p>
+        <p class="dz-hint" id="dzPostHint">${L.listenPost}</p>
         <div class="dz-post-text" id="dzPostText">${c.post.map(p => `<p data-id="${p.id}">${esc(p.t)}</p>`).join('')}</div>
       </div>
-      <div class="dz-row"><button class="dz-big" id="dzNext">${L.next}</button></div>`, 'post');
+      <div class="dz-row" id="dzPostRow"></div>`, 'post');
+    // her rule (26 Oct 2026): she hears the whole card once, line by line, and cannot skip it; no replay; then she reads it herself
+    const ok = partOf(s);
+    for (const p of P.querySelectorAll('#dzPostText p')) {
+      if (!ok()) return;
+      p.classList.add('on'); await say(p.dataset.id); p.classList.remove('on');
+      await sleep(250);
+    }
+    if (!ok()) return;
+    $('#dzPostHint', P).textContent = L.readPost;
+    $('#dzPostRow', P).innerHTML = `<button class="dz-big" id="dzNext">${L.next}</button>`;
     say(uiClip('readPost'));
     await waitClick(P, '#dzNext'); stopAudio();
     r.arrived[c.id] = s.t; teach(r, D, c.cards); save();

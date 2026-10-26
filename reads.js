@@ -545,8 +545,10 @@ function mount(api) {
   const pieceBox = k => ({ cx: (k % 4) * 300 + 150, cy: Math.floor(k / 4) * 400 + 200 });
   const trayAt = (j, n) => ({ x: n === 1 ? 600 : [380, 820][j], y: TRAY_Y });
   const placeT = (k, x, y, sc) => { const { cx, cy } = pieceBox(k); return `translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${sc}) translate(${-cx} ${-cy})`; };
-  function pieceCells(b, tray = []) {
+  function pieceCells(b, tray = [], whole = false) {
     const pz = D.puzzles[b.puzzle], have = new Set(PIECE_ORDER.slice(0, b.have)), id = 'pz' + (++boardN);
+    // a finished puzzle in her book is one picture again (her request, 26 Oct 2026): no lines between the pieces
+    if (whole) return `<svg class="rd-jig whole" viewBox="-14 -14 1228 828" aria-hidden="true"><image href="${pz.img}" x="0" y="0" width="1200" height="800" preserveAspectRatio="none"/></svg>`;
     const pieces = Array.from({ length: 8 }, (_, k) => {
       const d = piecePath(k, b.puzzle);
       return `<clipPath id="${id}-${k}"><path d="${d}"/></clipPath>`;
@@ -1625,7 +1627,7 @@ function mount(api) {
     const f = fin[n];
     if (f) {
       const pz = D.puzzles[f.puzzle];
-      return `<div class="rb-pg"><div class="rb-pic complete" dir="ltr">${pieceCells({ puzzle: f.puzzle, have: 8 })}</div>
+      return `<div class="rb-pg"><div class="rb-pic complete" dir="ltr">${pieceCells({ puzzle: f.puzzle, have: 8 }, [], true)}</div>
         <p class="rb-title">${esc(pz.title || '')}</p><p class="rb-date">${f.day ? 'أكملتِه في ' + fmtAr(f.day) : ''}</p>${num}</div>`;
     }
     const next = n === fin.length;
@@ -1667,7 +1669,7 @@ function mount(api) {
     BK = { page: Math.max(0, Math.min((D.bookPages || 12) - 1, page)), busy: false };
     const fin = finishedPuzzles(), total = D.bookPages || 12, latest = fin[fin.length - 1];
     $('#rbStage').innerHTML = `<button class="rb-cover" id="rbCover">${RINGS}
-        <span class="rb-cwin" dir="ltr">${latest ? pieceCells({ puzzle: latest.puzzle, have: 8 }) : '<span class="rb-cq">🧩</span>'}</span>
+        <span class="rb-cwin" dir="ltr">${latest ? pieceCells({ puzzle: latest.puzzle, have: 8 }, [], true) : '<span class="rb-cq">🧩</span>'}</span>
         <span class="rb-ctitle">كتاب ألغازي</span><span class="rb-cname" lang="en" dir="ltr">Maria's Puzzle Book</span>
         <span class="rb-ccount">${AR(fin.length)} من ${AR(total)}</span></button>`;
     api.show('rbook');

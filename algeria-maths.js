@@ -193,6 +193,145 @@ T('net', '🎲', 'منشور المكعب', {
     return { k: 'mc', q: 'أيُّ شكلٍ نطويه فنحصلُ على مكعب؟', opts: opts.map(paperImg), ok: opts.indexOf('net_cross'), show: 'svg' };
   });
 
+/* ---------- a worked example for every lesson (her request, 26 Oct 2026): the sum solved step by step, each step with
+   its reason in red, so she sees how and does the rest the same way. [what we write, why (in red)] ---------- */
+const WORKED = {
+  words: [
+    { q: 'اكتبي العدد ٢٣٥١٩ بالحروف.', steps: [
+      ['\u2066٢٣ | ٥١٩\u2069', 'نعدُّ ثلاثةَ أرقامٍ من اليمين: هذه منزلةُ الوحدات. وما بقي على اليسار هو الآلاف.'],
+      ['٢٣ ← ثلاثة وعشرون ألفًا', 'نقرأُ الآلافَ أوّلًا، ونقولُ بعدها: ألفًا.'],
+      ['٥١٩ ← خمسمائة وتسعة عشر', 'ثمّ نقرأُ الأرقامَ الثلاثةَ الباقية كما نقرأُ أيَّ عددٍ صغير.'],
+      ['ثلاثة وعشرون ألفًا وخمسمائة وتسعة عشر', 'نصلُ الجزأين بحرف الواو. هذا هو الجواب.']] },
+    { q: 'ما رقمُ المئات في العدد ٤٧٢٠٥؟', steps: [
+      ['٤٧٢٠٥', 'نبدأُ من اليمين: الوحدات ٥، ثمّ العشرات ٠، ثمّ المئات ٢.'],
+      ['رقمُ المئات = ٢', 'المئاتُ هي المنزلةُ الثالثة من اليمين.']] },
+  ],
+  x10: [
+    { q: '٤٣ × ١٠٠ = ؟', steps: [
+      ['١٠٠ ← صفران', 'نعدُّ الأصفارَ في العدد الذي نضربُ فيه: في ١٠٠ صفران.'],
+      ['٤٣ ← ٤٣٠٠', 'نكتبُ ٤٣ كما هو، ونضيفُ عن يمينه صفرين.'],
+      ['٤٣ × ١٠٠ = ٤٣٠٠', 'وهكذا: في ١٠ نضيفُ صفرًا واحدًا، وفي ١٠٠٠ نضيفُ ثلاثةَ أصفار.']] },
+    { q: '٢٥ × ؟ = ٢٥٠٠', steps: [
+      ['٢٥ ← ٢٥٠٠', 'ننظرُ كم صفرًا زاد على ٢٥: زاد صفران.'],
+      ['؟ = ١٠٠', 'صفران يعني أنّنا ضربنا في ١٠٠.']] },
+  ],
+  double: [
+    { q: 'ما ضعفُ العدد ٢٣٧؟', steps: [
+      ['٢٣٧ × ٢', 'الضعفُ يعني الضربَ في ٢.'],
+      ['٧ × ٢ = ١٤', 'نبدأُ من الآحاد: نكتبُ ٤ ونحملُ ١ إلى العشرات.'],
+      ['٣ × ٢ = ٦ ، و٦ + ١ = ٧', 'نضربُ العشرات، ونجمعُ ما حملناه.'],
+      ['٢ × ٢ = ٤', 'ثمّ المئات.'],
+      ['ضعفُ ٢٣٧ = ٤٧٤', 'هذا هو الجواب.']] },
+    { q: 'ما نصفُ العدد ٥٧٤؟', steps: [
+      ['٥٧٤ ÷ ٢', 'النصفُ يعني القسمةَ على ٢. نبدأُ من اليسار.'],
+      ['٥ ÷ ٢ = ٢ والباقي ١', 'الباقي ١ نضمُّه إلى الرقم التالي: ٧ تصبحُ ١٧.'],
+      ['١٧ ÷ ٢ = ٨ والباقي ١', 'نضمُّ الباقي إلى الرقم التالي: ٤ تصبحُ ١٤.'],
+      ['١٤ ÷ ٢ = ٧', 'لا باقي.'],
+      ['نصفُ ٥٧٤ = ٢٨٧', 'نتحقّقُ: ٢٨٧ + ٢٨٧ = ٥٧٤ ✓']] },
+    { q: 'ما ربعُ العدد ٤٨٠؟', steps: [
+      ['نصفُ ٤٨٠ = ٢٤٠', 'الربعُ هو نصفُ النصف: نأخذُ النصفَ أوّلًا.'],
+      ['نصفُ ٢٤٠ = ١٢٠', 'ثمّ نأخذُ نصفَه مرّةً أخرى.'],
+      ['ربعُ ٤٨٠ = ١٢٠', 'وأربعةُ أمثالِ العدد: نضاعفه ثمّ نضاعفه مرّةً أخرى.']] },
+  ],
+  distrib: [
+    { q: '٢٤ × ٣ = ؟', steps: [
+      ['٢٤ = ٢٠ + ٤', 'نفكّكُ العددَ إلى عشراتٍ وآحاد.'],
+      ['٢٠ × ٣ = ٦٠', 'نضربُ العشراتِ في ٣.'],
+      ['٤ × ٣ = ١٢', 'ثمّ نضربُ الآحادَ في ٣.'],
+      ['٦٠ + ١٢ = ٧٢', 'نجمعُ الناتجين: ٢٤ × ٣ = ٧٢.']] },
+  ],
+  mul1: [
+    { q: '٥٧ × ٤ = ؟', steps: [
+      ['٧ × ٤ = ٢٨', 'نبدأُ من الآحاد (اليمين): نضربُ ٧ في ٤.'],
+      ['نكتبُ ٨ ، ونحملُ ٢', 'نكتبُ ٨ تحت الآحاد، ونكتبُ ٢ صغيرةً فوق العشرات.'],
+      ['٥ × ٤ = ٢٠', 'ثمّ نضربُ رقمَ العشرات في ٤.'],
+      ['٢٠ + ٢ = ٢٢', 'نجمعُ ما حملناه، ونكتبُ ٢٢.'],
+      ['٥٧ × ٤ = ٢٢٨', 'هذا هو الجواب.']] },
+  ],
+  mul2: [
+    { q: '٢٣ × ١٤ = ؟', steps: [
+      ['١٤ = ١٠ + ٤', 'نفكّكُ العددَ الثاني إلى عشراتٍ وآحاد.'],
+      ['٢٣ × ٤ = ٩٢', 'نضربُ في رقم الآحاد أوّلًا.'],
+      ['٢٣ × ١٠ = ٢٣٠', 'ثمّ نضربُ في العشرات: نضربُ في ١ ونضعُ صفرًا في منزلة الآحاد.'],
+      ['٩٢ + ٢٣٠ = ٣٢٢', 'نجمعُ الناتجين: ٢٣ × ١٤ = ٣٢٢.']] },
+  ],
+  subadd: [
+    { q: '٥٢ − ٢٧ = ؟', steps: [
+      ['٢ − ٧ ؟', 'نبدأُ من الآحاد: ٢ أصغرُ من ٧، فلا نستطيعُ الطرح.'],
+      ['١٢ − ٧ = ٥', 'نضيفُ ١٠ إلى الرقم في الأعلى: ٢ تصبحُ ١٢. نكتبُ ٥.'],
+      ['٢ ← ٣', 'أضفنا ١٠ في الأعلى، فنضيفُ ١ إلى رقم العشرات في الأسفل: ٢ تصبحُ ٣.'],
+      ['٥ − ٣ = ٢', 'ثمّ نطرحُ العشرات.'],
+      ['٥٢ − ٢٧ = ٢٥', 'نتحقّقُ: ٢٥ + ٢٧ = ٥٢ ✓']] },
+  ],
+  length: [
+    { q: '٣ م = ؟ سم', steps: [
+      ['كلم ← م ← دسم ← سم ← ملم', 'من الوحدة الكبيرة إلى الصغيرة نضرب. كلُّ خطوةٍ بعد المتر × ١٠.'],
+      ['م ← دسم ← سم : خطوتان', 'من المتر إلى السنتيمتر خطوتان: × ١٠ ثمّ × ١٠ ، أي × ١٠٠.'],
+      ['٣ × ١٠٠ = ٣٠٠', '٣ م = ٣٠٠ سم.']] },
+    { q: '٢ كلم و٦٠٠ م = ؟ م', steps: [
+      ['١ كلم = ١٠٠٠ م', 'نحوّلُ الكيلومتراتِ إلى أمتار أوّلًا.'],
+      ['٢ × ١٠٠٠ = ٢٠٠٠', '٢ كلم = ٢٠٠٠ م.'],
+      ['٢٠٠٠ + ٦٠٠ = ٢٦٠٠', 'ثمّ نجمعُ الأمتارَ الباقية: الجواب ٢٦٠٠ م.']] },
+    { q: '٤٠ سم = ؟ دسم', steps: [
+      ['سم ← دسم', 'من الوحدة الصغيرة إلى الكبيرة نقسم.'],
+      ['٤٠ ÷ ١٠ = ٤', '٤٠ سم = ٤ دسم.']] },
+  ],
+  mass: [
+    { q: '٣ كجم = ؟ جم', steps: [
+      ['كجم ← هكتوجرام ← ديكاجرام ← جم', 'ثلاثُ خطوات، كلُّ خطوةٍ × ١٠ ، أي × ١٠٠٠.'],
+      ['٣ × ١٠٠٠ = ٣٠٠٠', '٣ كجم = ٣٠٠٠ جم.']] },
+    { q: '٢ ل = ؟ سنتيلتر', steps: [
+      ['١ ل = ١٠٠ سنتيلتر', 'نتذكّرُ: في اللتر مئةُ سنتيلتر.'],
+      ['٢ × ١٠٠ = ٢٠٠', '٢ ل = ٢٠٠ سنتيلتر.']] },
+  ],
+  time: [
+    { q: 'بدأ الدرسُ الساعة ٩:٤٥ وانتهى الساعة ١٠:٢٠. كم دقيقةً دام؟', steps: [
+      ['٩:٤٥ ← ١٠:٠٠ = ١٥ دقيقة', 'نكملُ أوّلًا إلى الساعة التامّة.'],
+      ['١٠:٠٠ ← ١٠:٢٠ = ٢٠ دقيقة', 'ثمّ نعدُّ من الساعة التامّة إلى النهاية.'],
+      ['١٥ + ٢٠ = ٣٥', 'نجمعُ: دام الدرسُ ٣٥ دقيقة.']] },
+    { q: 'خرجنا الساعة ٨:٤٠ ووصلنا بعد ٣٥ دقيقة. متى وصلنا؟', steps: [
+      ['٨:٤٠ ← ٩:٠٠ = ٢٠ دقيقة', 'نأخذُ من الـ ٣٥ ما يكملُ الساعة: ٢٠ دقيقة.'],
+      ['٣٥ − ٢٠ = ١٥', 'يبقى ١٥ دقيقة.'],
+      ['٩:٠٠ ← ٩:١٥', 'نضيفُها بعد الساعة التامّة: وصلنا الساعة ٩:١٥.']] },
+  ],
+  tools: [
+    { q: 'بماذا نتحقّقُ من الزاوية القائمة؟', steps: [
+      ['نريدُ: زاويةً قائمة', 'نقرأُ السؤالَ جيّدًا: ماذا نريدُ أن نفعل؟'],
+      ['الكوس', 'للكوس ركنٌ قائم: نضعه على الزاوية، فإذا انطبق تمامًا فهي قائمة.']] },
+    { q: 'أيُّ زاويةٍ قائمة؟', steps: [
+      ['نضعُ الكوسَ على كلّ زاوية', 'الزاويةُ القائمةُ مثلُ ركن الكرّاسة.'],
+      ['أصغرُ من ركن الكوس ← حادّة ، أكبرُ ← منفرجة', 'التي تنطبقُ على ركن الكوس تمامًا هي القائمة.']] },
+  ],
+  midpoint: [
+    { q: 'طولُ القطعة [أب] ١٠ سم. كم يبعدُ منتصفُها عن أ؟', steps: [
+      ['١٠ ÷ ٢ = ٥', 'المنتصفُ في وسط القطعة تمامًا: نقسمُ الطولَ على ٢.'],
+      ['٥ سم', 'المنتصفُ م يبعدُ ٥ سم عن أ، و٥ سم عن ب.']] },
+    { q: 'أيُّ نقطةٍ هي منتصفُ القطعة [أب]؟', steps: [
+      ['نعدُّ المربّعاتِ من أ إلى ب', 'في ورقة المربّعات: كلُّ مربّعٍ ١ سم.'],
+      ['نصفُ العدد', 'النقطةُ التي تبعدُ نصفَ الطول عن أ وعن ب هي المنتصف.']] },
+  ],
+  lines: [
+    { q: 'أيُّ مستقيمين متوازيان؟ وأيُّهما متعامدان؟', steps: [
+      ['نتخيّلُ أنّنا نمدُّ المستقيمين', 'هل يلتقيان إذا طال الخطّان؟'],
+      ['لا يلتقيان أبدًا ← متوازيان', 'مثل خطوط الكرّاسة.'],
+      ['يلتقيان بزاويةٍ قائمة ← متعامدان', 'نتحقّقُ بالكوس.'],
+      ['يلتقيان بزاويةٍ غير قائمة ← متقاطعان فقط', 'ليسا متوازيين وليسا متعامدين.']] },
+  ],
+  program: [
+    { q: 'ارسمي قطعةً [أب] طولها ٦ سم، ثمّ عيّني منتصفها م. أيُّ رسمٍ صحيح؟', steps: [
+      ['الخطوة ١: [أب] = ٦ سم', 'نعدُّ في كلّ رسم: هل القطعةُ ستّةُ مربّعات؟'],
+      ['الخطوة ٢: ٦ ÷ ٢ = ٣', 'هل م على بعد ثلاثة مربّعات من أ ومن ب؟'],
+      ['الصحيحُ يحقّقُ الخطوتين معًا', 'إذا أخطأ رسمٌ في خطوةٍ واحدة فليس صحيحًا.']] },
+  ],
+  net: [
+    { q: 'أيُّ شكلٍ نطويه فنحصلُ على مكعب؟', steps: [
+      ['نعدُّ المربّعات: ٦', 'للمكعب ستّةُ وجوه، فلمنشوره ستّةُ مربّعات.'],
+      ['صفٌّ من أربعة، ومربّعٌ فوقه ومربّعٌ تحته', 'هذا الشكلُ منشورُ مكعبٍ دائمًا: الأربعةُ تلتفُّ حوله، والاثنان غطاءان.'],
+      ['مربّعان يصيران وجهًا واحدًا ← ليس منشورًا', 'نتخيّلُ الطيّ: إذا التقى مربّعان في المكان نفسه، بقي وجهٌ مفتوح.']] },
+  ],
+};
+TOPICS.forEach(t => { t.lesson.worked = WORKED[t.id] || []; });
+
 /* ---------- the cube nets: a row of four with one square above and one below is always a net; others are not ---------- */
 const cubeNet = (i, j) => [[i, 0], [0, 1], [1, 1], [2, 1], [3, 1], [j, 2]];
 const NET_BAD = { block: [[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1]], five: [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [1, 0]], six: [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0]] };
@@ -308,9 +447,10 @@ function mount(ctx) {
   const lessonsLeft = n => (n === 1 ? 'درسٌ واحد ينتظركِ' : n === 2 ? 'درسان ينتظرانكِ' : n <= 10 ? `${AR(n)} دروس تنتظركِ` : `${AR(n)} درسًا ينتظركِ`);
   const rounds = n => `${AR(n)} ${n === 1 ? 'جولة' : n === 2 ? 'جولتان' : n <= 10 ? 'جولات' : 'جولة'}`;
   /* the maths door (her choice, 23 Oct 2026): a train across Algeria, from the sea in the north to the Hoggar in the
-     south (ChatGPT's clay panorama, assets/algeria/rail.webp); each lesson is a station on the rail, from right to left.
+     south, on a plain sky and a clear railway (her request, 26 Oct 2026: the panorama hid the stations); each lesson is a
+     station on the rail, from right to left.
      The train waits at the station she is on; finished stations are ticked; the next ones stay grey until she gets there. */
-  const stationX = i => 86 - i * (80 / (TOPICS.length - 1));     // % across the picture, right to left (room for the train)
+  const stationX = i => 80 - i * (74 / (TOPICS.length - 1));     // % across the picture, right to left (room for the train)
   const stationsLeft = n => (n === 1 ? 'محطّةٌ واحدة تنتظركِ' : n === 2 ? 'محطّتان تنتظرانكِ' : n <= 10 ? `${AR(n)} محطّات تنتظركِ` : `${AR(n)} محطّةً تنتظركِ`);
   function open() {
     S = null;
@@ -319,11 +459,12 @@ function mount(ctx) {
     const st = TOPICS.map((t, i) => { const done = mastered(c, t.id), here = t === now, open_ = ids.includes(t.id);
       return `<button class="tr-st ${done ? 'done' : here ? 'now' : open_ ? 'open' : 'locked'}" data-t="${t.id}" style="left:${stationX(i)}%" aria-label="${esc(t.title)}">
         <img class="tr-post" src="assets/algeria/station.webp" alt=""><span class="tr-sign">${done ? '✓' : AR(i + 1)}</span>${here ? `<span class="tr-name">${esc(t.title)}</span>` : ''}</button>`; }).join('');
-    const train = `<img class="tr-train" src="assets/algeria/train.webp" alt="" style="left:${stationX(ni)}%" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'tr-train em',textContent:'🚂'}))">`;
+    const from = typeof c._train === 'number' && c._train < ni ? c._train : ni;   // the station the train last stood at
+    const train = `<img class="tr-train" src="assets/algeria/train.webp" alt="" style="left:${stationX(from)}%" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'tr-train em',textContent:'🚂'}))">`;
     const done = TOPICS.filter(t => mastered(c, t.id)), left = TOPICS.length - ids.length;
     const x = now && c[now.id];
     el.innerHTML = `<div class="dz-top"><button class="quit" id="mcQuit" aria-label="الجزائر"><svg aria-hidden="true"><use href="#i-close"/></svg></button><h1 class="dz-ptitle">🚂 قطار الرياضيات</h1></div>
-      <div class="tr-wrap"><div class="tr-scene"><img class="tr-bg" src="assets/algeria/rail.webp" alt="">${st}${train}</div></div>
+      <div class="tr-wrap"><div class="tr-scene"><div class="tr-track" aria-hidden="true"></div>${st}${train}</div></div>
       ${now ? `<button class="tr-now" data-t="${now.id}">${pic(now, 'mc-pic-ic')}<span class="tr-nowtxt"><small>المحطّة ${AR(ni + 1)} من ${AR(TOPICS.length)}</small><b>${esc(now.title)}</b>
         <em>${x ? `${stars(x)} · ${rounds(x.rounds)}` : 'محطّتكِ الجديدة'}</em></span><span class="mc-go">انطلقي ←</span></button>` : '<p class="mc-left">🌟 وصل القطارُ إلى آخر محطّة!</p>'}
       ${done.length ? `<h2 class="mc-h">محطّاتٌ مررتُ بها</h2><div class="tr-donelist">${done.map(t => `<button class="tr-chip" data-t="${t.id}">${pic(t, 'mc-pic-h')} ${esc(t.title)} ✓</button>`).join('')}</div>` : ''}
@@ -332,23 +473,77 @@ function mount(ctx) {
     el.querySelectorAll('[data-t]').forEach(b => { b.onclick = () => {
       api.SFX.init();
       if (b.classList.contains('locked')) { api.toast('تُفتحُ هذه المحطّة عندما يصلُ إليها القطار 🚂'); return; }
+      if (b.classList.contains('tr-now')) { TRAIN.toot(); setTimeout(() => lesson(b.dataset.t), 450); return; }
       lesson(b.dataset.t);
     }; });
     api.show('dzmc');
-    const sc = el.querySelector('.tr-wrap'), here = el.querySelector('.tr-st.now');
-    if (sc && here) requestAnimationFrame(() => { sc.scrollLeft = here.offsetLeft - sc.clientWidth / 2; });
+    const sc = el.querySelector('.tr-wrap'), here = el.querySelector('.tr-st.now'), tr = el.querySelector('.tr-train');
+    const centre = x => { if (sc) sc.scrollLeft = x - sc.clientWidth / 2; };
+    if (sc && here) requestAnimationFrame(() => centre(from === ni ? here.offsetLeft : tr.offsetLeft));
+    if (from !== ni && tr) {          // a new station: the whistle, then the train rolls there, chugging, and toots on arrival
+      const secs = Math.min(5, 2.6 + 0.5 * (ni - from - 1)), slow = api.reduced && api.reduced();
+      setTimeout(() => {
+        if (!tr.isConnected) return;
+        TRAIN.whistle(); TRAIN.chug(0.5, secs);
+        tr.style.transition = `left ${slow ? 0.01 : secs}s ease-in-out .5s`; tr.style.left = stationX(ni) + '%';
+        if (sc && here) sc.scrollTo({ left: here.offsetLeft - sc.clientWidth / 2, behavior: slow ? 'auto' : 'smooth' });
+        setTimeout(() => { if (tr.isConnected) TRAIN.toot(); }, (secs + 0.6) * 1000);
+      }, 700);
+    }
+    if (c._train !== ni) { c._train = ni; ctx.save(); }
   }
+  /* the train's sounds, made by the app like the others (no files): a steam whistle (three notes together, with a breath
+     of steam) and the chugging (puffs of steam, fast in the middle of the trip, slow at both ends) */
+  const TRAIN = {
+    ok() { const X = api.SFX; return X && X.ready && X.ready() && X.ctx && X.out ? X : null; },
+    steam(X) {
+      if (!this.buf) { const c = X.ctx, n = c.sampleRate, b = c.createBuffer(1, n, n), d = b.getChannelData(0); for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1; this.buf = b; }
+      return this.buf;
+    },
+    note(X, at, dur, peak) {
+      const c = X.ctx, t = c.currentTime + 0.03 + at;
+      [523.3, 659.3, 784].forEach((f, k) => {
+        const o = c.createOscillator(), g = c.createGain();
+        o.type = 'triangle'; o.frequency.setValueAtTime(f * 0.94, t); o.frequency.exponentialRampToValueAtTime(f, t + 0.12);
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak / (k + 1.4), t + 0.06);
+        g.gain.setValueAtTime(peak / (k + 1.4), t + dur - 0.12); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        o.connect(g); g.connect(X.out); o.start(t); o.stop(t + dur + 0.05);
+      });
+      const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+      s.buffer = this.steam(X); f.type = 'bandpass'; f.frequency.value = 2600; f.Q.value = 1.2;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak * 0.5, t + 0.05); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      s.connect(f); f.connect(g); g.connect(X.out); s.start(t); s.stop(t + dur + 0.05);
+    },
+    whistle() { const X = this.ok(); if (!X) return; this.note(X, 0, 0.32, 0.32); this.note(X, 0.42, 0.95, 0.32); X.hold(1.4); },
+    toot() { const X = this.ok(); if (!X) return; this.note(X, 0, 0.42, 0.3); X.hold(0.5); },
+    chug(at, secs) {
+      const X = this.ok(); if (!X) return;
+      const c = X.ctx, t0 = c.currentTime + 0.03 + at;
+      for (let t = 0, k = 0; t < secs; k++) {
+        const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(), when = t0 + t, peak = k % 2 ? 0.28 : 0.45;
+        s.buffer = this.steam(X); f.type = 'bandpass'; f.Q.value = 0.9;
+        f.frequency.setValueAtTime(k % 2 ? 1100 : 700, when);
+        g.gain.setValueAtTime(0.0001, when); g.gain.exponentialRampToValueAtTime(peak, when + 0.015); g.gain.exponentialRampToValueAtTime(0.0001, when + 0.13);
+        s.connect(f); f.connect(g); g.connect(X.out); s.start(when, Math.random() * 0.8); s.stop(when + 0.15);
+        const mid = Math.sin(Math.PI * Math.min(1, t / secs));   // 0 at the ends, 1 in the middle
+        t += 0.34 - 0.18 * mid;
+      }
+      X.hold(secs + 0.2);
+    },
+  };
   // for the doors: the station she is on, and whether she practised today
   function status() {
     const c = corner(), ids = openTopics(c, ctx.tripTopics ? ctx.tripTopics() : [], !!ctx.allOpen && ctx.allOpen());
     const now = TOPICS.find(t => ids.includes(t.id) && !mastered(c, t.id)) || TOPICS[TOPICS.length - 1];
     return { n: TOPICS.indexOf(now) + 1, title: now.title, today: Object.values(c).some(x => x && x.last === api.today()) };
   }
+  const workedHTML = t => t.lesson.worked.map(w => `<div class="mc-wk"><p class="mc-wk-q">${esc(w.q)}</p><ol class="mc-wk-steps">${w.steps.map(([m, why]) =>
+    `<li><span class="mc-wk-m">${esc(m)}</span><span class="mc-wk-why">${esc(why)}</span></li>`).join('')}</ol></div>`).join('');
   function lesson(id) {
     const t = TOPICS.find(x => x.id === id), x = corner()[id];
     el.innerHTML = `<div class="dz-top"><button class="quit" id="mcBack" aria-label="الركن"><svg aria-hidden="true"><use href="#i-close"/></svg></button><h1 class="dz-ptitle">${pic(t, 'mc-pic-h')} ${esc(t.title)}</h1></div>
       <div class="dz-pane"><div class="dz-rule mc-lesson"><h3>تعلّمتُ</h3>${t.lesson.rule.map(l => `<p>${esc(l)}</p>`).join('')}
-        ${t.lesson.ex.length ? `<h3>مثال</h3>${t.lesson.ex.map(l => `<p class="mc-ex">${esc(l)}</p>`).join('')}` : ''}
+        ${t.lesson.worked.length ? `<h3>مثالٌ محلول: انظري كيف نحلّ</h3>${workedHTML(t)}` : t.lesson.ex.length ? `<h3>مثال</h3>${t.lesson.ex.map(l => `<p class="mc-ex">${esc(l)}</p>`).join('')}` : ''}
         ${id === 'tools' ? `<div class="mc-tools">${['ruler', 'square', 'compass'].map(k => `<span class="mc-svgopt">${svgTool(k)}</span>`).join('')}</div>` : ''}
         ${id === 'net' ? `<div class="mc-tools"><span class="mc-svgopt">${paperImg('net_cross')}<b>منشور مكعب ✓</b></span></div>` : ''}
         ${id === 'lines' ? `<div class="mc-tools"><span class="mc-svgopt">${paperImg('par')}<b>متوازيان</b></span><span class="mc-svgopt">${paperImg('perp')}<b>متعامدان</b></span></div>` : ''}
@@ -379,8 +574,60 @@ function mount(ctx) {
   /* ---------- one item; resolves true if right at the first try. Her rule: «التالي» after every answer ---------- */
   function frame(t, i, n, body) {
     el.innerHTML = `<div class="dz-top"><button class="quit" id="mcStop" aria-label="الركن"><svg aria-hidden="true"><use href="#i-close"/></svg></button><h1 class="dz-ptitle sm">${pic(t, 'mc-pic-h')} ${esc(t.title)}</h1><p class="dz-count">${AR(i + 1)} من ${AR(n)}</p></div>
-      <div class="dz-pane mc-item">${body}<div class="dz-fb" id="mcFb"></div><div class="dz-row dz-nextrow" id="mcNextRow"></div></div>`;
+      <div class="mc-split"><div class="dz-pane mc-item">${t.lesson.worked.length ? '<button class="mc-exbtn" id="mcEx">👀 المثال</button>' : ''}${body}<div class="dz-fb" id="mcFb"></div><div class="dz-row dz-nextrow" id="mcNextRow"></div></div>${PAPER}</div>`;
     $('#mcStop').onclick = () => { api.SFX.init(); S = null; open(); };
+    if ($('#mcEx')) $('#mcEx').onclick = () => {
+      api.SFX.init();
+      el.insertAdjacentHTML('beforeend', `<div class="mc-wkpop" id="mcWkPop"><div class="mc-wkcard"><h3>مثالٌ محلول</h3>${workedHTML(t)}<div class="dz-row"><button class="dz-big" id="mcWkOk">فهمتُ ✓</button></div></div></div>`);
+      $('#mcWkOk').onclick = () => { api.SFX.init(); $('#mcWkPop').remove(); };
+    };
+    paper($('.mc-paper', el));
+  }
+  /* her rough paper (her request, 26 Oct 2026): squared paper beside the question, for the iPad pen (or a finger). Once
+     the pen has touched it, a resting hand is ignored. Nothing is kept: a clean sheet for every question. */
+  const PAPER = `<div class="mc-paper"><div class="mc-paper-bar"><b>✏️ مسودّتي</b><span class="mc-ptools">
+    <button data-p="pen" class="on" aria-label="القلم">✏️</button><button data-p="erase" aria-label="الممحاة">🧽</button>
+    <button data-p="undo" aria-label="تراجعي">↶</button><button data-p="clear" aria-label="امسحي الورقة">🗑️</button></span></div><canvas class="mc-canvas"></canvas></div>`;
+  let penSeen = false;
+  function paper(box) {
+    const cv = box.querySelector('canvas'), g = cv.getContext('2d'), strokes = [];
+    let cur = null, mode = 'pen';
+    const width = (s, p) => (s.erase ? 28 : 1.6 + 3 * p);
+    const line = (s, a, b) => {
+      g.save(); g.globalCompositeOperation = s.erase ? 'destination-out' : 'source-over';
+      g.strokeStyle = g.fillStyle = '#1D3F8A'; g.lineCap = g.lineJoin = 'round'; g.lineWidth = width(s, b[2]);
+      g.beginPath(); g.moveTo(a[0], a[1]); g.lineTo(b[0] + (a === b ? .1 : 0), b[1]); g.stroke(); g.restore();
+    };
+    const draw = s => s.p.forEach((q, k) => line(s, s.p[Math.max(0, k - 1)], q));
+    const redraw = () => { g.clearRect(0, 0, cv.width, cv.height); strokes.forEach(draw); };
+    const fit = () => {
+      if (!cv.isConnected) return ro && ro.disconnect();
+      const r = cv.getBoundingClientRect(), d = window.devicePixelRatio || 1;
+      if (!r.width || !r.height) return;
+      cv.width = Math.round(r.width * d); cv.height = Math.round(r.height * d); g.setTransform(d, 0, 0, d, 0, 0); redraw();
+    };
+    const ro = window.ResizeObserver ? new ResizeObserver(fit) : null;
+    if (ro) ro.observe(cv); else requestAnimationFrame(fit);
+    const pt = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top, e.pointerType === 'pen' ? (e.pressure || .5) : .45]; };
+    cv.addEventListener('pointerdown', e => {
+      if (e.pointerType === 'pen') penSeen = true; else if (penSeen && e.pointerType === 'touch') return;   // her hand on the paper
+      e.preventDefault(); try { cv.setPointerCapture(e.pointerId); } catch (x) {}
+      cur = { id: e.pointerId, erase: mode === 'erase', p: [pt(e)] }; strokes.push(cur); line(cur, cur.p[0], cur.p[0]);
+    });
+    cv.addEventListener('pointermove', e => {
+      if (!cur || e.pointerId !== cur.id) return;
+      e.preventDefault();
+      for (const x of (e.getCoalescedEvents ? e.getCoalescedEvents() : [e])) { const q = pt(x); line(cur, cur.p[cur.p.length - 1], q); cur.p.push(q); }
+    });
+    const end = e => { if (cur && e.pointerId === cur.id) cur = null; };
+    cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+    box.querySelector('.mc-ptools').onclick = e => {
+      const b = e.target.closest('[data-p]'); if (!b) return;
+      const k = b.dataset.p;
+      if (k === 'pen' || k === 'erase') { mode = k; box.querySelectorAll('[data-p="pen"], [data-p="erase"]').forEach(x => x.classList.toggle('on', x === b)); return; }
+      if (k === 'undo') strokes.pop(); else strokes.length = 0;
+      redraw();
+    };
   }
   const nextTap = () => new Promise(ok => { $('#mcNextRow').innerHTML = '<button class="dz-big" id="mcNext">التالي</button>'; $('#mcNext').onclick = () => { api.SFX.init(); ok(); }; });
   const pad = () => `<div class="mc-pad" dir="ltr">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => `<button data-d="${d}">${AR(d)}</button>`).join('')}<button data-d="del" class="del">⌫</button><button data-d="0">${AR(0)}</button><button data-d="ok" class="ok">✓</button></div>`;

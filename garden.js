@@ -284,12 +284,13 @@ function mount(api) {
     if (g.leaves) h += put(ic('leaves'), 'left:1%; bottom:34%; width:14vmin; height:8.4vmin', '', EXTRAS.leaves.fact, 'leaves');
     if (g.leaves) h += put(ic('worm'), 'left:7%; bottom:30.5%; width:8vmin; height:8vmin', 'gd-wiggle', 'دودة الأرض من المحلّلات: تعيد البقايا إلى التربة.', 'humus');
     // the pond and the frog
-    let pond = `<div class="gd-pad" style="top:18%; right:12%"></div><div class="gd-pad" style="top:52%; right:56%; transform: scale(.8)"></div>`;
+    // ChatGPT's clay pond (her request, 26 Oct 2026), assets/garden/pond.webp: its pads hold the frogs (places in % of the pond)
+    let pond = '';
     const f = g.frog;
-    if (f.stage === 0) pond += put(ic('f0'), 'top:44%; right:30%; width:24%; height:42%', '', CREATURES.frog.fact[0], 'frog');
-    if (f.stage === 1) pond += put(ic('f1'), 'top:40%; right:28%; width:24%; height:42%', 'gd-swim', CREATURES.frog.fact[1], 'frog');
-    if (f.stage === 2) pond += put(ic('f3'), 'top:6%; right:8%; width:28%; height:48%', '', CREATURES.frog.fact[2], 'frog');
-    for (let k = 0; k < Math.min(2, f.adults); k++) pond += put(ic('f4'), `top:${k ? 34 : -6}%; right:${k ? 52 : 6}%; width:32%; height:56%`, 'gd-frog', 'الضفدع مُستهلِك يتغذّى على الحشرات، ويعيش في الماء وعلى اليابسة.', k ? '' : 'frog');
+    if (f.stage === 0) pond += put(ic('f0'), 'top:44%; right:50%; width:20%; height:32%', '', CREATURES.frog.fact[0], 'frog');
+    if (f.stage === 1) pond += put(ic('f1'), 'top:30%; right:38%; width:20%; height:32%', 'gd-swim', CREATURES.frog.fact[1], 'frog');
+    if (f.stage === 2) pond += put(ic('f3'), 'top:20%; right:49%; width:20%; height:32%', '', CREATURES.frog.fact[2], 'frog');
+    for (let k = 0; k < Math.min(2, f.adults); k++) pond += put(ic('f4'), k ? 'top:49%; right:56%; width:20%; height:32%' : 'top:25%; right:21%; width:26%; height:41%', 'gd-frog', 'الضفدع مُستهلِك يتغذّى على الحشرات، ويعيش في الماء وعلى اليابسة.', k ? '' : 'frog');
     h += `<div class="gd-pond gd-it" data-fact="البركة نظام بيئي: مخلوقات حيّة وأشياء غير حيّة تعيش معًا." data-key="pond">${pond}</div>`;
     // the hedgehog, walking in front of the beds
     if (g.hog) h += put(ic('hog'), '', 'gd-walk', EXTRAS.hog.fact, 'hog');

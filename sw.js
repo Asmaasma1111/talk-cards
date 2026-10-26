@@ -2,7 +2,7 @@
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
 // The same file serves both apps: Talk Cards registers sw.js, Prepositions registers sw.js?app=prepositions.
 const APP = new URL(location.href).searchParams.get('app') === 'prepositions' ? 'prepositions' : 'talk-cards';
-const VERSION = APP + '-v125';
+const VERSION = APP + '-v126';
 const FILES = APP === 'prepositions' ? [
   './',
   'index.html',
@@ -39,7 +39,7 @@ const FILES = APP === 'prepositions' ? [
   'algeria.json',
   'assets/apps/curiosity.webp',
   // the science garden's pictures (ChatGPT, scripts/garden_pics.py): the same list as PICS in garden.js
-  ...'p0 p1 p3 p4 pp p5 rumF rumP rum strF strP straw b0 b1 b2 b3 f0 f1 f3 f4 nest0 nest1 nest2 sparrow hog hopper worm leaves humus bee can sun cloud tree mag'.split(' ').map(n => `assets/garden/${n}.webp`),
+  ...'p0 p1 p3 p4 pp p5 rumF rumP rum strF strP straw b0 b1 b2 b3 f0 f1 f3 f4 nest0 nest1 nest2 sparrow hog hopper worm leaves humus bee can sun cloud tree mag pond'.split(' ').map(n => `assets/garden/${n}.webp`),
   'assets/curiosity/gift-closed.webp',
   'assets/curiosity/gift-open.webp',
   'assets/curiosity/sounds/h1.m4a',
@@ -169,7 +169,7 @@ async function cacheAlgeria(cache) {
   if (APP !== 'talk-cards') return;
   try {
     const d = await (await fetch('algeria.json', { cache: 'no-cache' })).json();
-    const files = ['assets/apps/algeria.webp', 'assets/algeria/map.webp', 'assets/algeria/outline.svg', 'assets/algeria/rail.webp', 'assets/algeria/train.webp', 'assets/algeria/station.webp', ...d.cities.map(c => `assets/algeria/stamps/${c.id}.webp`), ...d.photos];
+    const files = ['assets/apps/algeria.webp', 'assets/algeria/map.webp', 'assets/algeria/outline.svg', 'assets/algeria/train.webp', 'assets/algeria/station.webp', ...d.cities.map(c => `assets/algeria/stamps/${c.id}.webp`), ...d.photos];
     await Promise.all(files.map(f => cache.add(new Request(f, { cache: 'no-cache' })).catch(() => {})));
   } catch (e) { /* the pictures still load when online */ }
 }

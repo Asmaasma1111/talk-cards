@@ -59,6 +59,8 @@ POST_ORN = [
     'وفي سنةِ 2022 استقبلتْ وهرانُ ألعابَ البحرِ الأبيضِ المتوسّط.',
 ]
 
+SPOKEN = {'pc-orn-5': 'وفي سنةِ ألفين واثنين وعشرين استقبلتْ وهرانُ ألعابَ البحرِ الأبيضِ المتوسّط.'}   # a year, said in words
+
 # culture cards: f = front (a question), b = back (the answer), s = one more line under it
 CARDS = {
     'dz1': dict(deck='dz', f='ما لقبُ مدينةِ الجزائرِ العاصمة؟', b='الجزائرُ البيضاء', s='لأنَّ بيوتَها بيضاءُ تُطِلُّ على البحر.'),
@@ -375,10 +377,12 @@ def build():
         if cid == 'alg':
             c.update(steps=['ar1'], pics=CITY_PICS['alg'],   # the trip is the Arabic door; the maths has its own (the train)
                      cards=['dz1', 'dz2', 'dz3', 'dz4', 'dz5', 'dz6', 'dz7'],
-                     post=[dict(id=f'pc-alg-{i + 1}', t=AR(t)) for i, t in enumerate(POST_ALG)])     # she reads it herself
+                     post=[dict(id=f'pc-alg-{i + 1}', t=AR(t)) for i, t in enumerate(POST_ALG)])
         if cid == 'orn':
             c.update(ready=True, steps=['ar2'], pics=CITY_PICS['orn'], cards=['dz11', 'dz13', 'dz14', 'dz15', 'dz16'],
                      post=[dict(id=f'pc-orn-{i + 1}', t=AR(t)) for i, t in enumerate(POST_ORN)])
+        for p in c.get('post', []):              # the postcard: she hears it all once, then reads it herself (her rule, 26 Oct 2026)
+            add(p['id'], SPOKEN.get(p['id'], p['t']))
         cities.append(c)
     cards = {}
     for cid_, c in CARDS.items():                # she reads her cards herself: no voice

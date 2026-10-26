@@ -95,4 +95,9 @@ if __name__ == '__main__':
             im = main_part(im)
             kb = webp(square(im, 400), os.path.join(OUT, f'{gid}.webp'))
             done.append(gid); print(sheet, gid, kb, 'KB')
+    p = os.path.join(SRC, 'pond-chatgpt.png')        # the pond (her request, 26 Oct 2026): one picture, kept wide, not squared
+    if os.path.exists(p):
+        im, _ = cutout(Image.open(p).convert('RGB'))
+        im = main_part(im); im = im.crop(im.getbbox()); im = im.resize((800, round(800 * im.height / im.width)), Image.LANCZOS)
+        print('pond', im.size, webp(im, os.path.join(OUT, 'pond.webp')), 'KB'); done.append('pond')
     print(len(done), 'pictures:', ' '.join(done))

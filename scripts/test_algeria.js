@@ -150,7 +150,8 @@ ok('numbers in Saudi digits (her rule); every spoken line has an id once; nothin
   const ids = D.lines.map(l => l[0]);
   assert.strictEqual(new Set(ids).size, ids.length);
   D.steps.ma1.worked.forEach(w => assert.ok(ids.includes('n-' + w.n)));
-  assert.ok(!ids.some(i => /^(c-|e-|pc-)/.test(i)), 'cards, easy items and the postcard are read by her');
+  assert.ok(!ids.some(i => /^(c-|e-)/.test(i)), 'cards and easy items are read by her');
+  D.cities.filter(c => c.post).forEach(c => c.post.forEach(p => assert.ok(ids.includes(p.id), p.id)));   // the postcard is heard once first
   Object.values(D.cards).forEach(c => ['f', 'b', 's', 'num'].forEach(k => assert.ok(!/[0-9]/.test(c[k] || ''), c.id + ' ' + k)));   // no Western digits on a card
 });
 
