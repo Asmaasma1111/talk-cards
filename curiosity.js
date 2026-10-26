@@ -25,7 +25,8 @@ const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;
 function blank() {
   return { v: 1, start: null, days: {}, qs: [], used: {}, queue: [], science: [], own: [], mine: {},
            surprise: { pending: null, given: [] }, seen: { leaves: 0, flowers: 0, fruits: 0 },
-           settings: { storm: 180, hintAfter: 10, rules: 'always' } };
+           games: [], big: [], dinner: {},       // Phase 2: the Mystery Box game, Big Question Day, Baba's dinner question
+           settings: { storm: 180, hintAfter: 10, rules: 'always', gameOpen: false } };
 }
 function clean(o) {
   const b = blank();
@@ -34,8 +35,8 @@ function clean(o) {
   r.settings = { ...b.settings, ...(o.settings || {}) };
   r.surprise = { ...b.surprise, ...(o.surprise || {}) }; if (!Array.isArray(r.surprise.given)) r.surprise.given = [];
   r.seen = { ...b.seen, ...(o.seen || {}) };
-  ['days', 'used', 'mine'].forEach(k => { if (!r[k] || typeof r[k] !== 'object' || Array.isArray(r[k])) r[k] = {}; });
-  ['qs', 'queue', 'science', 'own'].forEach(k => { if (!Array.isArray(r[k])) r[k] = []; });
+  ['days', 'used', 'mine', 'dinner'].forEach(k => { if (!r[k] || typeof r[k] !== 'object' || Array.isArray(r[k])) r[k] = {}; });
+  ['qs', 'queue', 'science', 'own', 'games', 'big'].forEach(k => { if (!Array.isArray(r[k])) r[k] = []; });
   r.settings.storm = [120, 180].includes(Number(r.settings.storm)) ? Number(r.settings.storm) : 180;
   r.settings.hintAfter = Math.max(5, Math.min(30, Math.round(Number(r.settings.hintAfter)) || 10));
   return r;
@@ -109,6 +110,19 @@ function scienceAdd(r, D, ch, t) {
   r.queue.unshift({ m: pick.id, why: 'science', ch, day: t });
   return pick.id;
 }
+// Phase 2. The Mystery Box game opens in her second week (or when Mama opens it); Big Question Day is every Friday
+const gameOpen = (r, t) => !!r.settings.gameOpen || weekOf(r, t) >= 2;
+const weekQs = (r, t) => { const from = addDays(t, -weekday(t)); return r.qs.filter(q => q.day >= from && q.day <= t); };
+const isBigDay = t => weekday(t) === 5;
+// Baba's dinner question: one of her questions from before today (one still wondering if there is one), the same all day
+function dinnerPick(r, t) {
+  if (r.dinner[t] && r.qs.some(q => q.id === r.dinner[t].q)) return r.dinner[t].q;
+  const old = r.qs.filter(q => q.day < t && q.audio !== false);
+  const pool = old.filter(q => q.status === 'wondering').length ? old.filter(q => q.status === 'wondering') : old;
+  if (!pool.length) return null;
+  let h = 0; for (const ch of t) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return pool[h % pool.length].id;
+}
 function weekStats(r, t) {   // her week so far (Sunday to Saturday), for Mama only
   const from = addDays(t, -weekday(t)), inWeek = d => d >= from && d <= t;
   const qs = r.qs.filter(q => inWeek(q.day));
@@ -118,7 +132,7 @@ function weekStats(r, t) {   // her week so far (Sunday to Saturday), for Mama o
            wondering: qs.filter(q => q.status === 'wondering').length };
 }
 const core = { blank, clean, valid, addDays, dayDiff, weekday, weekOf, themeOf, nextInTheme, rotationPick, todayPick, tomorrowPick, openDay,
-               dayDone, streakOf, treeCounts, scienceAdd, weekStats };
+               dayDone, streakOf, treeCounts, scienceAdd, weekStats, gameOpen, weekQs, isBigDay, dinnerPick };
 
 /* =====================================================================================================
    What she sees and hears. Each line has a voice clip in audio/voice.json, deck 'cbox' (scripts/curiosity_voice.py);
@@ -141,10 +155,23 @@ const L = {
   noMic: 'الميكروفون مغلق. اطلبي من ماما أن تسمح به.', saidOne: 'قلتُ سؤالاً ✋', surprise: 'مفاجأة! 🎁', surpriseMsg: 'مفاجأة من ماما! 💝',
   newQ: 'سؤال جديد! 🌿', hint: 'فكرة',
   phase: 'المرحلة', ph1: 'صِفي الصورة', ph2: 'اسألي كلَّ أسئلتكِ', ph3: 'قصير أم طويل؟', ph4: 'اختاري أفضل سؤال', ph5: 'نبحث معًا',
-  describe: 'ماذا ترين في الصورة؟ صِفيها بصوتٍ عالٍ.', describeSound: 'ماذا تسمعين؟ صِفيه بصوتٍ عالٍ.'
+  describe: 'ماذا ترين في الصورة؟ صِفيها بصوتٍ عالٍ.', describeSound: 'ماذا تسمعين؟ صِفيه بصوتٍ عالٍ.',
+  dinner: 'سؤال العشاء لبابا', dinnerAsked: 'سألتُ بابا ✓', dinnerDone: 'رائع! أسئلتكِ تفتح أحاديث جميلة 🍽️', dinnerWas: 'سألتِ بابا الليلة ✓',
+  bigDay: 'يوم السؤال الكبير', bigPick: 'اختاري أفضل سؤالٍ هذا الأسبوع ⭐', bigTalk: 'قدّمي سؤالكِ لعائلتكِ 🎤',
+  bigQ: 'سؤالي', bigGuess: 'توقّعي', bigFound: 'ماذا وجدنا', bigRec: 'اضغطي وقدّمي سؤالكِ', bigDone: 'أحسنتِ! قدّمتِ سؤالكِ الكبير 🌟',
+  bigGallery: 'أسئلتي الكبيرة ⭐', bigNone: 'لا أسئلة هذا الأسبوع بعد.', bigAgain: 'قدّمتِ سؤالكِ الكبير ✓',
+  game: 'الصندوق الغامض', gameIntro: 'يختار أحدٌ صورةً سرًّا، والآخر يسأل أسئلةً جوابها نعم أو لا حتى يجدها.',
+  gameMaria: 'ماريا تسأل', gameBaba: 'بابا يسأل', gameSecretA: 'للكبار: اختاروا صورةً سرًّا 🤫', gameSecretM: 'اختاري صورةً سرًّا، ولا تخبري بابا 🤫',
+  gameHand: 'الآن أعطوا الآيباد لمن يسأل', gameStart: 'هيا نبدأ!', gameAsk: 'اسألي سؤالاً جوابه نعم أو لا', gameAskB: 'يسأل بابا سؤالاً جوابه نعم أو لا',
+  gameYes: 'نعم', gameNo: 'لا', gameCross: 'اشطبي الصور التي لا تناسب الجواب', gameCrossB: 'يشطب بابا الصور التي لا تناسب الجواب', gameKnowB: 'أعرفها! 🙋‍♂️', gameCrossDone: 'انتهيتُ ✓', gameKnow: 'أعرفها! 🙋‍♀️',
+  gameTap: 'المسي الصورة التي تظنّينها', gameTapB: 'يلمس بابا الصورة التي يظنّها', gameNot: 'ليست هذه! سؤالٌ آخر؟', gameNone: 'هذا السؤال لم يُزِل صورًا. السؤال الواسع يزيل أكثر!',
+  gameHalf: 'سؤال ذكي، أزال نصف الصور!', gameMissed: 'الصورة السرّية كانت هذه! نلعب مرة أخرى؟', gameBest: 'أقلّ عدد من الأسئلة',
+  gameAgain: 'مرة أخرى', gameWide: 'الأسئلة الواسعة أزالت صورًا كثيرة!'
 };
 const RULES_IC = ['❓❓❓', '⏩', '💬', '🔄'];
 const L_TREE = 'شجرة أسئلتي';
+// «صورة واحدة», «صورتين», «٣ صور» ... «١٠ صور», «١١ صورة»
+const picCount = n => (n === 1 ? 'صورةً واحدة' : n === 2 ? 'صورتين' : n >= 3 && n <= 10 ? `${AR(n)} صور` : `${AR(n)} صورة`);
 // «سؤالاً واحداً», «سؤالين», «٣ أسئلة» ... «١٠ أسئلة», «١١ سؤالاً»
 const qCount = n => (n === 1 ? 'سؤالاً واحداً' : n === 2 ? 'سؤالين' : n >= 3 && n <= 10 ? `${AR(n)} أسئلة` : `${AR(n)} سؤالاً`);
 const TIPS_EN = ['Give real explanations, never just "because".', 'Show your own surprise.', 'Say «لا أعرف... هيا نبحث معًا» ("I don\'t know, let\'s find out together").', 'Praise the question, not the answer.'];
@@ -333,6 +360,9 @@ function mount(api) {
       <button class="cb-surprise" id="cbSurprise" hidden><span>🎁</span>${L.surprise}</button>
       <button class="cb-go" id="cbGo"><img class="cb-go-img" src="assets/curiosity/gift-closed.webp" alt=""><b id="cbGoLabel"></b></button>
       <div class="cb-wait" id="cbWait" hidden><p>${L.wait}</p><button class="cb-btn" id="cbFindBtn">${L.together}</button></div>
+      <div class="cb-dinner" id="cbDinner" hidden><p>🍽️ ${L.dinner}</p><div class="cb-dinrow"><span id="cbDinBub"></span><button class="cb-btn" id="cbDinOk">${L.dinnerAsked}</button></div></div>
+      <button class="cb-btn cb-bigbtn" id="cbBigBtn" hidden>⭐ ${L.bigDay}</button>
+      <button class="cb-btn cb-gamebtn" id="cbGameBtn" hidden><img src="assets/curiosity/gift-closed.webp" alt="">${L.game}</button>
       <button class="cb-btn soft" id="cbBookBtn">📒 ${L.book}</button>
     </div>
   </div>
@@ -348,6 +378,8 @@ function mount(api) {
 </section>
 <section id="cbfind" class="screen cb cb-find" dir="rtl" lang="ar" hidden></section>
 <section id="cbbook" class="screen cb cb-book" dir="rtl" lang="ar" hidden></section>
+<section id="cbgame" class="screen cb cb-game" dir="rtl" lang="ar" hidden></section>
+<section id="cbbig" class="screen cb cb-bigday" dir="rtl" lang="ar" hidden></section>
 <section id="cbparent" class="screen cb cb-parent" dir="ltr" lang="en" hidden></section>
 <section id="cbCel" class="overlay cb cb-cel" dir="rtl" lang="ar" hidden><canvas id="cbConfetti" aria-hidden="true"></canvas><div class="cb-celbox" id="cbCelBox"></div></section>
 <div id="cbCard" class="cb-cardov" dir="ltr" lang="en" hidden></div>`);
@@ -461,6 +493,18 @@ function mount(api) {
     $('#cbGo').disabled = done; $('#cbGo').classList.toggle('done', done);
     $('#cbWait').hidden = !waitingQs().length;
     $('#cbSurprise').hidden = !r.surprise.pending;
+    // Phase 2 on her home: the dinner question, Big Question Day on Fridays, the Mystery Box game from her second week
+    const dq = dinnerPick(r, t), dqq = dq && r.qs.find(q => q.id === dq);
+    $('#cbDinner').hidden = !dqq;
+    if (dqq) {
+      $('#cbDinBub').innerHTML = bubble(dqq, 0, ' solo').replace(/<span class="n">[^<]*<\/span>/, '<span class="n">🍽️</span>');
+      const asked = r.dinner[t] && r.dinner[t].asked;
+      $('#cbDinOk').textContent = asked ? L.dinnerWas : L.dinnerAsked; $('#cbDinOk').disabled = !!asked;
+    }
+    const big = isBigDay(t) && weekQs(r, t).length;
+    $('#cbBigBtn').hidden = !big;
+    if (big) $('#cbBigBtn').textContent = r.big.some(b => b.day === t) ? `⭐ ${L.bigAgain}` : `⭐ ${L.bigDay}`;
+    $('#cbGameBtn').hidden = !gameOpen(r, t);
     api.show('cbhome');
     renderTree($('#cbTree'));
   }
@@ -1012,7 +1056,10 @@ function mount(api) {
     const status = q => (q.status === 'found' ? `<span class="cb-st found">${L.stFound}</span>` : q.status === 'waiting' ? `<span class="cb-st wait">${L.stWait}</span>`
       : `<span class="cb-st wonder">${L.stWonder}</span><button class="cb-st again" data-again="${q.id}">${L.again}</button>`);
     $('#cbbook').innerHTML = `<div class="cb-top"><button class="quit" id="cbBookX" aria-label="الرئيسية">${ic('i-close')}</button><h1 class="cb-ftitle">📒 ${L.book}</h1></div>
-      <div class="cb-pages">${days.length ? days.map(d => {
+      <div class="cb-pages">${r.big.length ? `<section class="cb-page cb-biggal"><h2>${L.bigGallery}</h2><div class="cb-bigcards">${r.big.slice().reverse().map(b => { const m = M(b.m);
+        return `<div class="cb-bigcard">${m && photoOf(m) ? `<img src="${esc(photoOf(m))}" alt="">` : '<span class="cb-pgic">⭐</span>'}<small>${esc(dateAr(b.day))}</small>
+          <div class="cb-row" data-q="${b.q}"><button class="cb-play" data-q="${b.q}" aria-label="سؤالي">▶</button><span>${L.bigQ}</span></div>
+          <div class="cb-row" data-q="${b.clip}"><button class="cb-play" data-q="${b.clip}" aria-label="تقديمي">▶</button><span>🎤</span></div></div>`; }).join('')}</div></section>` : ''}${days.length ? days.map(d => {
         const qs = r.qs.filter(q => q.day === d), m = M(qs[0].m);
         return `<section class="cb-page"><header>${m && photoOf(m) ? `<img src="${esc(photoOf(m))}" alt="">` : '<span class="cb-pgic">❓</span>'}<div><small>${esc(dateAr(d))}</small><p>${m ? esc(m.verse ? '﴿' + m.verse.text + '﴾' : m.line) : ''}</p></div></header>
           <ul>${qs.map((q, i) => `<li class="cb-row${q.star ? ' starred' : ''}" data-q="${q.id}"><button class="cb-play" data-q="${q.id}" aria-label="استمعي">▶</button><span class="cb-rn">${q.star ? '⭐' : AR(i + 1)}</span>${q.flipOf ? '<span>🌸</span>' : ''}${status(q)}</li>`).join('')}</ul></section>`;
@@ -1060,6 +1107,7 @@ function mount(api) {
     const sci = r.science.slice(-3).reverse();
     const drawing = mm => mm && mm.kind === 'drawing';
     const qWords = ['لماذا', 'كيف', 'ماذا لو', 'ماذا', 'هل', 'كم', 'متى', 'أين', 'من', 'أيّ', 'من أين'];
+    const dinQ = dinnerPick(r, t), dinLog = Object.keys(r.dinner).filter(d => r.dinner[d].asked).sort().slice(-7);
     $('#cbparent').innerHTML = `<div class="rp cbp">
       <header class="rp-head"><h1>Curiosity Box · Mama</h1><button class="rp-x" data-act="close">${ic('i-close')}</button></header>
       <section class="rp-card"><h2>Today${started ? '' : ' (not opened yet)'}</h2>
@@ -1101,7 +1149,14 @@ function mount(api) {
         <label class="rp-set">Question storm <select id="cbpStorm"><option value="120"${r.settings.storm === 120 ? ' selected' : ''}>2 minutes</option><option value="180"${r.settings.storm === 180 ? ' selected' : ''}>3 minutes</option></select></label>
         <label class="rp-set">A hint after <select id="cbpHint">${[8, 10, 15, 20].map(k => `<option value="${k}"${k === r.settings.hintAfter ? ' selected' : ''}>${k} seconds of quiet</option>`).join('')}</select></label>
         <label class="rp-set">Read the four rules aloud <select id="cbpRules"><option value="always"${r.settings.rules === 'always' ? ' selected' : ''}>every session</option><option value="week1"${r.settings.rules === 'week1' ? ' selected' : ''}>in her first week only</option></select></label></section>
-      <section class="rp-card"><h2>Coming in Phase 2</h2><p>The Mystery Box game, Big Question Day (Fridays) and Baba's dinner question.</p></section>
+      <section class="rp-card"><h2>Baba's dinner question</h2>${dinQ ? `<p>Tonight: <button class="rp-chip" data-play="${dinQ}">▶ her question</button> ${r.dinner[t] && r.dinner[t].asked ? '✓ she has asked Baba' : 'not asked yet'}</p>
+        <p class="sub">One of her own earlier questions (one she is still wondering about, when there is one). Her home shows it as a bubble; she plays it to Baba at dinner, then taps «${L.dinnerAsked}».</p>` : '<p>It starts the day after her first session.</p>'}
+        ${dinLog.length ? `<p class="sub">Asked: ${dinLog.map(fmtDay).join(', ')}</p>` : ''}</section>
+      <section class="rp-card"><h2>Big Question Day (Fridays)</h2><p>Every Friday her home shows «${L.bigDay}»: she picks her best question of the week and records a one-minute talk for the family (her question, her guess, what you found). There is no drawing step.</p>
+        ${r.big.length ? `<div class="cbp-qs">${r.big.slice(-6).reverse().map(b => `<span class="rp-chip">${fmtDay(b.day)}</span><button class="rp-chip" data-play="${b.q}">▶ question</button><button class="rp-chip" data-play="${b.clip}">▶ her talk</button>`).join('')}</div>` : '<p class="sub">No talks yet.</p>'}</section>
+      <section class="rp-card"><h2>Mystery Box game</h2><p>One person picks a picture in secret; the other asks yes/no questions and crosses pictures out. The app counts how many pictures each question took away, so she sees why wide questions find it faster. It opens by itself in her second week${gameOpen(r, t) ? '' : ` (week ${weekOf(r, t) || 1} now)`}.</p>
+        ${weekOf(r, t) >= 2 ? '<p class="sub">Open: she is in her second week or later.</p>' : `<div class="rp-row"><button class="rp-btn${r.settings.gameOpen ? '' : ' main'}" data-act="game">${r.settings.gameOpen ? 'Opened by you ✓ (close)' : 'Open it now'}</button></div>`}
+        ${r.games.length ? `<p class="sub">${r.games.slice(-6).reverse().map(g => `${fmtDay(g.day)}: ${g.who === 'maria' ? 'Maria' : 'Baba'} asked, ${g.won ? `found it in ${g.n} ${g.n === 1 ? 'question' : 'questions'}` : 'missed'}${g.removed && g.removed.length ? ` (pictures removed per question: ${g.removed.join(', ')})` : ''}`).join(' · ')}</p>` : '<p class="sub">No games yet.</p>'}</section>
       <section class="rp-card"><h2>Backup</h2><p>One file holds all her progress in every app, with her recordings and your photos.</p>
         <div class="rp-row"><button class="rp-btn" data-act="backup">Back up progress</button><label class="rp-btn">Restore from a file<input type="file" id="cbpFile" accept="application/json,.json" hidden></label></div></section>
     </div>`;
@@ -1115,6 +1170,7 @@ function mount(api) {
       if (act === 'close') return home();
       if (act === 'card') return showCard(m);
       if (act === 'find') return openFind();
+      if (act === 'game') { r.settings.gameOpen = !r.settings.gameOpen; save(); return openParent(); }
       if (act === 'backup') return api.backup && api.backup();
       if (act === 'unphoto') { await delPhoto('m-' + m.id); delete r.mine[m.id]; save(); return openParent(); }
       if (act === 'pick') {
@@ -1154,28 +1210,202 @@ function mount(api) {
     };
   }
 
+  /* =====================================================================================================
+     Phase 2 (her spec): Baba's dinner question, Big Question Day (Fridays) and the Mystery Box game
+     ===================================================================================================== */
+  function dinnerAsked() {
+    const t = today(), q = dinnerPick(r, t); if (!q) return;
+    r.dinner[t] = { q, asked: true, at: Date.now() }; save();
+    api.SFX.good(); api.toast(L.dinnerDone); home().then(() => say('dinnerDone'));
+  }
+
+  // Big Question Day: she chooses her best question of the week and records a short talk for the family about it
+  // (the spec's drawing step is left out: Mama, 26 Oct 2026, nothing about describing her own drawings)
+  async function openBig() {
+    await ready; leave();
+    const t = today(), wk = weekQs(r, t);
+    if (!wk.length) { api.toast(L.bigNone); return; }
+    const box = $('#cbbig'), groups = [...new Set(wk.map(q => q.m))];
+    let pick = (wk.find(q => q.star) || {}).id || null;
+    box.innerHTML = `<div class="cb-top"><button class="quit" id="cbBigX" aria-label="الرئيسية">${ic('i-close')}</button><h1 class="cb-ftitle">⭐ ${L.bigDay}</h1></div>
+      <div class="cb-fbody" id="cbBigBody"><p class="cb-ask">${L.bigPick}</p>
+      <div class="cb-bigweek">${groups.map(mid => { const m = M(mid), qs = wk.filter(q => q.m === mid); return `<div class="cb-bigrow">${m && photoOf(m) ? `<img src="${esc(photoOf(m))}" alt="">` : '<span class="cb-pgic">❓</span>'}
+        <div class="cb-bubs">${qs.map((q, i) => bubble(q, i, (q.star ? ' fav' : '') + (q.id === pick ? ' sel' : ''))).join('')}</div></div>`; }).join('')}</div>
+      <button class="cb-big" id="cbBigNext" ${pick ? '' : 'hidden'}>${L.next}</button></div>`;
+    api.show('cbbig'); say('bigPick');
+    $('#cbBigX').addEventListener('click', () => { leave(); home(); });
+    box.querySelector('.cb-bigweek').addEventListener('click', e => {
+      const b = e.target.closest('.cb-bub'); if (!b) return;
+      pick = b.dataset.q; box.querySelectorAll('.cb-bigweek .cb-bub').forEach(x => x.classList.toggle('sel', x === b));
+      $('#cbBigNext').hidden = false; playBubble(b);
+    });
+    await new Promise(ok => $('#cbBigNext').addEventListener('click', ok, { once: true }));
+    const q = r.qs.find(x => x.id === pick), m = q && M(q.m);
+    if (!q) return home();
+    const chip = (n, label, clip) => `<div class="cb-bigstep"><b>${AR(n)}</b><span>${label}</span>${clip ? `<button class="cb-play" data-clip="${clip}" aria-label="استمعي">▶</button>` : ''}</div>`;
+    $('#cbBigBody').innerHTML = `${m ? mysteryHTML(m, true) : ''}<p class="cb-ask">${L.bigTalk}</p>
+      <div class="cb-bigsteps">${chip(1, L.bigQ, q.id)}${chip(2, L.bigGuess, q.pred)}${chip(3, L.bigFound, q.found)}</div>
+      <div class="cb-microw"><div class="cb-timer" id="cbBigTimer" hidden><svg viewBox="0 0 64 64" aria-hidden="true"><circle class="bg" cx="32" cy="32" r="26"/><circle class="fg" id="cbBigRing" cx="32" cy="32" r="26"/></svg><b id="cbBigClock"></b></div>
+        <button class="cb-mic" id="cbBigMic"><span class="lv"></span>🎤<b>${L.bigRec}</b></button></div>`;
+    $('#cbBigBody').addEventListener('click', e => { const p = e.target.closest('[data-clip]'); if (p) playMine(p.dataset.clip); });
+    say('bigTalk');
+    $('#cbBigMic').addEventListener('click', async function go() {
+      const b = $('#cbBigMic');
+      if (REC) { stopRec(); return; }
+      if (!canRecord()) { api.toast(L.noMic); return; }
+      api.SFX.init(); ac();
+      b.classList.add('rec'); b.querySelector('b').textContent = L.micStop;
+      const ring = $('#cbBigRing'), c = 2 * Math.PI * 26; $('#cbBigTimer').hidden = false; ring.style.strokeDasharray = c.toFixed(1);
+      let rec = null;
+      try { rec = await record(60000, () => {}); } catch (e) { api.toast(L.noMic); }
+      b.classList.remove('rec'); b.querySelector('b').textContent = L.bigRec; $('#cbBigTimer').hidden = true;
+      if (!rec) return;
+      const id = 'b-' + Date.now(); await keepClip(id, rec, 'big');
+      r.big = r.big.filter(x => x.day !== today());
+      r.big.push({ day: today(), q: q.id, m: q.m, clip: id, at: Date.now() }); save();
+      b.removeEventListener('click', go);
+      celebrate(`<div class="cb-celic">⭐</div><h2>${L.bigDone}</h2><button class="cb-big" id="cbCelOk">${L.goHome}</button>`, () => home());
+      magic(); say('bigDone');
+    });
+    // the timer ring fills while she talks (one minute)
+    const tick = setInterval(() => {
+      if ($('#cbbig').hidden) { clearInterval(tick); return; }
+      if (!REC || $('#cbBigTimer').hidden) return;
+      const used = (performance.now() - REC.t0) / 1000, left = Math.max(0, 60 - used), c = 2 * Math.PI * 26;
+      $('#cbBigRing').style.strokeDashoffset = (c * (1 - left / 60)).toFixed(1);
+      $('#cbBigClock').textContent = `${AR(Math.floor(left / 60))}:${AR(pad2(Math.ceil(left) % 60))}`;
+    }, 250);
+  }
+
+  // The Mystery Box game: one person picks a picture in secret, the other asks yes/no questions and crosses pictures out;
+  // the app shows how many pictures each question took away, so she sees why wide questions find it faster
+  const BOARDS = { animals: ['camel', 'cat', 'dog', 'fish', 'bee', 'rabbit', 'zebra', 'elephant', 'giraffe', 'frog', 'duck', 'octopus', 'parrot', 'tiger', 'crab', 'horse'],
+                   things: ['apple', 'banana', 'ball', 'bus', 'car', 'clock', 'cup', 'hat', 'kite', 'umbrella', 'rocket', 'boat', 'book', 'guitar', 'sun', 'moon'] };
+  const tilePic = k => `assets/reads/photos/${k}.webp`;
+  let G = null;
+  function scoresLine() {
+    const best = who => { const g = r.games.filter(x => x.who === who && x.won); return g.length ? Math.min(...g.map(x => x.n)) : null; };
+    const m = best('maria'), b = best('baba');
+    return m === null && b === null ? '' : `🏆 ${L.gameBest}: ${[m !== null ? `ماريا ${AR(m)}` : '', b !== null ? `بابا ${AR(b)}` : ''].filter(Boolean).join(' · ')}`;
+  }
+  function openGame() {
+    leave(); G = null;
+    const box = $('#cbgame');
+    box.innerHTML = `<div class="cb-top"><button class="quit" id="cbGameX" aria-label="الرئيسية">${ic('i-close')}</button><h1 class="cb-ftitle">🎁 ${L.game}</h1></div>
+      <div class="cb-fbody"><img class="cb-gimg" src="assets/curiosity/gift-closed.webp" alt=""><p class="cb-ask">${L.gameIntro}</p>
+      <div class="cb-choice"><button class="cb-big" data-who="maria">${L.gameMaria}</button><button class="cb-btn" data-who="baba">${L.gameBaba}</button></div>
+      <p class="cb-gscore">${scoresLine()}</p></div>`;
+    api.show('cbgame'); say('gameIntro');
+    box.onclick = e => {
+      if (e.target.closest('#cbGameX')) { G = null; return home(); }
+      const w = e.target.closest('[data-who]'); if (!w) return;
+      api.SFX.init(); unlock();
+      gameSecret(w.dataset.who);
+    };
+  }
+  function gameSecret(who) {
+    const board = r.games.length % 2 ? 'things' : 'animals';
+    G = { who, board, secret: null, crossed: new Set(), round: new Set(), n: 0, removed: [], phase: 'ask' };
+    const box = $('#cbgame');
+    box.innerHTML = `<div class="cb-top"><button class="quit" id="cbGameX" aria-label="الرئيسية">${ic('i-close')}</button><h1 class="cb-ftitle">${who === 'maria' ? L.gameSecretA : L.gameSecretM}</h1></div>
+      <div class="cb-fbody"><div class="cb-ggrid">${BOARDS[board].map(k => `<button class="cb-gtile" data-k="${k}"><img src="${tilePic(k)}" alt=""></button>`).join('')}</div></div>`;
+    say(who === 'maria' ? 'gameSecretA' : 'gameSecretM');
+    box.onclick = e => {
+      if (e.target.closest('#cbGameX')) { G = null; return home(); }
+      const tl = e.target.closest('.cb-gtile'); if (!tl) return;
+      G.secret = tl.dataset.k; api.SFX.star();
+      box.querySelector('.cb-fbody').innerHTML = `<div class="cb-celic">🤫</div><p class="cb-ask">${L.gameHand}</p><button class="cb-big" id="cbGameGo">${L.gameStart}</button>`;
+      say('gameHand');
+      $('#cbGameGo').addEventListener('click', () => { api.SFX.init(); gameBoard(); }, { once: true });
+    };
+  }
+  function gameBoard() {
+    const box = $('#cbgame'), left = () => BOARDS[G.board].filter(k => !G.crossed.has(k));
+    const draw = () => {
+      const tiles = BOARDS[G.board].map(k => `<button class="cb-gtile${G.crossed.has(k) ? ' x' : ''}${G.round.has(k) ? ' now' : ''}" data-k="${k}"><img src="${tilePic(k)}" alt=""></button>`).join('');
+      const bar = G.phase === 'ask'
+        ? `<p class="cb-gprompt">${G.who === 'maria' ? L.gameAsk : L.gameAskB}</p><div class="cb-choice"><button class="cb-gyes" data-a="yes">✓ ${L.gameYes}</button><button class="cb-gno" data-a="no">✗ ${L.gameNo}</button></div><button class="cb-btn soft" id="cbKnow">${G.who === 'maria' ? L.gameKnow : L.gameKnowB}</button>`
+        : G.phase === 'cross' ? `<p class="cb-gprompt">${G.who === 'maria' ? L.gameCross : L.gameCrossB}</p><button class="cb-big" id="cbCrossDone">${L.gameCrossDone}</button>`
+        : `<p class="cb-gprompt">${G.who === 'maria' ? L.gameTap : L.gameTapB}</p>`;
+      box.querySelector('.cb-fbody').innerHTML = `<div class="cb-gplay"><div class="cb-ggrid">${tiles}</div>
+        <div class="cb-gside"><div class="cb-gtopline"><span class="cb-count">❓ ${AR(G.n)}</span><span class="cb-gleft">🖼️ ${AR(left().length)}</span></div>
+        <p class="cb-praise" id="cbGamePraise"></p><div class="cb-gbar">${bar}</div></div></div>`;
+    };
+    box.innerHTML = `<div class="cb-top"><button class="quit" id="cbGameX" aria-label="الرئيسية">${ic('i-close')}</button><h1 class="cb-ftitle">🎁 ${L.game}</h1></div><div class="cb-fbody"></div>`;
+    draw(); if (G.who === 'maria') say('gameAsk');
+    const praise = text => { const p = $('#cbGamePraise'); if (!p) return; p.textContent = text; p.classList.remove('pop'); void p.offsetWidth; p.classList.add('pop'); };
+    box.onclick = e => {
+      if (e.target.closest('#cbGameX')) { G = null; return home(); }
+      api.SFX.init();
+      const a = e.target.closest('[data-a]');
+      if (a && G.phase === 'ask') { G.n++; G.phase = 'cross'; G.round = new Set(); G.before = left().length; api.SFX.star(); draw(); if (G.who === 'maria' && G.n === 1) say('gameCross'); return; }
+      if (e.target.closest('#cbKnow') && G.phase === 'ask') { G.phase = 'guess'; draw(); if (G.who === 'maria') say('gameTap'); return; }
+      const tl = e.target.closest('.cb-gtile');
+      if (tl && G.phase === 'cross') {
+        const k = tl.dataset.k;
+        if (G.round.has(k)) { G.round.delete(k); G.crossed.delete(k); } else if (!G.crossed.has(k)) { G.round.add(k); G.crossed.add(k); }
+        api.SFX.flip(); draw(); return;
+      }
+      if (tl && G.phase === 'guess') {
+        const k = tl.dataset.k; if (G.crossed.has(k)) return;
+        G.n++;
+        if (k === G.secret) return gameWin();
+        G.crossed.add(k); G.phase = 'ask'; draw(); praise(L.gameNot); api.SFX.again(); say('gameNot'); return;
+      }
+      if (e.target.closest('#cbCrossDone') && G.phase === 'cross') {
+        const removed = G.round.size, before = G.before; G.removed.push(removed); G.round = new Set(); G.phase = 'ask';
+        draw();
+        praise(removed === 0 ? L.gameNone : removed * 2 === before ? L.gameHalf : removed * 2 > before ? `سؤال ذكي! أزال ${picCount(removed)}، أكثر من النصف!` : `هذا السؤال أزال ${picCount(removed)}!`);
+        if (removed) api.SFX.good();
+        if (removed === 0) say('gameNone'); else if (removed * 2 === before) say('gameHalf');
+        const l = left();
+        if (l.length === 1 && l[0] === G.secret) return setTimeout(gameWin, 900);
+        if (!l.includes(G.secret)) return setTimeout(gameMissed, 900);
+      }
+    };
+  }
+  function logGame(won) { r.games.push({ day: today(), board: G.board, secret: G.secret, who: G.who, n: G.n, removed: G.removed, won, at: Date.now() }); save(); }
+  function gameWin() {
+    logGame(true);
+    const who = G.who, n = G.n, bars = G.removed;
+    const mx = Math.max(1, ...bars);
+    celebrate(`<img class="cb-gwin" src="${tilePic(G.secret)}" alt=""><h2>${who === 'maria' ? `وجدتِها بـ ${qCount(n)}!` : `وجدها بابا بـ ${qCount(n)}!`}</h2>
+      ${bars.length ? `<div class="cb-gbars">${bars.map(b => `<i style="height:${Math.round(8 + b / mx * 70)}px"><b>${AR(b)}</b></i>`).join('')}</div><p class="soft">${L.gameWide}</p>` : ''}
+      <p class="cb-gscore">${scoresLine()}</p><div class="cb-choice"><button class="cb-big" id="cbCelOk">${L.gameAgain}</button></div>`, () => openGame());
+    magic(); if (bars.length) say('gameWide'); G = null;
+  }
+  function gameMissed() {
+    logGame(false);
+    celebrate(`<img class="cb-gwin" src="${tilePic(G.secret)}" alt=""><h2>${L.gameMissed}</h2><button class="cb-big" id="cbCelOk">${L.gameAgain}</button>`, () => openGame());
+    say('gameMissed'); G = null;
+  }
+
   /* ---------- leaving, and the wiring ---------- */
   function leave() { S = null; stopRec(); stopAudio(); $('#cbCard').hidden = true; }
   api.holdToOpen($('#cbGear'), 2000, openParent);
   $('#cbGo').addEventListener('click', () => { if (!$('#cbGo').disabled) { unlock(); ac(); start(); } });
   $('#cbFindBtn').addEventListener('click', () => { api.SFX.init(); unlock(); ac(); openFind(); });
   $('#cbBookBtn').addEventListener('click', () => { api.SFX.init(); unlock(); ac(); openBook(); });
+  $('#cbDinOk').addEventListener('click', () => { api.SFX.init(); dinnerAsked(); });
+  $('#cbDinBub').addEventListener('click', e => { const b = e.target.closest('.cb-bub'); if (b) { api.SFX.init(); unlock(); ac(); playBubble(b); } });
+  $('#cbBigBtn').addEventListener('click', () => { api.SFX.init(); unlock(); ac(); openBig(); });
+  $('#cbGameBtn').addEventListener('click', () => { api.SFX.init(); unlock(); ac(); openGame(); });
   $('#cbSurprise').addEventListener('click', () => { api.SFX.init(); openSurprise(); });
   $('#cbQuit').addEventListener('click', () => { leave(); home(); });
   document.addEventListener('visibilitychange', () => { if (document.hidden) { stopRec(); stopAudio(); } });
 
-  const SCREENS = ['cbhome', 'cbsess', 'cbfind', 'cbbook', 'cbparent'];
+  const SCREENS = ['cbhome', 'cbsess', 'cbfind', 'cbbook', 'cbparent', 'cbgame', 'cbbig'];
   return {
     home, ready,
     isOn: () => SCREENS.some(id => !$('#' + id).hidden) || !$('#cbCel').hidden,
-    busy: () => !!S || !!REC || ['cbsess', 'cbfind', 'cbparent'].some(id => !$('#' + id).hidden) || !$('#cbCel').hidden,
+    busy: () => !!S || !!REC || !!G || ['cbsess', 'cbfind', 'cbparent', 'cbgame', 'cbbig'].some(id => !$('#' + id).hidden) || !$('#cbCel').hidden,
     leave,
     status: () => { const t = today(); return { done: dayDone(r, t), started: !!(r.days[t] && r.days[t].m), waiting: waitingQs().length }; },
     snapshot: () => JSON.parse(JSON.stringify(r)),
     valid,
     replace(obj) { r = clean(obj); save(); },
     // for tests (?dev=1)
-    get state() { return r; }, get data() { return D; }, core, openParent, openFind, openBook, start, _mystery: id => M(id),
+    get state() { return r; }, get data() { return D; }, core, openParent, openFind, openBook, openGame, openBig, start, _mystery: id => M(id),
     _treeArt: (cnt, seen) => (TREE ? treeArt(cnt, seen || cnt) : '')
   };
 }

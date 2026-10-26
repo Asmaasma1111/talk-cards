@@ -33,7 +33,12 @@ GAP = 1.0
 UI = {'stormGo': 'stormGo', 'needOne': 'needOne', 'sort': 'sort', 'praiseLong': 'praiseLong', 'praiseShort': 'praiseShort',
       'flip': 'flip', 'flipDone': 'flipDone', 'star': 'star', 'predict': 'predict', 'end': 'end', 'found': 'found',
       'surprised': 'surprised', 'wonderOk': 'wonderOk', 'fruit': 'fruit', 'sayHello': 'hello',
-      'ph1': 'ph1', 'ph2': 'ph2', 'ph3': 'ph3', 'ph4': 'ph4', 'ph5': 'ph5', 'describe': 'describe', 'describeSound': 'describeSound'}
+      'ph1': 'ph1', 'ph2': 'ph2', 'ph3': 'ph3', 'ph4': 'ph4', 'ph5': 'ph5', 'describe': 'describe', 'describeSound': 'describeSound',
+      # Phase 2: Baba's dinner question, Big Question Day, the Mystery Box game (the lines Baba reads himself are not said)
+      'dinnerDone': 'dinnerDone', 'bigPick': 'bigPick', 'bigTalk': 'bigTalk', 'bigDone': 'bigDone',
+      'gameIntro': 'gameIntro', 'gameSecretA': 'gameSecretA', 'gameSecretM': 'gameSecretM', 'gameHand': 'gameHand', 'gameAsk': 'gameAsk',
+      'gameCross': 'gameCross', 'gameTap': 'gameTap', 'gameNot': 'gameNot', 'gameNone': 'gameNone', 'gameHalf': 'gameHalf',
+      'gameMissed': 'gameMissed', 'gameWide': 'gameWide'}
 EMOJI = re.compile('[\U0001F000-\U0001FAFF☀-➿⬀-⯿️‍]')
 
 
