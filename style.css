@@ -3266,13 +3266,24 @@ body[data-profile="mama"] .deck-apps { display: none; }
 
 /* علبة الفضول Phase 2: Baba's dinner question, Big Question Day (Fridays), the Mystery Box game */
 .cb-dinner { padding: 10px 16px 14px; border-radius: 26px; background: #FFF4D6; text-align: center; box-shadow: 0 5px 0 #F3DFA6; }
-.cb-dinner p { margin: 0 0 8px; font-size: 21px; font-weight: 800; color: var(--cdeep); }
+.cb-dinner p { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0 0 8px; font-size: 21px; font-weight: 800; color: var(--cdeep); }
+.cb-dinner p img { width: 46px; height: 46px; }
+.cb-bigbtn { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.cb-bigbtn img { width: 50px; height: 50px; }
+.cb-tbadge { width: 54px; height: 54px; margin-inline-end: 10px; vertical-align: middle; }
+.cb-gwin.badge { border: 0; border-radius: 50%; box-shadow: none; object-fit: contain; filter: drop-shadow(0 12px 20px rgba(158, 47, 99, .25)); }
 .cb-dinrow { display: flex; align-items: center; justify-content: center; gap: 12px; }
 .cb-dinrow .cb-btn { min-height: 56px; padding: 0 18px; font-size: 20px; }
 .cb-dinrow .cb-btn:disabled { background: #fff; color: #3E9A60; box-shadow: 0 3px 0 #D9EFD9; }
 .cb-bigbtn { background: linear-gradient(180deg, #FFE17A, #FFC23A); color: #7A4300; box-shadow: 0 5px 0 #D99A12; }
 .cb-gamebtn { display: flex; align-items: center; justify-content: center; gap: 10px; background: #8C6BE0; box-shadow: 0 5px 0 #6447B8; }
-.cb-gamebtn img { width: 46px; height: 46px; object-fit: contain; }
+.cb-gamebtn img { width: 50px; height: 50px; object-fit: contain; }
+.cb-side.full { gap: 10px; }
+.cb-side.full .cb-go { flex-direction: row; justify-content: center; gap: 14px; padding: 12px 20px 14px; font-size: 27px; }
+.cb-side.full .cb-go-img { width: 76px; height: 76px; }
+.cb-side.full .cb-btn { min-height: 58px; }
+.cb-side.full .cb-dinner { padding: 8px 14px 10px; }
+.cb-side.full .cb-dinner p { margin-bottom: 4px; }
 .cb-bigweek { display: flex; flex-direction: column; gap: 12px; width: min(820px, 94vw); }
 .cb-bigrow { display: flex; align-items: center; gap: 14px; padding: 10px 14px; border-radius: 22px; background: #fff; box-shadow: 0 4px 14px rgba(43, 35, 64, .07); }
 .cb-bigrow > img { width: 120px; height: 90px; flex: none; object-fit: cover; border-radius: 14px; }
@@ -3285,7 +3296,7 @@ body[data-profile="mama"] .deck-apps { display: none; }
   color: var(--cdeep); box-shadow: 0 4px 0 #EADDE4; }
 .cb-bigstep > b { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--cyel); font: 700 24px 'Marhey', var(--apfont); }
 .cb-bigstep .cb-play, .cb-bigcard .cb-play { width: 46px; height: 46px; border: 0; border-radius: 50%; background: var(--cgreen); color: #fff; font-size: 20px; }
-.cb-gimg { width: clamp(140px, 22vh, 200px); animation: cbWiggle 2.2s ease-in-out infinite; }
+.cb-gimg { width: clamp(150px, 24vh, 230px); filter: drop-shadow(0 12px 20px rgba(100, 71, 184, .25)); animation: cbWiggle 2.2s ease-in-out infinite; }
 .cb-gscore { margin: 0; min-height: 30px; font-size: 24px; font-weight: 800; color: var(--cdeep); }
 .cb-gscore small { font-size: 17px; color: rgba(43, 35, 64, .55); }
 .cb-game .cb-fbody, .cb-bigday .cb-fbody { justify-content: flex-start; }

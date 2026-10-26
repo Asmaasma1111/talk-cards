@@ -44,7 +44,7 @@ const FILES = APP === 'prepositions' ? [
   'assets/curiosity/gift-open.webp',
   'assets/curiosity/sounds/h1.m4a',
   // the five phases' badges (drawn in ChatGPT, her request of 26 Oct 2026)
-  ...[1, 2, 3, 4, 5].map(n => `assets/curiosity/phases/p${n}.webp`),
+  ...[1, 2, 3, 4, 5].map(n => `assets/curiosity/phases/p${n}.webp`), ...['game', 'big', 'dinner'].map(n => `assets/curiosity/phases/${n}.webp`),
   // her question tree (drawn in ChatGPT): the tree, its leaves, blossoms and fruits, and where they grow
   'assets/curiosity/tree/tree.json',
   'assets/curiosity/tree/tree.webp',

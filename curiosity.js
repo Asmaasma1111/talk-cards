@@ -360,9 +360,9 @@ function mount(api) {
       <button class="cb-surprise" id="cbSurprise" hidden><span>🎁</span>${L.surprise}</button>
       <button class="cb-go" id="cbGo"><img class="cb-go-img" src="assets/curiosity/gift-closed.webp" alt=""><b id="cbGoLabel"></b></button>
       <div class="cb-wait" id="cbWait" hidden><p>${L.wait}</p><button class="cb-btn" id="cbFindBtn">${L.together}</button></div>
-      <div class="cb-dinner" id="cbDinner" hidden><p>🍽️ ${L.dinner}</p><div class="cb-dinrow"><span id="cbDinBub"></span><button class="cb-btn" id="cbDinOk">${L.dinnerAsked}</button></div></div>
-      <button class="cb-btn cb-bigbtn" id="cbBigBtn" hidden>⭐ ${L.bigDay}</button>
-      <button class="cb-btn cb-gamebtn" id="cbGameBtn" hidden><img src="assets/curiosity/gift-closed.webp" alt="">${L.game}</button>
+      <div class="cb-dinner" id="cbDinner" hidden><p><img src="assets/curiosity/phases/dinner.webp" alt="">${L.dinner}</p><div class="cb-dinrow"><span id="cbDinBub"></span><button class="cb-btn" id="cbDinOk">${L.dinnerAsked}</button></div></div>
+      <button class="cb-btn cb-bigbtn" id="cbBigBtn" hidden><img src="assets/curiosity/phases/big.webp" alt=""><span>${L.bigDay}</span></button>
+      <button class="cb-btn cb-gamebtn" id="cbGameBtn" hidden><img src="assets/curiosity/phases/game.webp" alt="">${L.game}</button>
       <button class="cb-btn soft" id="cbBookBtn">📒 ${L.book}</button>
     </div>
   </div>
@@ -503,8 +503,10 @@ function mount(api) {
     }
     const big = isBigDay(t) && weekQs(r, t).length;
     $('#cbBigBtn').hidden = !big;
-    if (big) $('#cbBigBtn').textContent = r.big.some(b => b.day === t) ? `⭐ ${L.bigAgain}` : `⭐ ${L.bigDay}`;
+    if (big) $('#cbBigBtn span').textContent = r.big.some(b => b.day === t) ? L.bigAgain : L.bigDay;
     $('#cbGameBtn').hidden = !gameOpen(r, t);
+    const side = $('#cbhome .cb-side');      // many cards on her home (a Friday in week 2+): a tighter column so all of it fits
+    side.classList.toggle('full', [...side.children].filter(x => !x.hidden).length > 4);
     api.show('cbhome');
     renderTree($('#cbTree'));
   }
@@ -1227,7 +1229,7 @@ function mount(api) {
     if (!wk.length) { api.toast(L.bigNone); return; }
     const box = $('#cbbig'), groups = [...new Set(wk.map(q => q.m))];
     let pick = (wk.find(q => q.star) || {}).id || null;
-    box.innerHTML = `<div class="cb-top"><button class="quit" id="cbBigX" aria-label="الرئيسية">${ic('i-close')}</button><h1 class="cb-ftitle">⭐ ${L.bigDay}</h1></div>
+    box.innerHTML = `<div class="cb-top"><button class="quit" id="cbBigX" aria-label="الرئيسية">${ic('i-close')}</button><h1 class="cb-ftitle"><img class="cb-tbadge" src="assets/curiosity/phases/big.webp" alt="">${L.bigDay}</h1></div>
       <div class="cb-fbody" id="cbBigBody"><p class="cb-ask">${L.bigPick}</p>
       <div class="cb-bigweek">${groups.map(mid => { const m = M(mid), qs = wk.filter(q => q.m === mid); return `<div class="cb-bigrow">${m && photoOf(m) ? `<img src="${esc(photoOf(m))}" alt="">` : '<span class="cb-pgic">❓</span>'}
         <div class="cb-bubs">${qs.map((q, i) => bubble(q, i, (q.star ? ' fav' : '') + (q.id === pick ? ' sel' : ''))).join('')}</div></div>`; }).join('')}</div>
@@ -1264,7 +1266,7 @@ function mount(api) {
       r.big = r.big.filter(x => x.day !== today());
       r.big.push({ day: today(), q: q.id, m: q.m, clip: id, at: Date.now() }); save();
       b.removeEventListener('click', go);
-      celebrate(`<div class="cb-celic">⭐</div><h2>${L.bigDone}</h2><button class="cb-big" id="cbCelOk">${L.goHome}</button>`, () => home());
+      celebrate(`<img class="cb-gwin badge" src="assets/curiosity/phases/big.webp" alt=""><h2>${L.bigDone}</h2><button class="cb-big" id="cbCelOk">${L.goHome}</button>`, () => home());
       magic(); say('bigDone');
     });
     // the timer ring fills while she talks (one minute)
@@ -1280,7 +1282,11 @@ function mount(api) {
   // The Mystery Box game: one person picks a picture in secret, the other asks yes/no questions and crosses pictures out;
   // the app shows how many pictures each question took away, so she sees why wide questions find it faster
   const BOARDS = { animals: ['camel', 'cat', 'dog', 'fish', 'bee', 'rabbit', 'zebra', 'elephant', 'giraffe', 'frog', 'duck', 'octopus', 'parrot', 'tiger', 'crab', 'horse'],
-                   things: ['apple', 'banana', 'ball', 'bus', 'car', 'clock', 'cup', 'hat', 'kite', 'umbrella', 'rocket', 'boat', 'book', 'guitar', 'sun', 'moon'] };
+                   things: ['apple', 'banana', 'ball', 'bus', 'car', 'clock', 'cup', 'hat', 'kite', 'umbrella', 'rocket', 'boat', 'book', 'guitar', 'sun', 'moon'],
+                   food: ['apple', 'banana', 'carrot', 'egg', 'lemon', 'orange', 'pear', 'olive', 'muffin', 'jam', 'juice', 'milk', 'nut', 'pea', 'bun', 'tea'],
+                   home: ['bed', 'bucket', 'door', 'fan', 'jug', 'key', 'ladder', 'mug', 'pan', 'pen', 'pot', 'ring', 'sock', 'sneakers', 'robot', 'toy'],
+                   wild: ['alligator', 'ant', 'bear', 'bird', 'fox', 'goat', 'hen', 'monkey', 'mouse', 'panda', 'seal', 'bat', 'puppy', 'bug', 'insect', 'cub'] };
+  const BOARD_ORDER = ['animals', 'things', 'food', 'home', 'wild'];     // a new board each game, in turn (all real photos kept offline by Maria Reads)
   const tilePic = k => `assets/reads/photos/${k}.webp`;
   let G = null;
   function scoresLine() {
@@ -1291,8 +1297,8 @@ function mount(api) {
   function openGame() {
     leave(); G = null;
     const box = $('#cbgame');
-    box.innerHTML = `<div class="cb-top"><button class="quit" id="cbGameX" aria-label="الرئيسية">${ic('i-close')}</button><h1 class="cb-ftitle">🎁 ${L.game}</h1></div>
-      <div class="cb-fbody"><img class="cb-gimg" src="assets/curiosity/gift-closed.webp" alt=""><p class="cb-ask">${L.gameIntro}</p>
+    box.innerHTML = `<div class="cb-top"><button class="quit" id="cbGameX" aria-label="الرئيسية">${ic('i-close')}</button><h1 class="cb-ftitle">${L.game}</h1></div>
+      <div class="cb-fbody"><img class="cb-gimg" src="assets/curiosity/phases/game.webp" alt=""><p class="cb-ask">${L.gameIntro}</p>
       <div class="cb-choice"><button class="cb-big" data-who="maria">${L.gameMaria}</button><button class="cb-btn" data-who="baba">${L.gameBaba}</button></div>
       <p class="cb-gscore">${scoresLine()}</p></div>`;
     api.show('cbgame'); say('gameIntro');
@@ -1304,7 +1310,7 @@ function mount(api) {
     };
   }
   function gameSecret(who) {
-    const board = r.games.length % 2 ? 'things' : 'animals';
+    const board = BOARD_ORDER[r.games.length % BOARD_ORDER.length];
     G = { who, board, secret: null, crossed: new Set(), round: new Set(), n: 0, removed: [], phase: 'ask' };
     const box = $('#cbgame');
     box.innerHTML = `<div class="cb-top"><button class="quit" id="cbGameX" aria-label="الرئيسية">${ic('i-close')}</button><h1 class="cb-ftitle">${who === 'maria' ? L.gameSecretA : L.gameSecretM}</h1></div>
@@ -1331,7 +1337,7 @@ function mount(api) {
         <div class="cb-gside"><div class="cb-gtopline"><span class="cb-count">❓ ${AR(G.n)}</span><span class="cb-gleft">🖼️ ${AR(left().length)}</span></div>
         <p class="cb-praise" id="cbGamePraise"></p><div class="cb-gbar">${bar}</div></div></div>`;
     };
-    box.innerHTML = `<div class="cb-top"><button class="quit" id="cbGameX" aria-label="الرئيسية">${ic('i-close')}</button><h1 class="cb-ftitle">🎁 ${L.game}</h1></div><div class="cb-fbody"></div>`;
+    box.innerHTML = `<div class="cb-top"><button class="quit" id="cbGameX" aria-label="الرئيسية">${ic('i-close')}</button><h1 class="cb-ftitle"><img class="cb-tbadge" src="assets/curiosity/phases/game.webp" alt="">${L.game}</h1></div><div class="cb-fbody"></div>`;
     draw(); if (G.who === 'maria') say('gameAsk');
     const praise = text => { const p = $('#cbGamePraise'); if (!p) return; p.textContent = text; p.classList.remove('pop'); void p.offsetWidth; p.classList.add('pop'); };
     box.onclick = e => {
