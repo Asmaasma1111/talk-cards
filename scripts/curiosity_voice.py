@@ -32,7 +32,8 @@ GAP = 1.0
 # the prompts she hears (the keys of the L block in curiosity.js), with the clip id the app plays
 UI = {'stormGo': 'stormGo', 'needOne': 'needOne', 'sort': 'sort', 'praiseLong': 'praiseLong', 'praiseShort': 'praiseShort',
       'flip': 'flip', 'flipDone': 'flipDone', 'star': 'star', 'predict': 'predict', 'end': 'end', 'found': 'found',
-      'surprised': 'surprised', 'wonderOk': 'wonderOk', 'fruit': 'fruit', 'sayHello': 'hello'}
+      'surprised': 'surprised', 'wonderOk': 'wonderOk', 'fruit': 'fruit', 'sayHello': 'hello',
+      'ph1': 'ph1', 'ph2': 'ph2', 'ph3': 'ph3', 'ph4': 'ph4', 'ph5': 'ph5', 'describe': 'describe', 'describeSound': 'describeSound'}
 EMOJI = re.compile('[\U0001F000-\U0001FAFF☀-➿⬀-⯿️‍]')
 
 
@@ -49,7 +50,10 @@ def clean(t):
 
 
 # what the voice is given for a few lines: the same words, fully vowelled, so every word is said clearly
-SPOKEN = {'goal': 'اليومَ نتدرَّبُ لِنكونَ سائِلاتٍ ماهِرات', 'r1': 'اِسْألي أكبرَ عددٍ مِنَ الأسئلة'}
+SPOKEN = {'goal': 'اليومَ نتدرَّبُ لِنكونَ سائِلاتٍ ماهِرات', 'r1': 'اِسْألي أكبرَ عددٍ مِنَ الأسئلة',
+          # the phases: their number is said with their name (on screen, the number is a giant digit)
+          'ph1': 'المرحلةُ الأولى: صِفي الصورة', 'ph2': 'المرحلةُ الثانية: اِسألي كلَّ أسئلتِكِ', 'ph3': 'المرحلةُ الثالثة: قصيرٌ أم طويل؟',
+          'ph4': 'المرحلةُ الرابعة: اِختاري أفضلَ سؤال', 'ph5': 'المرحلةُ الخامسة: نبحثُ معًا'}
 
 
 def lines():
@@ -262,6 +266,13 @@ def close(want, heard):
     return SequenceMatcher(None, a, b).ratio()
 
 
+def word_heard(want, heard):
+    """one hint word: right if every word of it is among the words heard, allowing «ال» or «و» in front (لون / اللون)"""
+    strip = lambda w: w[2:] if w.startswith('ال') and len(w) > 3 else (w[1:] if w.startswith('و') and len(w) > 3 else w)
+    hs = {strip(h) for h in norm(heard)} | set(norm(heard))
+    return all(strip(w) in hs or w in hs for w in norm(want))
+
+
 def cmd_verify(a):
     plan = V.load(PLAN, {'batches': {}, 'clips': {}})
     text = dict(lines())
@@ -273,7 +284,8 @@ def cmd_verify(a):
             continue
         heard = ear.hear(os.path.join(WORK, 'clips', f'{i}.wav'), ASK)
         score = close(text.get(i, ''), heard)
-        c['heard'] = heard; c['score'] = round(score, 2); c['ok'] = score >= (0.8 if i.startswith('k-') else 0.9)
+        good = word_heard(text.get(i, ''), heard) if i.startswith('k-') else score >= 0.9
+        c['heard'] = heard; c['score'] = round(score, 2); c['ok'] = bool(good)
         if not c['ok']:
             bad.append(i)
         print(i, 'ok' if c['ok'] else 'MISS', f'{score:.2f}', '|', text.get(i), '|', heard, flush=True)

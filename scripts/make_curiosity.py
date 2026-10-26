@@ -38,6 +38,8 @@ THEMES = {'A': ('ألوان وفن', 'Colours and art'), 'B': ('أشياء أح�
 ROTATION = [['A'], ['C'], ['D', 'E'], ['B'], ['F'], ['G'], ['E', 'H']]
 # what kind of mystery each one is, when it is not a plain photo
 DRAWING = {'A5', 'D8'}          # her own drawing: Mama photographs it the evening before (or she holds the real one)
+# taken out (Mama, 26 Oct 2026: Maria did not like describing her own drawings); her first week opens with these instead
+REMOVED = {'A5': 'A1', 'D8': 'D1'}
 SOUND = {'H1'}                  # a real recording, then the photo
 MYVOICE = {'H2'}                # she records a few words and hears them back
 # mysteries that are best with Mama's own photo (a real object at home); the parent area says so the evening before
@@ -102,7 +104,7 @@ def bank():
         x['kind'] = 'drawing' if mid in DRAWING else 'sound' if mid in SOUND else 'myvoice' if mid in MYVOICE else 'photo'
         M[mid] = x
     week1 = re.search(r'\*\*Week 1[^*]*\*\*\s*([A-I0-9, ]+)', text).group(1)
-    week1 = [w.strip() for w in week1.split(',') if w.strip()]
+    week1 = [REMOVED.get(w.strip(), w.strip()) for w in week1.split(',') if w.strip()]
     tags = {}
     m = re.search(r'Other mysteries that also fit her book:(.+)', text)
     for grp in re.finditer(r'((?:[A-H]\d+(?:,| and)?\s*)+)\(chapters? ([\d and]+)\)', m.group(1)):
@@ -149,6 +151,8 @@ def main():
     cred_f = os.path.join(SRC, 'photos', 'credits.json')
     credits = {c['photo']: c for c in json.load(open(cred_f, encoding='utf-8'))} if os.path.exists(cred_f) else {}
     rows = []
+    for mid in REMOVED:
+        M.pop(mid, None)
     for mid, x in M.items():
         c = C.get(mid)
         x['card'] = c['sections'] if c else None
@@ -185,7 +189,7 @@ def main():
     carded = [x['id'] for x in rows if x['card']]
     print(f"curiosity.json: {len(rows)} mysteries, {len(carded)} with parent cards, {len(ready)} ready")
     print('  cards but not ready (photo or prediction missing):', ' '.join(i for i in carded if i not in ready) or 'none')
-    missing = [i for i in C if i not in M]
+    missing = [i for i in C if i not in M and i not in REMOVED]
     if missing:
         sys.exit('cards for unknown mysteries: ' + ' '.join(missing))
 

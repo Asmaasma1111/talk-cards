@@ -22,16 +22,16 @@ ok('the rotation follows her table, week 1 first (a Sunday start)', () => {
   // 1 Nov 2026 is a Sunday
   assert.strictEqual(C.weekday('2026-11-01'), 0);
   const got = run(r, '2026-11-01', 30);
-  assert.deepStrictEqual(got.slice(0, 7), ['A5', 'C1', 'D8', 'B1', 'F1', 'G1', 'E4']);
-  assert.deepStrictEqual(got.slice(7, 14), ['A1', 'C2', 'E1', 'B2', 'F2', 'G2', 'H1']);
-  assert.deepStrictEqual(got.slice(14, 21), ['A2', 'C3', 'D1', 'B3', 'F3', 'G3', 'E2']);
-  assert.deepStrictEqual(got.slice(21, 28), ['A3', 'C4', 'E3', 'B4', 'F4', 'G4', 'H2']);
-  assert.deepStrictEqual(got.slice(28, 30), ['A4', 'C5']);
+  assert.deepStrictEqual(got.slice(0, 7), ['A1', 'C1', 'D1', 'B1', 'F1', 'G1', 'E4']);   // her drawings (A5, D8) were taken out, 26 Oct
+  assert.deepStrictEqual(got.slice(7, 14), ['A2', 'C2', 'E1', 'B2', 'F2', 'G2', 'H1']);
+  assert.deepStrictEqual(got.slice(14, 21), ['A3', 'C3', 'D2', 'B3', 'F3', 'G3', 'E2']);
+  assert.deepStrictEqual(got.slice(21, 28), ['A4', 'C4', 'E3', 'B4', 'F4', 'G4', 'H2']);
+  assert.deepStrictEqual(got.slice(28, 30), ['A6', 'C5']);
 });
 
 ok('starting on a Wednesday still meets week 1 first', () => {
   const r = C.blank();
-  assert.deepStrictEqual(run(r, '2026-10-21', 7), ['B1', 'F1', 'G1', 'E4', 'A5', 'C1', 'D8']);
+  assert.deepStrictEqual(run(r, '2026-10-21', 7), ['B1', 'F1', 'G1', 'E4', 'A1', 'C1', 'D1']);
 });
 
 ok('a missed day loses nothing: that mystery waits for its weekday', () => {
@@ -58,7 +58,7 @@ ok('the science lesson goes first, then the rotation carries on', () => {
   assert.strictEqual(C.todayPick(r, D, '2026-11-04'), 'I7');
   const d = C.openDay(r, D, '2026-11-04'); d.done = true;
   assert.strictEqual(r.queue.length, 0);
-  assert.strictEqual(C.openDay(r, D, '2026-11-08').m, 'A1');     // Sunday: the rotation again (A5 was met)
+  assert.strictEqual(C.openDay(r, D, '2026-11-08').m, 'A2');     // Sunday: the rotation again (A1 was met)
   // chapter 3 again: the next one of that chapter
   assert.strictEqual(C.scienceAdd(r, D, 3, '2026-11-09'), 'I8');
 });
@@ -94,6 +94,8 @@ ok('clean() keeps her data and mends a broken file', () => {
   assert.strictEqual(r.qs.length, 1); assert.strictEqual(r.settings.storm, 180); assert.ok(Array.isArray(r.queue));
   assert.ok(C.valid(r)); assert.ok(!C.valid({}));
 });
+
+ok('her drawings are gone from the bank', () => { assert.ok(!D.mysteries.some(m => m.id === 'A5' || m.id === 'D8')); });
 
 ok('every ready mystery has her Arabic line, three hints and a parent card; F has a prediction', () => {
   D.mysteries.filter(m => m.ready).forEach(m => {

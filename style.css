@@ -3189,3 +3189,30 @@ body[data-profile="mama"] .deck-apps { display: none; }
 @media (orientation: portrait) {
   .mc-split { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(340px, 1fr); }
 }
+
+/* علبة الفضول: the numbered, named phases (her request, 26 Oct 2026) */
+.cb-steps i { font-size: 22px; font-weight: 800; color: var(--cdeep); font-family: var(--apfont); }
+.cb-steps i.on { width: 52px; height: 52px; font-size: 28px; background: var(--cyel); opacity: 1; }
+.cb-phname { align-self: center; margin-inline-start: 6px; padding: 6px 16px; border-radius: 99px; background: #fff; font: 800 clamp(18px, 2.2vw, 24px) var(--apfont);
+  color: var(--cdeep); box-shadow: 0 3px 10px rgba(158, 47, 99, .12); direction: rtl; }
+.cb-phase { position: absolute; inset: 0; z-index: 40; display: grid; place-items: center; background: rgba(255, 249, 240, .96); animation: cbPhIn .35s ease both; }
+.cb-phase.out { animation: cbPhOut .32s ease both; }
+.cb-phcard { display: flex; flex-direction: column; align-items: center; gap: 0; text-align: center; direction: rtl; }
+.cb-phimg { width: clamp(150px, 26vh, 240px); height: auto; margin-bottom: -10px; filter: drop-shadow(0 14px 22px rgba(158, 47, 99, .22)); animation: cbPop .6s cubic-bezier(.3, 1.6, .5, 1) both; }
+.cb-phcard small { font: 800 clamp(26px, 3.4vw, 36px) var(--apfont); color: rgba(43, 35, 64, .55); }
+.cb-phnum { font: 700 clamp(150px, 26vh, 240px)/0.95 'Marhey', var(--apfont); color: var(--cpink); text-shadow: 0 8px 0 #FFD3E4, 0 18px 30px rgba(158, 47, 99, .25);
+  animation: cbPop .55s cubic-bezier(.3, 1.6, .5, 1) .08s both; }
+.cb-phcard p { margin: 4px 0 0; font: 800 clamp(36px, 5.4vw, 60px)/1.2 var(--apfont); color: var(--cdeep); animation: cbPop .55s cubic-bezier(.3, 1.6, .5, 1) .18s both; }
+.cb-describe { margin: 0; padding: 8px 20px; border-radius: 99px; background: #F3EEFF; color: #6B4FC9; font-size: clamp(22px, 2.8vw, 28px); font-weight: 800; text-align: center; }
+.cb-phbadge { display: inline-grid; place-items: center; width: 52px; height: 52px; margin-inline-end: 10px; border-radius: 50%; background: var(--cyel, #FFD25E); color: #9E2F63;
+  font: 700 30px 'Marhey', var(--apfont); vertical-align: middle; }
+@keyframes cbPhIn { from { opacity: 0; transform: scale(1.06); } to { opacity: 1; transform: none; } }
+@keyframes cbPhOut { to { opacity: 0; transform: scale(.94); } }
+
+/* magic dust round each new apple on her tree */
+.cb-tree .dust .dp, .cb-celtree .dust .dp { transform-box: fill-box; transform-origin: center; opacity: 0; animation: cbDust 2.2s cubic-bezier(.2, .7, .3, 1) both; }
+.cb-tree .dust .dring, .cb-celtree .dust .dring { fill: none; stroke: #FFD84D; stroke-width: 9; transform-box: fill-box; transform-origin: center; opacity: 0; animation: cbRing 1.4s ease-out both; }
+.cb-tree .dust .dglow, .cb-celtree .dust .dglow { fill: #FFE98A; transform-box: fill-box; transform-origin: center; opacity: 0; animation: cbGlow 2.2s ease-out both; }
+@keyframes cbGlow { 0% { transform: scale(.2); opacity: 0; } 25% { transform: scale(1.2); opacity: .45; } 100% { transform: scale(1.6); opacity: 0; } }
+@keyframes cbDust { 0% { transform: translate(0, 0) scale(.2) rotate(0); opacity: 0; } 15% { opacity: 1; } 70% { opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) scale(1.3) rotate(200deg); opacity: 0; } }
+@keyframes cbRing { 0% { transform: scale(.3); opacity: .9; } 100% { transform: scale(3.2); opacity: 0; } }

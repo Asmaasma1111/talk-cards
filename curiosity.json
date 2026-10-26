@@ -71,9 +71,9 @@
   ]
  ],
  "week1": [
-  "A5",
+  "A1",
   "C1",
-  "D8",
+  "D1",
   "B1",
   "F1",
   "G1",
@@ -291,53 +291,6 @@
    ],
    "photo": "assets/curiosity/photos/a4.webp",
    "credit": "Wikimedia Commons, User:Patrickringgenberg, CC BY 3.0",
-   "ready": true
-  },
-  {
-   "id": "A5",
-   "theme": "A",
-   "n": 5,
-   "line": "رسمتي",
-   "weekMin": 1,
-   "hints": [
-    {
-     "w": "لماذا",
-     "k": [
-      "لون",
-      "اخترتِ"
-     ]
-    },
-    {
-     "w": "ماذا لو",
-     "k": [
-      "مطر",
-      "ليل"
-     ]
-    },
-    {
-     "w": "ماذا",
-     "k": [
-      "قصة",
-      "داخل"
-     ]
-    }
-   ],
-   "find": "Family asks her questions about her drawing; she answers",
-   "kind": "drawing",
-   "card": [
-    {
-     "label": "Why this one first",
-     "md": "she knows more about this picture than anyone in the world. There is nothing to get wrong, so\n  her first storm feels safe. It also lets her practise explaining her choices aloud."
-    },
-    {
-     "label": "Find out together",
-     "md": "  - The family asks her questions about her drawing, and she answers.\n  - Ask open questions, for example why she chose a colour, or what would change at night. Wait quietly for her answer.\n  - Show real interest.\n  - This is also modelling: she hears what good questions sound like."
-    },
-    {
-     "label": "Safety",
-     "md": "none."
-    }
-   ],
    "ready": true
   },
   {
@@ -1513,7 +1466,7 @@
    "card": [
     {
      "label": "Explanation",
-     "md": "  - In May 2023, Rayyanah Barnawi, a Saudi scientist who studies cells, became the first Saudi woman to go to space. She\n    flew to the International Space Station with Ali AlQarni.\n  - She spent about ten days in space doing experiments, including on cells and cancer research.\n  - From space, she and Ali did science demonstrations for thousands of Saudi students watching live.\n  - A link to Maria's own Space Agency drawing (mystery D8)."
+     "md": "  - In May 2023, Rayyanah Barnawi, a Saudi scientist who studies cells, became the first Saudi woman to go to space. She\n    flew to the International Space Station with Ali AlQarni.\n  - She spent about ten days in space doing experiments, including on cells and cancer research.\n  - From space, she and Ali did science demonstrations for thousands of Saudi students watching live."
     },
     {
      "label": "Find out together",
@@ -1722,53 +1675,6 @@
    ],
    "photo": "assets/curiosity/photos/d7.webp",
    "credit": "Wikimedia Commons, NASA / JPL-Caltech / SSI / color composite by Gordan Ugarkovic, Public domain",
-   "ready": true
-  },
-  {
-   "id": "D8",
-   "theme": "D",
-   "n": 8,
-   "line": "رسمتي للفضاء",
-   "weekMin": 1,
-   "hints": [
-    {
-     "w": "لماذا",
-     "k": [
-      "ألوان",
-      "اخترتِ"
-     ]
-    },
-    {
-     "w": "ماذا",
-     "k": [
-      "يعيش",
-      "كوكبي"
-     ]
-    },
-    {
-     "w": "كيف",
-     "k": [
-      "نسافر",
-      "إليه"
-     ]
-    }
-   ],
-   "find": "She explains her concept and colours to the family",
-   "kind": "drawing",
-   "card": [
-    {
-     "label": "Why this one",
-     "md": "her own idea again, so the storm stays safe while the topic moves to space."
-    },
-    {
-     "label": "Find out together",
-     "md": "she explains her concept and her colours to the family. Real answers in case she asks:\n  - Rockets carry spacecraft into space. A trip to the Moon takes about three days, and a trip to Mars takes about\n    seven months.\n  - Scientists have not found living things on any other planet yet. They are still looking, for example with robots on\n    Mars that search for signs of tiny life from long ago.\n  - If she asks something you do not know, say «لا أعرف... هيا نبحث معًا»."
-    },
-    {
-     "label": "Safety",
-     "md": "none."
-    }
-   ],
    "ready": true
   },
   {

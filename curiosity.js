@@ -139,7 +139,9 @@ const L = {
   book: 'دفتر أسئلتي', tree: 'شجرة أسئلتي', stFound: 'عرفنا الجواب ✓', stWonder: 'ما زلت أتساءل 💭', stWait: 'ننتظر البحث 🔍', again: 'نبحث عنه 🔍',
   drawA5: 'أحضري رسمتكِ وضعيها أمامكِ 🎨', drawD8: 'أحضري رسمتكِ للفضاء 🚀', sayHello: 'قولي: «مرحباً، أنا ماريا!»', listen: 'استمعي إلى صوتكِ',
   noMic: 'الميكروفون مغلق. اطلبي من ماما أن تسمح به.', saidOne: 'قلتُ سؤالاً ✋', surprise: 'مفاجأة! 🎁', surpriseMsg: 'مفاجأة من ماما! 💝',
-  newQ: 'سؤال جديد! 🌿', hint: 'فكرة'
+  newQ: 'سؤال جديد! 🌿', hint: 'فكرة',
+  phase: 'المرحلة', ph1: 'صِفي الصورة', ph2: 'اسألي كلَّ أسئلتكِ', ph3: 'قصير أم طويل؟', ph4: 'اختاري أفضل سؤال', ph5: 'نبحث معًا',
+  describe: 'ماذا ترين في الصورة؟ صِفيها بصوتٍ عالٍ.', describeSound: 'ماذا تسمعين؟ صِفيه بصوتٍ عالٍ.'
 };
 const RULES_IC = ['❓❓❓', '⏩', '💬', '🔄'];
 const L_TREE = 'شجرة أسئلتي';
@@ -415,7 +417,21 @@ function mount(api) {
     }
     for (let i = 0; i < Math.min(cnt.fruits, 60); i++) {
       const [x, y] = twigs[(i * 11 + 3) % M];
-      out.push(`<g transform="translate(${x} ${y + 18})">${img(R[i % R.length], 54, 'fr', i, 'fruits')}</g>`);
+      out.push(`<g transform="translate(${x} ${y + 30})">${img(R[i % R.length], 88, 'fr', i, 'fruits')}</g>`);
+    }
+    // magic dust: a burst of sparkles and a glow round every apple that has just arrived (drawn on top of everything)
+    const STAR = 'M0 -24 L6 -6 24 0 6 6 0 24 -6 6 -24 0 -6 -6Z', GOLD = ['#FFD84D', '#FF8DB8', '#FFFFFF', '#FFC23A', '#C8B9FF', '#8FE3BF'];
+    for (let i = seen.fruits || 0; i < Math.min(cnt.fruits, 60); i++) {
+      const [x, y] = twigs[(i * 11 + 3) % M], d0 = Math.min(2.4, (i - (seen.fruits || 0)) * 0.12);
+      const sparks = Array.from({ length: 22 }, (_, k) => {
+        const a = (k * 360 / 22 + (k % 3) * 7) * Math.PI / 180, r = 90 + (k % 4) * 38, sc = (0.6 + (k % 3) * 0.35).toFixed(2);
+        return `<g transform="scale(${sc})"><path class="dp" d="${STAR}" fill="${GOLD[k % 6]}" stroke="#fff" stroke-width="2" style="--dx:${Math.round(Math.cos(a) * r / sc)}px;--dy:${Math.round(Math.sin(a) * r / sc)}px;animation-delay:${(d0 + 0.1 + (k % 6) * 0.07).toFixed(2)}s"/></g>`;
+      }).join('');
+      const glitter = Array.from({ length: 16 }, (_, k) => {
+        const a = (k * 360 / 16 + 11) * Math.PI / 180, r = 50 + (k % 5) * 30;
+        return `<circle class="dp" r="${5 + (k % 3) * 3}" fill="${GOLD[(k + 2) % 6]}" style="--dx:${Math.round(Math.cos(a) * r)}px;--dy:${Math.round(Math.sin(a) * r)}px;animation-delay:${(d0 + 0.3 + (k % 4) * 0.09).toFixed(2)}s"/>`;
+      }).join('');
+      out.push(`<g class="dust" transform="translate(${x} ${y + 30})"><circle class="dglow" r="70" style="animation-delay:${d0.toFixed(2)}s"/><circle class="dring" r="40" style="animation-delay:${(d0 + 0.1).toFixed(2)}s"/>${glitter}${sparks}</g>`);
     }
     return `<svg viewBox="0 0 ${T.size} ${T.size}" role="img" aria-label="${L_TREE}"><image href="${T.image}" width="${T.size}" height="${T.size}"/>${out.join('')}</svg>`;
   }
@@ -452,11 +468,25 @@ function mount(api) {
   /* =====================================================================================================
      The daily session: 1 the mystery, 2 the question storm, 3 sort and flip, 4 choose and predict (5 comes later)
      ===================================================================================================== */
-  const STEPS = [['box', '🎁'], ['storm', '❓'], ['sort', '📦'], ['star', '⭐']];
-  const stepIx = st => ({ box: 0, storm: 1, sort: 2, flip: 2, star: 3 }[st] || 0);
+  // the phases, numbered and named (her request, 26 Oct 2026); each opens with a giant number, its name and its badge
+  const phaseOf = st => ({ box: 1, storm: 2, sort: 3, flip: 3, star: 4 }[st] || 1);
+  const badge = n => `assets/curiosity/phases/p${n}.webp`;
   function stepsBar(st) {
-    const k = stepIx(st);
-    $('#cbSteps').innerHTML = STEPS.map(([, e], i) => `<i class="${i < k ? 'done' : i === k ? 'on' : ''}">${e}</i>`).join('');
+    const n = phaseOf(st);
+    $('#cbSteps').innerHTML = [1, 2, 3, 4].map(k => `<i class="${k < n ? 'done' : k === n ? 'on' : ''}">${AR(k)}</i>`).join('')
+      + `<span class="cb-phname">${L['ph' + n]}</span>`;
+  }
+  async function phaseIntro(s, n, host = $('#cbsess')) {
+    if (s && !live(s)) return;
+    const ov = document.createElement('div'); ov.className = 'cb-phase';
+    ov.innerHTML = `<div class="cb-phcard"><img class="cb-phimg" src="${badge(n)}" alt="" onerror="this.remove()">
+      <small>${L.phase}</small><b class="cb-phnum">${AR(n)}</b><p>${L['ph' + n]}</p></div>`;
+    host.append(ov);
+    let skip; const tapped = new Promise(ok => { skip = ok; });
+    ov.addEventListener('click', () => skip(), { once: true });
+    api.SFX.init(); chime(); say('ph' + n);
+    await Promise.race([tapped, sleep(api.reduced() ? 600 : 2300)]);
+    ov.classList.add('out'); await sleep(320); ov.remove();
   }
   async function start() {
     await ready; if (!D) return;
@@ -513,8 +543,10 @@ function mount(api) {
     api.SFX.init(); ac(); chime();
     $('#cbBoxWrap').classList.add('open');
     await sleep(api.reduced() ? 50 : 900); if (!live(s)) return;
+    await phaseIntro(s, 1); if (!live(s)) return;
     const m = s.m;
     stage.innerHTML = `<p class="cb-goal small">${esc(D.goal)}</p>${mysteryHTML(m)}
+      ${m.kind === 'myvoice' ? '' : `<p class="cb-describe">🗣️ ${m.kind === 'sound' ? L.describeSound : L.describe}</p>`}
       ${m.kind === 'sound' ? '<button class="cb-btn soft cb-again" id="cbSound">🔊</button>' : ''}
       ${m.kind === 'myvoice' ? `<button class="cb-mic" id="cbHello"><span class="lv"></span>🎤<b>${L.sayHello}</b></button>` : ''}
       <button class="cb-big" id="cbAsk" hidden>${L.ask}</button>`;
@@ -545,6 +577,8 @@ function mount(api) {
       await sayFor('m-' + m.id, 1500);
     } else await sleep(2200);
     if (!live(s)) return;
+    if (m.kind !== 'myvoice') await sayFor(m.kind === 'sound' ? 'describeSound' : 'describe', 900);
+    if (!live(s)) return;
     askBtn.hidden = false;
     await new Promise(ok => askBtn.addEventListener('click', ok, { once: true }));
     api.SFX.init();
@@ -562,6 +596,7 @@ function mount(api) {
   function hintHTML(h) { return `<span class="cb-hw">${esc(h.w)}</span>${h.k.map(k => `<b class="cb-hplus">+</b><span class="cb-hk">${esc(k)}</span>`).join('')}`; }
   async function stepStorm(s) {
     stepsBar('storm');
+    await phaseIntro(s, 2); if (!live(s)) return;
     const m = s.m, total = r.settings.storm, hints = m.hints || [];
     s.day.storm = s.day.storm || 0;
     let left = Math.max(45, total - s.day.storm), hintK = 0, idle = 0, recording = false, over = false, lastTick = performance.now();
@@ -661,7 +696,8 @@ function mount(api) {
 
   /* ---------- 3. sort (short answer or long answer) and flip one ---------- */
   async function stepSort(s) {
-    stepsBar('sort'); $('#cbCount').hidden = true;
+    stepsBar('sort'); $('#cbCount').hidden = true; $('#cbTimer').hidden = true;
+    await phaseIntro(s, 3); if (!live(s)) return;
     const qs = dayQs(s).filter(q => !q.flipOf);
     if (!qs.length) return;
     let sel = null, praised = { short: false, long: false };
@@ -788,6 +824,7 @@ function mount(api) {
   /* ---------- 4. her favourite question, and her prediction ---------- */
   async function stepStar(s) {
     stepsBar('star');
+    await phaseIntro(s, 4); if (!live(s)) return;
     const qs = dayQs(s);
     if (!qs.length) return;
     let pick = qs.find(q => q.star) || null;
@@ -847,6 +884,10 @@ function mount(api) {
     const ok = $('#cbCelOk');
     if (ok) ok.addEventListener('click', () => { api.SFX.init(); $('#cbCel').hidden = true; try { api.stopConfetti($('#cbConfetti')); } catch (e) {} stopAudio(); if (after) after(); }, { once: true });
   }
+  function magic() {   // the sound of magic dust: a quick run of high bells
+    const X = api.SFX; if (!X.ready || !X.ready()) return;
+    [1568, 1760, 2093, 2349, 2637, 3136].forEach((f, i) => X.bell(f, 0.35 + i * 0.07, 0.6, 0.12)); X.hold(1.4);
+  }
   function chime() { const X = api.SFX; if (!X.ready || !X.ready()) return; X.bell(1046.5, 0, 1.1, 0.2); X.bell(1568, 0.18, 1.4, 0.15); X.hold(1.5); }
 
   /* =====================================================================================================
@@ -860,7 +901,7 @@ function mount(api) {
     const fs = { q, m };
     S = fs;
     const box = $('#cbfind');
-    box.innerHTML = `<div class="cb-top"><button class="quit" id="cbFindX" aria-label="الرئيسية">${ic('i-close')}</button><h1 class="cb-ftitle">${L.together} 🔍</h1></div>
+    box.innerHTML = `<div class="cb-top"><button class="quit" id="cbFindX" aria-label="الرئيسية">${ic('i-close')}</button><h1 class="cb-ftitle"><b class="cb-phbadge">${AR(5)}</b>${L.phase} ${AR(5)}: ${L.ph5} 🔍</h1></div>
       <div class="cb-fbody">
         ${mysteryHTML(m, true)}
         <div class="cb-frow">
@@ -914,7 +955,7 @@ function mount(api) {
       q.surprised = c.dataset.s; q.status = 'found'; q.foundDay = today(); save();
       api.SFX.good();
       celebrate(`<div class="cb-celtree" id="cbCelTree"></div><h2>${L.fruit}</h2><button class="cb-big" id="cbCelOk">${L.goHome}</button>`, () => home());
-      renderTree($('#cbCelTree'));
+      renderTree($('#cbCelTree')); magic();
       say('fruit');
     });
   }
@@ -1135,7 +1176,7 @@ function mount(api) {
     replace(obj) { r = clean(obj); save(); },
     // for tests (?dev=1)
     get state() { return r; }, get data() { return D; }, core, openParent, openFind, openBook, start, _mystery: id => M(id),
-    _treeArt: cnt => (TREE ? treeArt(cnt, cnt) : '')
+    _treeArt: (cnt, seen) => (TREE ? treeArt(cnt, seen || cnt) : '')
   };
 }
 
