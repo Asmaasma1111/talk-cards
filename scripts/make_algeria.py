@@ -1468,6 +1468,17 @@ def build():
             add(r['id'], r['t'])
     for w in MA1['worked']:
         add(f"n-{w['n']}", WORDS[w['n']])
+    # the maths train (algeria-maths.js): each lesson's rule and the red reasons of its worked example, heard once
+    import subprocess
+    mt = json.loads(subprocess.run(['node', '-e', "const T=require('./algeria-maths.js').core.TOPICS; console.log(JSON.stringify("
+                                    "T.map(t => ({ id: t.id, rule: t.lesson.rule, worked: t.lesson.worked }))))"],
+                                   cwd=ROOT, capture_output=True, text=True, check=True).stdout)
+    for t in mt:
+        for i, x in enumerate(t['rule']):
+            add(f"mt-{t['id']}-r{i + 1}", x)
+        for k, w in enumerate(t['worked']):
+            for j, (_, why) in enumerate(w['steps']):
+                add(f"mt-{t['id']}-w{k + 1}-{j + 1}", why)
     for i, t in enumerate(SAY):
         add(f'lv-say-{i + 1}', t)
     for i, t in enumerate(WRITE):

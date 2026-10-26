@@ -1339,7 +1339,7 @@ function mount(api) {
   MC = root.AlgeriaMaths ? root.AlgeriaMaths.mount({ api, state: () => r, save, back: home,
     // the corner never falls behind the trip: a topic the trip has reached is open there too
     tripTopics: () => Object.values(D ? D.steps : {}).filter(st => st.corner && r.steps[st.id]).map(st => st.corner),
-    allOpen: () => !!r.settings.cornerAll }) : null;
+    allOpen: () => !!r.settings.cornerAll, say: (id, ms) => sayFor(id, ms || 0), stop: () => stopAudio() }) : null;
 
   $('#dzQuit').addEventListener('click', () => { leave(); homeTrip(); });
   document.addEventListener('visibilitychange', () => { if (document.hidden) { stopRec(); stopAudio(); } });

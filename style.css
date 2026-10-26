@@ -3350,3 +3350,4 @@ body[data-profile="mama"] .deck-apps { display: none; }
 .dz-city.lab-up b { top: auto; bottom: 100%; translate: -50% -4px; }
 .dz-city.lab-left b { top: 50%; left: auto; right: 100%; translate: -6px -50%; }
 .dz-city.lab-right b { top: 50%; left: 100%; translate: 6px -50%; }
+.mc-wk-steps li.on, .mc-lesson p.on { background: var(--g2); border-radius: 12px; }

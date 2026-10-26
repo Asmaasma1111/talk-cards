@@ -79,6 +79,15 @@ for c in [c for c in D['cities'] if c.get('ready')]:
         for bank in ('jarr', 'dami'):
             if st.get(bank):
                 out.append('- Sentences:'); out += [f"  - {' '.join(j['w'])}." for j in st[bank].values()]
+        if st.get('bank'):
+            out.append('- Questions (the right answer, then the wrong ones):')
+            out += [f"  - {b[0]} → {b[1]} (not {' / '.join(b[2])})" + (' ✍️ written by hand' if len(b) > 4 and b[4] else '') for b in st['bank']]
+        if st.get('verbs'):
+            out.append('- Verbs, with every pronoun:')
+            out += [f"  - {' · '.join(f'{p} {v['forms'][p]}' for p in st['prons'])} ({v['obj']})" for v in st['verbs'].values()]
+        if st.get('explain'):
+            out.append('- «ما معنى هذا؟» (heard on the first day):')
+            out += [f"  - {x['t']}" for x in st['explain']]
         if st.get('fill'):
             out.append('- Fill the gap (the right word, then the two wrong ones):')
             out += [f"  - {q} → {r} (not {' / '.join(w)})" for q, r, w in st['fill']]

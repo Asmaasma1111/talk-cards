@@ -537,12 +537,20 @@ function mount(ctx) {
     const now = TOPICS.find(t => ids.includes(t.id) && !mastered(c, t.id)) || TOPICS[TOPICS.length - 1];
     return { n: TOPICS.indexOf(now) + 1, title: now.title, today: Object.values(c).some(x => x && x.last === api.today()) };
   }
-  const workedHTML = t => t.lesson.worked.map(w => `<div class="mc-wk"><p class="mc-wk-q">${esc(w.q)}</p><ol class="mc-wk-steps">${w.steps.map(([m, why]) =>
-    `<li><span class="mc-wk-m">${esc(m)}</span><span class="mc-wk-why">${esc(why)}</span></li>`).join('')}</ol></div>`).join('');
+  const workedHTML = t => t.lesson.worked.map((w, k) => `<div class="mc-wk"><p class="mc-wk-q">${esc(w.q)}</p><ol class="mc-wk-steps">${w.steps.map(([m, why], j) =>
+    `<li data-id="mt-${t.id}-w${k + 1}-${j + 1}"><span class="mc-wk-m">${esc(m)}</span><span class="mc-wk-why">${esc(why)}</span></li>`).join('')}</ol></div>`).join('');
+  // the voice reads the rule and the red reasons once, each line lit as it is read (her rule: a text once)
+  async function readLesson(box, alive) {
+    for (const el of box.querySelectorAll('[data-id]')) {
+      if (!alive()) return;
+      el.classList.add('on'); el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      if (ctx.say) await ctx.say(el.dataset.id, 0); el.classList.remove('on');
+    }
+  }
   function lesson(id) {
     const t = TOPICS.find(x => x.id === id), x = corner()[id];
     el.innerHTML = `<div class="dz-top"><button class="quit" id="mcBack" aria-label="الركن"><svg aria-hidden="true"><use href="#i-close"/></svg></button><h1 class="dz-ptitle">${pic(t, 'mc-pic-h')} ${esc(t.title)}</h1></div>
-      <div class="dz-pane"><div class="dz-rule mc-lesson"><h3>تعلّمتُ</h3>${t.lesson.rule.map(l => `<p>${esc(l)}</p>`).join('')}
+      <div class="dz-pane"><div class="dz-rule mc-lesson"><h3>تعلّمتُ</h3>${t.lesson.rule.map((l, i) => `<p data-id="mt-${t.id}-r${i + 1}">${esc(l)}</p>`).join('')}
         ${t.lesson.worked.length ? `<h3>مثالٌ محلول: انظري كيف نحلّ</h3>${workedHTML(t)}` : t.lesson.ex.length ? `<h3>مثال</h3>${t.lesson.ex.map(l => `<p class="mc-ex">${esc(l)}</p>`).join('')}` : ''}
         ${id === 'tools' ? `<div class="mc-tools">${['ruler', 'square', 'compass'].map(k => `<span class="mc-svgopt">${svgTool(k)}</span>`).join('')}</div>` : ''}
         ${id === 'net' ? `<div class="mc-tools"><span class="mc-svgopt">${paperImg('net_cross')}<b>منشور مكعب ✓</b></span></div>` : ''}
@@ -550,9 +558,11 @@ function mount(ctx) {
         ${id === 'midpoint' ? `<div class="mc-tools"><span class="mc-svgopt">${paperImg('seg_mid')}<b>المنتصف</b></span></div>` : ''}</div>
         <p class="mc-lv">مستواكِ في هذا الدرس: ${AR(x ? x.level : 1)} من ٣</p>
         <div class="dz-row"><button class="dz-big" id="mcGo">ابدئي التدريب ✏️</button></div></div>`;
-    $('#mcBack').onclick = () => { api.SFX.init(); open(); };
-    $('#mcGo').onclick = () => { api.SFX.init(); play(id); };
+    const lk = S = { lesson: id }, alive = () => S === lk;
+    $('#mcBack').onclick = () => { api.SFX.init(); S = null; if (ctx.stop) ctx.stop(); open(); };
+    $('#mcGo').onclick = () => { api.SFX.init(); S = null; if (ctx.stop) ctx.stop(); play(id); };
     api.show('dzmc');
+    readLesson(el.querySelector('.mc-lesson'), alive);
   }
   async function play(id) {
     const t = TOPICS.find(x => x.id === id), lv = (corner()[id] || { level: 1 }).level;
@@ -595,9 +605,10 @@ function mount(ctx) {
       <div class="mc-split"><div class="dz-pane mc-item">${t.lesson.worked.length ? '<button class="mc-exbtn" id="mcEx">👀 المثال</button>' : ''}${body}<div class="dz-fb" id="mcFb"></div><div class="dz-row dz-nextrow" id="mcNextRow"></div></div>${PAPER}</div>`;
     $('#mcStop').onclick = () => { api.SFX.init(); S = null; open(); };
     if ($('#mcEx')) $('#mcEx').onclick = () => {
-      api.SFX.init();
+      api.SFX.init(); let open_ = true;
       el.insertAdjacentHTML('beforeend', `<div class="mc-wkpop" id="mcWkPop"><div class="mc-wkcard"><h3>مثالٌ محلول</h3>${workedHTML(t)}<div class="dz-row"><button class="dz-big" id="mcWkOk">فهمتُ ✓</button></div></div></div>`);
-      $('#mcWkOk').onclick = () => { api.SFX.init(); $('#mcWkPop').remove(); };
+      $('#mcWkOk').onclick = () => { api.SFX.init(); open_ = false; if (ctx.stop) ctx.stop(); $('#mcWkPop').remove(); };
+      readLesson($('#mcWkPop'), () => open_);
     };
     paper($('.mc-paper', el));
   }
