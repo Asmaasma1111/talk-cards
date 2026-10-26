@@ -58,7 +58,10 @@ def clean(t):
 SPOKEN = {'goal': 'اليومَ نتدرَّبُ لِنكونَ سائِلاتٍ ماهِرات', 'r1': 'اِسْألي أكبرَ عددٍ مِنَ الأسئلة',
           # the phases: their number is said with their name (on screen, the number is a giant digit)
           'ph1': 'المرحلةُ الأولى: صِفي الصورة', 'ph2': 'المرحلةُ الثانية: اِسألي كلَّ أسئلتِكِ', 'ph3': 'المرحلةُ الثالثة: قصيرٌ أم طويل؟',
-          'ph4': 'المرحلةُ الرابعة: اِختاري أفضلَ سؤال', 'ph5': 'المرحلةُ الخامسة: نبحثُ معًا'}
+          'ph4': 'المرحلةُ الرابعة: اِختاري أفضلَ سؤال', 'ph5': 'المرحلةُ الخامسة: نبحثُ معًا',
+          # said wrongly bare (26 Oct check): vowelled
+          'gameSecretA': 'لِلكِبار: اِختاروا صورةً سِرًّا', 'gameHand': 'الآنَ أَعْطوا الآيباد لِمَن يَسأل',
+          'm-A6': 'ظِلُّ يَدي صارَ طائِرًا', 'm-E8': 'بُؤْبُؤُ العَيْنِ يَكْبُرُ وَيَصْغُر', 'm-I8': 'غُصْنٌ يَمْشي!'}
 
 
 def lines():
@@ -88,8 +91,17 @@ def wid(w):
     return 'k-' + hashlib.md5(w.encode('utf-8')).hexdigest()[:8]
 
 
+# words the voice said wrongly when given them bare (26 Oct check): fully vowelled, so an isolated word is said one way only
+VOWELLED = {'من': 'مَن', 'ظل': 'ظِلّ', 'ماء': 'ماءٌ', 'بطء': 'بُطْءٌ', 'أشعة': 'أَشِعَّة', 'تتشابك': 'تَتَشابَكُ', 'رأى': 'رَأى', 'صيف': 'صَيْفٌ',
+            'تمر': 'تَمْرٌ', 'عالٍ': 'عالٍ', 'دفء': 'دِفْءٌ', 'رقص': 'رَقْصٌ', 'عائلة': 'عائِلَة', 'تبقى': 'تَبْقى', 'سريع': 'سَريعٌ',
+            'يطفو': 'يَطْفو', 'تطفو': 'تَطْفو', 'نسكب': 'نَسْكُبُ', 'كأس': 'كَأْسٌ', 'غبار': 'غُبارٌ', 'عرفنا': 'عَرَفْنا', 'اهتدى': 'اِهْتَدى',
+            'تسافر': 'تُسافِرُ', 'حول': 'حَوْلَ', 'يرى': 'يَرى', 'تعب': 'تَعَبٌ', 'طعم': 'طَعْمٌ', 'زكام': 'زُكامٌ', 'عظمة': 'عَظْمَة',
+            'نرى': 'نَرى', 'كبار': 'كِبارٌ', 'عضلة': 'عَضَلَة', 'يذوب': 'يَذوبُ', 'صوف': 'صوفٌ', 'غيوم': 'غُيومٌ', 'نراها': 'نَراها',
+            'شمع': 'شَمْعٌ', 'غيمة': 'غَيْمَة', 'فم': 'فَمٌ', 'صدى': 'صَدًى', 'ساق': 'ساقٌ', 'صهارة': 'صُهارَة', 'سوداء': 'سَوْداء'}
+
+
 def say_word(w):
-    return {'من': 'مَن'}.get(w, w) + ('؟' if w in QWORDS else '')
+    return VOWELLED.get(w, w) + ('؟' if w in QWORDS else '')
 
 
 QWORDS = {'لماذا', 'كيف', 'ماذا لو', 'ماذا', 'هل', 'كم', 'متى', 'أين', 'من', 'أيّ', 'من أين'}
@@ -272,10 +284,22 @@ def close(want, heard):
 
 
 def word_heard(want, heard):
-    """one hint word: right if every word of it is among the words heard, allowing «ال» or «و» in front (لون / اللون)"""
+    """one hint word: right if every word of it is among the words heard, allowing «ال» or «و» in front (لون / اللون).
+    A word heard alone is often written with a long vowel the transcriber guessed for a short one (لسان as «ليسان», نطبخ
+    as «نطبوخ»), and ض as ظ: those pass when the wanted letters appear in order and the only extra letters are ا و ي.
+    A changed or missing letter still fails (ساق heard as «سوق» fails)."""
     strip = lambda w: w[2:] if w.startswith('ال') and len(w) > 3 else (w[1:] if w.startswith('و') and len(w) > 3 else w)
-    hs = {strip(h) for h in norm(heard)} | set(norm(heard))
-    return all(strip(w) in hs or w in hs for w in norm(want))
+    same = lambda t: t.replace('ظ', 'ض')
+    hs = {same(strip(h)) for h in norm(heard)} | {same(h) for h in norm(heard)}
+    def fits(w, h):
+        i = 0
+        for ch in h:
+            if i < len(w) and ch == w[i]:
+                i += 1
+            elif ch not in 'اوي':
+                return False
+        return i == len(w)
+    return all(any(fits(same(x), h) for h in hs for x in (w, strip(w))) for w in norm(want))
 
 
 def cmd_verify(a):
