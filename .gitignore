@@ -42,3 +42,6 @@ _site/
 # local tests with the private pack (never committed, never deployed)
 _private/
 *-pack.json
+
+# the live build plan (docs/plan.html): for Mama only, never on the public site
+docs/

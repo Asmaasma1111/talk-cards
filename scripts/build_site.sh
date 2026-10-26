@@ -5,6 +5,6 @@
 set -eu
 rm -rf _site
 mkdir _site
-tar --exclude='./_site' --exclude='./.git' --exclude='./scripts' --exclude='./functions' \
+tar --exclude='./_site' --exclude='./.git' --exclude='./scripts' --exclude='./docs' --exclude='./functions' \
     --exclude='./README.md' --exclude='./.gitignore' --exclude='./.nojekyll' --exclude='./*.md' -cf - . | (cd _site && tar -xf -)
 echo "Built _site: $(find _site -type f | wc -l | tr -d ' ') files"

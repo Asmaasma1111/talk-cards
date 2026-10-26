@@ -4078,7 +4078,8 @@
     "gift"
    ],
    "e": "👨🎁",
-   "photo": "gift"
+   "photo": "gift",
+   "pic": "assets/reads/story/gift1.webp"
   },
   "gift2": {
    "text": "IT IS SO SOFT.",
@@ -4089,7 +4090,8 @@
     "soft"
    ],
    "e": "🎁",
-   "photo": "soft"
+   "photo": "soft",
+   "pic": "assets/reads/story/gift2.webp"
   },
   "gift3": {
    "text": "IS IT THE HAT? NO!",
@@ -4101,7 +4103,8 @@
     "no"
    ],
    "e": "👒",
-   "photo": "hat"
+   "photo": "hat",
+   "pic": "assets/reads/story/gift3.webp"
   },
   "gift4": {
    "text": "IS IT THE BAG? NO!",
@@ -4113,7 +4116,8 @@
     "no"
    ],
    "e": "👜",
-   "photo": "bag"
+   "photo": "bag",
+   "pic": "assets/reads/story/gift4.webp"
   },
   "gift5": {
    "text": "IT IS THE PUP!",
@@ -4124,7 +4128,8 @@
     "pup"
    ],
    "e": "🐶",
-   "photo": "pup"
+   "photo": "pup",
+   "pic": "assets/reads/story/gift5.webp"
   },
   "gift6": {
    "text": "THE PUP HOPS ON DAD.",
@@ -4136,7 +4141,8 @@
     "dad"
    ],
    "e": "🐶👨",
-   "photo": "dad"
+   "photo": "dad",
+   "pic": "assets/reads/story/gift6.webp"
   },
   "gift7": {
    "text": "IT IS SO FUN!",
@@ -4147,7 +4153,8 @@
     "fun"
    ],
    "e": "🎉",
-   "photo": "fun"
+   "photo": "fun",
+   "pic": "assets/reads/story/gift7.webp"
   },
   "frog1": {
    "text": "THE FROG IS ON THE RUG.",
@@ -4160,7 +4167,8 @@
     "rug"
    ],
    "e": "🐸",
-   "photo": "on"
+   "photo": "on",
+   "pic": "assets/reads/story/frog1.webp"
   },
   "frog2": {
    "text": "HOP, FROG, HOP!",
@@ -4170,7 +4178,8 @@
     "hop"
    ],
    "e": "🐸",
-   "photo": "hop"
+   "photo": "hop",
+   "pic": "assets/reads/story/frog2.webp"
   },
   "frog3": {
    "text": "THE CRAB IS ON THE SAND.",
@@ -4183,7 +4192,8 @@
     "sand"
    ],
    "e": "🦀🏖️",
-   "photo": "sand"
+   "photo": "sand",
+   "pic": "assets/reads/story/frog3.webp"
   },
   "frog4": {
    "text": "THE CRAB CAN NOT HOP.",
@@ -4195,7 +4205,8 @@
     "hop"
    ],
    "e": "🦀",
-   "photo": "hop"
+   "photo": "hop",
+   "pic": "assets/reads/story/frog4.webp"
   },
   "frog5": {
    "text": "THE CRAB CAN RUN!",
@@ -4206,7 +4217,8 @@
     "run"
    ],
    "e": "🦀💨",
-   "photo": "run"
+   "photo": "run",
+   "pic": "assets/reads/story/frog5.webp"
   },
   "frog6": {
    "text": "THE FROG AND THE CRAB GRIN.",
@@ -4219,7 +4231,8 @@
     "grin"
    ],
    "e": "🐸🦀",
-   "photo": "grin"
+   "photo": "grin",
+   "pic": "assets/reads/story/frog6.webp"
   },
   "bed1": {
    "text": "THE PUP IS SO SAD.",
@@ -4231,7 +4244,8 @@
     "sad"
    ],
    "e": "🐶",
-   "photo": "sad"
+   "photo": "sad",
+   "pic": "assets/reads/story/bed1.webp"
   },
   "bed2": {
    "text": "IS THE RUG THE BEST BED? NO.",
@@ -4245,7 +4259,8 @@
     "no"
    ],
    "e": "🐶",
-   "photo": "bed"
+   "photo": "bed",
+   "pic": "assets/reads/story/bed2.webp"
   },
   "bed3": {
    "text": "IS THE BAG THE BEST BED? NO.",
@@ -4259,7 +4274,8 @@
     "no"
    ],
    "e": "👜",
-   "photo": "bed"
+   "photo": "bed",
+   "pic": "assets/reads/story/bed3.webp"
   },
   "bed4": {
    "text": "MOM HAS THE BEST BED.",
@@ -4271,7 +4287,8 @@
     "bed"
    ],
    "e": "👩🛏️",
-   "photo": "bed"
+   "photo": "bed",
+   "pic": "assets/reads/story/bed4.webp"
   },
   "bed5": {
    "text": "THE PUP NAPS IN THE BED.",
@@ -4284,7 +4301,8 @@
     "bed"
    ],
    "e": "🐶🛏️",
-   "photo": "bed"
+   "photo": "bed",
+   "pic": "assets/reads/story/bed5.webp"
   },
   "bed6": {
    "text": "IT IS THE BEST!",
@@ -4295,7 +4313,8 @@
     "best"
    ],
    "e": "🏆",
-   "photo": "best"
+   "photo": "best",
+   "pic": "assets/reads/story/bed6.webp"
   },
   "jet1": {
    "text": "THE KID HAS THE RED BACKPACK.",
@@ -4308,7 +4327,8 @@
     "backpack"
    ],
    "e": "🧒🎒",
-   "photo": "backpack"
+   "photo": "backpack",
+   "pic": "assets/reads/story/jet1.webp"
   },
   "jet2": {
    "text": "IN IT IS THE JAM AND THE MUFFIN.",
@@ -4323,7 +4343,8 @@
     "muffin"
    ],
    "e": "🫙🧁",
-   "photo": "muffin"
+   "photo": "muffin",
+   "pic": "assets/reads/story/jet2.webp"
   },
   "jet3": {
    "text": "THE KID AND MOM GET ON THE JET.",
@@ -4338,7 +4359,8 @@
     "jet"
    ],
    "e": "✈️",
-   "photo": "jet"
+   "photo": "jet",
+   "pic": "assets/reads/story/jet3.webp"
   },
   "jet4": {
    "text": "THE JET IS BIG AND FAST.",
@@ -4351,7 +4373,8 @@
     "fast"
    ],
    "e": "✈️💨",
-   "photo": "fast"
+   "photo": "fast",
+   "pic": "assets/reads/story/jet4.webp"
   },
   "jet5": {
    "text": "THE KID GRINS AND GRINS.",
@@ -4363,7 +4386,8 @@
     "grins"
    ],
    "e": "😁",
-   "photo": "grin"
+   "photo": "grin",
+   "pic": "assets/reads/story/jet5.webp"
   },
   "jet6": {
    "text": "IT IS SO FUN!",
@@ -4374,7 +4398,8 @@
     "fun"
    ],
    "e": "🎉",
-   "photo": "fun"
+   "photo": "fun",
+   "pic": "assets/reads/story/jet6.webp"
   }
  },
  "stories": {
