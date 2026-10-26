@@ -371,8 +371,23 @@
    ],
    "find": "Hand shadows on a wall in afternoon sunlight",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Light travels in straight lines. Her hand blocks some of it, so a dark shape of her hand appears on the wall.\n  - With a lamp or torch, the closer her hand is to the light, the bigger the shadow; the closer to the wall, the\n    smaller and sharper.\n  - A shadow disappears when there is no strong light (a cloud covers the sun, or it is night), or when her hand is in\n    the shade itself."
+    },
+    {
+     "label": "Find out together",
+     "md": "make hand shadows on a wall in the afternoon sun, then with a torch in the evening, moving the\n  hand nearer and further."
+    },
+    {
+     "label": "Safety",
+     "md": "never look straight at the sun, and never shine the torch into anyone's eyes."
+    }
+   ],
+   "photo": "assets/curiosity/photos/a6.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
   },
   {
    "id": "A7",
@@ -405,8 +420,23 @@
    ],
    "find": "Henna leaves, and why the colour deepens over a day",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Henna paste is made from the dried, ground leaves of the henna plant. Its natural colour sticks to the top layer of\n    the skin.\n  - When the paste comes off, the stain is bright orange. Over one to two days it darkens to a reddish brown, as the\n    colour reacts with the air.\n  - Palms and the soles of the feet hold the darkest colour; warmth helps too.\n  - Her hint about water and soap: washing too soon makes it lighter. The design fades over one to three weeks as the\n    skin renews itself."
+    },
+    {
+     "label": "Find out together",
+     "md": "look at the henna leaves (or the powder), and compare a fresh design with the same one the\n  next day."
+    },
+    {
+     "label": "Safety",
+     "md": "natural henna only, never \"black henna\", which can hurt the skin badly. Try a small patch first, and keep\n  it away from the eyes."
+    }
+   ],
+   "photo": "assets/curiosity/photos/a7.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
   },
   {
    "id": "A8",
@@ -439,8 +469,23 @@
    ],
    "find": "Look at a screen through a magnifying glass",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - A screen is made of thousands of tiny dots. Each dot has three tiny lights: red, green and blue.\n  - By making each light brighter or dimmer, the screen mixes millions of colours. Red and green light together look\n    yellow; all three together look white.\n  - Light mixes differently from paint (mystery A2): with paint, mixing makes colours darker; with light, it makes them\n    brighter."
+    },
+    {
+     "label": "Find out together",
+     "md": "look at a white or yellow part of a screen through a magnifying glass, or with a phone\n  camera zoomed in close."
+    },
+    {
+     "label": "Safety",
+     "md": "short looks only, and no pressing on the screen."
+    }
+   ],
+   "photo": "assets/curiosity/photos/a8.webp",
+   "credit": "Wikimedia Commons, D-Kuru, CC BY-SA 3.0 at",
+   "ready": true
   },
   {
    "id": "A9",
@@ -473,8 +518,23 @@
    ],
    "find": "Make one with salt coloured with chalk",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Each colour is poured in a thin layer. Sand grains stay where they land, so the layers stay separate unless the\n    bottle is shaken.\n  - Natural coloured sands come from different rocks: white from quartz, red and orange from iron in the rock."
+    },
+    {
+     "label": "Find out together",
+     "md": "make one with salt coloured with chalk (rub coloured chalk over salt on paper), poured layer by\n  layer through a funnel."
+    },
+    {
+     "label": "Safety",
+     "md": "a plastic bottle; the coloured salt is not for eating. Close the lid tightly when it is finished."
+    }
+   ],
+   "photo": "assets/curiosity/photos/a9.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
   },
   {
    "id": "B1",
@@ -705,8 +765,23 @@
    ],
    "find": "The story of Velcro and burdock seeds",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - In 1941, a Swiss engineer, George de Mestral, came back from a walk with his dog and found prickly burr seeds stuck\n    in its fur.\n  - Under a microscope, he saw that the burrs were covered in tiny hooks that caught on loops of fur and cloth.\n  - He made a fastener with tiny hooks on one strip and soft loops on the other, and called it Velcro.\n  - The plant's hooks have a job: they ride on animals to carry the seeds far away (like mystery I4)."
+    },
+    {
+     "label": "Find out together",
+     "md": "look at both sides of Velcro with a magnifying glass, and at a burr if you find one."
+    },
+    {
+     "label": "Safety",
+     "md": "burrs prick, so touch them gently."
+    }
+   ],
+   "photo": "assets/curiosity/photos/b5.webp",
+   "credit": "Wikimedia Commons, Zephyris, CC BY-SA 3.0",
+   "ready": true
   },
   {
    "id": "B6",
@@ -739,8 +814,23 @@
    ],
    "find": "Cold glass on the table, dry it, watch drops return",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Air always holds invisible water, called water vapour.\n  - When warm air touches the cold glass, it cools down and some of that vapour turns back into tiny drops of water on\n    the outside. It is not leaking from inside.\n  - On a damp day there are more drops; in dry desert air, fewer."
+    },
+    {
+     "label": "Find out together",
+     "md": "put a cold glass on the table, dry it with a cloth and watch the drops come back. A glass at\n  room temperature stays dry."
+    },
+    {
+     "label": "Safety",
+     "md": "none."
+    }
+   ],
+   "photo": "assets/curiosity/photos/b6.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
   },
   {
    "id": "B7",
@@ -773,8 +863,23 @@
    ],
    "find": "Taste different stages; ask at the market",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Dates change as they ripen: green and hard while they grow (الكمري), then yellow or red and crunchy (البسر or\n    الخلال), then soft and brown (الرطب), and finally dark, dry and very sweet (التمر).\n  - As they ripen, the green colour fades and the sugar rises, so they get sweeter.\n  - There are hundreds of kinds of dates. Al-Qassim, where you live, is famous for them, such as the Sukkari."
+    },
+    {
+     "label": "Find out together",
+     "md": "taste dates at different stages, and ask the seller at the market what each one is called."
+    },
+    {
+     "label": "Safety",
+     "md": "date stones are a choking risk for little ones."
+    }
+   ],
+   "photo": "assets/curiosity/photos/b7.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
   },
   {
    "id": "B8",
@@ -808,8 +913,23 @@
    "find": "Spray in one corner; each person raises a hand when they smell it",
    "homeTip": "your perfume bottle",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Perfume turns easily into tiny invisible particles in the air.\n  - They spread through the room by bumping into the particles of the air and riding on its movements, until they reach\n    every corner. Our noses can smell even tiny amounts.\n  - In warm air they spread faster."
+    },
+    {
+     "label": "Find out together",
+     "md": "spray once in one corner; everyone raises a hand when they smell it. Who smelt it first, and\n  how long did the far corner take?"
+    },
+    {
+     "label": "Safety",
+     "md": "one small spray, away from faces and eyes; open a window afterwards. Anyone with asthma sits this one out."
+    }
+   ],
+   "photo": "assets/curiosity/photos/b8.webp",
+   "credit": "Wikimedia Commons, CC0",
+   "ready": true
   },
   {
    "id": "C1",
@@ -1093,8 +1213,23 @@
    ],
    "find": "Watch a waggle-dance video",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - A bee that finds good flowers comes home and does a \"waggle dance\" on the honeycomb: it runs in a straight line\n    wiggling its body, then loops round and does it again.\n  - The direction of the straight run tells the other bees which way to fly, compared with the sun. The longer the\n    wiggle, the further away the flowers are.\n  - A scientist, Karl von Frisch, discovered this and won a Nobel Prize for it."
+    },
+    {
+     "label": "Find out together",
+     "md": "watch a short video of the waggle dance and try to \"read\" it together."
+    },
+    {
+     "label": "Safety",
+     "md": "watch real bees from a distance."
+    }
+   ],
+   "photo": "assets/curiosity/photos/c6.webp",
+   "credit": "Wikimedia Commons, Grendelkhan, CC BY-SA 4.0",
+   "ready": true
   },
   {
    "id": "C7",
@@ -1127,8 +1262,23 @@
    ],
    "find": "How many hen's eggs fit in one",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - The ostrich lays the biggest egg of any living bird: about 15 centimetres long and about 1.4 kilos, as much as\n    twenty or more hen's eggs.\n  - Its shell is so thick and strong that an adult can stand on it.\n  - Cooking one hard takes about an hour and a half, and it could feed a whole family.\n  - Ostriches lived wild in Arabia long ago, and they are being brought back to protected reserves in Saudi Arabia."
+    },
+    {
+     "label": "Find out together",
+     "md": "weigh a hen's egg on the kitchen scale (about 60 grams) and work out how many make 1.4 kilos."
+    },
+    {
+     "label": "Safety",
+     "md": "wash hands after touching raw eggs."
+    }
+   ],
+   "photo": "assets/curiosity/photos/c7.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
   },
   {
    "id": "C8",
@@ -1161,11 +1311,26 @@
    ],
    "find": "Links to her school life-cycle lesson",
    "kind": "photo",
-   "card": null,
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - A butterfly starts as a tiny egg. A caterpillar hatches and does almost nothing but eat and grow, changing its skin\n    several times.\n  - Then it makes a hard case (a chrysalis). Inside, its body is taken apart and rebuilt.\n  - The butterfly comes out, pumps its crumpled wings full and flies. For many butterflies the whole change takes about\n    a month.\n  - This links to her science book (chapter 2, life cycles)."
+    },
+    {
+     "label": "Find out together",
+     "md": "watch a time-lapse video of a caterpillar becoming a butterfly, and look for caterpillars on\n  plants in the garden."
+    },
+    {
+     "label": "Safety",
+     "md": "look but do not touch hairy caterpillars; some make the skin itch."
+    }
+   ],
    "tags": [
     2
    ],
-   "ready": false
+   "photo": "assets/curiosity/photos/c8.webp",
+   "credit": "Wikimedia Commons, U. S. Fish and Wildlife Service - Northeast Region, Public domain",
+   "ready": true
   },
   {
    "id": "C9",
@@ -1198,8 +1363,23 @@
    ],
    "find": "Falconry in Saudi heritage",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - A falcon's eyes are very big for its head and packed with seeing cells, with two extra-sharp spots in each eye, so it\n    can spot a small animal from very far away.\n  - The peregrine falcon is the fastest animal on Earth: when it dives, it can go faster than 300 kilometres an hour.\n  - Falconry is an old Arab tradition, and UNESCO lists it as part of the world's living heritage, with Saudi Arabia\n    among the countries named."
+    },
+    {
+     "label": "Find out together",
+     "md": "find out about falconry in Saudi heritage: how a falconer (صقّار) trains a falcon and the\n  falcon festivals."
+    },
+    {
+     "label": "Safety",
+     "md": "falcons have sharp claws; only a trained falconer handles them."
+    }
+   ],
+   "photo": "assets/curiosity/photos/c9.webp",
+   "credit": "Wikimedia Commons, Kytabu, CC BY-SA 4.0",
+   "ready": true
   },
   {
    "id": "D1",
@@ -1281,8 +1461,23 @@
    ],
    "find": "Astronaut drinking video",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - The space station and everything in it are falling around the Earth together, so nothing presses down: things float.\n  - Water pulls on itself (the same \"skin\" as in mystery F2), so when nothing else pulls on it, it makes a ball.\n  - Astronauts drink from pouches with straws. Spilt water would float around in wobbly blobs."
+    },
+    {
+     "label": "Find out together",
+     "md": "watch a video of astronauts drinking and playing with water balls."
+    },
+    {
+     "label": "Safety",
+     "md": "none."
+    }
+   ],
+   "photo": "assets/curiosity/photos/d2.webp",
+   "credit": "Wikimedia Commons, NASA, Public domain",
+   "ready": true
   },
   {
    "id": "D3",
@@ -1315,8 +1510,23 @@
    ],
    "find": "Her 2023 mission and what she studied",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - In May 2023, Rayyanah Barnawi, a Saudi scientist who studies cells, became the first Saudi woman to go to space. She\n    flew to the International Space Station with Ali AlQarni.\n  - She spent about ten days in space doing experiments, including on cells and cancer research.\n  - From space, she and Ali did science demonstrations for thousands of Saudi students watching live.\n  - A link to Maria's own Space Agency drawing (mystery D8)."
+    },
+    {
+     "label": "Find out together",
+     "md": "find out about her mission, and what astronauts eat and how they sleep in space."
+    },
+    {
+     "label": "Safety",
+     "md": "none."
+    }
+   ],
+   "photo": "assets/curiosity/photos/d3.webp",
+   "credit": "Wikimedia Commons, NASA, Public domain",
+   "ready": true
   },
   {
    "id": "D4",
@@ -1349,8 +1559,23 @@
    ],
    "find": "Photos from the Mars rovers",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - On Mars, the sky is a dusty orange-pink by day. At sunset the fine dust sends blue light forward, so the glow around\n    the setting sun is blue: the opposite of Earth.\n  - We know because NASA's robot rovers on Mars took photos of it.\n  - Mars's air is very thin and mostly carbon dioxide, so people could not breathe it; they would need spacesuits."
+    },
+    {
+     "label": "Find out together",
+     "md": "look at the rover photos of Martian sunsets together."
+    },
+    {
+     "label": "Safety",
+     "md": "none."
+    }
+   ],
+   "photo": "assets/curiosity/photos/d4.webp",
+   "credit": "Wikimedia Commons, NASA, Public domain",
+   "ready": true
   },
   {
    "id": "D5",
@@ -1383,8 +1608,23 @@
    ],
    "find": "Stargazing on a family desert trip",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - City lights brighten the whole night sky and hide the faint stars. Far from the city, in a dark desert, a few\n    thousand stars can be seen at once, and sometimes the Milky Way.\n  - Travellers in Arabia found their way by the stars, such as the North Star (الجدي), which always stays in the north."
+    },
+    {
+     "label": "Find out together",
+     "md": "go stargazing on a family desert trip; switch off the lights and give your eyes a few minutes."
+    },
+    {
+     "label": "Safety",
+     "md": "with the family, warm clothes (desert nights are cold), and a small torch for walking."
+    }
+   ],
+   "photo": "assets/curiosity/photos/d5.webp",
+   "credit": "Wikimedia Commons, Bureau  of Land Management, Public domain",
+   "ready": true
   },
   {
    "id": "D6",
@@ -1417,8 +1657,23 @@
    ],
    "find": "How fast light travels",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Light is the fastest thing there is: about 300,000 kilometres every second, fast enough to go round the Earth about\n    seven times in one second.\n  - The sun is about 150 million kilometres away, so its light takes about 8 minutes to reach us. Moonlight takes just\n    over one second.\n  - Her hint about a year: the distance light travels in a year is called a light year. The nearest star after the sun\n    is more than four light years away."
+    },
+    {
+     "label": "Find out together",
+     "md": "find out how fast light travels, and count to 480 together (8 minutes) to feel how long the\n  sunlight's trip takes."
+    },
+    {
+     "label": "Safety",
+     "md": "never look straight at the sun."
+    }
+   ],
+   "photo": "assets/curiosity/photos/d6.webp",
+   "credit": "Wikimedia Commons, NASA Johnson Space Center, Public domain",
+   "ready": true
   },
   {
    "id": "D7",
@@ -1451,8 +1706,23 @@
    ],
    "find": "Saturn photos",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Saturn's rings are made of countless pieces of ice and rock, from tiny grains to pieces as big as a house, all\n    circling the planet.\n  - They are enormously wide but very thin, often only about as thick as a building is tall.\n  - Her hint about walking on them: you could not; they are loose pieces, not solid ground.\n  - Saturn is so light for its size that it would float in a giant bath of water."
+    },
+    {
+     "label": "Find out together",
+     "md": "look at photos of Saturn from the Cassini spacecraft; with a small telescope you can see the\n  rings yourself."
+    },
+    {
+     "label": "Safety",
+     "md": "none."
+    }
+   ],
+   "photo": "assets/curiosity/photos/d7.webp",
+   "credit": "Wikimedia Commons, NASA / JPL-Caltech / SSI / color composite by Gordan Ugarkovic, Public domain",
+   "ready": true
   },
   {
    "id": "D8",
@@ -1729,8 +1999,23 @@
    ],
    "find": "Blindfold taste test, nose pinched",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - The tongue tastes only five things: sweet, salty, sour, bitter and savoury.\n  - Most of what we call the taste of food really comes from smell: air from the food in the mouth travels up the back\n    of the nose.\n  - With the nose pinched, an apple and a pear can taste almost the same. With a cold, food tastes of very little."
+    },
+    {
+     "label": "Find out together",
+     "md": "a blindfold taste test with the nose pinched: small pieces of apple, pear and cucumber. Can\n  she tell which is which? Then try again with the nose open."
+    },
+    {
+     "label": "Safety",
+     "md": "small soft pieces, eaten sitting down; check for allergies."
+    }
+   ],
+   "photo": "assets/curiosity/photos/e5.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
   },
   {
    "id": "E6",
@@ -1763,8 +2048,23 @@
    ],
    "find": "Count finger joints together",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Each hand has 27 bones: 8 small ones in the wrist, 5 in the palm and 14 in the fingers. Many small bones let the\n    hand move in so many ways.\n  - A grown-up's whole body has 206 bones. Babies are born with more, and some join together as they grow.\n  - An X-ray passes through skin and muscle but not through bone, so the bones show up white."
+    },
+    {
+     "label": "Find out together",
+     "md": "count the finger bones together by feeling the joints: two in the thumb, three in each finger."
+    },
+    {
+     "label": "Safety",
+     "md": "none."
+    }
+   ],
+   "photo": "assets/curiosity/photos/e6.webp",
+   "credit": "Wikimedia Commons, Jason Hickey, CC BY 3.0",
+   "ready": true
   },
   {
    "id": "E7",
@@ -1797,8 +2097,23 @@
    ],
    "find": "Count teeth in the mirror",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Children have 20 milk teeth; grown-ups have up to 32 adult teeth.\n  - From about age six, the adult tooth growing underneath slowly melts the milk tooth's root, so the milk tooth gets\n    loose and falls out.\n  - The last milk teeth usually fall out by about 10 to 12 years old."
+    },
+    {
+     "label": "Find out together",
+     "md": "count her teeth in a mirror, and look for gaps and new teeth coming in."
+    },
+    {
+     "label": "Safety",
+     "md": "let a loose tooth come out by itself, and keep brushing."
+    }
+   ],
+   "photo": "assets/curiosity/photos/e7.webp",
+   "credit": "Wikimedia Commons, No machine-readable author provided. Casliber assumed (based on copyright claims)., Public domain",
+   "ready": true
   },
   {
    "id": "E8",
@@ -1831,8 +2146,23 @@
    ],
    "find": "Watch her pupils in a mirror near a lamp",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - The black dot is the pupil, an opening that lets light into the eye.\n  - The coloured ring around it (the iris) is a tiny muscle. In bright light it makes the pupil small to protect the\n    eye; in dim light it opens wide to let more light in.\n  - Animals have different pupils: cats have narrow up-and-down slits, and goats and sheep have wide sideways ones."
+    },
+    {
+     "label": "Find out together",
+     "md": "in a bright room she covers her eyes for 10 seconds, then watches her pupils shrink in a\n  mirror. Then look at photos of cat and goat eyes."
+    },
+    {
+     "label": "Safety",
+     "md": "never shine a light straight into anyone's eyes, and never look at the sun."
+    }
+   ],
+   "photo": "assets/curiosity/photos/e8.webp",
+   "credit": "Wikimedia Commons, Rapidreflex, CC BY-SA 4.0",
+   "ready": true
   },
   {
    "id": "F1",
@@ -2095,8 +2425,28 @@
    "what": "Salt lets a string stick to ice",
    "predictEn": "Can a string lift an ice cube?",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "What happens",
+     "md": "after a pinch of salt and a short wait, the string freezes onto the ice and lifts the whole cube."
+    },
+    {
+     "label": "Explanation",
+     "md": "  - Salt makes ice melt at a lower temperature, so a little of the ice under the string melts.\n  - That melting cools the water around it, which freezes again, this time around the string, holding it tight."
+    },
+    {
+     "label": "Find out together",
+     "md": "  - Lay a wet string across an ice cube and try to lift it: it slides off.\n  - Then sprinkle a pinch of salt over the string, wait about a minute, and lift.\n  - Her hint asks about sugar: try it on a second cube."
+    },
+    {
+     "label": "Safety",
+     "md": "the salty ice is not for eating. Wash hands afterwards."
+    }
+   ],
+   "predict": "هل يستطيع خيطٌ أن يرفع مكعّب ثلج؟",
+   "photo": "assets/curiosity/photos/f5.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
   },
   {
    "id": "F6",
@@ -2131,8 +2481,28 @@
    "what": "Food colouring swirls when soap touches milk",
    "predictEn": "What will the colours do?",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "What happens",
+     "md": "the colours burst out and swirl around the plate, as if they are dancing."
+    },
+    {
+     "label": "Explanation",
+     "md": "  - Soap weakens the \"skin\" on top of the milk (as in mystery F2) and also grabs onto the tiny drops of fat in the milk.\n  - The milk moves and swirls as the soap spreads, carrying the colours with it.\n  - Full-fat milk works best. Her hint about water: in water, the colours spread but do not keep swirling."
+    },
+    {
+     "label": "Find out together",
+     "md": "full-fat milk in a plate, a few drops of food colouring in the middle, then touch the middle\n  with a cotton bud dipped in washing-up liquid."
+    },
+    {
+     "label": "Safety",
+     "md": "food colouring stains; the milk is not for drinking afterwards."
+    }
+   ],
+   "predict": "ماذا ستفعل الألوان حين نلمس الحليب بعودٍ عليه صابون؟",
+   "photo": "assets/curiosity/photos/f6.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
   },
   {
    "id": "F7",
@@ -2167,8 +2537,28 @@
    "what": "A pencil looks broken in water",
    "predictEn": "Will the pencil look straight?",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "What happens",
+     "md": "seen from the side, the pencil looks broken at the top of the water."
+    },
+    {
+     "label": "Explanation",
+     "md": "  - Light travels a little slower in water than in air, so it bends when it comes out of the water.\n  - Our eyes think light always travels straight, so the part of the pencil under the water looks moved: the pencil\n    seems broken.\n  - Her hint: in an empty glass it looks straight; in oil it bends even more."
+    },
+    {
+     "label": "Find out together",
+     "md": "look from the side, then from above. Then try an empty glass and a glass of oil."
+    },
+    {
+     "label": "Safety",
+     "md": "a sturdy glass in the middle of the table."
+    }
+   ],
+   "predict": "هل سيبدو القلم مستقيمًا في الماء؟",
+   "photo": "assets/curiosity/photos/f7.webp",
+   "credit": "Wikimedia Commons, Meganbeckett27, CC BY-SA 3.0",
+   "ready": true
   },
   {
    "id": "F8",
@@ -2203,8 +2593,28 @@
    "what": "A balloon rubbed on hair lifts paper bits",
    "predictEn": "Will the paper jump to the balloon?",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "What happens",
+     "md": "after the balloon is rubbed on hair, the little pieces of paper jump up and stick to it."
+    },
+    {
+     "label": "Explanation",
+     "md": "  - Rubbing moves tiny bits of electricity from the hair onto the balloon. This is called static electricity.\n  - The charged balloon pulls light things towards it, such as paper bits, and even her hair, which stands up to meet\n    it.\n  - It works best in dry air. Her hint: wool works too, but a wet balloon does not, because water carries the charge\n    away."
+    },
+    {
+     "label": "Find out together",
+     "md": "rub a balloon on her hair, hold it over small bits of tissue paper, then try wool, then try\n  holding it near a thin stream of water from the tap."
+    },
+    {
+     "label": "Safety",
+     "md": "balloons are a choking risk for little ones; throw away any burst pieces at once."
+    }
+   ],
+   "predict": "هل ستقفز قصاصات الورق إلى البالون؟",
+   "photo": "assets/curiosity/photos/f8.webp",
+   "credit": "Wikimedia Commons, MikeRun, CC BY-SA 4.0",
+   "ready": true
   },
   {
    "id": "G1",
@@ -2477,11 +2887,30 @@
    },
    "bankLine": "﴿وَأَوْحَىٰ رَبُّكَ إِلَى النَّحْلِ﴾ (النحل: 68)",
    "kind": "photo",
-   "card": null,
+   "card": [
+    {
+     "label": "Respect",
+     "md": "the verse invites us to look and reflect. Share the facts below as things to wonder at, without linking\n  the verse to any scientific claim. Let her questions lead."
+    },
+    {
+     "label": "Explanation (things to wonder at)",
+     "md": "  - Bees build their cells as hexagons: six-sided shapes that fit together with no gaps, hold the most honey for the\n    least wax, and are very strong.\n  - Bees make the wax themselves, from their own bodies, and it takes a lot of honey to make a little wax.\n  - One hive can hold tens of thousands of bees. One worker bee makes only about a twelfth of a teaspoon of honey in her\n    whole life."
+    },
+    {
+     "label": "Find out together",
+     "md": "draw hexagons and fit them together, then try circles: which leave gaps?"
+    },
+    {
+     "label": "Safety",
+     "md": "watch bees from a distance. Honey is never given to babies under one year old."
+    }
+   ],
    "tags": [
     2
    ],
-   "ready": false
+   "photo": "assets/curiosity/photos/g5.webp",
+   "credit": "Wikimedia Commons, Benlisquare, CC BY-SA 4.0",
+   "ready": true
   },
   {
    "id": "G6",
@@ -2519,8 +2948,27 @@
    },
    "bankLine": "﴿قَالَتْ نَمْلَةٌ يَا أَيُّهَا النَّمْلُ ادْخُلُوا مَسَاكِنَكُمْ﴾ (النمل: 18)",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Respect",
+     "md": "the verse invites us to look and reflect. Share the facts below as things to wonder at, without linking\n  the verse to any scientific claim. Let her questions lead."
+    },
+    {
+     "label": "Explanation (things to wonder at)",
+     "md": "  - Ants \"talk\" mostly with smells. An ant that finds food leaves a scent trail on its way home, and the others follow\n    it: that is why they walk in a line.\n  - They also touch each other with their feelers, and some ants make tiny sounds.\n  - An ant can carry many times its own weight. Ants live together in nests, in large families with a queen."
+    },
+    {
+     "label": "Find out together",
+     "md": "put a crumb of sugar near an ants' path outside and watch. Gently wipe a finger across their\n  trail: do they get lost, then find the way again?"
+    },
+    {
+     "label": "Safety",
+     "md": "watch outdoors without touching (some ants bite), and wash hands afterwards."
+    }
+   ],
+   "photo": "assets/curiosity/photos/g6.webp",
+   "credit": "Wikimedia Commons, Vinoth Selvaraj, CC BY-SA 4.0",
+   "ready": true
   },
   {
    "id": "G7",
@@ -2558,12 +3006,31 @@
    },
    "bankLine": "﴿وَأَنزَلْنَا مِنَ السَّمَاءِ مَاءً بِقَدَرٍ﴾ (المؤمنون: 18)",
    "kind": "photo",
-   "card": null,
+   "card": [
+    {
+     "label": "Respect",
+     "md": "the verse invites us to look and reflect. Share the facts below as things to wonder at, without linking\n  the verse to any scientific claim. Let her questions lead."
+    },
+    {
+     "label": "Explanation (things to wonder at)",
+     "md": "  - Water rises from seas and land into the air, cools into clouds, and falls back as rain.\n  - Desert seeds can wait in the dry sand for months, even years. After good rain they sprout quickly, flower and make\n    new seeds within a few weeks, before the ground dries again. That is why the desert turns green in a rainy spring\n    (الربيع)."
+    },
+    {
+     "label": "Find out together",
+     "md": "plant a few seeds in a pot, water them and watch what happens day by day."
+    },
+    {
+     "label": "Safety",
+     "md": "wash hands after handling soil."
+    }
+   ],
    "tags": [
     2,
     4
    ],
-   "ready": false
+   "photo": "assets/curiosity/photos/g7.webp",
+   "credit": "Wikimedia Commons, Joshua Tree National Park, Public domain",
+   "ready": true
   },
   {
    "id": "G8",
@@ -2601,8 +3068,27 @@
    },
    "bankLine": "﴿أَلَمْ تَرَ إِلَىٰ رَبِّكَ كَيْفَ مَدَّ الظِّلَّ﴾ (الفرقان: 45)",
    "kind": "photo",
-   "card": null,
-   "ready": false
+   "card": [
+    {
+     "label": "Respect",
+     "md": "the verse invites us to look and reflect. Share the facts below as things to wonder at, without linking\n  the verse to any scientific claim. Let her questions lead."
+    },
+    {
+     "label": "Explanation (things to wonder at)",
+     "md": "  - As the Earth turns, the sun seems to move across the sky.\n  - When the sun is low, in the morning and late afternoon, shadows are long. When it is high, around midday, they are\n    short. A shadow always points away from the sun, so it moves round during the day."
+    },
+    {
+     "label": "Find out together",
+     "md": "stand a stick in the sand or in a pot of soil and mark the tip of its shadow with a stone in\n  the morning, at midday and in the afternoon."
+    },
+    {
+     "label": "Safety",
+     "md": "never look straight at the sun."
+    }
+   ],
+   "photo": "assets/curiosity/photos/g8.webp",
+   "credit": "Pexels, Pexels License",
+   "ready": true
   },
   {
    "id": "H1",
