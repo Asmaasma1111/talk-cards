@@ -172,7 +172,7 @@ async function cacheAlgeria(cache) {
   if (APP !== 'talk-cards') return;
   try {
     const d = await (await fetch('algeria.json', { cache: 'no-cache' })).json();
-    const files = ['assets/apps/algeria.webp', 'assets/algeria/map.webp', 'assets/algeria/outline.svg', 'assets/algeria/train.webp', 'assets/algeria/station.webp', ...d.cities.map(c => `assets/algeria/stamps/${c.id}.webp`), ...d.photos];
+    const files = ['assets/apps/algeria.webp', 'assets/algeria/map.webp', 'assets/algeria/outline.svg', 'assets/algeria/train.webp', 'assets/algeria/station.webp', ...['warm', 'step', 'pic', 'easy', 'door', 'explain'].map(k => `assets/algeria/ui/${k}.webp`), ...d.cities.map(c => `assets/algeria/stamps/${c.id}.webp`), ...d.photos];
     await Promise.all(files.map(f => cache.add(new Request(f, { cache: 'no-cache' })).catch(() => {})));
   } catch (e) { /* the pictures still load when online */ }
 }

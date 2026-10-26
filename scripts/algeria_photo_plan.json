@@ -45,5 +45,11 @@
  "stf_mosque": "Mosquée Sétif",
  "stf_park": "Parc Sétif",
  "stf_wheat": "Sétif champs blé",
- "stf_snow": "Sétif neige"
+ "stf_snow": "Sétif neige",
+ "cst_mcid": "Pont Sidi M'Cid Constantine",
+ "cst_rached": "Pont Sidi Rached Constantine",
+ "cst_gorge": "Gorges du Rhumel",
+ "cst_mosque": "Mosquée Emir Abdelkader Constantine",
+ "cst_bey": "Palais Ahmed Bey Constantine",
+ "cst_city": "Constantine Algérie vue"
 }

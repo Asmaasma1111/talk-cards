@@ -194,7 +194,14 @@ ok('every card, picture, sentence and step the app needs is in algeria.json', ()
   st.worked.concat(st.guided.map(g => g[0]), ...st.alone).forEach(sid => assert.ok(D.sent[sid], sid));
   st.guided.forEach(([sid, i]) => assert.ok(D.sent[sid][i], sid));
   D.steps.ma1.guided.forEach(g => assert.ok(g.opts.includes(g.parts[g.blank]), g.n));
-  assert.deepStrictEqual(D.cities.filter(x => x.ready).map(x => x.id), ['alg', 'orn', 'tlm', 'bja', 'stf']);
+  const ready = D.cities.map(x => !!x.ready); assert.ok(ready.indexOf(false) === -1 || ready.slice(ready.indexOf(false)).every(x => !x), 'the ready cities come first, with no gap');
+  assert.ok(ready.filter(Boolean).length >= 6);
+  Object.values(D.steps).filter(st => st.kind === 'pick').forEach(st => {   // the later lessons: every bank question well made
+    st.bank.forEach(([q, right, wrong, ask]) => { assert.ok(!wrong.includes(right), q); assert.ok(ask, q); });
+    st.worked.forEach(w => { assert.ok(D.lines.some(l => l[0] === w.id) && D.lines.some(l => l[0] === 's-' + w.s), w.id); w.lit.forEach(i => assert.ok(w.w[i], w.id)); });
+    C.pickItems(st, 5).forEach(it => assert.ok(it.ok >= 0 && new Set(it.opts).size === it.opts.length, st.id));
+    st.explain.forEach(x => assert.ok(D.lines.some(l => l[0] === x.id), x.id));
+  });
   D.photos.forEach(p => assert.ok(require('fs').existsSync(path.join(__dirname, '..', p)), p));
 });
 

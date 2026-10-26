@@ -264,11 +264,20 @@ function tasrifItems(st, seed, count = st.perDay || 8) {
   }
   return out;
 }
+/* ---------- the later lessons (kind 'pick'): a bank of [question, right, [wrong...], what to ask, write?] ---------- */
+function pickItems(st, seed, count = st.perDay || 8) {
+  const rnd = rng(seed), order = shuffleR(st.bank.map((_, i) => i), rnd), out = [];
+  for (let i = 0; i < count; i++) {
+    const [q, right, wrong, ask, write] = st.bank[order[i % order.length]], opts = shuffleR([right, ...wrong], rnd);
+    out.push({ t: 'fill', q, opts, ok: opts.indexOf(right), ask, ...(write ? { write: true } : {}) });
+  }
+  return out;
+}
 const expanded = n => String(n).split('').map((d, i, a) => d + '0'.repeat(a.length - 1 - i)).filter(x => x[0] !== '0');
 
 const core = { blank, clean, valid, addDays, num, level, plan, pickPic, openDay, dayDone, currentCity, nextOnRoute, cityDone, stepDone,
                teach, warmIds, rate, deckCounts, startStep, finishStep, stepDayIx, stampIfDone, finishDay, INTERVAL,
-               numWords, mathItems, nearMisses, expanded, PLACE_NAMES, seedOf, jarrItems, endings, damiItems, tasrifItems, addMiss, retire, cardOf, MX_DONE };
+               numWords, mathItems, nearMisses, expanded, PLACE_NAMES, seedOf, jarrItems, endings, damiItems, tasrifItems, pickItems, addMiss, retire, cardOf, MX_DONE };
 
 /* =====================================================================================================
    What she sees and hears. Each spoken line has a clip in audio/voice.json, deck 'dz' (scripts/algeria_voice.py);
@@ -281,7 +290,7 @@ const L = {
   warm: 'هيا نتذكّر!', newCard: 'بطاقة جديدة', flip: 'اقلبي البطاقة', good: 'عرفتُها', again: 'مرّةً أخرى',
   step: 'خطوة جديدة', watch: 'انظري واستمعي.', yourTurn: 'دورُكِ! أكملي الجزء الناقص.', alone: 'والآن وحدَكِ!',
   well: 'أحسنتِ!', think: 'فكّري مرّةً أخرى.', look: 'انظري إلى الجواب.', rule: 'تعلّمتُ',
-  whatKind: 'ما نوعُ الكلمة؟', swapDami: 'أيُّ ضميرٍ يأخذُ مكانَ الكلمةِ الملوّنة؟', pickVerb: 'اختاري الفعلَ المناسبَ للضمير.', writeVerb: 'اكتبي الفعلَ بقلمِكِ.', showAns: 'انظري إلى الجواب', wroteOk: '✓ كتبتُها صحيحة', wroteNo: '✗ أخطأتُ', clearPad: '🧽 امسحي', theAns: 'الجواب:', tableW: 'اكتبي جدولَ الفعل بقلمِكِ', explain: '📖 الشرح', whatMeans: 'ما معنى هذا؟', gotIt: 'فهمتُ ✓', moreAr: 'تدرّبي أكثر ✏️', table: 'املئي جدولَ الفعل', tableQ: 'اختاري الفعلَ المناسبَ لكلِّ ضمير.', fillDami: 'اختاري الضميرَ المناسب.', onceMore: 'مرّةً أخرى 🔁', findJar: 'اضغطي على حرفِ الجرّ.', fillJar: 'اختاري حرفَ الجرّ المناسب.', pickEnd: 'اختاري الكلمةَ الصحيحة.',
+  whatKind: 'ما نوعُ الكلمة؟', swapDami: 'أيُّ ضميرٍ يأخذُ مكانَ الكلمةِ الملوّنة؟', pickVerb: 'اختاري الفعلَ المناسبَ للضمير.', whatSent: 'ما نوعُ هذه الجملة؟', toNoun: 'اختاري الجملةَ الاسميّةَ التي لها المعنى نفسُه.', writeVerb: 'اكتبي الفعلَ بقلمِكِ.', showAns: 'انظري إلى الجواب', wroteOk: '✓ كتبتُها صحيحة', wroteNo: '✗ أخطأتُ', clearPad: '🧽 امسحي', theAns: 'الجواب:', tableW: 'اكتبي جدولَ الفعل بقلمِكِ', explain: '📖 الشرح', whatMeans: 'ما معنى هذا؟', gotIt: 'فهمتُ ✓', moreAr: 'تدرّبي أكثر ✏️', table: 'املئي جدولَ الفعل', tableQ: 'اختاري الفعلَ المناسبَ لكلِّ ضمير.', fillDami: 'اختاري الضميرَ المناسب.', onceMore: 'مرّةً أخرى 🔁', findJar: 'اضغطي على حرفِ الجرّ.', fillJar: 'اختاري حرفَ الجرّ المناسب.', pickEnd: 'اختاري الكلمةَ الصحيحة.',
   pickWords: 'اختاري الكتابةَ الصحيحة.', pickNum: 'اختاري العدد الصحيح.', pickDigit: 'اختاري الرقم الصحيح.', more: 'تدرّبي أكثر ✏️',
   okToday: 'أحسنتِ! نجحتِ اليوم في هذه الخطوة.', okDone: 'أتقنتِ هذه الخطوة! 🌟', notYet: 'سنتدرّب عليها مرّةً أخرى، وستصيرُ سهلة.',
   pic: 'صورة اليوم', talkAbout: 'تكلّمي عن:', writeAbout: 'اكتبي عن:', startWith: 'ابدئي بكلمة: أرى…', mic: 'اضغطي وتكلّمي', micStop: 'انتهيتُ من الكلام',
@@ -294,6 +303,8 @@ const L = {
 const CAT = { n: 'اسم', f: 'فعل', h: 'حرف' };
 const catOf = k => (k === 'f' || k === 'h' ? k : 'n');
 const STEPS_BAR = [['warm', '🔁'], ['step', '✏️'], ['pic', '🖼️'], ['easy', '⭐']];
+// the clay icons drawn in ChatGPT (her request, 26 Oct 2026: "modernize them"); the emoji stays if a picture is missing
+const uiIc = (k, e) => `<img class="dz-uic" src="assets/algeria/ui/${k}.webp" alt="" onerror="this.replaceWith(document.createTextNode('${e}'))">`;
 
 /* =====================================================================================================
    The screens. api comes from app.js: today, lsGet, lsSet, show, toast, SFX, confetti, stopConfetti, reduced, DEV,
@@ -512,7 +523,7 @@ function mount(api) {
     row.append(b); $('#dzdoor').append(row);
   }
   // from the trip, the way back to the two doors
-  const backDoor = () => { const b = document.createElement('button'); b.className = 'deck-chip deck-apps dz-backdoor'; b.lang = 'ar'; b.dir = 'rtl'; b.textContent = '🚪 العربية والرياضيات'; return b; };
+  const backDoor = () => { const b = document.createElement('button'); b.className = 'deck-chip deck-apps dz-backdoor'; b.lang = 'ar'; b.dir = 'rtl'; b.innerHTML = `${uiIc('door', '🚪')} العربية والرياضيات`; return b; };
   { const row = document.createElement('div'); row.className = 'deck-row'; const b = backDoor(); b.addEventListener('click', () => { leave(); home(); }); row.append(b); $('#dzhome').append(row); }
 
   /* =====================================================================================================
@@ -570,7 +581,7 @@ function mount(api) {
      The daily session
      ===================================================================================================== */
   function stepsBar(k) {
-    $('#dzSteps').innerHTML = STEPS_BAR.map(([key, e], i) => `<i class="${i < k ? 'done' : i === k ? 'on' : ''}">${e}</i>`).join('');
+    $('#dzSteps').innerHTML = STEPS_BAR.map(([key, e], i) => `<i class="${i < k ? 'done' : i === k ? 'on' : ''}">${uiIc(key, e)}</i>`).join('');
   }
   async function start() {
     await ready; if (!D) return;
@@ -675,12 +686,13 @@ function mount(api) {
     const st = D.steps[s.day.step], k = stepDayIx(r, st.id, s.t), first = !(r.steps[st.id] && r.steps[st.id].days.length);
     startStep(r, D, st.id, s.t); save();
     s.wrong = 0; s.total = 0;
-    const head = part => `<div class="dz-stephead"><span class="dz-chip ${st.subj}">${st.subj === 'ar' ? 'عربية' : 'رياضيات'}</span><h2>${esc(st.title)}</h2>${st.explain ? `<button class="dz-exbtn" data-st="${st.id}">${L.explain}</button>` : ''}<span class="dz-part">${part}</span></div>`;
+    const head = part => `<div class="dz-stephead"><span class="dz-chip ${st.subj}">${st.subj === 'ar' ? 'عربية' : 'رياضيات'}</span><h2>${esc(st.title)}</h2>${st.explain ? `<button class="dz-exbtn" data-st="${st.id}">${uiIc('explain', '📖')} ${L.explain.replace('📖 ', '')}</button>` : ''}<span class="dz-part">${part}</span></div>`;
     if (first && st.explain) { await explainPane(s, st, head); if (!live(s)) return; }
     if (st.kind === 'tag') await tagStep(s, st, k, first, head);
     else if (st.kind === 'jarr') await jarrStep(s, st, k, first, head);
     else if (st.kind === 'dami') await damiStep(s, st, k, first, head);
     else if (st.kind === 'tasrif') await tasrifStep(s, st, k, first, head);
+    else if (st.kind === 'pick') await pickStep(s, st, k, first, head);
     else await numStep(s, st, k, first, head);
     if (!live(s)) return;
     const res = finishStep(r, D, st.id, s.t, s.wrong, s.total); save();
@@ -918,13 +930,45 @@ function mount(api) {
       }
       return;
     }
-    const make = { jarr: jarrItems, dami: damiItems, tasrif: tasrifItems }[st.kind]; if (!make) return;
+    const make = { jarr: jarrItems, dami: damiItems, tasrif: tasrifItems, pick: pickItems }[st.kind]; if (!make) return;
     const items = make(st, seed);
     for (let n = 0; n < items.length && live(s); n++) {
       const t2 = top + `<p class="dz-count">${num(n + 1)} من ${num(items.length)}</p>`;
-      const missed = st.kind === 'jarr' ? await jarrItem(s, st, items[n], t2, true, null) : await damiItem(s, st, items[n], t2, true, null);
+      const missed = st.kind === 'jarr' ? await jarrItem(s, st, items[n], t2, true, null) : items[n].write ? await writeItem(s, st, items[n], t2, true) : await damiItem(s, st, items[n], t2, true, null);
       if (missed) { addMiss(r, s.t, st.kind === 'jarr' ? jarrCard(st, items[n]) : damiCard(st, items[n])); save(); }
     }
+  }
+  /* ---------- the later lessons: watch (the words lit with their labels, then the sentence's tag), one with help, 8 alone ---------- */
+  const pickChips = (wk, lit) => wk.w.map((w, i) => { const k = wk.lit.indexOf(i), on = lit && k >= 0;
+    return `<span class="dz-w${on ? ' c-' + (k ? 'n' : 'h') : ''}"><b>${esc(w)}</b><small>${on ? esc(wk.labels[k] || '') : ''}</small></span>`; }).join('');
+  async function pickStep(s, st, k, first, head) {
+    const wk = st.worked[k % st.worked.length];
+    const P = pane(`${head(L.watch)}<div class="dz-sentence" id="dzSent">${pickChips(wk, 0)}</div>${wk.tag ? `<p class="dz-tag" id="dzTag" hidden>${esc(wk.tag)}</p>` : ''}
+      <p class="dz-q" id="dzWhy"></p><div id="dzRuleSlot"></div><div class="dz-row"><button class="dz-big" id="dzNext">${L.next}</button></div>`, 'step');
+    const next = waitClick(P, '#dzNext').then(() => stopAudio());
+    const alive = partOf(s);
+    (async () => {
+      await sayFor(uiClip('watch'), 700); if (!alive()) return;
+      await sayFor('s-' + wk.s, 2000); if (!alive()) return;
+      P.querySelector('#dzSent').innerHTML = pickChips(wk, 1); await sleep(800); if (!alive()) return;
+      const tg = P.querySelector('#dzTag'); if (tg) tg.hidden = false;
+      P.querySelector('#dzWhy').textContent = wk.t;
+      await sayFor(wk.id, 2800); if (!alive()) return;
+      P.querySelector('#dzRuleSlot').innerHTML = ruleBox(st);
+      if (first) await readRule(P);
+    })();
+    await next; partOf(s); if (!live(s)) return;
+    const items = pickItems(st, seedOf(s.t + st.id)), g = pickItems(st, seedOf(s.t + st.id + 'g'), 1)[0];
+    await damiItem(s, st, g, head(L.yourTurn), false, 'yourTurn');
+    if (!live(s)) return;
+    const again = [];
+    for (let n = 0; n < items.length && live(s); n++) {
+      const top = head(L.alone) + `<p class="dz-count">${num(n + 1)} من ${num(items.length)}</p>`;
+      if (await (items[n].write ? writeItem(s, st, items[n], top, true) : damiItem(s, st, items[n], top, true, n === 0 ? 'alone' : null))) {
+        again.push(items[n]); addMiss(r, s.t, damiCard(st, items[n])); save();
+      }
+    }
+    for (let n = 0; n < again.length && live(s); n++) await damiItem(s, st, again[n], head(L.onceMore), false, null);
   }
   /* ---------- الضمائر: watch (the noun lights up, then its pronoun takes its place), one to fill, then practice alone ---------- */
   const damiChips = (j, lit) => j.w.map((w, i) => { const on = lit && w === j.noun;
@@ -965,7 +1009,7 @@ function mount(api) {
     const P = pane(`${top}<p class="dz-q">${j ? L.swapDami : L[it.ask] || L.fillDami}</p><p class="dz-words big">${q}</p>
       <div class="dz-opts three" id="dzOpts">${it.opts.map((o, i) => `<button class="dz-opt" data-i="${i}">${esc(o)}</button>`).join('')}</div><div class="dz-fb" id="dzFb"></div>`, 'step');
     if (clip) say(uiClip(clip));
-    return choose(s, P, it.ok, alone, () => { const b = P.querySelector('#dzBlank'); b.textContent = it.opts[it.ok]; b.classList.add('filled'); });
+    return choose(s, P, it.ok, alone, () => { const b = P.querySelector('#dzBlank'); if (b) { b.textContent = it.opts[it.ok]; b.classList.add('filled'); } });
   }
   function damiCard(st, it) {
     if (it.t === 'fill') return { f: it.q, ask: L[it.ask] || L.fillDami, b: it.opts[it.ok], s: it.q.replace('___', it.opts[it.ok]) };

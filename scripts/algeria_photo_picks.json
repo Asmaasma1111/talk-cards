@@ -168,5 +168,37 @@
  "stf8": {
   "dir": "stf_city",
   "i": 7
+ },
+ "cst1": {
+  "dir": "cst_mcid",
+  "i": 0
+ },
+ "cst2": {
+  "dir": "cst_mcid",
+  "i": 6
+ },
+ "cst3": {
+  "dir": "cst_rached",
+  "i": 0
+ },
+ "cst4": {
+  "dir": "cst_gorge",
+  "i": 6
+ },
+ "cst5": {
+  "dir": "cst_mosque",
+  "i": 1
+ },
+ "cst6": {
+  "dir": "cst_mosque",
+  "i": 0
+ },
+ "cst7": {
+  "dir": "cst_bey",
+  "i": 5
+ },
+ "cst8": {
+  "dir": "cst_gorge",
+  "i": 1
  }
 }
