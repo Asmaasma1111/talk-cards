@@ -3190,6 +3190,53 @@ body[data-profile="mama"] .deck-apps { display: none; }
   .mc-split { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(340px, 1fr); }
 }
 
+/* كتاب ألغازي drawn in ChatGPT (her request, 26 Oct 2026): the clay cover and page (assets/reads/book, scripts/book_art.py);
+   her finished puzzle sits in each picture's empty frame (measured by the script, in % of the picture) */
+.rb-rings, .rb-book::after { display: none; }
+.rb-cover { width: min(84vw, 900px, 118vh); aspect-ratio: 3 / 2; padding: 0; border-radius: 0; display: block;
+  background: url(assets/reads/book/cover.webp) center / 100% 100% no-repeat; box-shadow: none; filter: drop-shadow(0 22px 30px rgba(158, 47, 99, .26)); }
+.rb-cwin { position: absolute; left: 19%; top: 18.1%; width: 63.3%; height: 51.1%; aspect-ratio: auto; border: 0; border-radius: 2.4% / 3.6%; box-shadow: none; background: #fff; }
+.rb-cwin { display: block; } .rb-cwin .rd-jig { display: block; width: 100%; height: 100%; }
+.rb-ctitle { position: absolute; left: 18.3%; right: 16.7%; top: 75%; height: 10%; display: grid; place-items: center; font-size: clamp(24px, 3.6vw, 40px); color: #fff; text-shadow: 0 3px 0 rgba(150, 40, 90, .4); }
+.rb-cname { display: none; position: absolute; left: 0; right: 0; top: 79.5%; text-align: center; color: #fff; text-shadow: 0 2px 0 rgba(150, 40, 90, .35); }
+.rb-ccount { position: absolute; left: 50%; top: 85.2%; transform: translateX(-50%); margin: 0; padding: 3px 16px; font-size: 17px; }
+.rb-book { width: min(84vw, 1000px, 122vh); aspect-ratio: 3 / 2; margin-top: 0; }
+.rb-sheet, .rb-face { border-radius: 0; background: url(assets/reads/book/page.webp) center / 100% 100% no-repeat; box-shadow: none; overflow: visible; }
+.rb-sheet { filter: drop-shadow(0 18px 26px rgba(158, 47, 99, .2)); }
+.rb-face.backface { background: url(assets/reads/book/page.webp) center / 100% 100% no-repeat; filter: brightness(.96); }
+.rb-pg { display: block; padding: 0; }
+.rb-pic, .rb-ghost { position: absolute; left: 14.3%; top: 17.1%; width: 71.2%; height: 65%; aspect-ratio: auto; border: 0; border-radius: 2.2% / 3.3%; box-shadow: none; background: #fff; overflow: hidden; }
+.rb-pic .rd-jig { width: 100%; height: 100%; }
+.rb-ghost { display: grid; place-items: center; background: repeating-linear-gradient(135deg, #FFF8FB 0 14px, #FDF1F6 14px 28px); }
+.rb-pg .rb-title { position: absolute; left: 10%; right: 10%; top: 86.9%; margin: 0; font-size: clamp(18px, 2.1vw, 23px); line-height: 1.2; }
+.rb-pg .rb-date { position: absolute; left: 10%; right: 10%; top: 93%; text-align: center; font-size: 14px; line-height: 1.2; }
+.rb-pg .rb-num { left: auto; right: 4.5%; bottom: 4%; }
+.rb-pg.end { background: none; display: grid; place-items: center; }
+
+/* the trip (her requests, 26 Oct 2026): what the words mean, read aloud; the verb's table */
+.dz-explain { width: min(94vw, 860px); padding: 16px 22px; border-radius: 26px; background: #fff; box-shadow: inset 0 0 0 3px var(--g2); text-align: right; }
+.dz-explain h3 { margin: 0 0 8px; font: 700 26px 'Marhey', var(--apfont); color: var(--g7); }
+.dz-explain p { margin: 4px 0; padding: 4px 12px; border-radius: 14px; font: 700 clamp(20px, 2.4vw, 25px)/1.7 var(--apfont); color: var(--g9); transition: background .2s; }
+.dz-explain p.on { background: var(--g2); }
+.dz-exbtn { padding: 6px 14px; border: 0; border-radius: 99px; background: #fff; box-shadow: 0 3px 10px rgba(0, 98, 51, .14); font: 800 17px var(--apfont); color: var(--g7); }
+.dz-expop { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 20px; background: rgba(6, 40, 22, .45); }
+.dz-excard { max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; align-items: center; }
+.dz-ttable { display: grid; grid-template-columns: repeat(4, auto auto); gap: 6px 12px; padding: 10px 16px; border-radius: 20px; background: #fff; box-shadow: inset 0 0 0 3px var(--g2); font: 800 20px var(--apfont); direction: rtl; }
+.dz-ttable .p { color: var(--g6); }
+.dz-ttable .f { min-width: 4.2em; color: #9BB3A5; }
+.dz-ttable .f.ok { color: var(--g9); }
+
+/* the picture of the day (her request, 26 Oct 2026): five prompts, and the whole model in five parts */
+.dz-cues.parts { list-style: none; padding: 0; margin: 4px 0; display: flex; flex-direction: column; gap: 6px; }
+.dz-cues.parts li { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 14px; background: #fff; font-size: 18px; font-weight: 700; color: var(--g8); }
+.dz-cues.parts li i { font-style: normal; font-size: 20px; }
+.dz-model.parts { max-height: 58vh; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-inline-end: 4px; }
+.dz-mpart { padding: 6px 12px 8px; border-radius: 16px; background: #fff; }
+.dz-mpart h4 { margin: 0 0 2px; display: flex; align-items: center; gap: 6px; font: 800 16px var(--apfont); color: var(--g6); }
+.dz-mpart h4 i { font-style: normal; }
+.dz-mpart.k-feel { background: #FFF6E0; } .dz-mpart.k-think { background: #EEF5FF; }
+.dz-model.parts p { margin: 2px 0; padding: 2px 8px; font-size: clamp(18px, 2.1vw, 23px); line-height: 1.6; }
+
 /* علبة الفضول: the numbered, named phases (her request, 26 Oct 2026) */
 .cb-steps i { font-size: 22px; font-weight: 800; color: var(--cdeep); font-family: var(--apfont); }
 .cb-steps i.on { width: 52px; height: 52px; font-size: 28px; background: var(--cyel); opacity: 1; }
@@ -3216,3 +3263,71 @@ body[data-profile="mama"] .deck-apps { display: none; }
 @keyframes cbGlow { 0% { transform: scale(.2); opacity: 0; } 25% { transform: scale(1.2); opacity: .45; } 100% { transform: scale(1.6); opacity: 0; } }
 @keyframes cbDust { 0% { transform: translate(0, 0) scale(.2) rotate(0); opacity: 0; } 15% { opacity: 1; } 70% { opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) scale(1.3) rotate(200deg); opacity: 0; } }
 @keyframes cbRing { 0% { transform: scale(.3); opacity: .9; } 100% { transform: scale(3.2); opacity: 0; } }
+
+/* علبة الفضول Phase 2: Baba's dinner question, Big Question Day (Fridays), the Mystery Box game */
+.cb-dinner { padding: 10px 16px 14px; border-radius: 26px; background: #FFF4D6; text-align: center; box-shadow: 0 5px 0 #F3DFA6; }
+.cb-dinner p { margin: 0 0 8px; font-size: 21px; font-weight: 800; color: var(--cdeep); }
+.cb-dinrow { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.cb-dinrow .cb-btn { min-height: 56px; padding: 0 18px; font-size: 20px; }
+.cb-dinrow .cb-btn:disabled { background: #fff; color: #3E9A60; box-shadow: 0 3px 0 #D9EFD9; }
+.cb-bigbtn { background: linear-gradient(180deg, #FFE17A, #FFC23A); color: #7A4300; box-shadow: 0 5px 0 #D99A12; }
+.cb-gamebtn { display: flex; align-items: center; justify-content: center; gap: 10px; background: #8C6BE0; box-shadow: 0 5px 0 #6447B8; }
+.cb-gamebtn img { width: 46px; height: 46px; object-fit: contain; }
+.cb-bigweek { display: flex; flex-direction: column; gap: 12px; width: min(820px, 94vw); }
+.cb-bigrow { display: flex; align-items: center; gap: 14px; padding: 10px 14px; border-radius: 22px; background: #fff; box-shadow: 0 4px 14px rgba(43, 35, 64, .07); }
+.cb-bigrow > img { width: 120px; height: 90px; flex: none; object-fit: cover; border-radius: 14px; }
+.cb-bigrow .cb-bubs { justify-content: flex-start; min-height: 0; }
+.cb-bigweek .cb-bub.fav .n { background: #FFE9A8; }
+.cb-bigweek .cb-bub.sel { transform: scale(1.08); }
+.cb-bigweek .cb-bub.sel::after { content: '⭐'; font-size: 26px; }
+.cb-bigsteps { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.cb-bigstep { display: flex; align-items: center; gap: 10px; min-height: 60px; padding: 6px 12px 6px 18px; border-radius: 99px; background: #fff; font-size: 22px; font-weight: 800;
+  color: var(--cdeep); box-shadow: 0 4px 0 #EADDE4; }
+.cb-bigstep > b { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--cyel); font: 700 24px 'Marhey', var(--apfont); }
+.cb-bigstep .cb-play, .cb-bigcard .cb-play { width: 46px; height: 46px; border: 0; border-radius: 50%; background: var(--cgreen); color: #fff; font-size: 20px; }
+.cb-gimg { width: clamp(140px, 22vh, 200px); animation: cbWiggle 2.2s ease-in-out infinite; }
+.cb-gscore { margin: 0; min-height: 30px; font-size: 24px; font-weight: 800; color: var(--cdeep); }
+.cb-gscore small { font-size: 17px; color: rgba(43, 35, 64, .55); }
+.cb-game .cb-fbody, .cb-bigday .cb-fbody { justify-content: flex-start; }
+.cb-game .cb-fbody > :first-child, .cb-bigday .cb-fbody > :first-child { margin-top: auto; }
+.cb-game .cb-fbody > :last-child, .cb-bigday .cb-fbody > :last-child { margin-bottom: auto; }
+.cb-gplay { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: clamp(14px, 3vw, 40px); }
+.cb-gside { display: flex; flex-direction: column; align-items: center; gap: 12px; width: min(360px, 92vw); }
+.cb-ggrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(6px, 1.2vw, 12px); width: min(92vw, calc(100vh - 170px), 600px); }
+.cb-gtile { position: relative; aspect-ratio: 1; padding: 0; border: 0; border-radius: 18px; overflow: hidden; background: #fff; box-shadow: 0 4px 0 #EADDE4; transition: transform .15s, opacity .3s, filter .3s; }
+.cb-gtile img { width: 100%; height: 100%; object-fit: cover; }
+.cb-gtile:active { transform: scale(.95); }
+.cb-gtile.x { box-shadow: none; background: #F1E4EA; }
+.cb-gtile.x img { opacity: .28; filter: grayscale(1); }
+.cb-gtile.x::after { content: '✗'; position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(56px, 8vh, 90px); font-weight: 800; color: #E5484D; text-shadow: 0 2px 0 #fff; }
+.cb-gtile.now { box-shadow: 0 0 0 5px #F2679C; }
+.cb-gtopline { display: flex; justify-content: center; gap: 16px; }
+.cb-gleft { padding: 6px 18px; border-radius: 99px; background: #fff; font-size: 28px; font-weight: 800; color: #6447B8; box-shadow: 0 3px 10px rgba(100, 71, 184, .14); }
+.cb-gbar { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.cb-gprompt { margin: 0; font-size: clamp(22px, 2.8vw, 28px); font-weight: 800; text-align: center; color: var(--cdeep); }
+.cb-gyes, .cb-gno { min-width: 150px; min-height: 76px; border: 0; border-radius: 38px; color: #fff; font: 800 32px var(--apfont); }
+.cb-gyes { background: var(--cgreen); box-shadow: 0 5px 0 #3B8F5D; }
+.cb-gno { background: #F2679C; box-shadow: 0 5px 0 #C94A7C; }
+.cb-gyes:active, .cb-gno:active { transform: translateY(3px); box-shadow: none; }
+.cb-gwin { width: clamp(150px, 26vh, 240px); aspect-ratio: 1; object-fit: cover; border: 6px solid #fff; border-radius: 28px; box-shadow: 0 10px 24px rgba(158, 47, 99, .22); animation: cbPop .6s cubic-bezier(.3, 1.6, .5, 1) both; }
+.cb-gbars { display: flex; align-items: flex-end; justify-content: center; gap: 8px; min-height: 90px; direction: rtl; }
+.cb-gbars i { position: relative; width: 30px; border-radius: 10px 10px 4px 4px; background: linear-gradient(180deg, #A58BEE, #6447B8); }
+.cb-gbars i b { position: absolute; bottom: 100%; left: 0; right: 0; font: 800 17px var(--apfont); font-style: normal; color: #6447B8; text-align: center; }
+.cb-biggal h2 { margin: 0 0 8px; font-size: 26px; color: var(--cdeep); }
+.cb-bigcards { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; }
+.cb-bigcard { flex: none; display: flex; flex-direction: column; gap: 4px; width: 170px; padding: 8px; border-radius: 18px; background: #FFF4D6; }
+.cb-bigcard > img { width: 100%; height: 110px; object-fit: cover; border-radius: 12px; }
+.cb-bigcard small { font-weight: 700; color: rgba(43, 35, 64, .6); }
+.cb-bigcard .cb-row { min-height: 50px; border-bottom: 0; }
+
+/* writing it herself with the iPad pen (her request, 26 Oct 2026): two writing lines, the answer appears beside */
+.dz-wpad { position: relative; width: min(92vw, 640px); height: 190px; border-radius: 22px; background-color: #fff; box-shadow: inset 0 0 0 3px var(--g2);
+  /* like an Algerian copybook (her picture, 26 Oct 2026): the three bands between the main blue-violet lines keep, three
+     fine green lines inside each band, and the red margin on the RIGHT, the side Arabic starts from */
+  background-image: linear-gradient(90deg, transparent calc(100% - 52px), #E5484D calc(100% - 52px), #E5484D calc(100% - 50px), transparent calc(100% - 50px)),
+    repeating-linear-gradient(transparent 0 62px, #8F86D2 62px 64px),
+    repeating-linear-gradient(transparent 0 15px, #A8D9BC 15px 16px); }
+.dz-wpad canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; -webkit-user-select: none; user-select: none; }
+.dz-wans { position: absolute; top: 10px; left: 12px; display: flex; flex-direction: column; align-items: center; padding: 6px 16px; border-radius: 16px; background: var(--g1); box-shadow: 0 0 0 3px var(--g4); pointer-events: none; }
+.dz-wans small { font: 700 14px var(--apfont); color: var(--g6); } .dz-wans b { font: 800 34px var(--apfont); color: var(--g9); }
+.dz-blank.wide { min-width: 3.2em; }

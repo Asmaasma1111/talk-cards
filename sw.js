@@ -57,6 +57,7 @@ const FILES = APP === 'prepositions' ? [
   // ماريا تقرأ: the meaning pictures and the weekly puzzles (her words are in audio/voice.json, deck 'reads')
   ...['cat', 'bat', 'cab', 'act'].map(n => `assets/reads/pics/${n}.webp`),
   ...['p01', 'p02', 'p03', 'p04'].map(n => `assets/reads/puzzles/${n}.webp`),
+  'assets/reads/book/cover.webp', 'assets/reads/book/page.webp',   // كتاب ألغازي (ChatGPT, scripts/book_art.py)
   'stories.json',
   'stickers/stickers.json',
   'sets.json',

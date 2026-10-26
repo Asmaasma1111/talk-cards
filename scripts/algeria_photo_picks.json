@@ -69,5 +69,104 @@
  "orn8": {
   "dir": "porn-p",
   "i": 4
+ },
+ "tlm1": {
+  "dir": "tlm_mansourah",
+  "i": 7
+ },
+ "tlm2": {
+  "dir": "tlm_mosque",
+  "i": 7
+ },
+ "tlm3": {
+  "dir": "tlm_setti",
+  "i": 7,
+  "zoom": 1.45,
+  "fx": 0.1,
+  "fy": 0.0
+ },
+ "tlm4": {
+  "dir": "tlm_setti",
+  "i": 2
+ },
+ "tlm5": {
+  "dir": "tlm_ourit",
+  "i": 4
+ },
+ "tlm6": {
+  "dir": "tlm_mechouar",
+  "i": 4
+ },
+ "tlm7": {
+  "dir": "tlm_mechouar",
+  "i": 5
+ },
+ "tlm8": {
+  "dir": "tlm_mosque",
+  "i": 0
+ },
+ "bja1": {
+  "dir": "bja_carbon",
+  "i": 7
+ },
+ "bja2": {
+  "dir": "bja_carbon",
+  "i": 0
+ },
+ "bja3": {
+  "dir": "bja_port",
+  "i": 2
+ },
+ "bja4": {
+  "dir": "bja_gate",
+  "i": 2
+ },
+ "bja5": {
+  "dir": "bja_casbah",
+  "i": 0
+ },
+ "bja6": {
+  "dir": "bja_casbah",
+  "i": 1
+ },
+ "bja7": {
+  "dir": "bja_beach",
+  "i": 2
+ },
+ "bja8": {
+  "dir": "bja_gouraya",
+  "i": 3
+ },
+ "stf1": {
+  "dir": "stf_djemila",
+  "i": 4
+ },
+ "stf2": {
+  "dir": "stf_djemila",
+  "i": 7
+ },
+ "stf3": {
+  "dir": "stf_city",
+  "i": 0
+ },
+ "stf4": {
+  "dir": "stf_mosque",
+  "i": 0
+ },
+ "stf5": {
+  "dir": "stf_park",
+  "i": 3
+ },
+ "stf6": {
+  "dir": "stf_park",
+  "i": 1
+ },
+ "stf7": {
+  "dir": "stf_snow",
+  "i": 3
+ },
+ "stf8": {
+  "dir": "stf_city",
+  "i": 7
  }
 }

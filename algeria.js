@@ -31,7 +31,7 @@ const INTERVAL = [0, 1, 2, 4, 8, 16, 32, 64];                         // Talk Ca
    The rules (no DOM, so they can be tested in Node: scripts/test_algeria.js)
    ===================================================================================================== */
 function blank() {
-  return { v: 1, start: null, n: 0, days: {}, arrived: {}, stamps: {}, steps: {}, cards: {}, newq: [], pics: {}, corner: {},
+  return { v: 1, start: null, n: 0, days: {}, arrived: {}, stamps: {}, steps: {}, cards: {}, mcards: {}, newq: [], pics: {}, corner: {},
            settings: { level: 0, newPerDay: 3, warmMax: 6, first: 'ar' } };
 }
 function clean(o) {
@@ -39,7 +39,7 @@ function clean(o) {
   if (!o || typeof o !== 'object') return b;
   const r = { ...b, ...o };
   r.settings = { ...b.settings, ...(o.settings || {}) };
-  ['days', 'arrived', 'stamps', 'steps', 'cards', 'pics', 'corner'].forEach(k => { if (!r[k] || typeof r[k] !== 'object' || Array.isArray(r[k])) r[k] = {}; });
+  ['days', 'arrived', 'stamps', 'steps', 'cards', 'mcards', 'pics', 'corner'].forEach(k => { if (!r[k] || typeof r[k] !== 'object' || Array.isArray(r[k])) r[k] = {}; });
   if (!Array.isArray(r.newq)) r.newq = [];
   r.n = Math.max(0, Math.round(Number(r.n)) || 0);
   r.settings.level = Math.max(0, Math.min(6, Math.round(Number(r.settings.level)) || 0));
@@ -91,8 +91,26 @@ const dayDone = (r, t) => !!(r.days[t] && r.days[t].done);
 /* ---------- the cards: Talk Cards' boxes (Maria's rule in app.js applyGood / applyAgain) ---------- */
 function teach(r, D, ids) { (ids || []).forEach(id => { if (D.cards[id] && !r.cards[id] && !r.newq.includes(id)) r.newq.push(id); }); }
 const introducedOn = (r, t) => Object.values(r.cards).filter(c => c.intro === t).length;
+/* her mistakes come back (her request, 26 Oct 2026): a question she gets wrong alone becomes a card of «أخطائي», seen
+   again tomorrow and then after 1, 2 and 4 days (Talk Cards' boxes); right on four spaced days and it leaves the deck */
+const MX_DONE = 4;
+const cardOf = (r, D, id) => D.cards[id] || (r.mcards && r.mcards[id]) || null;
+function hashStr(x) { let h = 2166136261; for (let i = 0; i < x.length; i++) { h ^= x.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); }
+function addMiss(r, t, card) {
+  const id = 'mx-' + hashStr([card.f, card.mark || '', card.b].join('|'));
+  r.mcards[id] = { deck: 'mx', ...card };
+  const c = r.cards[id];
+  if (!c) r.cards[id] = { box: 0, due: addDays(t, 1), intro: null, again: [] };   // not a new card: it never takes a new card's place
+  else { c.box = 0; c.due = addDays(t, 1); }
+  return id;
+}
+function retire(r, id) {
+  const c = r.cards[id];
+  if (!id.startsWith('mx-') || !c || c.box < MX_DONE) return false;
+  delete r.cards[id]; delete r.mcards[id]; return true;
+}
 function warmIds(r, D, t) {
-  const due = Object.keys(r.cards).filter(id => D.cards[id] && r.cards[id].due && r.cards[id].due <= t)
+  const due = Object.keys(r.cards).filter(id => cardOf(r, D, id) && r.cards[id].due && r.cards[id].due <= t)
     .sort((a, b) => (r.cards[a].due < r.cards[b].due ? -1 : r.cards[a].due > r.cards[b].due ? 1 : 0));
   const room = Math.max(0, r.settings.newPerDay - introducedOn(r, t));
   return [...due, ...r.newq.filter(id => D.cards[id]).slice(0, room)].slice(0, r.settings.warmMax);
@@ -109,7 +127,7 @@ function rate(r, id, good, t) {
 function deckCounts(r, D, t) {   // for Mama: known (box 3+), learning, waiting to be introduced, due today, by deck
   const out = {};
   Object.keys(D.decks).forEach(k => { out[k] = { known: 0, learning: 0, waiting: 0, due: 0 }; });
-  Object.entries(r.cards).forEach(([id, c]) => { const d = D.cards[id] && out[D.cards[id].deck]; if (!d) return; if (c.box >= 3) d.known++; else d.learning++; if (c.due <= t) d.due++; });
+  Object.entries(r.cards).forEach(([id, c]) => { const k = cardOf(r, D, id), d = k && out[k.deck]; if (!d) return; if (c.box >= 3) d.known++; else d.learning++; if (c.due <= t) d.due++; });
   r.newq.forEach(id => { const d = D.cards[id] && out[D.cards[id].deck]; if (d) d.waiting++; });
   return out;
 }
@@ -221,11 +239,36 @@ function jarrItems(st, seed, count = st.perDay || 8) {
   }
   return out;
 }
+/* ---------- الضمائر (تلمسان): swap = the pronoun that takes the coloured noun's place; fill = the pronoun the verb asks for */
+const DKINDS = ['swap', 'fill', 'swap', 'fill', 'fill', 'swap', 'fill', 'swap'];
+function damiItems(st, seed, count = st.perDay || 8) {
+  const rnd = rng(seed), ids = shuffleR(Object.keys(st.dami), rnd), fills = shuffleR(st.fill.map((_, i) => i), rnd), out = [];
+  let a = 0, b = 0;
+  for (let i = 0; i < count; i++) {
+    if (DKINDS[i % DKINDS.length] === 'fill') { const [q, right, wrong] = st.fill[fills[b++ % fills.length]]; const opts = shuffleR([right, ...wrong], rnd); out.push({ t: 'fill', q, opts, ok: opts.indexOf(right) }); continue; }
+    const id = ids[a++ % ids.length], j = st.dami[id], opts = shuffleR([j.pron, ...j.wrong], rnd);
+    out.push({ t: 'swap', s: id, opts, ok: opts.indexOf(j.pron) });
+  }
+  return out;
+}
+/* ---------- الفعل الماضي مع الضمائر (بجاية): verb = the form the pronoun asks for; pron = the pronoun the ending shows.
+   The first eight pronouns come most often; the wrong choices differ in their letters, not only in their vowels ---------- */
+const TKINDS = ['verb', 'pron', 'verb', 'verb', 'pron', 'verb', 'pron', 'verb'];
+function tasrifItems(st, seed, count = st.perDay || 8) {
+  const rnd = rng(seed), vids = shuffleR(Object.keys(st.verbs), rnd), out = [];
+  const common = st.prons.slice(0, 8), pickP = () => { const from = rnd() < 0.8 ? common : st.prons; return from[Math.floor(rnd() * from.length)]; };
+  for (let i = 0; i < count; i++) {
+    const v = st.verbs[vids[i % vids.length]], p = pickP(), opts = shuffleR([p, ...st.wrong[p]], rnd);
+    if (TKINDS[i % TKINDS.length] === 'verb') { const fs = opts.map(x => v.forms[x]); out.push({ t: 'fill', ask: 'pickVerb', q: `${p} ___ ${v.obj}.`, opts: fs, ok: fs.indexOf(v.forms[p]) }); }
+    else out.push({ t: 'fill', ask: 'fillDami', q: `___ ${v.forms[p]} ${v.obj}.`, opts, ok: opts.indexOf(p) });
+  }
+  return out;
+}
 const expanded = n => String(n).split('').map((d, i, a) => d + '0'.repeat(a.length - 1 - i)).filter(x => x[0] !== '0');
 
 const core = { blank, clean, valid, addDays, num, level, plan, pickPic, openDay, dayDone, currentCity, nextOnRoute, cityDone, stepDone,
                teach, warmIds, rate, deckCounts, startStep, finishStep, stepDayIx, stampIfDone, finishDay, INTERVAL,
-               numWords, mathItems, nearMisses, expanded, PLACE_NAMES, seedOf, jarrItems, endings };
+               numWords, mathItems, nearMisses, expanded, PLACE_NAMES, seedOf, jarrItems, endings, damiItems, tasrifItems, addMiss, retire, cardOf, MX_DONE };
 
 /* =====================================================================================================
    What she sees and hears. Each spoken line has a clip in audio/voice.json, deck 'dz' (scripts/algeria_voice.py);
@@ -238,7 +281,7 @@ const L = {
   warm: 'هيا نتذكّر!', newCard: 'بطاقة جديدة', flip: 'اقلبي البطاقة', good: 'عرفتُها', again: 'مرّةً أخرى',
   step: 'خطوة جديدة', watch: 'انظري واستمعي.', yourTurn: 'دورُكِ! أكملي الجزء الناقص.', alone: 'والآن وحدَكِ!',
   well: 'أحسنتِ!', think: 'فكّري مرّةً أخرى.', look: 'انظري إلى الجواب.', rule: 'تعلّمتُ',
-  whatKind: 'ما نوعُ الكلمة؟', findJar: 'اضغطي على حرفِ الجرّ.', fillJar: 'اختاري حرفَ الجرّ المناسب.', pickEnd: 'اختاري الكلمةَ الصحيحة.',
+  whatKind: 'ما نوعُ الكلمة؟', swapDami: 'أيُّ ضميرٍ يأخذُ مكانَ الكلمةِ الملوّنة؟', pickVerb: 'اختاري الفعلَ المناسبَ للضمير.', writeVerb: 'اكتبي الفعلَ بقلمِكِ.', showAns: 'انظري إلى الجواب', wroteOk: '✓ كتبتُها صحيحة', wroteNo: '✗ أخطأتُ', clearPad: '🧽 امسحي', theAns: 'الجواب:', tableW: 'اكتبي جدولَ الفعل بقلمِكِ', explain: '📖 الشرح', whatMeans: 'ما معنى هذا؟', gotIt: 'فهمتُ ✓', moreAr: 'تدرّبي أكثر ✏️', table: 'املئي جدولَ الفعل', tableQ: 'اختاري الفعلَ المناسبَ لكلِّ ضمير.', fillDami: 'اختاري الضميرَ المناسب.', onceMore: 'مرّةً أخرى 🔁', findJar: 'اضغطي على حرفِ الجرّ.', fillJar: 'اختاري حرفَ الجرّ المناسب.', pickEnd: 'اختاري الكلمةَ الصحيحة.',
   pickWords: 'اختاري الكتابةَ الصحيحة.', pickNum: 'اختاري العدد الصحيح.', pickDigit: 'اختاري الرقم الصحيح.', more: 'تدرّبي أكثر ✏️',
   okToday: 'أحسنتِ! نجحتِ اليوم في هذه الخطوة.', okDone: 'أتقنتِ هذه الخطوة! 🌟', notYet: 'سنتدرّب عليها مرّةً أخرى، وستصيرُ سهلة.',
   pic: 'صورة اليوم', talkAbout: 'تكلّمي عن:', writeAbout: 'اكتبي عن:', startWith: 'ابدئي بكلمة: أرى…', mic: 'اضغطي وتكلّمي', micStop: 'انتهيتُ من الكلام',
@@ -592,7 +635,7 @@ function mount(api) {
 
   /* ---------- the warm-up: Talk Cards' flip card, tick and cross ---------- */
   function cardFront(c) {
-    if (c.mark) return `<div class="dz-cq"><p class="dz-sent">${esc(c.f).replace(esc(c.mark), `<mark>${esc(c.mark)}</mark>`)}</p><p class="dz-ask">${esc(c.ask)}</p></div>`;
+    if (c.mark || c.ask) return `<div class="dz-cq"><p class="dz-sent">${c.mark ? esc(c.f).replace(esc(c.mark), `<mark>${esc(c.mark)}</mark>`) : esc(c.f)}</p><p class="dz-ask">${esc(c.ask)}</p></div>`;
     if (c.num) return `<div class="dz-cq"><p class="dz-ask">${esc(c.f)}</p><p class="dz-bignum"><span class="dz-n" dir="ltr">${esc(c.num)}</span></p></div>`;
     return `<div class="dz-cq">${c.photo ? `<img class="dz-cphoto" src="${c.photo}" alt="">` : ''}<p class="dz-ask big">${esc(c.f)}</p></div>`;
   }
@@ -609,7 +652,7 @@ function mount(api) {
       <button class="btn btn-good" id="dzGood">${ic('i-tick', 'ic-tick')}<span class="lbl">${L.good}</span></button></div></div>`, 'warm');
     sayFor(uiClip('warm'), 500);
     while (queue.length && live(s)) {
-      const id = queue.shift(), c = D.cards[id], isNew = !r.cards[id];
+      const id = queue.shift(), c = cardOf(r, D, id), isNew = !r.cards[id];
       $('#dzCardStage').innerHTML = `<div class="card-wrap enter"><div class="card-shadow"></div><div class="card-lift"><div class="card" id="dzCard" role="button" aria-label="${L.flip}">
         <div class="face front"><span class="dz-deck">${esc(D.decks[c.deck])}${isNew ? ` · ${L.newCard}` : ''}</span>${cardFront(c)}</div>
         <div class="face back"><span class="dz-deck">${esc(D.decks[c.deck])}</span>${cardBack(c)}</div></div></div></div>`;
@@ -621,7 +664,7 @@ function mount(api) {
       });
       const good = await new Promise(ok => { $('#dzGood').onclick = () => ok(true); $('#dzAgain').onclick = () => ok(false); });
       api.SFX.init(); stopAudio();
-      rate(r, id, good, s.t); save();
+      rate(r, id, good, s.t); if (retire(r, id)) seenAgain.add(id); save();
       if (good) api.SFX.good(); else if (!seenAgain.has(id)) { seenAgain.add(id); queue.push(id); }   // once more at the end, as in Talk Cards
       await sleep(260);
     }
@@ -632,9 +675,12 @@ function mount(api) {
     const st = D.steps[s.day.step], k = stepDayIx(r, st.id, s.t), first = !(r.steps[st.id] && r.steps[st.id].days.length);
     startStep(r, D, st.id, s.t); save();
     s.wrong = 0; s.total = 0;
-    const head = part => `<div class="dz-stephead"><span class="dz-chip ${st.subj}">${st.subj === 'ar' ? 'عربية' : 'رياضيات'}</span><h2>${esc(st.title)}</h2><span class="dz-part">${part}</span></div>`;
+    const head = part => `<div class="dz-stephead"><span class="dz-chip ${st.subj}">${st.subj === 'ar' ? 'عربية' : 'رياضيات'}</span><h2>${esc(st.title)}</h2>${st.explain ? `<button class="dz-exbtn" data-st="${st.id}">${L.explain}</button>` : ''}<span class="dz-part">${part}</span></div>`;
+    if (first && st.explain) { await explainPane(s, st, head); if (!live(s)) return; }
     if (st.kind === 'tag') await tagStep(s, st, k, first, head);
     else if (st.kind === 'jarr') await jarrStep(s, st, k, first, head);
+    else if (st.kind === 'dami') await damiStep(s, st, k, first, head);
+    else if (st.kind === 'tasrif') await tasrifStep(s, st, k, first, head);
     else await numStep(s, st, k, first, head);
     if (!live(s)) return;
     const res = finishStep(r, D, st.id, s.t, s.wrong, s.total); save();
@@ -642,12 +688,13 @@ function mount(api) {
     for (;;) {
       const P = pane(`<div class="dz-result ${res.ok ? 'ok' : ''}"><span class="dz-reic">${res.done ? '🌟' : res.ok ? '✓' : '🌱'}</span>
         <p>${res.done ? L.okDone : res.ok ? L.okToday : L.notYet}</p></div>
-        <div class="dz-row">${st.subj === 'ma' ? `<button class="dz-btn soft" id="dzMore">${L.more}</button>` : ''}<button class="dz-big" id="dzNext">${L.next}</button></div>`);
+        <div class="dz-row"><button class="dz-btn soft" id="dzMore">${st.subj === 'ma' ? L.more : L.moreAr}</button><button class="dz-big" id="dzNext">${L.next}</button></div>`);
       if (!round) { if (res.ok) api.SFX.good(); sayFor(uiClip(res.done ? 'okDone' : res.ok ? 'okToday' : 'notYet'), 900); }
       const more = await new Promise(ok => { P.querySelector('#dzNext').onclick = () => ok(false); const m = P.querySelector('#dzMore'); if (m) m.onclick = () => ok(true); });
       api.SFX.init(); stopAudio();
       if (!more || !live(s)) break;
       round++;   // more practice, as often as she likes: it never counts against the step
+      if (st.subj === 'ar') { await moreArabic(s, st, head, round); if (!live(s)) return; continue; }
       const pr = st.practice, dg = pr.digits[Math.min(k + 1, pr.digits.length - 1)];
       await mathRound(s, mathItems(seedOf(s.t + st.id + round), pr.more, dg), head(L.more), false);
       if (!live(s)) return;
@@ -699,7 +746,8 @@ function mount(api) {
       if (n === 0) say(uiClip('alone'));
       for (let i = 0; i < aw.length && live(s); i++) {
         $('#dzSent').innerHTML = wordChips(aw, ash, i);
-        await askKind(s, P, aw[i], true, () => { ash[i] = true; $('#dzSent').innerHTML = wordChips(aw, ash, -1); });
+        const missed = await askKind(s, P, aw[i], true, () => { ash[i] = true; $('#dzSent').innerHTML = wordChips(aw, ash, -1); });
+        if (missed) { addMiss(r, s.t, { f: aw.map(x => x.w).join(' ') + '.', mark: aw[i].w, ask: L.whatKind, b: CAT[catOf(aw[i].k)] }); save(); }
       }
     }
   }
@@ -728,7 +776,201 @@ function mount(api) {
     const items = jarrItems(st, seedOf(s.t + st.id)), g = jarrItems(st, seedOf(s.t + st.id + 'g'), 2)[1];
     await jarrItem(s, st, g, head(L.yourTurn), false, 'yourTurn');
     if (!live(s)) return;
-    for (let n = 0; n < items.length && live(s); n++) await jarrItem(s, st, items[n], head(L.alone) + `<p class="dz-count">${num(n + 1)} من ${num(items.length)}</p>`, true, n === 0 ? 'alone' : null);
+    const again = [];
+    for (let n = 0; n < items.length && live(s); n++) {
+      if (await jarrItem(s, st, items[n], head(L.alone) + `<p class="dz-count">${num(n + 1)} من ${num(items.length)}</p>`, true, n === 0 ? 'alone' : null)) {
+        again.push(items[n]); addMiss(r, s.t, jarrCard(st, items[n])); save();
+      }
+    }
+    for (let n = 0; n < again.length && live(s); n++) await jarrItem(s, st, again[n], head(L.onceMore), false, null);   // once more, not counted
+  }
+  function jarrCard(st, it) {
+    if (it.t === 'fill') return { f: it.q, ask: L.fillJar, b: it.opts[it.ok] };
+    const j = st.jarr[it.s], sent = j.w.join(' ') + '.';
+    if (it.t === 'find') return { f: sent, ask: L.findJar, b: j.jar, s: `و«${j.maj}» اسمٌ مجرور.` };
+    return { f: sent.replace(j.maj, '___'), ask: L.pickEnd, b: j.maj };
+  }
+  /* ---------- what the words mean (her request, 26 Oct 2026): read to her line by line on the step's first day (no skip),
+     and again from «📖 الشرح»; each opening reads it once ---------- */
+  const explainHTML = st => `<div class="dz-explain" id="dzExplain"><h3>${L.whatMeans}</h3>${st.explain.map(x => `<p data-id="${x.id}">${esc(x.t)}</p>`).join('')}</div>`;
+  async function readExplain(box, alive) {
+    for (const el of box.querySelectorAll('p')) { if (!alive()) return; el.classList.add('on'); await sayFor(el.dataset.id, 3000); el.classList.remove('on'); await sleep(200); }
+  }
+  async function explainPane(s, st, head) {
+    const P = pane(`${head('📖')}${explainHTML(st)}<div class="dz-row" id="dzExRow"></div>`, 'step');
+    const alive = partOf(s);
+    await readExplain(P.querySelector('#dzExplain'), alive); if (!alive()) return;
+    P.querySelector('#dzExRow').innerHTML = `<button class="dz-big" id="dzNext">${L.next}</button>`;
+    await waitClick(P, '#dzNext'); stopAudio();
+  }
+  document.addEventListener('click', e => {   // «📖 الشرح» in the step's head opens it over the step
+    const b = e.target.closest('.dz-exbtn'); if (!b || !S) return;
+    const st = D.steps[b.dataset.st]; if (!st || !st.explain) return;
+    api.SFX.init(); stopAudio();
+    const pop = document.createElement('div'); pop.className = 'dz-expop'; pop.innerHTML = `<div class="dz-excard">${explainHTML(st)}<div class="dz-row"><button class="dz-big" id="dzExOk">${L.gotIt}</button></div></div>`;
+    document.body.appendChild(pop);
+    let open = true; pop.querySelector('#dzExOk').onclick = () => { open = false; stopAudio(); pop.remove(); };
+    readExplain(pop, () => open);
+  });
+  /* ---------- الفعل الماضي: watch (the same sentence with «هو», then with the new pronoun: its ending lights up) ---------- */
+  const rowChips = (ws, lit, cls, label) => ws.map((w, i) => `<span class="dz-w${lit && i < 2 ? ' ' + cls : ''}"><b>${esc(w)}</b><small>${lit && i < 2 ? label[i] : ''}</small></span>`).join('');
+  async function tasrifStep(s, st, k, first, head) {
+    const wk = st.worked[k % st.worked.length];
+    const P = pane(`${head(L.watch)}<div class="dz-sentence" id="dzSent">${rowChips(wk.before, 0)}</div><div class="dz-sentence" id="dzSent2" hidden>${rowChips(wk.after, 1, 'c-n', ['ضمير', 'فعل'])}</div>
+      <p class="dz-q" id="dzWhy"></p><div id="dzRuleSlot"></div><div class="dz-row"><button class="dz-big" id="dzNext">${L.next}</button></div>`, 'step');
+    const next = waitClick(P, '#dzNext').then(() => stopAudio());
+    const alive = partOf(s);
+    (async () => {
+      await sayFor(uiClip('watch'), 700); if (!alive()) return;
+      await sayFor('s-' + wk.id.slice(2), 2000); if (!alive()) return;
+      P.querySelector('#dzSent').innerHTML = rowChips(wk.before, 1, 'c-h', ['ضمير', 'فعل']); await sleep(800); if (!alive()) return;
+      P.querySelector('#dzSent2').hidden = false;
+      P.querySelector('#dzWhy').textContent = wk.t;
+      await sayFor(wk.id, 2800); if (!alive()) return;
+      P.querySelector('#dzRuleSlot').innerHTML = ruleBox(st);
+      if (first) await readRule(P);
+    })();
+    await next; partOf(s); if (!live(s)) return;
+    const items = tasrifItems(st, seedOf(s.t + st.id)), g = tasrifItems(st, seedOf(s.t + st.id + 'g'), 2)[0];
+    await damiItem(s, st, g, head(L.yourTurn), false, 'yourTurn');
+    if (!live(s)) return;
+    const again = [];
+    for (let n = 0; n < items.length && live(s); n++) {
+      const top = head(L.alone) + `<p class="dz-count">${num(n + 1)} من ${num(items.length)}</p>`;
+      const byHand = items[n].ask === 'pickVerb' && (n === 3 || n === 7);   // two verbs a day she writes herself
+      if (await (byHand ? writeItem(s, st, items[n], top, true) : damiItem(s, st, items[n], top, true, n === 0 ? 'alone' : null))) {
+        again.push(items[n]); addMiss(r, s.t, damiCard(st, items[n])); save();
+      }
+    }
+    for (let n = 0; n < again.length && live(s); n++) await damiItem(s, st, again[n], head(L.onceMore), false, null);
+  }
+  /* ---------- writing it herself (her request, 26 Oct 2026: "she needs to write the verbs herself"): a lined pad for the
+     iPad pen; then the answer beside her writing, and she marks it herself (the app cannot read handwriting) ---------- */
+  let penSeen = false;
+  function pad(box) {
+    const cv = box.querySelector('canvas'), g = cv.getContext('2d'); let cur = null, last = null;
+    const fit = () => { const rc = cv.getBoundingClientRect(), d = window.devicePixelRatio || 1; if (!rc.width) return; cv.width = rc.width * d; cv.height = rc.height * d; g.setTransform(d, 0, 0, d, 0, 0); };
+    requestAnimationFrame(fit);
+    const pt = e => { const rc = cv.getBoundingClientRect(); return [e.clientX - rc.left, e.clientY - rc.top, e.pointerType === 'pen' ? (e.pressure || .5) : .45]; };
+    const line = (a, b) => { g.strokeStyle = '#1D3F8A'; g.lineCap = g.lineJoin = 'round'; g.lineWidth = 2 + 3.5 * b[2]; g.beginPath(); g.moveTo(a[0], a[1]); g.lineTo(b[0] + (a === b ? .1 : 0), b[1]); g.stroke(); };
+    cv.addEventListener('pointerdown', e => { if (e.pointerType === 'pen') penSeen = true; else if (penSeen && e.pointerType === 'touch') return;
+      e.preventDefault(); try { cv.setPointerCapture(e.pointerId); } catch (x) {} cur = e.pointerId; last = pt(e); line(last, last); box.classList.add('inked'); });
+    cv.addEventListener('pointermove', e => { if (e.pointerId !== cur) return; e.preventDefault();
+      for (const x of (e.getCoalescedEvents ? e.getCoalescedEvents() : [e])) { const q = pt(x); line(last, q); last = q; } });
+    const end = e => { if (e.pointerId === cur) cur = null; };
+    cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+    return { clear() { g.clearRect(0, 0, cv.width, cv.height); box.classList.remove('inked'); } };
+  }
+  function writeItem(s, st, it, top, alone) {
+    const ans = it.opts[it.ok];
+    const P = pane(`${top}<p class="dz-q">${L.writeVerb}</p><p class="dz-words big">${esc(it.q).replace('___', '<span class="dz-blank wide" id="dzBlank">✍️</span>')}</p>
+      <div class="dz-wpad" id="dzPad"><canvas></canvas><div class="dz-wans" id="dzAns" hidden><small>${L.theAns}</small><b>${esc(ans)}</b></div></div>
+      <div class="dz-row" id="dzWRow"><button class="dz-btn soft" id="dzClear">${L.clearPad}</button><button class="dz-big" id="dzShow">${L.showAns}</button></div><div class="dz-fb" id="dzFb"></div>`, 'step');
+    const pd = pad(P.querySelector('#dzPad'));
+    P.querySelector('#dzClear').onclick = () => { api.SFX.init(); pd.clear(); };
+    return new Promise(done => {
+      P.querySelector('#dzShow').onclick = () => {
+        api.SFX.init(); if (!live(s)) return;
+        P.querySelector('#dzAns').hidden = false;
+        P.querySelector('#dzWRow').innerHTML = `<button class="dz-btn soft" id="dzNo">${L.wroteNo}</button><button class="dz-big" id="dzOk">${L.wroteOk}</button>`;
+        const rate = async good => {
+          if (alone) { s.total++; if (!good) s.wrong++; }
+          P.querySelector('#dzWRow').innerHTML = '';
+          const b = P.querySelector('#dzBlank'); b.textContent = ans; b.classList.add('filled');
+          P.querySelector('#dzFb').textContent = good ? L.well : L.look; if (good) api.SFX.good();
+          await tapNext(P); done(!good && !!alone);
+        };
+        P.querySelector('#dzOk').onclick = () => rate(true); P.querySelector('#dzNo').onclick = () => rate(false);
+      };
+    });
+  }
+  // the verb's table (more practice for الماضي): one verb, every pronoun in turn; a mistake there joins «أخطائي» too
+  async function tableRound(s, st, head, seed, write = false) {
+    const rnd = rng(seed), vids = Object.keys(st.verbs), v = st.verbs[vids[Math.floor(rnd() * vids.length)]];
+    const done = {};
+    const grid = () => `<div class="dz-ttable">${st.prons.map(p => `<span class="p">${esc(p)}</span><span class="f${done[p] ? ' ok' : ''}">${done[p] ? esc(v.forms[p]) : '…'}</span>`).join('')}</div>`;
+    for (const p of st.prons) {
+      if (!live(s)) return;
+      const opts = shuffleR([p, ...st.wrong[p]], rnd).map(x => v.forms[x]), it = { t: 'fill', ask: 'pickVerb', q: `${p} ___ ${v.obj}.`, opts, ok: opts.indexOf(v.forms[p]) };
+      if (write) {
+        const missed = await writeItem(s, st, it, head(L.tableW) + grid(), true);
+        if (missed) { addMiss(r, s.t, damiCard(st, it)); save(); }
+        done[p] = true; continue;
+      }
+      const P = pane(`${head(L.table)}${grid()}<p class="dz-q">${L.tableQ}</p><p class="dz-words big">${esc(it.q).replace('___', '<span class="dz-blank" id="dzBlank">؟</span>')}</p>
+        <div class="dz-opts three" id="dzOpts">${opts.map((o, i) => `<button class="dz-opt" data-i="${i}">${esc(o)}</button>`).join('')}</div><div class="dz-fb" id="dzFb"></div>`, 'step');
+      const missed = await choose(s, P, it.ok, true, () => { const b = P.querySelector('#dzBlank'); b.textContent = opts[it.ok]; b.classList.add('filled'); });
+      if (missed) { addMiss(r, s.t, damiCard(st, it)); save(); }
+      done[p] = true;
+    }
+  }
+  // «تدرّبي أكثر» after an Arabic step: eight more (for الماضي, every other round is the verb's table); never counted
+  async function moreArabic(s, st, head, round) {
+    const seed = seedOf(s.t + st.id + 'more' + round), top = head(L.moreAr);
+    if (st.kind === 'tasrif' && round % 2) return tableRound(s, st, head, seed, round % 4 === 3);   // rounds 1, 5… choose; 3, 7… write
+    if (st.kind === 'tag') {
+      const pairs = st.alone, pair = pairs[(round + stepDayIx(r, st.id, s.t)) % pairs.length];
+      for (const sid of pair) {
+        const aw = D.sent[sid], ash = aw.map(() => false);
+        const P = pane(`${top}<div class="dz-sentence" id="dzSent">${wordChips(aw, ash, 0)}</div><p class="dz-q">${L.whatKind}</p>${catBtns(st)}<div class="dz-fb" id="dzFb"></div>`, 'step');
+        for (let i = 0; i < aw.length && live(s); i++) { $('#dzSent').innerHTML = wordChips(aw, ash, i); await askKind(s, P, aw[i], false, () => { ash[i] = true; $('#dzSent').innerHTML = wordChips(aw, ash, -1); }); }
+        if (!live(s)) return;
+      }
+      return;
+    }
+    const make = { jarr: jarrItems, dami: damiItems, tasrif: tasrifItems }[st.kind]; if (!make) return;
+    const items = make(st, seed);
+    for (let n = 0; n < items.length && live(s); n++) {
+      const t2 = top + `<p class="dz-count">${num(n + 1)} من ${num(items.length)}</p>`;
+      const missed = st.kind === 'jarr' ? await jarrItem(s, st, items[n], t2, true, null) : await damiItem(s, st, items[n], t2, true, null);
+      if (missed) { addMiss(r, s.t, st.kind === 'jarr' ? jarrCard(st, items[n]) : damiCard(st, items[n])); save(); }
+    }
+  }
+  /* ---------- الضمائر: watch (the noun lights up, then its pronoun takes its place), one to fill, then practice alone ---------- */
+  const damiChips = (j, lit) => j.w.map((w, i) => { const on = lit && w === j.noun;
+    return `<span class="dz-w${on ? ' c-h' : ''}" data-i="${i}"><b>${esc(w)}</b><small>${on ? 'اسم' : ''}</small></span>`; }).join('');
+  const damiAfter = j => j.w.map(w => (w === j.noun ? `<span class="dz-w c-n"><b>${esc(j.pron)}</b><small>ضمير</small></span>` : `<span class="dz-w"><b>${esc(w)}</b><small></small></span>`)).join('');
+  async function damiStep(s, st, k, first, head) {
+    const wk = st.worked[k % st.worked.length], j = st.dami[wk.s];
+    const P = pane(`${head(L.watch)}<div class="dz-sentence" id="dzSent">${damiChips(j, 0)}</div><div class="dz-sentence" id="dzSent2" hidden>${damiAfter(j)}</div>
+      <p class="dz-q" id="dzWhy"></p><div id="dzRuleSlot"></div><div class="dz-row"><button class="dz-big" id="dzNext">${L.next}</button></div>`, 'step');
+    const next = waitClick(P, '#dzNext').then(() => stopAudio());
+    const alive = partOf(s);
+    (async () => {
+      await sayFor(uiClip('watch'), 700); if (!alive()) return;
+      await sayFor('s-' + wk.s, 2000); if (!alive()) return;
+      P.querySelector('#dzSent').innerHTML = damiChips(j, 1); await sleep(800); if (!alive()) return;
+      P.querySelector('#dzSent2').hidden = false;
+      P.querySelector('#dzWhy').textContent = wk.t;
+      await sayFor(wk.id, 2600); if (!alive()) return;
+      P.querySelector('#dzRuleSlot').innerHTML = ruleBox(st);
+      if (first) await readRule(P);
+    })();
+    await next; partOf(s); if (!live(s)) return;
+    const items = damiItems(st, seedOf(s.t + st.id)), g = damiItems(st, seedOf(s.t + st.id + 'g'), 2)[1];
+    await damiItem(s, st, g, head(L.yourTurn), false, 'yourTurn');
+    if (!live(s)) return;
+    const again = [];
+    for (let n = 0; n < items.length && live(s); n++) {
+      if (await damiItem(s, st, items[n], head(L.alone) + `<p class="dz-count">${num(n + 1)} من ${num(items.length)}</p>`, true, n === 0 ? 'alone' : null)) {
+        again.push(items[n]); addMiss(r, s.t, damiCard(st, items[n])); save();
+      }
+    }
+    for (let n = 0; n < again.length && live(s); n++) await damiItem(s, st, again[n], head(L.onceMore), false, null);
+  }
+  function damiItem(s, st, it, top, alone, clip) {
+    const j = it.t === 'swap' ? st.dami[it.s] : null;
+    const q = j ? j.w.map(w => (w === j.noun ? `<mark class="dz-mk" id="dzBlank">${esc(w)}</mark>` : esc(w))).join(' ') + '.'
+      : esc(it.q).replace('___', '<span class="dz-blank" id="dzBlank">؟</span>');
+    const P = pane(`${top}<p class="dz-q">${j ? L.swapDami : L[it.ask] || L.fillDami}</p><p class="dz-words big">${q}</p>
+      <div class="dz-opts three" id="dzOpts">${it.opts.map((o, i) => `<button class="dz-opt" data-i="${i}">${esc(o)}</button>`).join('')}</div><div class="dz-fb" id="dzFb"></div>`, 'step');
+    if (clip) say(uiClip(clip));
+    return choose(s, P, it.ok, alone, () => { const b = P.querySelector('#dzBlank'); b.textContent = it.opts[it.ok]; b.classList.add('filled'); });
+  }
+  function damiCard(st, it) {
+    if (it.t === 'fill') return { f: it.q, ask: L[it.ask] || L.fillDami, b: it.opts[it.ok], s: it.q.replace('___', it.opts[it.ok]) };
+    const j = st.dami[it.s];
+    return { f: j.w.join(' ') + '.', mark: j.noun, ask: L.swapDami, b: j.pron, s: j.w.map(w => (w === j.noun ? j.pron : w)).join(' ') + '.' };
   }
   function jarrItem(s, st, it, top, alone, clip) {
     if (it.t === 'find') {
@@ -748,7 +990,7 @@ function mount(api) {
           P.querySelector('#dzSent').onclick = null;
           P.querySelector('#dzSent').innerHTML = jarrChips(j, 2);
           P.querySelector('#dzFb').textContent = right ? L.well : L.look; if (right) api.SFX.good();
-          await tapNext(P); done();
+          await tapNext(P); done(!right && alone);
         };
       });
     }
@@ -773,14 +1015,14 @@ function mount(api) {
         if (b.dataset.k === want) {
           b.classList.add('yes'); onRight(); api.SFX.good(); fb.textContent = L.well;
           box.onclick = null; box.querySelectorAll('button').forEach(x => { x.disabled = true; });
-          await tapNext(P); ok(); return;
+          await tapNext(P); ok(false); return;
         }
         b.classList.add('no'); b.disabled = true;
         if (alone || tries >= 2) {
           if (alone) s.wrong++;
           box.onclick = null; box.querySelectorAll('button').forEach(x => { x.disabled = true; if (x.dataset.k === want) x.classList.add('yes'); });
           fb.textContent = L.look; onRight();
-          await tapNext(P); ok(); return;
+          await tapNext(P); ok(!!alone); return;
         }
         fb.textContent = L.think; say(uiClip('think'));
       };
@@ -868,24 +1110,28 @@ function mount(api) {
         if (Number(b.dataset.i) === ok) {
           b.classList.add('yes'); onRight(); api.SFX.good(); fb.textContent = L.well; box.onclick = null;
           box.querySelectorAll('button').forEach(x => { x.disabled = true; });
-          await tapNext(P); done(); return;
+          await tapNext(P); done(false); return;
         }
         b.classList.add('no'); b.disabled = true;
         if (alone || tries >= 2) {
           if (alone) s.wrong++;
           box.onclick = null; box.querySelectorAll('button').forEach(x => { x.disabled = true; if (Number(x.dataset.i) === ok) x.classList.add('yes'); });
-          fb.textContent = L.look; onRight(); await tapNext(P); done(); return;
+          fb.textContent = L.look; onRight(); await tapNext(P); done(!!alone); return;
         }
         fb.textContent = L.think; say(uiClip('think'));
       };
     });
   }
   /* ---------- the picture of the day ---------- */
+  const PARTS = [['see', '👀', 'ماذا ترين؟ الأشياءُ والناسُ والحيوانات.', 'ماذا أرى؟'], ['colours', '🎨', 'ما الألوانُ التي ترينها؟', 'الألوان'],
+    ['back', '🏞️', 'ماذا يوجدُ في الخلفيّة؟', 'في الخلفيّة'], ['feel', '💛', 'بماذا تشعرين وأنتِ تنظرين إليها؟', 'بماذا أشعر؟'],
+    ['think', '🤔', 'ماذا تظنّين؟ لماذا؟ ماذا سيحدث؟', 'ماذا أظنّ؟']];
   async function picture(s) {
     const pid = s.day.pic, p = pid && D.pics[pid]; if (!p) return;
     const lv = level(r), write = s.day.write, t = s.t;
     const ask = (write ? D.write : D.say)[lv - 1];
-    const cues = `<ol class="dz-cues">${p.cues.map(q => `<li>${esc(q)}</li>`).join('')}</ol>`;
+    // five prompts that take her from what she sees to what she thinks (her request, 26 Oct 2026)
+    const cues = `<ul class="dz-cues parts">${PARTS.map(([k, ic, ask]) => `<li class="k-${k}"><i>${ic}</i>${esc(ask)}</li>`).join('')}</ul>`;
     const recId = `talk-${t}`, pageId = `page-${t}`;
     const stepsW = `<ol class="dz-wsteps"><li id="dzW1"><b>1</b><span>${esc(ask)}</span></li>
       <li id="dzW2"><b>2</b><span>${L.w2}</span><button class="dz-btn" id="dzCamBtn">📷 ${L.photoIt}</button><span class="dz-thumb" id="dzThumb"></span></li>
@@ -913,17 +1159,18 @@ function mount(api) {
       }; inp.click(); });
     }
     await waitClick(P, '#dzDone'); stopRec(); stopAudio(); if (!live(s)) return;
-    // the model description, at her level, sentence by sentence
+    // the model description: always whole (a short one would look like the best answer), in its five parts, heard once
     const mine = await getRow('clips', recId), page = write ? await getRow('pages', pageId) : null;
-    const lines = p.model.slice(0, lv);
+    const desc = p.desc || [{ k: 'see', lines: p.model.map((x, i) => ({ id: `m-${pid}-${i + 1}`, t: x })) }];
     const Q = pane(`<div class="dz-pic">
         <div class="dz-photo"><img src="${p.photo}" alt="">${page ? `<img class="dz-pagephoto" src="${URL.createObjectURL(page.blob)}" alt="${L.myPage}">` : ''}</div>
         <div class="dz-picside"><h2 class="dz-h">${L.model}</h2>
-          <div class="dz-model" id="dzModel">${lines.map((x, i) => `<p data-id="m-${pid}-${i + 1}">${esc(x)}</p>`).join('')}</div>
+          <div class="dz-model parts" id="dzModel">${desc.map(d => { const [, ic, , head] = PARTS.find(x => x[0] === d.k) || PARTS[0];
+            return `<div class="dz-mpart k-${d.k}"><h4><i>${ic}</i>${esc(head)}</h4>${d.lines.map(x => `<p data-id="${x.id}">${esc(x.t)}</p>`).join('')}</div>`; }).join('')}</div>
           <div class="dz-row">${mine ? `<button class="dz-btn soft" id="dzMine">🎧 ${L.mine}</button>` : ''}</div>
           <button class="dz-big" id="dzNext">${L.next}</button></div></div>`, 'pic');
     const readModel = async () => {
-      for (const el of Q.querySelectorAll('#dzModel p')) { if (!live(s)) return; Q.querySelectorAll('#dzModel p').forEach(x => x.classList.toggle('on', x === el)); await sayFor(el.dataset.id, 2600); }
+      for (const el of Q.querySelectorAll('#dzModel p')) { if (!live(s)) return; Q.querySelectorAll('#dzModel p').forEach(x => x.classList.toggle('on', x === el)); el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); await sayFor(el.dataset.id, 2600); }
       Q.querySelectorAll('#dzModel p').forEach(x => x.classList.remove('on'));
     };
     await sayFor(uiClip('model'), 700); if (live(s)) readModel();

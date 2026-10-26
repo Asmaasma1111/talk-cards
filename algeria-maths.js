@@ -556,11 +556,16 @@ function mount(ctx) {
   }
   async function play(id) {
     const t = TOPICS.find(x => x.id === id), lv = (corner()[id] || { level: 1 }).level;
-    const s = S = { id, right: 0 }, items = round(id, lv, seedOf(Date.now() + id));
+    // her mistakes come back (her request, 26 Oct 2026): up to three she missed before open the round when they are due
+    const today = api.today(), x0 = corner()[id], due = ((x0 && x0.miss) || []).filter(m => m.due <= today).slice(0, 3);
+    const fresh = round(id, lv, seedOf(Date.now() + id));
+    const s = S = { id, right: 0 }, items = [...due.map(m => ({ ...m.it, _miss: m })), ...fresh.slice(due.length)], again = [];
     for (let i = 0; i < items.length && live(s); i++) {
       const ok = await item(s, t, items[i], i, items.length);
-      if (ok) s.right++;
+      if (ok) s.right++; else again.push(items[i]);
+      if (live(s)) noteMiss(id, items[i], ok, today);
     }
+    for (let i = 0; i < again.length && live(s); i++) await item(s, t, again[i], i, -1);   // once more at the end, not counted
     if (!live(s)) return;
     const res = addRound(corner(), id, s.right, items.length, api.today()); ctx.save();
     el.innerHTML = `<div class="dz-top"><span></span><h1 class="dz-ptitle">${pic(t, 'mc-pic-h')} ${esc(t.title)}</h1></div><div class="dz-pane"><div class="dz-result ok"><span class="dz-reic">${s.right >= 7 ? '🌟' : '✓'}</span>
@@ -571,9 +576,22 @@ function mount(ctx) {
     $('#mcAgain').onclick = () => { api.SFX.init(); play(id); };
   }
 
+  /* a question she missed waits in its lesson: tomorrow, then after 2 and 4 days; right on three spaced days and it goes */
+  function noteMiss(tid, it, ok, today) {
+    const c = corner(), x = c[tid] || (c[tid] = { rounds: 0, best: 0, right: 0, total: 0, level: 1, last: null });
+    const list = Array.isArray(x.miss) ? x.miss : (x.miss = []), { _miss, ...plain } = it, add = TRIP().addDays;
+    const m = _miss && list.includes(_miss) ? _miss : list.find(y => JSON.stringify(y.it) === JSON.stringify(plain));
+    if (ok) {
+      if (!m) return;
+      m.box = (m.box || 0) + 1;
+      if (m.box >= 3) list.splice(list.indexOf(m), 1); else m.due = add(today, m.box === 1 ? 2 : 4);
+    } else if (m) { m.box = 0; m.due = add(today, 1); }
+    else { list.push({ it: plain, box: 0, due: add(today, 1) }); if (list.length > 8) list.shift(); }
+    ctx.save();
+  }
   /* ---------- one item; resolves true if right at the first try. Her rule: «التالي» after every answer ---------- */
   function frame(t, i, n, body) {
-    el.innerHTML = `<div class="dz-top"><button class="quit" id="mcStop" aria-label="الركن"><svg aria-hidden="true"><use href="#i-close"/></svg></button><h1 class="dz-ptitle sm">${pic(t, 'mc-pic-h')} ${esc(t.title)}</h1><p class="dz-count">${AR(i + 1)} من ${AR(n)}</p></div>
+    el.innerHTML = `<div class="dz-top"><button class="quit" id="mcStop" aria-label="الركن"><svg aria-hidden="true"><use href="#i-close"/></svg></button><h1 class="dz-ptitle sm">${pic(t, 'mc-pic-h')} ${esc(t.title)}</h1><p class="dz-count">${n < 0 ? 'مرّةً أخرى 🔁' : `${AR(i + 1)} من ${AR(n)}`}</p></div>
       <div class="mc-split"><div class="dz-pane mc-item">${t.lesson.worked.length ? '<button class="mc-exbtn" id="mcEx">👀 المثال</button>' : ''}${body}<div class="dz-fb" id="mcFb"></div><div class="dz-row dz-nextrow" id="mcNextRow"></div></div>${PAPER}</div>`;
     $('#mcStop').onclick = () => { api.SFX.init(); S = null; open(); };
     if ($('#mcEx')) $('#mcEx').onclick = () => {

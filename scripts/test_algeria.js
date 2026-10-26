@@ -59,7 +59,7 @@ ok('two mistakes alone is not a pass; it comes back on its next day', () => {
   assert.strictEqual(C.stepDayIx(r, 'ar1', '2026-11-05'), 2, 'the third day takes the third example');
 });
 
-ok('after the capital comes Oran with its own step (حروف الجر), postcard and pictures; after Oran, Tlemcen is not built yet', () => {
+ok('after the capital comes Oran with its own step (حروف الجر), postcard and pictures; after Oran comes Tlemcen (الضمائر)', () => {
   const r = C.blank();
   let t = '2026-11-01';
   for (let i = 0; i < 2; i++) { session(r, t); t = C.addDays(t, 1); }
@@ -69,8 +69,57 @@ ok('after the capital comes Oran with its own step (حروف الجر), postcard
   for (let i = 0; i < 2; i++) { t = C.addDays(t, 1); const x = session(r, t); if (i === 1) assert.strictEqual(x.stamp.id, 'orn'); }
   t = C.addDays(t, 1);
   const e = C.openDay(r, D, t);
-  assert.strictEqual(e.city, null); assert.strictEqual(e.step, null); assert.ok(D.pics[e.pic]);
-  assert.strictEqual(C.nextOnRoute(r, D).id, 'tlm');
+  assert.strictEqual(e.city, 'tlm'); assert.strictEqual(e.step, 'ar3'); assert.strictEqual(e.arrive, true); assert.strictEqual(e.pic, 'tlm1');
+  C.finishDay(r, t); r.days[t].done = true;
+  for (let i = 0; i < 2; i++) { t = C.addDays(t, 1); const x = session(r, t); if (i === 1) assert.strictEqual(x.stamp.id, 'tlm'); }
+  t = C.addDays(t, 1);
+  const f = C.openDay(r, D, t);
+  assert.strictEqual(f.city, 'bja'); assert.strictEqual(f.step, 'ar4'); assert.strictEqual(f.pic, 'bja1');
+});
+
+ok('الفعل الماضي (بجاية) and المضارع (سطيف): every form as its pronoun asks; the wrong choices differ in letters; practice is well made', () => {
+  const strip = w => w.replace(/[\u064B-\u0652]/g, '');
+  Object.values(D.steps.ar5.verbs).forEach(v => {
+    assert.ok(v.forms['أنا'].startsWith('أ') && v.forms['نحن'].startsWith('ن') && v.forms['هو'].startsWith('ي') && v.forms['هم'].endsWith('ونَ') && v.forms['أنتِ'].endsWith('ين'), v.stem);
+    Object.entries(D.steps.ar5.wrong).forEach(([p, ws]) => ws.forEach(w => assert.notStrictEqual(strip(v.forms[p]), strip(v.forms[w]), `${v.stem} ${p}/${w}`)));
+  });
+  C.tasrifItems(D.steps.ar5, 3).forEach(it => assert.strictEqual(new Set(it.opts).size, 3));
+  const st = D.steps.ar4;
+  Object.values(st.verbs).forEach(v => {
+    assert.ok(v.forms['أنا'].endsWith('تُ') && v.forms['نحن'].endsWith('نا') && v.forms['هم'].endsWith('وا') && v.forms['هي'].endsWith('تْ'), v.stem);
+    Object.entries(st.wrong).forEach(([p, ws]) => ws.forEach(w => assert.notStrictEqual(strip(v.forms[p]), strip(v.forms[w]), `${v.stem} ${p}/${w}`)));
+  });
+  const items = C.tasrifItems(st, 11);
+  assert.strictEqual(items.length, 8);
+  items.forEach(it => { assert.strictEqual(new Set(it.opts).size, 3); assert.ok(it.ok >= 0 && it.q.includes('___')); });
+  assert.ok(items.some(it => it.ask === 'pickVerb') && items.some(it => it.ask === 'fillDami'));
+  ['ar1', 'ar2', 'ar3', 'ar4', 'ar5'].forEach(id => D.steps[id].explain.forEach(x => assert.ok(D.lines.some(l => l[0] === x.id), x.id)));   // the explanation is heard
+});
+
+ok('الضمائر: every bank sentence has its noun; the right pronoun is among three different ones; practice is well made', () => {
+  const st = D.steps.ar3;
+  Object.entries(st.dami).forEach(([id, j]) => { assert.ok(j.w.includes(j.noun), id); assert.ok(!j.wrong.includes(j.pron), id); assert.strictEqual(new Set(j.wrong).size, 2, id); });
+  st.fill.forEach(([q, right, wrong]) => { assert.ok(q.includes('___'), q); assert.ok(!wrong.includes(right), q); });
+  st.worked.forEach(w => assert.ok(st.dami[w.s] && D.lines.some(l => l[0] === w.id) && D.lines.some(l => l[0] === 's-' + w.s), w.id));
+  const items = C.damiItems(st, 7);
+  assert.strictEqual(items.length, 8);
+  items.forEach(it => { assert.strictEqual(new Set(it.opts).size, 3); assert.ok(it.ok >= 0); });
+  assert.ok(items.some(it => it.t === 'swap') && items.some(it => it.t === 'fill'));
+});
+
+ok('her mistakes come back (her request): a missed question is a card of أخطائي tomorrow, then 1, 2, 4 days; right four times and it leaves', () => {
+  const r = C.blank(); let t = '2026-11-01';
+  const id = C.addMiss(r, t, { f: 'البناتُ يقرأْنَ القصصَ.', mark: 'البناتُ', ask: 'أيُّ ضمير؟', b: 'هنّ' });
+  assert.ok(C.cardOf(r, D, id)); assert.strictEqual(C.warmIds(r, D, t).includes(id), false);
+  t = C.addDays(t, 1); assert.ok(C.warmIds(r, D, t).includes(id));
+  C.rate(r, id, false, t); assert.strictEqual(r.cards[id].due, C.addDays(t, 1));       // wrong again: tomorrow
+  const gaps = [];
+  for (let k = 0; k < 6 && r.cards[id]; k++) {
+    t = C.addDays(t, 1); while (!C.warmIds(r, D, t).includes(id)) t = C.addDays(t, 1);
+    C.rate(r, id, true, t); if (!C.retire(r, id)) gaps.push(r.cards[id].box);
+  }
+  assert.ok(!r.cards[id] && !r.mcards[id], 'it left the deck'); assert.deepStrictEqual(gaps, [2, 3]);
+  assert.strictEqual(C.addMiss(r, t, { f: 'x', b: 'y' }), C.addMiss(r, t, { f: 'x', b: 'y' }));   // the same mistake is one card
 });
 
 ok('حروف الجر: every bank sentence has its حرف and its اسم مجرور ending in a kasra; practice is always well made', () => {
@@ -136,12 +185,16 @@ ok('every card, picture, sentence and step the app needs is in algeria.json', ()
   const c = D.cities[0];
   c.cards.concat(...Object.values(D.pics).map(p => p.teach), ...Object.values(D.steps).map(s => s.teachDay1.concat(s.teachPass)))
     .forEach(id => assert.ok(D.cards[id], id));
-  c.pics.forEach(p => { assert.ok(D.pics[p], p); assert.strictEqual(D.pics[p].model.length, 6, p); assert.ok(D.pics[p].cues.length >= 3, p); });
+  D.cities.filter(x => x.ready).forEach(c => c.pics.forEach(p => {   // the model whole, in its five parts (her request), every line heard
+    assert.ok(D.pics[p], p); assert.deepStrictEqual(D.pics[p].desc.map(d => d.k), ['see', 'colours', 'back', 'feel', 'think'], p);
+    D.pics[p].desc.forEach(d => { assert.ok(d.lines.length >= 1, p + d.k); d.lines.forEach(x => assert.ok(D.lines.some(l => l[0] === x.id), x.id)); });
+    assert.ok(D.pics[p].model.length >= 6, p);
+  }));
   const st = D.steps.ar1;
   st.worked.concat(st.guided.map(g => g[0]), ...st.alone).forEach(sid => assert.ok(D.sent[sid], sid));
   st.guided.forEach(([sid, i]) => assert.ok(D.sent[sid][i], sid));
   D.steps.ma1.guided.forEach(g => assert.ok(g.opts.includes(g.parts[g.blank]), g.n));
-  assert.deepStrictEqual(D.cities.filter(x => x.ready).map(x => x.id), ['alg', 'orn']);
+  assert.deepStrictEqual(D.cities.filter(x => x.ready).map(x => x.id), ['alg', 'orn', 'tlm', 'bja', 'stf']);
   D.photos.forEach(p => assert.ok(require('fs').existsSync(path.join(__dirname, '..', p)), p));
 });
 
