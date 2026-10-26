@@ -299,7 +299,9 @@ def word_heard(want, heard):
             elif ch not in 'اوي':
                 return False
         return i == len(w)
-    return all(any(fits(same(x), h) for h in hs for x in (w, strip(w))) for w in norm(want))
+    # a final «ى» is said as a long a (يرى = yarā), so it may be heard written «ا»
+    ends = {n[:-1] + 'ا' for o, n in zip(re.sub('[ً-ٰٟـ]', '', want).split(), norm(want)) if o.endswith('ى')}
+    return all(any(fits(same(x), h) for h in hs for x in {w, strip(w)} | ({w[:-1] + 'ا'} & ends)) for w in norm(want))
 
 
 def cmd_verify(a):
