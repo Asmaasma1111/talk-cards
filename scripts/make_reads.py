@@ -420,6 +420,13 @@ for i in range(65):
         if missing and i >= 8: print(f'lesson {i + 1}: {len(missing)} clips to record, e.g.', ', '.join(sorted(missing)[:6]))
     lessons.append(d)
 
+# the weekly puzzles (scripts/reads_puzzles.py): every one whose picture is in assets/reads/puzzles, in order
+import importlib.util as _iu
+_spec = _iu.spec_from_file_location('reads_puzzles', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'reads_puzzles.py'))
+_rp = _iu.module_from_spec(_spec); _spec.loader.exec_module(_rp)
+PUZZLES = [{'id': i, 'img': f'assets/reads/puzzles/{i}.webp', 'title': t} for i, t, _ in _rp.PUZZLES
+           if os.path.exists(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'assets', 'reads', 'puzzles', i + '.webp'))]
+
 data = {
     'v': 1,
     'note': 'Maria Reads: our own words, following the lesson order of Children Learning Reading. Phase 1 = lessons 1-8, Phase 2 = lessons 9-24.',
@@ -430,9 +437,8 @@ data = {
                                   'W': 'w', 'X': 'x', 'Y': 'ee', 'Z': 'z'}},
     'sounds': sounds, 'words': WORDS, 'ear': EAR, 'emoji': E, 'pairs': PAIRGAMES, 'sentences': SENT, 'stories': STORIES, 'lessons': lessons, 'guide': GUIDE,
     'photos': PHOTOS,
-    'puzzles': [{'id': f'p0{i}', 'img': f'assets/reads/puzzles/p0{i}.webp', 'title': t} for i, t in
-                enumerate(['أصدقاء لطاف', 'حلويات سعيدة', 'حديقة مبتسمة', 'كنوز السكويشي'], 1)],
-    'bookPages': 12,
+    'puzzles': PUZZLES,
+    'bookPages': max(12, len(PUZZLES)),
     'puzzleRule': 'one piece per day of use (days 1-6), the last two on day 7: the finished puzzle is the big reward',
 }
 json.dump(data, open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)

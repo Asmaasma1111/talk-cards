@@ -6951,8 +6951,108 @@
    "id": "p04",
    "img": "assets/reads/puzzles/p04.webp",
    "title": "كنوز السكويشي"
+  },
+  {
+   "id": "p05",
+   "img": "assets/reads/puzzles/p05.webp",
+   "title": "أصدقاء البحر"
+  },
+  {
+   "id": "p06",
+   "img": "assets/reads/puzzles/p06.webp",
+   "title": "صغار المزرعة"
+  },
+  {
+   "id": "p07",
+   "img": "assets/reads/puzzles/p07.webp",
+   "title": "رحلة إلى الفضاء"
+  },
+  {
+   "id": "p08",
+   "img": "assets/reads/puzzles/p08.webp",
+   "title": "سلة الفواكه"
+  },
+  {
+   "id": "p09",
+   "img": "assets/reads/puzzles/p09.webp",
+   "title": "خضار نشيطة"
+  },
+  {
+   "id": "p10",
+   "img": "assets/reads/puzzles/p10.webp",
+   "title": "أدوات المدرسة"
+  },
+  {
+   "id": "p11",
+   "img": "assets/reads/puzzles/p11.webp",
+   "title": "ألوان الطقس"
+  },
+  {
+   "id": "p12",
+   "img": "assets/reads/puzzles/p12.webp",
+   "title": "سكويشي كبير"
+  },
+  {
+   "id": "p13",
+   "img": "assets/reads/puzzles/p13.webp",
+   "title": "صحرائي الجميلة"
+  },
+  {
+   "id": "p14",
+   "img": "assets/reads/puzzles/p14.webp",
+   "title": "ألعابي"
+  },
+  {
+   "id": "p15",
+   "img": "assets/reads/puzzles/p15.webp",
+   "title": "طيور ملونة"
+  },
+  {
+   "id": "p16",
+   "img": "assets/reads/puzzles/p16.webp",
+   "title": "سكويشي القطة"
+  },
+  {
+   "id": "p17",
+   "img": "assets/reads/puzzles/p17.webp",
+   "title": "أصدقاء حديقة الحيوان"
+  },
+  {
+   "id": "p18",
+   "img": "assets/reads/puzzles/p18.webp",
+   "title": "فرقة الموسيقى"
+  },
+  {
+   "id": "p19",
+   "img": "assets/reads/puzzles/p19.webp",
+   "title": "وقت النوم"
+  },
+  {
+   "id": "p20",
+   "img": "assets/reads/puzzles/p20.webp",
+   "title": "سكويشي الكعكة"
+  },
+  {
+   "id": "p21",
+   "img": "assets/reads/puzzles/p21.webp",
+   "title": "وسائل النقل"
+  },
+  {
+   "id": "p22",
+   "img": "assets/reads/puzzles/p22.webp",
+   "title": "زهور مبتسمة"
+  },
+  {
+   "id": "p23",
+   "img": "assets/reads/puzzles/p23.webp",
+   "title": "حيوانات الثلج"
+  },
+  {
+   "id": "p24",
+   "img": "assets/reads/puzzles/p24.webp",
+   "title": "سكويشي الباندا"
   }
  ],
- "bookPages": 12,
+ "bookPages": 24,
  "puzzleRule": "one piece per day of use (days 1-6), the last two on day 7: the finished puzzle is the big reward"
 }
