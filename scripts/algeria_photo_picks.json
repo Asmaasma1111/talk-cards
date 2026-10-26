@@ -200,5 +200,133 @@
  "cst8": {
   "dir": "cst_gorge",
   "i": 1
+ },
+ "btn1": {
+  "dir": "btn_timgad",
+  "i": 5
+ },
+ "btn2": {
+  "dir": "btn_timgad",
+  "i": 7
+ },
+ "btn3": {
+  "dir": "btn_aures",
+  "i": 0
+ },
+ "btn4": {
+  "dir": "btn_ghoufi",
+  "i": 6
+ },
+ "btn5": {
+  "dir": "btn_ghoufi",
+  "i": 0
+ },
+ "btn6": {
+  "dir": "btn_cedar",
+  "i": 3
+ },
+ "btn7": {
+  "dir": "btn_mosque",
+  "i": 7
+ },
+ "btn8": {
+  "dir": "btn_medracen",
+  "i": 5
+ },
+ "bsk1": {
+  "dir": "bsk_dates",
+  "i": 7
+ },
+ "bsk2": {
+  "dir": "bsk_palm",
+  "i": 0
+ },
+ "bsk3": {
+  "dir": "bsk_dates",
+  "i": 4
+ },
+ "bsk4": {
+  "dir": "bsk_dates",
+  "i": 6
+ },
+ "bsk5": {
+  "dir": "bsk_canyon",
+  "i": 6
+ },
+ "bsk6": {
+  "dir": "bsk_canyon",
+  "i": 5
+ },
+ "bsk7": {
+  "dir": "bsk_canyon",
+  "i": 0
+ },
+ "bsk8": {
+  "dir": "bsk_canyon",
+  "i": 7
+ },
+ "ghr1": {
+  "dir": "ghr_mzab",
+  "i": 5
+ },
+ "ghr2": {
+  "dir": "ghr_mzab",
+  "i": 6
+ },
+ "ghr3": {
+  "dir": "ghr_market",
+  "i": 4
+ },
+ "ghr4": {
+  "dir": "ghr_market",
+  "i": 1
+ },
+ "ghr5": {
+  "dir": "ghr_bnisguen",
+  "i": 4
+ },
+ "ghr6": {
+  "dir": "ghr_bnisguen",
+  "i": 6
+ },
+ "ghr7": {
+  "dir": "ghr_market",
+  "i": 6
+ },
+ "ghr8": {
+  "dir": "ghr_city",
+  "i": 1
+ },
+ "tmr1": {
+  "dir": "tmr_assekrem",
+  "i": 3
+ },
+ "tmr2": {
+  "dir": "tmr_assekrem",
+  "i": 6
+ },
+ "tmr3": {
+  "dir": "tmr_assekrem",
+  "i": 2
+ },
+ "tmr4": {
+  "dir": "tmr_hoggar",
+  "i": 2
+ },
+ "tmr5": {
+  "dir": "tmr_assekrem",
+  "i": 5
+ },
+ "tmr6": {
+  "dir": "tmr_hoggar",
+  "i": 6
+ },
+ "tmr7": {
+  "dir": "tmr_city",
+  "i": 5
+ },
+ "tmr8": {
+  "dir": "tmr_sunset",
+  "i": 2
  }
 }

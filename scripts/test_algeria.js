@@ -180,6 +180,18 @@ ok('clean() repairs a broken state and keeps settings in range', () => {
   assert.ok(C.valid(C.blank())); assert.ok(!C.valid({}));
 });
 
+ok('the whole trip: from the capital to Tamanrasset, every city its stamp, then pictures and cards go on', () => {
+  const r = C.blank(); let t = '2026-11-01', stamps = [];
+  for (let day = 0; day < 120; day++) {
+    const x = session(r, t); if (x.stamp) stamps.push(x.stamp.id);
+    t = C.addDays(t, 1);
+    if (stamps.length === D.cities.length) break;
+  }
+  assert.deepStrictEqual(stamps, D.cities.map(c => c.id));
+  const after = C.openDay(r, D, t);
+  assert.strictEqual(after.step, null); assert.ok(D.pics[after.pic]);
+});
+
 /* ---------- the content ---------- */
 ok('every card, picture, sentence and step the app needs is in algeria.json', () => {
   const c = D.cities[0];
