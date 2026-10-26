@@ -2,6 +2,9 @@
 Each ChatGPT picture holds two square panels side by side (two pages, so the characters stay the same) or one panel.
 
     python3 -I scripts/reads_story_pics.py PICTURE.png PAGE_ID [PAGE_ID]
+    python3 -I scripts/reads_story_pics.py --out DIR PICTURE.png PAGE_ID [PAGE_ID]
+
+--out writes somewhere else: the Book Edition's story pictures go to a private folder, never into assets/.
 
 finds the white gap between the panels, cuts each panel, trims its white edge and writes
 assets/reads/story/<page id>.webp (960 px tall). Then run scripts/make_reads.py, which shows them after she reads a page.
@@ -50,4 +53,7 @@ def main(src, ids):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1], sys.argv[2:])
+    args = sys.argv[1:]
+    if args[:1] == ['--out']:
+        OUT = os.path.abspath(args[1]); args = args[2:]
+    main(args[0], args[1:])
