@@ -35,6 +35,7 @@ CITIES = [
     ('ghr', 'غرداية', 'وادي ميزاب', 3.67, 32.49),
     ('tmr', 'تمنراست', 'الهقار', 5.52, 22.79),
 ]
+LAB = {'alg': 'up', 'bja': 'up', 'orn': 'up', 'stf': 'left', 'cst': 'right', 'btn': 'right'}   # where each name sits by its dot (the north-east is crowded)
 # Algeria's box on the map: longitude -8.7 to 12.0, latitude 19.0 to 37.1
 def place(lon, lat):
     return round((lon + 8.7) / 20.7 * 100, 1), round((37.1 - lat) / 18.1 * 100, 1)
@@ -1384,7 +1385,7 @@ def build():
     cities = []
     for k, (cid, name, nick, lon, lat) in enumerate(CITIES):
         x, y = place(lon, lat)
-        c = dict(id=cid, n=k + 1, name=name, nick=nick, x=x, y=y, ready=cid == 'alg', **({'mine': True} if cid == 'stf' else {}))
+        c = dict(id=cid, n=k + 1, name=name, nick=nick, x=x, y=y, ready=cid == 'alg', lab=LAB.get(cid, 'down'), **({'mine': True} if cid == 'stf' else {}))
         if cid == 'alg':
             c.update(steps=['ar1'], pics=CITY_PICS['alg'],   # the trip is the Arabic door; the maths has its own (the train)
                      cards=['dz1', 'dz2', 'dz3', 'dz4', 'dz5', 'dz6', 'dz7'],

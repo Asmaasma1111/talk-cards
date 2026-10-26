@@ -290,7 +290,7 @@ const L = {
   warm: 'هيا نتذكّر!', newCard: 'بطاقة جديدة', flip: 'اقلبي البطاقة', good: 'عرفتُها', again: 'مرّةً أخرى',
   step: 'خطوة جديدة', watch: 'انظري واستمعي.', yourTurn: 'دورُكِ! أكملي الجزء الناقص.', alone: 'والآن وحدَكِ!',
   well: 'أحسنتِ!', think: 'فكّري مرّةً أخرى.', look: 'انظري إلى الجواب.', rule: 'تعلّمتُ',
-  whatKind: 'ما نوعُ الكلمة؟', swapDami: 'أيُّ ضميرٍ يأخذُ مكانَ الكلمةِ الملوّنة؟', pickVerb: 'اختاري الفعلَ المناسبَ للضمير.', whatSent: 'ما نوعُ هذه الجملة؟', pickSifa: 'اختاري الصفةَ المناسبة.', pickDual: 'اختاري المثنّى.', pickHal: 'اختاري الحالَ المناسبة.', pickKhabar: 'اختاري الخبرَ الصحيح.', addKana: 'ضعي «كانَ» قبلَ الجملة: أيُّ جملةٍ صحيحة؟', findKana: 'أيُّ كلمةٍ هي «كانَ» أو إحدى أخواتِها؟', findHal: 'أيُّ كلمةٍ هي الحال؟ (تخبرُنا: كيف؟)', pickPlural: 'اختاري الجمع.', whatNum: 'هل الكلمةُ مفردٌ أم مثنّى أم جمع؟', findSifa: 'أيُّ كلمةٍ هي الصفة؟', writeWord: 'اكتبي الكلمةَ بقلمِكِ.', toNoun: 'اختاري الجملةَ الاسميّةَ التي لها المعنى نفسُه.', writeVerb: 'اكتبي الفعلَ بقلمِكِ.', showAns: 'انظري إلى الجواب', wroteOk: '✓ كتبتُها صحيحة', wroteNo: '✗ أخطأتُ', clearPad: '🧽 امسحي', theAns: 'الجواب:', tableW: 'اكتبي جدولَ الفعل بقلمِكِ', explain: '📖 الشرح', whatMeans: 'ما معنى هذا؟', gotIt: 'فهمتُ ✓', moreAr: 'تدرّبي أكثر ✏️', table: 'املئي جدولَ الفعل', tableQ: 'اختاري الفعلَ المناسبَ لكلِّ ضمير.', fillDami: 'اختاري الضميرَ المناسب.', onceMore: 'مرّةً أخرى 🔁', findJar: 'اضغطي على حرفِ الجرّ.', fillJar: 'اختاري حرفَ الجرّ المناسب.', pickEnd: 'اختاري الكلمةَ الصحيحة.',
+  whatKind: 'ما نوعُ الكلمة؟', swapDami: 'أيُّ ضميرٍ يأخذُ مكانَ الكلمةِ الملوّنة؟', pickVerb: 'اختاري الفعلَ المناسبَ للضمير.', whatSent: 'ما نوعُ هذه الجملة؟', tripDone: 'أكملتِ رحلةَ الجزائر! 🎉', tripAll: 'عشرُ مدنٍ وعشرةُ أختام', tripOn: 'كلَّ يومٍ صورةٌ جديدةٌ وبطاقاتٌ نتذكّرُها', pickSifa: 'اختاري الصفةَ المناسبة.', pickDual: 'اختاري المثنّى.', pickHal: 'اختاري الحالَ المناسبة.', pickKhabar: 'اختاري الخبرَ الصحيح.', addKana: 'ضعي «كانَ» قبلَ الجملة: أيُّ جملةٍ صحيحة؟', findKana: 'أيُّ كلمةٍ هي «كانَ» أو إحدى أخواتِها؟', findHal: 'أيُّ كلمةٍ هي الحال؟ (تخبرُنا: كيف؟)', pickPlural: 'اختاري الجمع.', whatNum: 'هل الكلمةُ مفردٌ أم مثنّى أم جمع؟', findSifa: 'أيُّ كلمةٍ هي الصفة؟', writeWord: 'اكتبي الكلمةَ بقلمِكِ.', toNoun: 'اختاري الجملةَ الاسميّةَ التي لها المعنى نفسُه.', writeVerb: 'اكتبي الفعلَ بقلمِكِ.', showAns: 'انظري إلى الجواب', wroteOk: '✓ كتبتُها صحيحة', wroteNo: '✗ أخطأتُ', clearPad: '🧽 امسحي', theAns: 'الجواب:', tableW: 'اكتبي جدولَ الفعل بقلمِكِ', explain: '📖 الشرح', whatMeans: 'ما معنى هذا؟', gotIt: 'فهمتُ ✓', moreAr: 'تدرّبي أكثر ✏️', table: 'املئي جدولَ الفعل', tableQ: 'اختاري الفعلَ المناسبَ لكلِّ ضمير.', fillDami: 'اختاري الضميرَ المناسب.', onceMore: 'مرّةً أخرى 🔁', findJar: 'اضغطي على حرفِ الجرّ.', fillJar: 'اختاري حرفَ الجرّ المناسب.', pickEnd: 'اختاري الكلمةَ الصحيحة.',
   pickWords: 'اختاري الكتابةَ الصحيحة.', pickNum: 'اختاري العدد الصحيح.', pickDigit: 'اختاري الرقم الصحيح.', more: 'تدرّبي أكثر ✏️',
   okToday: 'أحسنتِ! نجحتِ اليوم في هذه الخطوة.', okDone: 'أتقنتِ هذه الخطوة! 🌟', notYet: 'سنتدرّب عليها مرّةً أخرى، وستصيرُ سهلة.',
   pic: 'صورة اليوم', talkAbout: 'تكلّمي عن:', writeAbout: 'اكتبي عن:', startWith: 'ابدئي بكلمة: أرى…', mic: 'اضغطي وتكلّمي', micStop: 'انتهيتُ من الكلام',
@@ -534,7 +534,7 @@ function mount(api) {
     const here = nextOnRoute(r, D);
     const dots = D.cities.map(c => {
       const cls = r.stamps[c.id] ? 'done' : here && c.id === here.id ? 'here' : 'later';
-      return `<span class="dz-city ${cls}${c.mine ? ' mine' : ''}" style="left:${c.x}%;top:${c.y}%"><i></i>${small || (cls === 'later' && !c.mine) ? '' : `<b>${c.mine ? '💚 ' : ''}${esc(c.name)}</b>`}</span>`;
+      return `<span class="dz-city ${cls}${c.mine ? ' mine' : ''} lab-${c.lab || 'down'}" style="left:${c.x}%;top:${c.y}%"><i></i>${small || (cls !== 'here' && !c.mine) ? '' : `<b>${c.mine ? '💚 ' : ''}${esc(c.name)}</b>`}</span>`;   // names: where she is and her own city (the north-east is too crowded for all)
     }).join('');
     const path = D.cities.filter(c => r.stamps[c.id] || (here && c.id === here.id));
     const line = path.length > 1 ? `<svg class="dz-route" viewBox="0 0 100 100" preserveAspectRatio="none"><polyline points="${path.map(c => `${c.x},${c.y}`).join(' ')}"/></svg>` : '';
@@ -569,7 +569,8 @@ function mount(api) {
     $('#dzMap').innerHTML = mapHTML();
     $('#dzHere').innerHTML = here && here.ready
       ? `<small>${L.visiting}</small><strong>${esc(here.name)}</strong><em>${esc(here.nick)}</em>`
-      : here ? `<small>${L.nextCity}</small><strong>${esc(here.name)}</strong><em>${L.coming}</em>` : '';
+      : here ? `<small>${L.nextCity}</small><strong>${esc(here.name)}</strong><em>${L.coming}</em>`
+      : `<small>${L.tripDone}</small><strong>${L.tripAll}</strong><em>${L.tripOn}</em>`;   // the whole trip done: pictures and cards go on
     $('#dzGoLabel').textContent = done ? L.tomorrow : L.go;
     $('#dzGo').disabled = done; $('#dzGo').classList.toggle('done', done);
     api.show('dzhome');
