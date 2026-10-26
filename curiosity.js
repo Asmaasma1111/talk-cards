@@ -417,7 +417,7 @@ function mount(api) {
     }
     for (let i = 0; i < Math.min(cnt.fruits, 60); i++) {
       const [x, y] = twigs[(i * 11 + 3) % M];
-      out.push(`<g transform="translate(${x} ${y + 30})">${img(R[i % R.length], 88, 'fr', i, 'fruits')}</g>`);
+      out.push(`<g transform="translate(${x} ${y + 44})">${img(R[i % R.length], 125, 'fr', i, 'fruits')}</g>`);   // big apples (her request, 26 Oct)
     }
     // magic dust: a burst of sparkles and a glow round every apple that has just arrived (drawn on top of everything)
     const STAR = 'M0 -24 L6 -6 24 0 6 6 0 24 -6 6 -24 0 -6 -6Z', GOLD = ['#FFD84D', '#FF8DB8', '#FFFFFF', '#FFC23A', '#C8B9FF', '#8FE3BF'];
@@ -431,7 +431,7 @@ function mount(api) {
         const a = (k * 360 / 16 + 11) * Math.PI / 180, r = 50 + (k % 5) * 30;
         return `<circle class="dp" r="${5 + (k % 3) * 3}" fill="${GOLD[(k + 2) % 6]}" style="--dx:${Math.round(Math.cos(a) * r)}px;--dy:${Math.round(Math.sin(a) * r)}px;animation-delay:${(d0 + 0.3 + (k % 4) * 0.09).toFixed(2)}s"/>`;
       }).join('');
-      out.push(`<g class="dust" transform="translate(${x} ${y + 30})"><circle class="dglow" r="70" style="animation-delay:${d0.toFixed(2)}s"/><circle class="dring" r="40" style="animation-delay:${(d0 + 0.1).toFixed(2)}s"/>${glitter}${sparks}</g>`);
+      out.push(`<g class="dust" transform="translate(${x} ${y + 44})"><circle class="dglow" r="70" style="animation-delay:${d0.toFixed(2)}s"/><circle class="dring" r="40" style="animation-delay:${(d0 + 0.1).toFixed(2)}s"/>${glitter}${sparks}</g>`);
     }
     return `<svg viewBox="0 0 ${T.size} ${T.size}" role="img" aria-label="${L_TREE}"><image href="${T.image}" width="${T.size}" height="${T.size}"/>${out.join('')}</svg>`;
   }
