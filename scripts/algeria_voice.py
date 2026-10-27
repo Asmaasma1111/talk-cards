@@ -42,6 +42,68 @@ def lines():
 CV.lines = lines
 
 
+# The maths lines are full of digits, signs and short units («٢٤ × ٣ = ٧٢»، «٣ كجم»), which the voice says in words and
+# the transcriber writes either way. So the check reads both sides as words with one spelling for each number and unit,
+# and the cutter judges a line's length by how long it takes to say, not by how many characters it has.
+_ONES = ['صفر', 'واحد', 'اثنان', 'ثلاثه', 'اربعه', 'خمسه', 'سته', 'سبعه', 'ثمانيه', 'تسعه']
+_TENS = {2: 'عشرون', 3: 'ثلاثون', 4: 'اربعون', 5: 'خمسون', 6: 'ستون', 7: 'سبعون', 8: 'ثمانون', 9: 'تسعون'}
+_SAME = {'واحده': 'واحد', 'احد': 'واحد', 'احدي': 'واحد', 'اثنين': 'اثنان', 'اثنا': 'اثنان', 'اثنتان': 'اثنان',
+         'اثنتين': 'اثنان', 'اثنتا': 'اثنان', 'ثلاث': 'ثلاثه', 'اربع': 'اربعه', 'خمس': 'خمسه', 'ست': 'سته',
+         'سبع': 'سبعه', 'ثمان': 'ثمانيه', 'ثماني': 'ثمانيه', 'تسع': 'تسعه', 'عشر': 'عشره', 'مائه': 'مئه', 'مايه': 'مئه',
+         'مئتين': 'مئتان', 'مائتان': 'مئتان', 'مائتين': 'مئتان', 'الفين': 'الفان', 'الاف': 'الف', 'الفا': 'الف',
+         'سنتيمتر': 'سم', 'سنتمتر': 'سم', 'سنتيمترا': 'سم', 'سنتيمترات': 'سم', 'ملمتر': 'ملم', 'مليمتر': 'ملم',
+         'ملليمتر': 'ملم', 'ديسيمتر': 'دسم', 'كيلومتر': 'كلم', 'كم': 'كلم', 'م': 'متر', 'مترا': 'متر', 'امتار': 'متر',
+         'كيلوغرام': 'كجم', 'كيلوجرام': 'كجم', 'كغم': 'كجم', 'كلغ': 'كجم', 'غرام': 'جم', 'جرام': 'جم', 'غ': 'جم',
+         'هيكتغرام': 'هكتوجرام', 'هكتوغرام': 'هكتوجرام', 'هكتغرام': 'هكتوجرام', 'ديكاغرام': 'ديكاجرام',
+         'ل': 'لتر', 'لترات': 'لتر', 'ملليلتر': 'مل', 'مليلتر': 'مل', 'سنتلتر': 'سنتيلتر'}
+_SAME.update({v: v for v in _ONES + list(_TENS.values())})
+_SAME.update({t[:-2] + 'ين': t for t in _TENS.values()})                  # عشرين = عشرون
+
+
+def _words(n):
+    if n < 10: return [_ONES[n]]
+    if n < 20: return ([] if n == 10 else [_ONES[n - 10]]) + ['عشره']
+    if n < 100: return ([] if n % 10 == 0 else [_ONES[n % 10]]) + [_TENS[n // 10]]
+    if n < 1000:
+        h = {1: ['مئه'], 2: ['مئتان']}.get(n // 100, [_ONES[n // 100], 'مئه'])
+        return h + (_words(n % 100) if n % 100 else [])
+    t = {1: ['الف'], 2: ['الفان']}.get(n // 1000, _words(n // 1000) + ['الف'])
+    return t + (_words(n % 1000) if n % 1000 else [])
+
+
+def _canon(t):
+    t = t.translate(str.maketrans('٠١٢٣٤٥٦٧٨٩', '0123456789'))
+    t = re.sub(r'\d+', lambda m: ' ' + ' '.join(_words(int(m.group()))) + ' ', t)
+    t = t.replace('×', ' ضرب ').replace('=', ' يساوي ').replace('+', ' زائد ').replace('−', ' ناقص ')
+    t = re.sub(r'ديسي\s*متر', 'ديسيمتر', t)
+    out = []
+    for w in CV.norm(t):
+        for x in (w, w[1:] if w.startswith('و') and len(w) > 2 else None):
+            if x is None: continue
+            head = re.sub('(مئه|مائه)$', '', x)
+            if x in _SAME and _SAME[x]:
+                out.append(_SAME[x]); break
+            if head != x and _SAME.get(head, head) in _ONES:            # تسعمائه = تسعه مئه
+                out += [_SAME.get(head, head), 'مئه']; break
+        else:
+            out.append(w)
+    return ' '.join(out)
+
+
+def close(want, heard):
+    a, h = _canon(want), _canon(heard)
+    r = CV.SequenceMatcher(None, a, h).ratio()
+    return min(r, 0.89) if len(h.split()) - len(a.split()) >= 2 else r   # two words more: the cut took some of the next line
+
+
+def speakable(t):
+    return _canon(t)
+
+
+CV.close = close
+CV.speakable = speakable
+
+
 def cmd_build(a):
     plan = V.load(CV.PLAN, {'batches': {}, 'clips': {}})
     os.makedirs(OUT, exist_ok=True)

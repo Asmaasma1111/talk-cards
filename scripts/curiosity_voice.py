@@ -216,6 +216,10 @@ def pieces(x, want):
     return None
 
 
+def speakable(t):
+    return t                                           # a project may say digits and signs in words (algeria_voice)
+
+
 def pieces_fit(x, texts):
     """Cut a take into len(texts) pieces at the pauses that best match where each line should end: a line's share of
     the take follows its length in letters, and a longer pause is a better cut (a line can hold a short pause inside,
@@ -227,7 +231,7 @@ def pieces_fit(x, texts):
     gaps = [(s, e) for s, e in V.runs(env < thr) if (e - s) * 0.01 >= 0.22 and s > 0 and e < n]
     if len(gaps) < K - 1:
         return None
-    w = [len(re.sub(r'[\s\u064B-\u065F]', '', t)) + 8 for t in texts]
+    w = [len(re.sub(r'[\s\u064B-\u065F]', '', speakable(t))) + 8 for t in texts]   # (how long it takes to say)
     exp = np.cumsum(w)[:-1] / sum(w) * n
     unit = n / K
     mids = [(s + e) / 2 for s, e in gaps]; lens = [min(1.6, (e - s) * 0.01) for s, e in gaps]
@@ -255,8 +259,8 @@ def cmd_split(a):
     plan = V.load(PLAN, {'batches': {}, 'clips': {}})
     text = dict(lines())
     for bid, b in sorted(plan['batches'].items()):
-        if b.get('split') and bid not in (a.again or []):
-            continue
+        if (b.get('split') and bid not in (a.again or [])) or not b['ids']:
+            continue                                   # (a batch whose lines all went for re-recording is empty)
         x = V.read_wav(os.path.join(WORK, 'batches', f'{bid}.wav'))
         ps = pieces_fit(x, [text[i] for i in b['ids']]) or pieces(x, len(b['ids']))
         if not ps:
