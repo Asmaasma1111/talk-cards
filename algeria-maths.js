@@ -600,9 +600,9 @@ function mount(ctx) {
     ctx.save();
   }
   /* ---------- one item; resolves true if right at the first try. Her rule: «التالي» after every answer ---------- */
-  function frame(t, i, n, body) {
+  function frame(t, i, n, body, paperOpen = false) {
     el.innerHTML = `<div class="dz-top"><button class="quit" id="mcStop" aria-label="الركن"><svg aria-hidden="true"><use href="#i-close"/></svg></button><h1 class="dz-ptitle sm">${pic(t, 'mc-pic-h')} ${esc(t.title)}</h1><p class="dz-count">${n < 0 ? 'مرّةً أخرى 🔁' : `${AR(i + 1)} من ${AR(n)}`}</p></div>
-      <div class="mc-split"><div class="dz-pane mc-item">${t.lesson.worked.length ? '<button class="mc-exbtn" id="mcEx">👀 المثال</button>' : ''}${body}<div class="dz-fb" id="mcFb"></div><div class="dz-row dz-nextrow" id="mcNextRow"></div></div>${PAPER}</div>`;
+      <div class="mc-split${paperOpen ? ' open' : ''}" id="mcSplit"><div class="dz-pane mc-item"><div class="mc-tools-row">${t.lesson.worked.length ? '<button class="mc-exbtn" id="mcEx">👀 المثال</button>' : ''}<button class="mc-exbtn mc-paperbtn" id="mcPaperBtn">✏️ مسودّتي</button></div>${body}<div class="dz-fb" id="mcFb"></div><div class="dz-row dz-nextrow" id="mcNextRow"></div></div>${PAPER}</div>`;
     $('#mcStop').onclick = () => { api.SFX.init(); S = null; open(); };
     if ($('#mcEx')) $('#mcEx').onclick = () => {
       api.SFX.init(); let open_ = true;
@@ -611,12 +611,14 @@ function mount(ctx) {
       readLesson($('#mcWkPop'), () => open_);
     };
     paper($('.mc-paper', el));
+    // the rough paper shows only when she asks for it (her request, 27 Oct 2026), or when the question needs working out
+    $('#mcPaperBtn').onclick = () => { api.SFX.init(); $('#mcSplit').classList.toggle('open'); };
   }
-  /* her rough paper (her request, 26 Oct 2026): squared paper beside the question, for the iPad pen (or a finger). Once
+  /* her rough paper (her request, 26 Oct 2026; 27 Oct: hidden until needed, ruled like a French/Algerian Seyès copybook) beside the question, for the iPad pen (or a finger). Once
      the pen has touched it, a resting hand is ignored. Nothing is kept: a clean sheet for every question. */
   const PAPER = `<div class="mc-paper"><div class="mc-paper-bar"><b>✏️ مسودّتي</b><span class="mc-ptools">
     <button data-p="pen" class="on" aria-label="القلم">✏️</button><button data-p="erase" aria-label="الممحاة">🧽</button>
-    <button data-p="undo" aria-label="تراجعي">↶</button><button data-p="clear" aria-label="امسحي الورقة">🗑️</button></span></div><canvas class="mc-canvas"></canvas></div>`;
+    <button data-p="undo" aria-label="تراجعي">↶</button><button data-p="clear" aria-label="امسحي الورقة">🗑️</button><button data-p="close" aria-label="أغلقي المسودّة">✕</button></span></div><canvas class="mc-canvas"></canvas></div>`;
   let penSeen = false;
   function paper(box) {
     const cv = box.querySelector('canvas'), g = cv.getContext('2d'), strokes = [];
@@ -654,6 +656,7 @@ function mount(ctx) {
       const b = e.target.closest('[data-p]'); if (!b) return;
       const k = b.dataset.p;
       if (k === 'pen' || k === 'erase') { mode = k; box.querySelectorAll('[data-p="pen"], [data-p="erase"]').forEach(x => x.classList.toggle('on', x === b)); return; }
+      if (k === 'close') { box.parentNode.classList.remove('open'); return; }
       if (k === 'undo') strokes.pop(); else strokes.length = 0;
       redraw();
     };
@@ -688,7 +691,7 @@ function mount(ctx) {
   function multiItem(s, t, it, i, n) {
     const parts = it.q.split('\n').map(line => esc(line).replace(/\{(\d)\}/g, (_, k) => `<span class="mc-blank" data-b="${k}">؟</span>`));
     const col = it.col ? `<div class="mc-col" dir="ltr"><span></span><span>${AR(it.col[0])}</span><span>×</span><span>${AR(it.col[1])}</span></div>` : '';
-    frame(t, i, n, `<div class="mc-qlines">${parts.map(p => `<p class="dz-q mc-q">${p}</p>`).join('')}</div>${col}<div class="mc-ans" dir="ltr"><span id="mcIn"></span>${it.unit ? `<small>${esc(it.unit)}</small>` : ''}</div>${pad()}`);
+    frame(t, i, n, `<div class="mc-qlines">${parts.map(p => `<p class="dz-q mc-q">${p}</p>`).join('')}</div>${col}<div class="mc-ans" dir="ltr"><span id="mcIn"></span>${it.unit ? `<small>${esc(it.unit)}</small>` : ''}</div>${pad()}`, !!it.col);   // two-digit multiplication: the rough paper opens by itself
     return new Promise(done => {
       let k = 0, typed = '', tries = 0, clean = true;
       const mark = () => el.querySelectorAll('.mc-blank').forEach(b => b.classList.toggle('cur', Number(b.dataset.b) === k && !b.classList.contains('done')));

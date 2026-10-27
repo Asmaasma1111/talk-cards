@@ -1403,6 +1403,10 @@ body[data-profile="mama"] .deck-lib { display: none; }
 .lb-cel.hundred .lb-cel-burst { width: 180px; height: 180px; background: conic-gradient(from 0deg, #FFD84D, #FF9EC4, #8FC9EE, #8FE3BF, #C9A7FF, #FFD84D); }
 .lb-cel.hundred .lb-cel-burst b { width: 140px; height: 140px; font-size: 64px; }
 .lb-cel.hundred h2 { font-size: 52px; }
+.lb-cel.halfyear .lb-cel-burst { width: 210px; height: 210px; background: conic-gradient(from 0deg, #FFD84D, #FF9EC4, #8FC9EE, #8FE3BF, #C9A7FF, #FFB347, #FFD84D); animation-duration: 3s; }
+.lb-cel.halfyear .lb-cel-burst b { width: 166px; height: 166px; font-size: 72px; }
+.lb-cel.halfyear h2 { font-size: 56px; }
+.lb-cel.halfyear .lb-cel-box { border-color: #D9A441; box-shadow: 0 8px 0 #A9751F, 0 0 0 10px rgba(255, 216, 77, .35); }
 .lb-cel.play .lb-cel-box { animation: lbPop .6s cubic-bezier(.3, 1.5, .5, 1) both; }
 @keyframes lbPop { from { transform: scale(.4); opacity: 0; } }
 
@@ -3183,9 +3187,18 @@ body[data-profile="mama"] .deck-apps { display: none; }
 .mc-split .mc-pic .mc-svg { width: min(100%, 420px); }
 .mc-split .mc-grid-col { --cw: clamp(42px, 4.4vw, 58px); }
 .mc-split .mc-pad { grid-template-columns: repeat(3, clamp(58px, 6.4vw, 80px)); }
-.mc-paper { width: 100%; margin: 0; justify-self: stretch; min-height: 320px; display: flex; flex-direction: column; overflow: hidden; border-radius: 24px; box-shadow: 0 10px 24px rgba(0, 70, 36, .14);
-  background-color: #fff; background-image: linear-gradient(90deg, transparent calc(100% - 46px), #F2A7A7 calc(100% - 46px), #F2A7A7 calc(100% - 44px), transparent calc(100% - 44px)),
-  linear-gradient(#D7E5F2 1px, transparent 1px), linear-gradient(90deg, #D7E5F2 1px, transparent 1px); background-size: 100% 100%, 22px 22px, 22px 22px; }
+.mc-paper { width: 100%; margin: 0; justify-self: stretch; min-height: 320px; display: none; flex-direction: column; overflow: hidden; border-radius: 24px; box-shadow: 0 10px 24px rgba(0, 70, 36, .14);
+  /* a French/Algerian Seyès copybook (her request, 27 Oct 2026): fine blue lines every 2 mm, a violet line every fourth,
+     violet verticals, and the red margin on the right, the side Arabic starts from */
+  background-color: #fff;
+  background-image: linear-gradient(90deg, transparent calc(100% - 46px), #E5484D calc(100% - 46px), #E5484D calc(100% - 44px), transparent calc(100% - 44px)),
+    linear-gradient(90deg, #B9AEE2 1px, transparent 1px), linear-gradient(#9C90D6 1px, transparent 1px), linear-gradient(#C4DDF0 1px, transparent 1px);
+  background-size: 100% 100%, 32px 100%, 100% 32px, 100% 8px; }
+.mc-split { grid-template-columns: minmax(0, 1fr); }
+.mc-split.open { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.mc-split.open > .mc-paper { display: flex; }
+.mc-tools-row { align-self: stretch; display: flex; justify-content: space-between; gap: 10px; }
+.mc-paperbtn { color: var(--g7); }
 .mc-paper-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 12px 8px 14px; background: rgba(238, 250, 242, .94); border-bottom: 2px solid #DCEBE2; }
 .mc-paper-bar b { font: 800 19px var(--apfont); color: var(--g7); }
 .mc-ptools { display: flex; gap: 8px; direction: ltr; }
@@ -3193,7 +3206,7 @@ body[data-profile="mama"] .deck-apps { display: none; }
 .mc-ptools button.on { box-shadow: 0 0 0 3px var(--g5); }
 .mc-canvas { flex: 1; width: 100%; min-height: 0; display: block; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 @media (orientation: portrait) {
-  .mc-split { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(340px, 1fr); }
+  .mc-split.open { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(340px, 1fr); }
 }
 
 /* كتاب ألغازي drawn in ChatGPT (her request, 26 Oct 2026): the clay cover and page (assets/reads/book, scripts/book_art.py);
