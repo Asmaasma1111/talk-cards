@@ -117,7 +117,7 @@ function leaves(story) {
   ['other', 'magic', 'feeling', 'tool', 'mission'].forEach(kind => out.push({ kind }));
   return out;
 }
-const MILESTONES = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120];
+const MILESTONES = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150];
 const core = { KEY, TRACK, MILESTONES, blank, clean, valid, onShelf, held, shelves, shelfOpen, nextOn, newToday, status, start, finish, setMission, doorsWaiting, path, leaves };
 
 /* =====================================================================================================
@@ -359,7 +359,7 @@ function mount(api) {
   const ITEMS = [['frame', 'صورتي'], ['plant', 'نبتة'], ['camel', 'جمل صغير'], ['bear', 'دبدوب'], ['trophy', 'كأس ذهبية'], ['jar', 'برطمان حلوى'],
     ['globe', 'كرة أرضية'], ['butterfly', 'فراشة'], ['starlamp', 'مصباح نجمة'], ['books', 'كتب وكوب']];
   const GARLANDS = [['', 'بلا زينة'], ['lights', 'أضواء'], ['bunting', 'أعلام ملوّنة']];
-  const ORD = { 1: 'الأوّل', 2: 'الثاني', 3: 'الثالث', 4: 'الرابع', 5: 'الخامس', 6: 'السادس', 7: 'السابع', 8: 'الثامن', 9: 'التاسع', 10: 'العاشر', 11: 'الحادي عشر', 12: 'الثاني عشر' };
+  const ORD = { 1: 'الأوّل', 2: 'الثاني', 3: 'الثالث', 4: 'الرابع', 5: 'الخامس', 6: 'السادس', 7: 'السابع', 8: 'الثامن', 9: 'التاسع', 10: 'العاشر', 11: 'الحادي عشر', 12: 'الثاني عشر', 13: 'الثالث عشر', 14: 'الرابع عشر', 15: 'الخامس عشر' };
   // the fresh garden palette (her choice, 13 Oct 2026): leaf green, butter, powder blue, warm white, peach, sage
   const PAL = [['#8CC27A', '#6BA65A', '#fff'], ['#FBE08A', '#EBC458', '#2B2340'], ['#A9D0EF', '#7FB2DE', '#2B2340'], ['#FBF4E4', '#E9DCC2', '#2B2340'],
     ['#F7BE9E', '#E99A74', '#2B2340'], ['#B8D8B0', '#8FBB86', '#2B2340'], ['#7FB9E3', '#5797CC', '#fff'], ['#F3CD72', '#DCA941', '#2B2340'],
@@ -1010,11 +1010,11 @@ function mount(api) {
   function milestone(n, then) {
     lib.seen[n] = t(); save();
     $('#lbCelIc').innerHTML = `<b>${AR(n)}</b>`;
-    $('#lbCelTitle').textContent = `${AR(n)} ${n === 10 ? 'كتب' : 'كتاباً'}!`;
-    $('#lbCelSub').textContent = n === 30 ? 'قرأتِ كتب الشهر الأوّل كلّها!' : n === 60 ? 'قرأتِ كتب الشهرين كلّها!' : n === 90 ? 'قرأتِ كتب الأشهر الثلاثة كلّها!' : n === 100 ? 'مئة كتاب! قرأتِ مئة كتاب كامل!' : n === 120 ? 'قرأتِ كتب الأشهر الأربعة كلّها!' : 'أكملتِ رفّاً كاملاً من الكتب!';
-    const c = $('#lbCel'); c.hidden = false; c.classList.remove('play'); c.classList.toggle('hundred', n === 100); void c.offsetWidth; c.classList.add('play');
+    $('#lbCelTitle').textContent = `${AR(n)} ${n === 10 || n === 110 ? 'كتب' : n === 100 ? 'كتاب' : 'كتاباً'}!`;   // 100 كتاب, 110 كتب (number agreement)
+    $('#lbCelSub').textContent = n === 30 ? 'قرأتِ كتب الشهر الأوّل كلّها!' : n === 60 ? 'قرأتِ كتب الشهرين كلّها!' : n === 90 ? 'قرأتِ كتب الأشهر الثلاثة كلّها!' : n === 100 ? 'مئة كتاب! قرأتِ مئة كتاب كامل!' : n === 120 ? 'قرأتِ كتب الأشهر الأربعة كلّها!' : n === 150 ? 'مئة وخمسون كتاباً! قرأتِ كتب الأشهر الخمسة كلّها!' : 'أكملتِ رفّاً كاملاً من الكتب!';
+    const c = $('#lbCel'); c.hidden = false; c.classList.remove('play'); c.classList.toggle('hundred', n === 100 || n === 150); void c.offsetWidth; c.classList.add('play');
     SND.fanfare(); api.confetti($('#lbConfetti'));
-    if (n === 100) setTimeout(() => { if (!c.hidden) { SND.fanfare(); api.confetti($('#lbConfetti')); } }, 1600);   // the 100th book: a bigger party (her prompt)
+    if (n === 100 || n === 150) setTimeout(() => { if (!c.hidden) { SND.fanfare(); api.confetti($('#lbConfetti')); } }, 1600);   // the 100th and 150th books: a bigger party (her prompts)
     $('#lbCelOk').onclick = () => {
       c.hidden = true; api.stopConfetti($('#lbConfetti'));
       const k = n / 10;
