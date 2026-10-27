@@ -1400,6 +1400,9 @@ body[data-profile="mama"] .deck-lib { display: none; }
 .lb-cel-burst b { width: 100px; height: 100px; display: grid; place-items: center; font-size: 52px; font-weight: 800; line-height: 1; padding-top: 6px; background: #FFFDF6; border-radius: 50%; animation: lbSpin 6s linear infinite reverse; }
 @keyframes lbSpin { to { transform: rotate(360deg); } }
 .lb-cel h2 { margin: 6px 0 0; font-size: 40px; line-height: 1.4; } .lb-cel p { margin: 0 0 8px; font-size: 20px; }
+.lb-cel.hundred .lb-cel-burst { width: 180px; height: 180px; background: conic-gradient(from 0deg, #FFD84D, #FF9EC4, #8FC9EE, #8FE3BF, #C9A7FF, #FFD84D); }
+.lb-cel.hundred .lb-cel-burst b { width: 140px; height: 140px; font-size: 64px; }
+.lb-cel.hundred h2 { font-size: 52px; }
 .lb-cel.play .lb-cel-box { animation: lbPop .6s cubic-bezier(.3, 1.5, .5, 1) both; }
 @keyframes lbPop { from { transform: scale(.4); opacity: 0; } }
 
@@ -1411,6 +1414,9 @@ body[data-profile="mama"] .deck-lib { display: none; }
 .st-room { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; user-select: none; -webkit-user-drag: none; }
 /* the empty shelves: each tool's own place; a dashed outline and a soft shade until she earns it */
 #stShelf, #stBoard { position: absolute; inset: 0; pointer-events: none; }
+#stGrow { position: absolute; inset: 0; pointer-events: none; }
+.st-grow { position: absolute; height: auto; filter: drop-shadow(0 4px 6px rgba(90, 70, 50, .18)); }
+.st-temo { font-size: 2.4em; line-height: 1; }
 .st-slot { position: absolute; display: flex; align-items: flex-end; justify-content: center; border: 2px dashed rgba(150, 112, 74, .42); border-bottom: 0; border-radius: 10px 10px 0 0; }
 .st-slot img { max-width: 86%; max-height: 88%; object-fit: contain; filter: brightness(0) opacity(.13); -webkit-user-drag: none; }
 .st-slot.got { border-color: transparent; }

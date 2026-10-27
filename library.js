@@ -117,7 +117,7 @@ function leaves(story) {
   ['other', 'magic', 'feeling', 'tool', 'mission'].forEach(kind => out.push({ kind }));
   return out;
 }
-const MILESTONES = [10, 20, 30, 40, 50, 60];
+const MILESTONES = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120];
 const core = { KEY, TRACK, MILESTONES, blank, clean, valid, onShelf, held, shelves, shelfOpen, nextOn, newToday, status, start, finish, setMission, doorsWaiting, path, leaves };
 
 /* =====================================================================================================
@@ -134,6 +134,10 @@ function mount(api) {
   const M1N = 30;
   const M1 = () => ST.filter(s => s.day <= M1N);
   const tools1 = () => lib.tools.filter(id => byId[id] && byId[id].day <= M1N).length;
+  // Month 3 (Days 61-90, 27 Oct 2026): craft tools again, like month 1, which open colouring pictures and six projects
+  const M2N = 60, isM2 = s => s.day > M1N && s.day <= M2N;
+  const M3 = () => ST.filter(s => s.day > M2N);
+  const tools3 = () => lib.tools.filter(id => byId[id] && byId[id].day > M2N).length;
   const SQ = root.Squishy;
   function save() { api.lsSet(KEY, JSON.stringify(lib)); }
   const motion = () => !api.reduced();
@@ -184,7 +188,7 @@ function mount(api) {
 </section>
 <section id="lstudio" class="screen lb lb-studio" dir="rtl" lang="ar" hidden>
   <div class="st-scroll" id="stScroll" dir="ltr"><div class="st-stage" id="stStage"><img class="st-room" src="assets/library/studio.webp" alt="">
-    <div id="stShelf"></div><div id="stBoard"></div><div id="stJar"></div><div id="stSpots"></div></div></div>
+    <div id="stGrow"></div><div id="stShelf"></div><div id="stBoard"></div><div id="stJar"></div><div id="stSpots"></div></div></div>
   <div class="lb-top"><button class="st-back" id="stBack">مكتبتي ←</button><h1 class="st-title">مرسمي</h1></div>
   <div class="st-swipe" id="stSwipe">↔ اسحبي لتري المرسم كلّه</div>
   <div class="st-panel" id="stPanel" hidden><div class="st-pbox"><button class="st-px" id="stPx" aria-label="إغلاق">×</button><div id="stPbody"></div></div></div>
@@ -355,7 +359,7 @@ function mount(api) {
   const ITEMS = [['frame', 'صورتي'], ['plant', 'نبتة'], ['camel', 'جمل صغير'], ['bear', 'دبدوب'], ['trophy', 'كأس ذهبية'], ['jar', 'برطمان حلوى'],
     ['globe', 'كرة أرضية'], ['butterfly', 'فراشة'], ['starlamp', 'مصباح نجمة'], ['books', 'كتب وكوب']];
   const GARLANDS = [['', 'بلا زينة'], ['lights', 'أضواء'], ['bunting', 'أعلام ملوّنة']];
-  const ORD = { 1: 'الأوّل', 2: 'الثاني', 3: 'الثالث', 4: 'الرابع', 5: 'الخامس', 6: 'السادس' };
+  const ORD = { 1: 'الأوّل', 2: 'الثاني', 3: 'الثالث', 4: 'الرابع', 5: 'الخامس', 6: 'السادس', 7: 'السابع', 8: 'الثامن', 9: 'التاسع', 10: 'العاشر', 11: 'الحادي عشر', 12: 'الثاني عشر' };
   // the fresh garden palette (her choice, 13 Oct 2026): leaf green, butter, powder blue, warm white, peach, sage
   const PAL = [['#8CC27A', '#6BA65A', '#fff'], ['#FBE08A', '#EBC458', '#2B2340'], ['#A9D0EF', '#7FB2DE', '#2B2340'], ['#FBF4E4', '#E9DCC2', '#2B2340'],
     ['#F7BE9E', '#E99A74', '#2B2340'], ['#B8D8B0', '#8FBB86', '#2B2340'], ['#7FB9E3', '#5797CC', '#fff'], ['#F3CD72', '#DCA941', '#2B2340'],
@@ -715,7 +719,7 @@ function mount(api) {
       <div class="lb-keep"><span class="lb-pot" id="lbNotebook">📒<b>${AR(lib.notebook.length)}</b></span><small>دفتر الجمل السحرية</small></div><button class="btn lb-next">التالي</button></div>`;
     if (lf.kind === 'feeling') return `<div class="lb-endc"><h3>💬 كلمة الشعور</h3><div class="lb-word" id="lbWord">${esc(s.feeling_word)}</div>
       <div class="lb-keep"><span class="lb-pot" id="lbDict">📖<b>${AR(lib.feelings.length)}</b></span><small>قاموس مشاعري</small></div><button class="btn lb-next">التالي</button></div>`;
-    if (lf.kind === 'tool' && s.day > M1N) {         // month 2: a new piece for the squishy maker
+    if (lf.kind === 'tool' && isM2(s)) {             // month 2: a new piece for the squishy maker
       const have = lib.tools.includes(s.id), pc = pieceFor(s);
       return `<div class="lb-endc"><h3>✨ قطعة جديدة للسكويشي</h3><div class="lb-tool lb-sqp" id="lbTool">${pc ? sqImg(SQ.preview(pc)) : ''}</div><p class="lb-tname">${pc ? esc(SQ.label(pc)) : ''}</p>
         <div class="lb-keep"><span class="lb-pot" id="lbStudio">🫙<b>${AR(lib.sq.pieces.length)}</b></span><small>صانعة السكويشي</small></div>
@@ -723,7 +727,7 @@ function mount(api) {
     }
     if (lf.kind === 'tool') {
       const have = lib.tools.includes(s.id);
-      return `<div class="lb-endc"><h3>🎨 أداة جديدة للمرسم</h3><div class="lb-tool" id="lbTool"><img src="assets/library/tools/${s.id}.webp" alt="" draggable="false"></div><p class="lb-tname">${esc(s.tool.name)}</p>
+      return `<div class="lb-endc"><h3>🎨 أداة جديدة للمرسم</h3><div class="lb-tool" id="lbTool">${toolImg(s)}</div><p class="lb-tname">${esc(s.tool.name)}</p>
         <div class="lb-keep"><span class="lb-pot" id="lbStudio">🏠<b>${AR(lib.tools.length)}</b></span><small>مرسمي</small></div>
         <button class="btn btn-good lb-put">${have ? 'التالي' : 'ضعيها في المرسم'}</button></div>`;
     }
@@ -903,7 +907,7 @@ function mount(api) {
     if (b.classList.contains('lb-put')) {
       if (lib.tools.includes(s.id)) return turn(1);
       b.disabled = true;
-      if (s.day > M1N) keepPiece(); else keepTool();
+      if (isM2(s)) keepPiece(); else keepTool();
       return;
     }
     if (b.classList.contains('lb-did-it')) { $('#lbMbtns').hidden = true; $('#lbFeels').hidden = false; return; }
@@ -926,9 +930,11 @@ function mount(api) {
   }
   function keepTool() {
     const s = R.s, tl = $('#lbTool'), pot = $('#lbStudio');
-    const before = tools1();
+    const before = tools1(), before3 = tools3();
     lib.tools.includes(s.id) || lib.tools.push(s.id); save();
     if (s.day <= M1N && opened(tools1()) > opened(before)) setTimeout(() => api.toast && api.toast('🎨 صورة جديدة للتلوين تنتظركِ في مرسمي'), 1400);
+    const now3 = PICS3.filter(p => p.at === tools3() && p.at > before3);
+    if (s.day > M2N && now3.length) setTimeout(() => api.toast && api.toast(now3.some(p => p.proj) ? '⭐ مشروع جديد ينتظركِ في مرسمي' : '🎨 صورة جديدة للتلوين تنتظركِ في مرسمي'), 1400);
     const ra = tl.getBoundingClientRect(), rb = pot.getBoundingClientRect();
     const g = tl.cloneNode(true); g.removeAttribute('id'); g.classList.add('lb-ghost');
     Object.assign(g.style, { left: ra.left + 'px', top: ra.top + 'px', width: ra.width + 'px', height: ra.height + 'px' });
@@ -1005,9 +1011,10 @@ function mount(api) {
     lib.seen[n] = t(); save();
     $('#lbCelIc').innerHTML = `<b>${AR(n)}</b>`;
     $('#lbCelTitle').textContent = `${AR(n)} ${n === 10 ? 'كتب' : 'كتاباً'}!`;
-    $('#lbCelSub').textContent = n === 30 ? 'قرأتِ كتب الشهر الأوّل كلّها!' : n === 60 ? 'قرأتِ كتب الشهرين كلّها!' : 'أكملتِ رفّاً كاملاً من الكتب!';
-    const c = $('#lbCel'); c.hidden = false; c.classList.remove('play'); void c.offsetWidth; c.classList.add('play');
+    $('#lbCelSub').textContent = n === 30 ? 'قرأتِ كتب الشهر الأوّل كلّها!' : n === 60 ? 'قرأتِ كتب الشهرين كلّها!' : n === 90 ? 'قرأتِ كتب الأشهر الثلاثة كلّها!' : n === 100 ? 'مئة كتاب! قرأتِ مئة كتاب كامل!' : n === 120 ? 'قرأتِ كتب الأشهر الأربعة كلّها!' : 'أكملتِ رفّاً كاملاً من الكتب!';
+    const c = $('#lbCel'); c.hidden = false; c.classList.remove('play'); c.classList.toggle('hundred', n === 100); void c.offsetWidth; c.classList.add('play');
     SND.fanfare(); api.confetti($('#lbConfetti'));
+    if (n === 100) setTimeout(() => { if (!c.hidden) { SND.fanfare(); api.confetti($('#lbConfetti')); } }, 1600);   // the 100th book: a bigger party (her prompt)
     $('#lbCelOk').onclick = () => {
       c.hidden = true; api.stopConfetti($('#lbConfetti'));
       const k = n / 10;
@@ -1036,7 +1043,22 @@ function mount(api) {
     { id: 'banana', t: 'سكويشي الموزة' }, { id: 'noodles', t: 'سكويشي النودلز' }, { id: 'paper-squishy', t: 'سكويشي من ورق' }, { id: 'butter-toast', t: 'زبدة على خبز محمّص' }, { id: 'bunny', t: 'أرنب سكويشي' }, { id: 'cat', t: 'قطّة سكويشي' },
     { id: 'rainbow', t: 'ملصقة قوس قزح' }, { id: 'treasure', t: 'صندوق الكنز' }, { id: 'bracelet', t: 'سوار الصداقة' },
     { id: 'bookmark', t: 'فاصل كتاب' }];
-  const PIC = Object.fromEntries(PICS.map(p => [p.id, p]));
+  // Month 3's colouring pictures (her choice, 27 Oct 2026: «like Month 1»): 16 pictures spread over the 30 books, squishies first,
+  // and the six projects of her prompt, one every 5 books (proj). at = how many month-3 tools open it.
+  const M3PICS = [
+    { id: 'm3-strawberry-milk', t: 'سكويشي حليب الفراولة' }, { id: 'm3-mochi', t: 'عائلة الموتشي' }, { id: 'm3-icecream', t: 'سكويشي الآيس كريم' },
+    { id: 'm3-avocado', t: 'سكويشي الأفوكادو' }, { id: 'm3-cupcake', t: 'سكويشي الكب كيك' }, { id: 'm3-donut', t: 'سكويشي الدونات' },
+    { id: 'm3-bubble-tea', t: 'سكويشي كوب الفقاعات' }, { id: 'm3-cloud', t: 'سكويشي الغيمة' }, { id: 'm3-panda', t: 'سكويشي الباندا' },
+    { id: 'm3-frog', t: 'سكويشي الضفدع' }, { id: 'm3-watermelon', t: 'سكويشي البطّيخ' }, { id: 'm3-camel', t: 'سكويشي الجمل' },
+    { id: 'm3-paint-box', t: 'علبة ألوان المرسم' }, { id: 'm3-balloon', t: 'منطاد الألوان' }, { id: 'm3-gift', t: 'علبة الهدايا' },
+    { id: 'm3-garden', t: 'حديقة الفراشات' }];
+  const PROJ3 = [
+    { id: 'p3-sock-puppet', t: 'صمّمي دمية جورب' }, { id: 'p3-blanket-fort', t: 'زيّني قلعة البطّانيات' }, { id: 'p3-bracelet', t: 'صمّمي سوار الصداقة' },
+    { id: 'p3-potato-comic', t: 'قصّة مصوّرة: البطاطا الطائرة' }, { id: 'p3-bench-sign', t: 'لوحة المقعد الظليل' }, { id: 'p3-lantern', t: 'زيّني فانوس الصحراء' }];
+  const PICS3 = [...M3PICS.map((p, i) => ({ ...p, at: Math.round((i + 1) * 30 / M3PICS.length) })), ...PROJ3.map((p, k) => ({ ...p, at: 5 * (k + 1), proj: true }))]
+    .sort((a, b) => a.at - b.at || (a.proj ? 1 : 0) - (b.proj ? 1 : 0));
+  const ALLPICS = [...PICS, ...PICS3];
+  const PIC = Object.fromEntries(ALLPICS.map(p => [p.id, p]));
 
   /* ---------- colouring pictures (her request, 17 Oct 2026) ----------
      Her tools open the pictures one by one, spread evenly over the 30 books (openAt). She picks a colour and taps an
@@ -1067,7 +1089,7 @@ function mount(api) {
   }
   const openAt = i => Math.round((i + 1) * M1N / PICS.length);                // how many month-1 tools open picture i (from 0)
   const opened = tools => PICS.filter((p, i) => tools >= openAt(i)).length;
-  const artOpen = id => PICS.findIndex(p => p.id === id) < opened(tools1());
+  const artOpen = id => PIC[id] && PIC[id].at ? PIC[id].at <= tools3() : PICS.findIndex(p => p.id === id) < opened(tools1());
   const WIP = n => 'tc:maria:colour:' + n;
   let CL = null;
   function openColour(n) {                      // n: the picture's id
@@ -1181,6 +1203,11 @@ function mount(api) {
   const SHELF_ROWS = [[21.1, 6.1], [30.3, 6.5], [39.6, 6.8], [48.4, 6.6], [56.4, 5.7]], SHELF_X0 = 35.7, SHELF_X1 = 59.6;
   // the big cork board: six dashed frames that show the newest pictures she coloured; the small board: the missions she kept for «لاحقاً»
   const FRAMES = [[65.1, 15.6], [76.2, 15.6], [87.3, 15.6], [65.1, 28.3], [76.2, 28.3], [87.3, 28.3]];
+  // Month 3: the room keeps growing (her prompt): a new piece every 5 books from book 65. [book, id, left, top, width] in % of the painting
+  const GROW3 = [[65, 'cushions', 7, 68, 14], [70, 'lights', 31, -1, 68], [75, 'bookshelf', 90, 44, 10], [80, 'window2', 63.5, 0.5, 9], [85, 'pegboard', 30.3, 5, 5.4], [90, 'tent', 83, 60, 16]];
+  const read3 = () => M3().filter(s => lib.read[s.id]).length;
+  const growHTML = () => GROW3.filter(([n]) => read3() >= n - M2N).map(([, id, x, y, w]) =>
+    `<img class="st-grow g-${id}" src="assets/library/grow/${id}.webp" alt="" draggable="false" onerror="this.remove()" style="left:${x}%;top:${y}%;width:${w}%">`).join('');
   const SEEN_KEY = 'tc:maria:studioSeen';   // how many tools she has already seen in the room (so a new one arrives with a pop)
   function shelfHTML(fresh) {
     const step = (SHELF_X1 - SHELF_X0) / 6;
@@ -1191,7 +1218,7 @@ function mount(api) {
   }
   function boardHTML() {
     const n = lib.tools.length;
-    const hung = PICS.filter(p => lib.art[p.id]).slice(-FRAMES.length), wait = PICS.filter(p => artOpen(p.id) && !lib.art[p.id]).length;
+    const hung = ALLPICS.filter(p => lib.art[p.id]).slice(-FRAMES.length), wait = ALLPICS.filter(p => artOpen(p.id) && !lib.art[p.id]).length;
     const frames = FRAMES.map(([x, y], i) => { const p = hung[i];
       return `<div class="st-frame${p || i < hung.length + wait ? ' open' : ''}${p ? ' hung' : ''}" data-pic="${p ? p.id : ''}" style="left:${x}%;top:${y}%"><i></i>${p ? `<img src="${lib.art[p.id]}" alt="">` : `<span>${AR(i + 1)}</span>`}</div>`; }).join('');
     const later = Object.values(lib.missions).filter(m => m.state === 'later').length;
@@ -1213,12 +1240,13 @@ function mount(api) {
   }
   function renderSpots() {
     const later = Object.values(lib.missions).filter(m => m.state === 'later').length;
-    const toColour = PICS.filter(p => artOpen(p.id) && !lib.art[p.id]).length;
-    const badge = { table: toColour ? AR(toColour) : '', tools: `${AR(tools1())}/${AR(M1().length)}`, missions: later ? AR(later) : '', corner: lib.notebook.length + lib.feelings.length ? AR(lib.notebook.length + lib.feelings.length) : '' };
+    const toColour = ALLPICS.filter(p => artOpen(p.id) && !lib.art[p.id]).length;
+    const badge = { table: toColour ? AR(toColour) : '', tools: m3Started() ? `${AR(tools1() + tools3())}/${AR(M1().length + M3().length)}` : `${AR(tools1())}/${AR(M1().length)}`, missions: later ? AR(later) : '', corner: lib.notebook.length + lib.feelings.length ? AR(lib.notebook.length + lib.feelings.length) : '' };
     $('#stBoard').innerHTML = boardHTML();
     badge.jar = sqWaiting() ? '✨' : '';
     badge.mail = babaSealed().length ? AR(babaSealed().length) : '';
     $('#stJar').innerHTML = m2Started() ? jarHTML() : ''; fillJar();
+    $('#stGrow').innerHTML = growHTML();
     $('#stSpots').innerHTML = SPOTS.filter(p => !p.m2 || m2Started()).map(p => `<button class="st-spot" data-a="${p.id}" style="left:${p.x}%;top:${p.y}%;width:${p.w}%;height:${p.h}%" aria-label="${p.label}"></button>
       <span class="st-label" dir="rtl" style="left:${p.lx}%;top:${p.ly}%">${p.label}${badge[p.id] ? `<b dir="ltr">${badge[p.id]}</b>` : ''}</span>`).join('');
   }
@@ -1232,7 +1260,10 @@ function mount(api) {
     if (id === 'tools') {
       panel(`<h2>أدواتي</h2><p>جمعتِ ${AR(n)} من ${AR(M1().length)} أداة. كلّ كتاب من الشهر الأوّل يضع أداة جديدة هنا.</p>
         <div class="st-tools">${M1().map(s => lib.tools.includes(s.id) ? `<div class="st-tool got"><img src="assets/library/tools/${s.id}.webp" alt=""><small>${esc(s.tool.name)}</small></div>`
-          : `<div class="st-tool"><span>؟</span><small>الكتاب ${AR(s.day)}</small></div>`).join('')}</div>`);
+          : `<div class="st-tool"><span>؟</span><small>الكتاب ${AR(s.day)}</small></div>`).join('')}</div>${m3Started() ? `
+        <h3>أدوات الشهر الثالث: ${AR(tools3())} من ${AR(M3().length)}</h3>
+        <div class="st-tools">${M3().map(s => lib.tools.includes(s.id) ? `<div class="st-tool got">${toolImg(s)}<small>${esc(s.tool.name)}</small></div>`
+          : `<div class="st-tool"><span>؟</span><small>الكتاب ${AR(s.day)}</small></div>`).join('')}</div>` : ''}`);
     } else if (id === 'corner') {
       const nb = lib.notebook.map(i => byId[i]).filter(Boolean), fl = lib.feelings.map(i => byId[i]).filter(Boolean);
       panel(`<h2>ركن الكلمات</h2>
@@ -1245,7 +1276,7 @@ function mount(api) {
           <button class="st-did">فعلتها!</button><div class="st-feel" hidden>${['😊', '😐', '😬', '💪'].map(f => `<button data-f="${f}">${f}</button>`).join('')}</div></div>`).join('')}</div>`
         : '<p class="st-empty">لا مهامّ تنتظر. المهامّ التي تختارين لها «لاحقاً» تُعلَّق هنا.</p>'}${done ? `<p class="st-done">أنجزتِ ${AR(done)} ${done === 1 ? 'مهمّة' : 'مهامّ'} 🌟</p>` : ''}`);
     } else if (id === 'gallery') {
-      const hung = PICS.map(p => lib.art[p.id] ? `<figure class="st-art"><img src="${lib.art[p.id]}" alt=""><figcaption>${p.t}</figcaption></figure>` : '').join('');
+      const hung = ALLPICS.map(p => lib.art[p.id] ? `<figure class="st-art"><img src="${lib.art[p.id]}" alt=""><figcaption>${p.t}</figcaption></figure>` : '').join('');
       panel(`<h2>معرضي</h2>${hung ? `<div class="st-arts">${hung}</div>` : '<p class="st-empty">هنا تُعلَّق الصور التي تلوّنينها على طاولة الأعمال.</p>'}
         <p>${opened(n) ? (hung ? '' : 'صورتكِ الأولى تنتظركِ على طاولة الأعمال!') : `تُفتح أوّل صورة للتلوين عندما تجمعين ${AR(openAt(0))} أدوات. معكِ الآن ${AR(n)}.`}</p>`);
     } else if (id === 'table') {
@@ -1253,7 +1284,12 @@ function mount(api) {
         <div class="st-projects">${PICS.map((p, i) => { const open = artOpen(p.id);
           return `<div class="st-proj${open ? ' open' : ''}${lib.art[p.id] ? ' done' : ''}"><b>${AR(i + 1)}</b><span>${p.t}</span>${open
             ? `<button class="st-colour" data-art="${p.id}">${lib.art[p.id] ? '🖼️ في المعرض، لوّنيها من جديد' : '🎨 لوّني'}</button>`
-            : `<small>عند ${AR(openAt(i))} أدوات</small>`}</div>`; }).join('')}</div>`);
+            : `<small>عند ${AR(openAt(i))} أدوات</small>`}</div>`; }).join('')}</div>${m3Started() ? `
+        <h3>الشهر الثالث: كلّ أداة جديدة تقرّبكِ من صورة، وكلّ ${AR(5)} أدوات تفتح مشروعاً ⭐</h3>
+        <div class="st-projects">${PICS3.map((p, i) => { const open = artOpen(p.id);
+          return `<div class="st-proj${open ? ' open' : ''}${lib.art[p.id] ? ' done' : ''}${p.proj ? ' star' : ''}"><b>${p.proj ? '⭐' : AR(PICS3.slice(0, i + 1).filter(x => !x.proj).length)}</b><span>${p.t}</span>${open
+            ? `<button class="st-colour" data-art="${p.id}">${lib.art[p.id] ? '🖼️ في المعرض، لوّنيها من جديد' : '🎨 لوّني'}</button>`
+            : `<small>عند ${AR(p.at)} ${p.at <= 10 && p.at > 2 ? 'أدوات' : 'أداة'} من الشهر الثالث</small>`}</div>`; }).join('')}</div>` : ''}`);
     } else if (id === 'voice') {
       panel(`<h2>صوتي</h2><div id="stVoice"><p class="st-empty">…</p></div>`);
       const box = () => $('#stVoice');
@@ -1376,6 +1412,8 @@ function mount(api) {
 
   /* ---------- صانعة السكويشي (month 2): the glass jar on the studio table and the maker screen ---------- */
   const m2Started = () => lib.sq.pieces.length > 0 || (M1().length > 0 && M1().every(s => lib.read[s.id]));
+  const m3Started = () => M3().some(s => lib.read[s.id]) || (M3().length > 0 && ST.filter(isM2).every(s => lib.read[s.id] || s.hidden_until_parent_approves));
+  const toolImg = s => `<img src="assets/library/tools/${s.id}.webp" alt="" draggable="false" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'st-temo',textContent:${esc(JSON.stringify(s.tool.emoji || '🎨'))}}))">`;
   const sqSlots = () => Math.min(SQ.MAX, Math.floor(lib.sq.pieces.length / SQ.PER));
   const sqWaiting = () => Math.max(0, sqSlots() - lib.sq.made.length);
   // where her squishies sit inside the jar (percent of the jar), a little pile from the bottom up

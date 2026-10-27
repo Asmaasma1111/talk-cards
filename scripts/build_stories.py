@@ -9,7 +9,9 @@ import json, os, re, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, 'content', 'stories')
 FILES = ['maria-stories-days-01-10.md', 'maria-stories-days-11-20.md', 'maria-stories-days-21-30.md',
-         'maria-stories-days-31-40.md', 'maria-stories-days-41-50.md', 'maria-stories-days-51-60.md']   # month 2 added 18 Oct 2026
+         'maria-stories-days-31-40.md', 'maria-stories-days-41-50.md', 'maria-stories-days-51-60.md',    # month 2 added 18 Oct 2026
+         'maria-stories-days-61-70.md', 'maria-stories-days-71-80.md', 'maria-stories-days-81-90.md',    # month 3 added 27 Oct 2026
+         'maria-stories-days-91-100.md', 'maria-stories-days-101-110.md', 'maria-stories-days-111-120.md']   # month 4 added 27 Oct 2026
 OUT = os.path.join(ROOT, 'stories.json')
 IMAGES = os.path.join(ROOT, 'assets', 'stories')
 
@@ -26,9 +28,23 @@ TAGS = {1: ['assertive-dislike'], 2: ['body-signals'], 3: ['flexibility'], 4: ['
         41: ['baba'], 42: ['gratitude'], 43: ['reading-faces'], 44: ['conversation'], 45: ['liking-gap'], 46: ['sisters'],
         47: ['baba', 'fear-ladder'], 48: ['english', 'making-friends'], 49: ['asking-before-helping'], 50: ['standing-with', 'telling-adult'],
         51: ['saying-no'], 52: ['honesty'], 53: ['baba', 'promise'], 54: ['keeping-mine'], 55: ['not-getting'], 56: ['online-safety'],
-        57: ['sleeping-alone'], 58: ['secrets', 'body-safety'], 59: ['english', 'instructions'], 60: ['baba', 'affection-choice']}
-BABA_DAYS = [10, 16, 22, 27, 30, 35, 41, 47, 53, 60]
-PARENT_NOTE_DAYS = [32, 47, 51, 52, 56, 57, 58]
+        57: ['sleeping-alone'], 58: ['secrets', 'body-safety'], 59: ['english', 'instructions'], 60: ['baba', 'affection-choice'],
+        # month 3 (section 3 of the roadmap)
+        61: ['letting-others-choose'], 62: ['shared-game'], 63: ['different-not-wrong'], 64: ['baba'], 65: ['joining-group'],
+        66: ['starting-friendship'], 67: ['choosing-who-i-play-with'], 68: ['bossy-friend'], 69: ['friends-have-friends'], 70: ['organising-not-controlling'],
+        71: ['telling-adult'], 72: ['speaking-to-adults'], 73: ['different-opinion', 'accepting-vote'], 74: ['no-judging'], 75: ['baba', 'might-be-wrong'],
+        76: ['fact-or-opinion'], 77: ['reframing'], 78: ['waiting'], 79: ['forgiving'], 80: ['right-person', 'suggestion'],
+        81: ['voice-levels'], 82: ['patience-elders'], 83: ['english', 'ordering'], 84: ['screen-time'], 85: ['baba'],
+        86: ['when-to-tell'], 87: ['group-prank'], 88: ['comforting'], 89: ['making-up'], 90: ['baba', 'finale'],
+        # month 4 (section 3 of the roadmap)
+        91: ['friend-moves'], 92: ['public-mistake'], 93: ['thanking-body'], 94: ['rest'], 95: ['baba', 'caring'],
+        96: ['thanking-effort'], 97: ['daily-care'], 98: ['asking-clearly'], 99: ['celebrating-others'], 100: ['coping-apart'],
+        101: ['small-kindness'], 102: ['good-guest'], 103: ['good-host'], 104: ['fair-sharing'], 105: ['online-kindness'],
+        106: ['baba', 'english'], 107: ['new-place'], 108: ['liking-mine'], 109: ['laughing-with'], 110: ['goodbye', 'gratitude'],
+        111: ['good-questions'], 112: ['thinking-ahead'], 113: ['adverts'], 114: ['task-pieces'], 115: ['baba'],
+        116: ['planning-day'], 117: ['both-sides'], 118: ['mistakes-as-clues'], 119: ['middle-way'], 120: ['baba', 'finale']}
+BABA_DAYS = [10, 16, 22, 27, 30, 35, 41, 47, 53, 60, 64, 75, 85, 90, 95, 106, 115, 120]
+PARENT_NOTE_DAYS = [32, 47, 51, 52, 56, 57, 58, 61, 67, 79, 88, 93, 96, 100, 105, 113, 118]
 HELD = [58]          # Mama reads it first: in the app it stays closed until she approves it in the parent area
 
 CONTINUES = '(تكمل القصّة)'
@@ -45,7 +61,7 @@ def parse_story(day, title, body):
     st = {'id': f'd{day:02d}', 'day': day, 'shelf': (day - 1) // 10 + 1, 'stage': (day - 1) // 10 + 1 if day <= 30 else 2, 'title': title,
           'skill_en': '', 'value_tags': TAGS.get(day, []), 'revisits': [], 'tool': None, 'pages': [], 'questions': [],
           'other_side': '', 'magic_sentence': '', 'feeling_word': '', 'mission': None,
-          'unlocks_baba_message': False, 'parent_note': None, 'locked_until_shelf_done': day in (30, 40, 50, 60)}
+          'unlocks_baba_message': False, 'parent_note': None, 'locked_until_shelf_done': day % 10 == 0 and day >= 30}
     if day in HELD:
         st['hidden_until_parent_approves'] = True
     q = None
@@ -149,7 +165,7 @@ def main():
 
     # validation report
     problems, opinion = [], []
-    if [s['day'] for s in stories] != list(range(1, 61)):
+    if [s['day'] for s in stories] != list(range(1, 121)):
         problems.append(f"days found: {[s['day'] for s in stories]}")
     for s in stories:
         d = s['day']
@@ -178,7 +194,7 @@ def main():
         problems.append(f'parent notes on days {notes}')
 
     print(f'Stories: {len(stories)} · pages: {sum(len(s["pages"]) for s in stories)} · questions: {sum(len(s["questions"]) for s in stories)}')
-    for sh in (1, 2, 3, 4, 5, 6):
+    for sh in range(1, 13):
         ss = [s for s in stories if s['shelf'] == sh]
         print(f'  Shelf {sh}: days {ss[0]["day"]}-{ss[-1]["day"]}, pages {min(len(s["pages"]) for s in ss)}-{max(len(s["pages"]) for s in ss)}, '
               f'{sum(len(s["questions"]) for s in ss)} questions, words {min(words(s) for s in ss)}-{max(words(s) for s in ss)}')
@@ -193,7 +209,7 @@ def main():
         sys.exit(1)
     print('All checks passed.')
     with open(OUT, 'w', encoding='utf-8') as f:
-        json.dump({'v': 1, 'shelves': [{'n': n, 'days': [n * 10 - 9, n * 10]} for n in range(1, 7)],
+        json.dump({'v': 1, 'shelves': [{'n': n, 'days': [n * 10 - 9, n * 10]} for n in range(1, 13)],
                    'stories': stories}, f, ensure_ascii=False, indent=1)
     print(f'Wrote {os.path.relpath(OUT, ROOT)}')
 
