@@ -3430,6 +3430,13 @@ span.lab-whole { font-size: 120px; line-height: 1; }
 .life-hop .lab-whole { animation: lifeHop 2.4s ease both; }
 .life-cuckoo .lab-whole { animation: lifeShake 2.4s ease both; }
 .life-launch .lab-whole { animation: lifeLaunch 2.4s ease-in both; }
+.life-beam .lab-whole { animation: lifeGlow 2.4s ease both; }
+.life-curtain .lab-whole { animation: lifeBob 2.4s ease-in-out both; }
+.life-roll .lab-whole { animation: lifeShake 2.4s ease both; }
+.life-spin .lab-whole { animation: lifeBob 2.4s ease-in-out both; }
+.life-flash .lab-whole { animation: lifeFlash 1.2s ease both; }
+.life-bird .lab-whole { animation: lifeHop 2.4s ease both; }
+@keyframes lifeFlash { 8% { filter: brightness(2.2) drop-shadow(0 0 40px #fff); } 30% { filter: none; } }
 @keyframes lifeGlow { 30%, 70% { filter: brightness(1.25) drop-shadow(0 0 26px #FFE27A) drop-shadow(0 0 60px #FFF2B0); } }
 @keyframes lifeBob { 20%, 60% { transform: translateY(-10px) rotate(-3deg); } 40%, 80% { transform: translateY(0) rotate(3deg); } }
 @keyframes lifeDrive { 25% { transform: translateX(-28%); } 50% { transform: translateX(0); } 75% { transform: translateX(28%) scaleX(-1); } }

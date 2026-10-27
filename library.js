@@ -1683,7 +1683,13 @@ function mount(api) {
       { id: 'balloon', t: 'المنطاد', life: 'float', e: '🎈', parts: ['البالون الكبير', 'السلّة', 'الحبال', 'الموقد الصغير', 'أكياس الرمل'] },
       { id: 'cuckoo', t: 'ساعة الوقواق', life: 'cuckoo', e: '🕰️', parts: ['البيت الخشبيّ', 'وجه الساعة', 'العقربان', 'الطائر الصغير', 'البندول'] },
       { id: 'rocket', t: 'الصاروخ', life: 'launch', e: '🚀', parts: ['جسم الصاروخ', 'الرأس المدبّب', 'الأجنحة الثلاثة', 'النافذة', 'المحرّك'] }] },
-    { n: 6, a: 150, b: 180, ord: 'السادس', builds: [] }];     // Month 6's six builds: hers to choose
+    { n: 6, a: 150, b: 180, ord: 'السادس', builds: [                 // her yes, 27 Oct 2026
+      { id: 'lighthouse', t: 'المنارة', life: 'beam', e: '🗼', parts: ['البرج المخطّط', 'الشرفة', 'المصباح الكبير', 'السقف الأحمر', 'الباب الصغير'] },
+      { id: 'puppet-theatre', t: 'مسرح الدمى', life: 'curtain', e: '🎭', parts: ['خشبة المسرح', 'الستارة', 'الإطار الملوّن', 'الدمية الأولى', 'الدمية الثانية'] },
+      { id: 'marble-run', t: 'مسار الكرات', life: 'roll', e: '🔮', parts: ['اللوح الخشبيّ', 'المنحدرات', 'الأنبوب الملتفّ', 'الجرس الصغير', 'الكرات الزجاجيّة'] },
+      { id: 'carousel', t: 'دوّامة الخيل', life: 'spin', e: '🎠', parts: ['القاعدة الدائريّة', 'العمود', 'السقف المخطّط', 'الأحصنة الصغيرة', 'الأضواء'] },
+      { id: 'camera', t: 'الكاميرا', life: 'flash', e: '📷', parts: ['جسم الكاميرا', 'العدسة', 'الزرّ', 'الفلاش', 'الحزام'] },
+      { id: 'birdhouse', t: 'بيت العصافير', life: 'bird', e: '🐦', parts: ['الجدران الأربعة', 'السقف', 'الباب الدائريّ', 'العصا الصغيرة', 'طبق الحَبّ'] }] }];
   const labOf = s => LAB.find(m => inM(m, s));
   const labBooks = m => booksOf(m).sort((x, y) => x.day - y.day);
   // the part a book gives: book k of the month (0 to 29) gives part k % 5 of build k / 5
@@ -1751,7 +1757,8 @@ function mount(api) {
     }, slots.length * step + (motion() ? 450 : 0));
   }
   // its little life: a movement (CSS, .life-<kind>), a few floating bits and a sound made in code
-  const LIFE_BITS = { music: '♪♫♪', breeze: '〰〰', pop: '🍡🧁🍓', stars: '✦✧✦', cuckoo: '🐦', glow: '✨', float: '☁️', hop: '❤️', launch: '✨✨' };
+  const LIFE_BITS = { music: '♪♫♪', breeze: '〰〰', pop: '🍡🧁🍓', stars: '✦✧✦', cuckoo: '🐦', glow: '✨', float: '☁️', hop: '❤️', launch: '✨✨',
+    beam: '✨✨', curtain: '👏👏', roll: '⚪⚪⚪', spin: '♪♫♪', flash: '✨', bird: '🐦🎶' };
   function life(el, b) {
     if (!el) return;
     el.classList.remove('life-' + b.life); void el.offsetWidth; el.classList.add('life-' + b.life);
@@ -1793,7 +1800,13 @@ function mount(api) {
     stars: () => [1568, 2093, 1760, 2349, 2637].forEach((f, i) => tone(f, i * 0.22, 0.9, 'sine', 0.05)),
     hop: () => [880, 1320, 990, 1480].forEach((f, i) => tone(f, i * 0.22, 0.12, 'square', 0.045)),
     cuckoo: () => [0, 0.8].forEach(a => { tone(784, a, 0.25, 'sine', 0.14); tone(622, a + 0.32, 0.36, 'sine', 0.14); }),
-    launch: () => { whoosh(2, 200, 2400); tone(110, 0, 2, 'sawtooth', 0.035, 700); } };
+    launch: () => { whoosh(2, 200, 2400); tone(110, 0, 2, 'sawtooth', 0.035, 700); },
+    beam: () => { tone(147, 0, 1.4, 'sine', 0.08); SND.chime(0.6, 0.6); },                                      // a foghorn, then the light
+    curtain: () => { whoosh(0.8, 600, 300); [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.8 + i * 0.12, 0.4, 'triangle', 0.08)); },
+    roll: () => [1760, 1568, 1397, 1175, 1047, 880].forEach((f, i) => tone(f, i * 0.28, 0.16, 'sine', 0.09)),
+    spin: () => [659, 784, 880, 784, 659, 587, 659, 784].forEach((f, i) => tone(f, i * 0.26, 0.5, 'triangle', 0.08)),
+    flash: () => { tone(1200, 0, 0.05, 'square', 0.05); tone(900, 0.06, 0.05, 'square', 0.05); SND.chime(0.2, 0.5); },
+    bird: () => [0, 0.5, 1].forEach(a => { tone(2400, a, 0.12, 'sine', 0.07, 3200); tone(2800, a + 0.15, 0.12, 'sine', 0.07, 2200); }) };
   $('#labBack').addEventListener('click', () => home());
   $('#labTools').addEventListener('click', () => {
     const ms = LAB.filter(m => labBooks(m).some(s => lib.tools.includes(s.id)) || started(m));
