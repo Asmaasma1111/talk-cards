@@ -12,7 +12,8 @@ FILES = ['maria-stories-days-01-10.md', 'maria-stories-days-11-20.md', 'maria-st
          'maria-stories-days-31-40.md', 'maria-stories-days-41-50.md', 'maria-stories-days-51-60.md',    # month 2 added 18 Oct 2026
          'maria-stories-days-61-70.md', 'maria-stories-days-71-80.md', 'maria-stories-days-81-90.md',    # month 3 added 27 Oct 2026
          'maria-stories-days-91-100.md', 'maria-stories-days-101-110.md', 'maria-stories-days-111-120.md',   # month 4 added 27 Oct 2026
-         'maria-stories-days-121-130.md', 'maria-stories-days-131-140.md', 'maria-stories-days-141-150.md']  # month 5 added 27 Oct 2026
+         'maria-stories-days-121-130.md', 'maria-stories-days-131-140.md', 'maria-stories-days-141-150.md',  # month 5 added 27 Oct 2026
+         'maria-stories-days-151-160.md', 'maria-stories-days-161-170.md', 'maria-stories-days-171-180.md']  # month 6 added 27 Oct 2026
 OUT = os.path.join(ROOT, 'stories.json')
 IMAGES = os.path.join(ROOT, 'assets', 'stories')
 
@@ -50,9 +51,16 @@ TAGS = {1: ['assertive-dislike'], 2: ['body-signals'], 3: ['flexibility'], 4: ['
         131: ['patience'], 132: ['her-way'], 133: ['ask-first'], 134: ['mocked-gift'], 135: ['baba', 'winning-losing'],
         136: ['being-copied'], 137: ['english', 'teaching'], 138: ['comforting'], 139: ['helping-unasked'], 140: ['family-evening'],
         141: ['lost'], 142: ['checking-guesses'], 143: ['presenting'], 144: ['english'], 145: ['baba'],
-        146: ['storytelling', 'listening'], 147: ['asking-why'], 148: ['english', 'writing'], 149: ['accident-sorry'], 150: ['baba', 'finale']}
-BABA_DAYS = [10, 16, 22, 27, 30, 35, 41, 47, 53, 60, 64, 75, 85, 90, 95, 106, 115, 120, 125, 135, 145, 150]
-PARENT_NOTE_DAYS = [32, 47, 51, 52, 56, 57, 58, 61, 67, 79, 88, 93, 96, 100, 105, 113, 118, 121, 127, 136, 141]
+        146: ['storytelling', 'listening'], 147: ['asking-why'], 148: ['english', 'writing'], 149: ['accident-sorry'], 150: ['baba', 'finale'],
+        # month 6 (section 3 of the roadmap)
+        151: ['idea-not-chosen'], 152: ['small-role'], 153: ['left-out'], 154: ['accepting-compliment'], 155: ['baba', 'frustration'],
+        156: ['asking-back'], 157: ['asking-help'], 158: ['hungry-or-angry'], 159: ['owning-up'], 160: ['teamwork'],
+        161: ['privacy'], 162: ['happy-surprise'], 163: ['photo-consent'], 164: ['calming-sleep'], 165: ['baba', 'flexibility'],
+        166: ['caring-far'], 167: ['secret-kindness'], 168: ['welcoming', 'greeting-adults'], 169: ['waiting-to-speak'], 170: ['calm-in-dark'],
+        171: ['not-showing-off'], 172: ['other-ways'], 173: ['embarrassed'], 174: ['fear-plan'], 175: ['baba', 'english'],
+        176: ['english', 'not-understanding'], 177: ['fairness'], 178: ['comforting', 'grief'], 179: ['patience'], 180: ['baba', 'finale']}
+BABA_DAYS = [10, 16, 22, 27, 30, 35, 41, 47, 53, 60, 64, 75, 85, 90, 95, 106, 115, 120, 125, 135, 145, 150, 155, 165, 175, 180]
+PARENT_NOTE_DAYS = [32, 47, 51, 52, 56, 57, 58, 61, 67, 79, 88, 93, 96, 100, 105, 113, 118, 121, 127, 136, 141, 153, 157, 174, 178]
 HELD = [58]          # Mama reads it first: in the app it stays closed until she approves it in the parent area
 
 CONTINUES = '(تكمل القصّة)'
@@ -173,7 +181,7 @@ def main():
 
     # validation report
     problems, opinion = [], []
-    if [s['day'] for s in stories] != list(range(1, 151)):
+    if [s['day'] for s in stories] != list(range(1, 181)):
         problems.append(f"days found: {[s['day'] for s in stories]}")
     for s in stories:
         d = s['day']
@@ -202,7 +210,7 @@ def main():
         problems.append(f'parent notes on days {notes}')
 
     print(f'Stories: {len(stories)} · pages: {sum(len(s["pages"]) for s in stories)} · questions: {sum(len(s["questions"]) for s in stories)}')
-    for sh in range(1, 16):
+    for sh in range(1, 19):
         ss = [s for s in stories if s['shelf'] == sh]
         print(f'  Shelf {sh}: days {ss[0]["day"]}-{ss[-1]["day"]}, pages {min(len(s["pages"]) for s in ss)}-{max(len(s["pages"]) for s in ss)}, '
               f'{sum(len(s["questions"]) for s in ss)} questions, words {min(words(s) for s in ss)}-{max(words(s) for s in ss)}')
@@ -217,7 +225,7 @@ def main():
         sys.exit(1)
     print('All checks passed.')
     with open(OUT, 'w', encoding='utf-8') as f:
-        json.dump({'v': 1, 'shelves': [{'n': n, 'days': [n * 10 - 9, n * 10]} for n in range(1, 16)],
+        json.dump({'v': 1, 'shelves': [{'n': n, 'days': [n * 10 - 9, n * 10]} for n in range(1, 19)],
                    'stories': stories}, f, ensure_ascii=False, indent=1)
     print(f'Wrote {os.path.relpath(OUT, ROOT)}')
 
