@@ -31,6 +31,7 @@ function blank() {
     baba: {},                          // Baba story id -> {text, audio, at}: the message a parent left (its recording is in IndexedDB)
     babaOpened: {},                    // Baba story id -> the day Maria opened its envelope
     sq: { pieces: [], from: {}, made: [] },   // month 2: squishy pieces in the order earned, which book gave which, her squishies
+    lab: { built: [], opened: '' },    // months 4 to 6: the things she has built in her lab, and the day it opened
     sound: true
   };
 }
@@ -42,13 +43,17 @@ function clean(s) {
   return { ...d, ...s, read: obj(s.read), order: arr(s.order), today: { ...d.today, ...obj(s.today) }, place: obj(s.place),
     missions: obj(s.missions), tools: arr(s.tools), notebook: arr(s.notebook), feelings: arr(s.feelings),
     doors: obj(s.doors), seen: obj(s.seen), deco: obj(s.deco), art: obj(s.art), approved: obj(s.approved), baba: obj(s.baba),
-    babaOpened: obj(s.babaOpened), sq: cleanSq(s.sq), sound: s.sound !== false };
+    babaOpened: obj(s.babaOpened), sq: cleanSq(s.sq), lab: cleanLab(s.lab), sound: s.sound !== false };
 }
 function cleanSq(q) {
   const o = q && typeof q === 'object' ? q : {};
   return { pieces: Array.isArray(o.pieces) ? o.pieces.filter(v => typeof v === 'string') : [], from: o.from && typeof o.from === 'object' ? o.from : {},
     made: Array.isArray(o.made) ? o.made.filter(m => m && typeof m === 'object') : [], ...(o.draft && typeof o.draft === 'object' ? { draft: o.draft } : {}),
     ...(typeof o.seen === 'number' ? { seen: o.seen } : {}) };
+}
+function cleanLab(q) {
+  const o = q && typeof q === 'object' ? q : {};
+  return { ...o, built: Array.isArray(o.built) ? o.built.filter(v => typeof v === 'string') : [], opened: typeof o.opened === 'string' ? o.opened : '' };
 }
 const valid = s => !!(s && typeof s === 'object' && s.read && typeof s.read === 'object' && Array.isArray(s.order));
 const onShelf = (stories, n) => stories.filter(s => s.shelf === n);
@@ -136,7 +141,7 @@ function mount(api) {
   const tools1 = () => lib.tools.filter(id => byId[id] && byId[id].day <= M1N).length;
   // Month 3 (Days 61-90, 27 Oct 2026): craft tools again, like month 1, which open colouring pictures and six projects
   const M2N = 60, isM2 = s => s.day > M1N && s.day <= M2N;
-  // Months 3 to 5 (27 Oct 2026): each month has its own craft tools, colouring pictures and six projects (see XM below)
+  // Month 3 (27 Oct 2026) has its own craft tools, colouring pictures and six projects (see XM below); months 4 to 6 go to the lab (LAB)
   const inM = (m, s) => s.day > m.a && s.day <= m.b;
   const booksOf = m => ST.filter(s => inM(m, s));
   const toolsOf = m => lib.tools.filter(id => byId[id] && inM(m, byId[id])).length;
@@ -196,6 +201,15 @@ function mount(api) {
   <div class="st-panel" id="stPanel" hidden><div class="st-pbox"><button class="st-px" id="stPx" aria-label="إغلاق">×</button><div id="stPbody"></div></div></div>
 </section>
 
+<section id="llab" class="screen lb lb-lab" dir="rtl" lang="ar" hidden>
+  <img class="lab-room" src="assets/library/lab/room.webp" alt="" draggable="false" onerror="this.remove()">
+  <div class="lb-top"><button class="st-back" id="labBack">مكتبتي ←</button><h1 class="st-title">معملي</h1><button class="st-back lab-tbtn" id="labTools">🧰 أدواتي</button></div>
+  <div class="lab-main"><div class="lab-bench" id="labBench"></div><div class="lab-months" id="labMonths"></div></div>
+  <div class="st-panel" id="labPanel" hidden><div class="st-pbox"><button class="st-px" id="labPx" aria-label="إغلاق">×</button><div id="labPbody"></div></div></div>
+</section>
+<div class="lab-open" id="labOpen" dir="rtl" lang="ar" hidden><div class="lb-cel-box"><div class="lab-door"><span>🔬</span></div><h2>معملي الجديد مفتوح!</h2>
+  <p>من اليوم، كلّ كتاب يعطيكِ أداة وقطعة.<br>وكلّ خمس قطع تبنين بها شيئاً يتحرّك!</p><button class="btn btn-good" id="labOpenOk">رائع!</button></div></div>
+
 <section id="lsquish" class="screen lb lb-squish" dir="rtl" lang="ar" hidden>
   <div class="sq-top"><button class="st-back" id="sqBack">مرسمي ←</button><div class="sq-title"><h1>صانعة السكويشي</h1><p id="sqSub"></p></div><span class="sq-sp"></span></div>
   <div class="sq-main">
@@ -228,13 +242,15 @@ function mount(api) {
   }
   row($('#home'), $('#toMaths'));
   row($('#mhome'), $('#mxToTalk'));
-  const studioChip = '<button class="deck-chip deck-studio" lang="ar" dir="rtl" data-go="studio">🎨 مرسمي</button>';
+  const studioChip = '<button class="deck-chip deck-studio" lang="ar" dir="rtl" data-go="studio">🎨 مرسمي</button>'
+    + '<button class="deck-chip deck-lab" lang="ar" dir="rtl" data-go="lab" hidden>🔬 معملي</button>';
   // with the entrance page (entrance.js) one chip goes back to «تطبيقاتي»; without it, chips to the other two apps
   $('#lbDecks').innerHTML = api.appsChip ? api.appsChip().outerHTML.replace('<button', '<button data-go="apps"') + studioChip
     : '<button class="deck-chip deck-talk" lang="en" dir="ltr" data-go="talk">Talk Cards</button><button class="deck-chip deck-math" lang="ar" dir="rtl" data-go="math"><span class="x" aria-hidden="true">×</span>جدول الضرب</button>' + studioChip;
   $('#lbDecks').addEventListener('click', e => {
     const b = e.target.closest('[data-go]'); if (!b) return;
     if (b.dataset.go === 'studio') { if (!busy) openStudio(); return; }
+    if (b.dataset.go === 'lab') { if (!busy) openLab(); return; }
     leaveRoom();
     if (b.dataset.go === 'apps') api.apps(); else if (b.dataset.go === 'talk') api.english(); else api.maths();
   });
@@ -381,6 +397,7 @@ function mount(api) {
       ${read || going ? '<svg class="lb-rib" aria-hidden="true"><use href="#lb-i-rib"/></svg>' : ''}${read ? '<img class="lb-medal" src="assets/library/medal.webp" alt="قرأتُه">' : ''}</button>`;
   }
   function renderCase() {
+    const lc = $('#lbDecks [data-go="lab"]'); if (lc) lc.hidden = !labOpen();
     $('#lbShelves').innerHTML = shelves(ST).map(n => {
       const open = shelfOpen(lib, ST, n), books = onShelf(ST, n);
       const shown = open && (n === shelves(ST)[0] || lib.doors[n]);
@@ -727,6 +744,13 @@ function mount(api) {
         <div class="lb-keep"><span class="lb-pot" id="lbStudio">🫙<b>${AR(lib.sq.pieces.length)}</b></span><small>صانعة السكويشي</small></div>
         <button class="btn btn-good lb-put">${have ? 'التالي' : 'ضعيها في البرطمان'}</button></div>`;
     }
+    if (lf.kind === 'tool' && labOf(s)) {          // months 4 to 6: the tool goes on the lab's shelves, with one part
+      const have = lib.tools.includes(s.id), p = partOf(s);
+      return `<div class="lb-endc"><h3>🔧 أداة جديدة للمعمل</h3><div class="lb-tool" id="lbTool">${toolImg(s)}</div><p class="lb-tname">${esc(s.tool.name)}</p>
+        ${p.b ? `<p class="lb-part">ومعها قطعة: <b>${esc(p.b.parts[p.i])}</b> لـ«${esc(p.b.t)}» (${AR(p.i + 1)} من ${AR(5)})</p>` : '<p class="lb-part">ومعها قطعة غامضة لشيء ستبنينه</p>'}
+        <div class="lb-keep"><span class="lb-pot" id="lbStudio">🔬<b>${AR(labParts())}</b></span><small>معملي</small></div>
+        <button class="btn btn-good lb-put">${have ? 'التالي' : 'ضعيها في المعمل'}</button></div>`;
+    }
     if (lf.kind === 'tool') {
       const have = lib.tools.includes(s.id);
       return `<div class="lb-endc"><h3>🎨 أداة جديدة للمرسم</h3><div class="lb-tool" id="lbTool">${toolImg(s)}</div><p class="lb-tname">${esc(s.tool.name)}</p>
@@ -932,8 +956,11 @@ function mount(api) {
   }
   function keepTool() {
     const s = R.s, tl = $('#lbTool'), pot = $('#lbStudio');
-    const xm = monthOf(s), before = tools1(), beforeX = xm ? toolsOf(xm) : 0;
-    lib.tools.includes(s.id) || lib.tools.push(s.id); save();
+    const xm = monthOf(s), before = tools1(), beforeX = xm ? toolsOf(xm) : 0, lm = labOf(s), first = lm && !lib.lab.opened;
+    lib.tools.includes(s.id) || lib.tools.push(s.id);
+    if (first) lib.lab.opened = t();
+    save();
+    if (lm && !first) { const p = partOf(s); if (p.b) setTimeout(() => api.toast && api.toast(partsGot(p.m, p.b) === 5 ? `🔧 كلّ قطع «${p.b.t}» جاهزة! ابنيها في معملي` : `🔩 قطعة جديدة لـ«${p.b.t}»`), 1400); }
     if (s.day <= M1N && opened(tools1()) > opened(before)) setTimeout(() => api.toast && api.toast('🎨 صورة جديدة للتلوين تنتظركِ في مرسمي'), 1400);
     const now3 = xm ? xm.list.filter(p => p.at === toolsOf(xm) && p.at > beforeX) : [];
     if (now3.length) setTimeout(() => api.toast && api.toast(now3.some(p => p.proj) ? '⭐ مشروع جديد ينتظركِ في مرسمي' : '🎨 صورة جديدة للتلوين تنتظركِ في مرسمي'), 1400);
@@ -946,8 +973,9 @@ function mount(api) {
     g.animate([{ transform: 'translate(0,0) scale(1) rotate(0)' }, { transform: `translate(${dx * 0.5}px, ${dy * 0.5 - 60}px) scale(.8) rotate(-12deg)`, offset: 0.5 },
       { transform: `translate(${dx}px, ${dy}px) scale(.15) rotate(10deg)`, opacity: 0.3 }], { duration: motion() ? 950 : 10, easing: 'ease-in', fill: 'forwards' })
       .finished.then(() => {
-        g.remove(); pot.querySelector('b').textContent = AR(lib.tools.length); pot.classList.remove('bump'); void pot.offsetWidth; pot.classList.add('bump');
+        g.remove(); pot.querySelector('b').textContent = AR(lm ? labParts() : lib.tools.length); pot.classList.remove('bump'); void pot.offsetWidth; pot.classList.add('bump');
         api.SFX.good && api.SFX.good();
+        if (first) { setTimeout(() => labOpening(() => turn(1)), motion() ? 450 : 0); return; }
         setTimeout(() => turn(1), motion() ? 500 : 0);
       });
   }
@@ -1046,7 +1074,7 @@ function mount(api) {
     { id: 'banana', t: 'سكويشي الموزة' }, { id: 'noodles', t: 'سكويشي النودلز' }, { id: 'paper-squishy', t: 'سكويشي من ورق' }, { id: 'butter-toast', t: 'زبدة على خبز محمّص' }, { id: 'bunny', t: 'أرنب سكويشي' }, { id: 'cat', t: 'قطّة سكويشي' },
     { id: 'rainbow', t: 'ملصقة قوس قزح' }, { id: 'treasure', t: 'صندوق الكنز' }, { id: 'bracelet', t: 'سوار الصداقة' },
     { id: 'bookmark', t: 'فاصل كتاب' }];
-  // Months 3 to 5: colouring pictures «like Month 1» (her choice, 27 Oct 2026): 16 pictures spread over the month's 30 books,
+  // Month 3: colouring pictures «like Month 1» (her choice, 27 Oct 2026): 16 pictures spread over the month's 30 books,
   // squishies first, and the six projects of her prompts, one every 5 books (proj). at = how many of the month's tools open it.
   const XM = [
     { n: 3, a: 60, b: 90, ord: 'الثالث', pics: [
@@ -1055,21 +1083,7 @@ function mount(api) {
       ['m3-panda', 'سكويشي الباندا'], ['m3-frog', 'سكويشي الضفدع'], ['m3-watermelon', 'سكويشي البطّيخ'], ['m3-camel', 'سكويشي الجمل'],
       ['m3-paint-box', 'علبة ألوان المرسم'], ['m3-balloon', 'منطاد الألوان'], ['m3-gift', 'علبة الهدايا'], ['m3-garden', 'حديقة الفراشات']],
       proj: [['p3-sock-puppet', 'صمّمي دمية جورب'], ['p3-blanket-fort', 'زيّني قلعة البطّانيات'], ['p3-bracelet', 'صمّمي سوار الصداقة'],
-        ['p3-potato-comic', 'قصّة مصوّرة: البطاطا الطائرة'], ['p3-bench-sign', 'لوحة المقعد الظليل'], ['p3-lantern', 'زيّني فانوس الصحراء']] },
-    { n: 4, a: 90, b: 120, ord: 'الرابع', pics: [
-      ['m4-sushi', 'سكويشي السوشي'], ['m4-penguin', 'سكويشي البطريق'], ['m4-macaron', 'سكويشي الماكرون'], ['m4-pineapple', 'سكويشي الأناناس'],
-      ['m4-whale', 'سكويشي الحوت'], ['m4-pudding', 'سكويشي البودنغ'], ['m4-peach', 'سكويشي الخوخ'], ['m4-hamster', 'سكويشي الهامستر'],
-      ['m4-bread', 'سكويشي رغيف الخبز'], ['m4-lollipop', 'سكويشي المصّاصة'], ['m4-egg', 'سكويشي البيضة المقليّة'], ['m4-honey', 'سكويشي جرّة العسل'],
-      ['m4-cactus', 'الصبّارة المزهرة'], ['m4-music-box', 'علبة الموسيقى'], ['m4-castle', 'قصر الحيوانات'], ['m4-roses', 'باقة الورود الورقيّة']],
-      proj: [['p4-postcard', 'صمّمي بطاقة لصديقة انتقلت'], ['p4-body-portrait', 'لوحة: شكراً يا جسمي'], ['p4-medal', 'صمّمي ميداليّة لأختكِ'],
-        ['p4-mystery-box', 'زيّني الصندوق الغامض'], ['p4-puzzle', 'صمّمي لغزاً'], ['p4-book-cover', 'غلاف كتابكِ']] },
-    { n: 5, a: 120, b: 150, ord: 'الخامس', pics: [
-      ['m5-rocket', 'سكويشي الصاروخ'], ['m5-fox', 'سكويشي الثعلب'], ['m5-goat', 'سكويشي الماعز'], ['m5-worm-cupcake', 'كعكة الدودتين'],
-      ['m5-teapot', 'سكويشي إبريق الشاي'], ['m5-snail', 'سكويشي الحلزون'], ['m5-owl', 'سكويشي البومة'], ['m5-pistachio', 'سكويشي آيس كريم الفستق'],
-      ['m5-sunflower', 'سكويشي عبّاد الشمس'], ['m5-ladybird', 'سكويشي الدعسوقة'], ['m5-bear', 'سكويشي الدبّ'], ['m5-duck-chef', 'البطّة الطبّاخة'],
-      ['m5-penguin-scarf', 'البطريق ذو الوشاح'], ['m5-souq', 'سوق البهارات'], ['m5-snakes-ladders', 'السلّم والثعبان'], ['m5-sewing-box', 'علبة الخياطة']],
-      proj: [['p5-jar-label', 'صمّمي ملصق حصّالتكِ'], ['p5-kite', 'صمّمي طائرة ورقيّة'], ['p5-memory-box', 'زيّني علبة ذكريات'],
-        ['p5-lantern', 'فانوس ليلة السمر'], ['p5-bracelet', 'صمّمي سوار الرقم'], ['p5-postcard', 'بطاقة إلى صديقة بعيدة']] }];
+        ['p3-potato-comic', 'قصّة مصوّرة: البطاطا الطائرة'], ['p3-bench-sign', 'لوحة المقعد الظليل'], ['p3-lantern', 'زيّني فانوس الصحراء']] }];
   XM.forEach(m => {
     m.list = [...m.pics.map(([id, t], i) => ({ id, t, m: m.n, at: Math.round((i + 1) * 30 / m.pics.length) })),
       ...m.proj.map(([id, t], k) => ({ id, t, m: m.n, at: 5 * (k + 1), proj: true }))].sort((x, y) => x.at - y.at || (x.proj ? 1 : 0) - (y.proj ? 1 : 0));
@@ -1650,10 +1664,158 @@ function mount(api) {
   });
   $('#paClose').addEventListener('click', () => { if (paRec) toggleBabaRec(paRec.id); if (paAudio) { paAudio.pause(); paAudio = null; } paOpen = {}; home(); });
 
+  /* ---------- the lab «معملي» (her design, 27 Oct 2026) ----------
+     A new workplace every three months: the studio for months 1 to 3 (it stays open), the lab for months 4 to 6. It opens at
+     book 91. Each book's tool goes on the lab's shelves and gives one part; the five parts of every 5 books make something
+     she builds, which then comes alive. Pictures in assets/library/lab/: room.webp, <build>.webp, <build>-1..5.webp (the parts). */
+  const LAB = [
+    { n: 4, a: 90, b: 120, ord: 'الرابع', builds: [
+      { id: 'lamp', t: 'مصباح المكتب', life: 'glow', e: '💡', parts: ['القاعدة الخشبيّة', 'الذراع', 'النابض', 'الغطاء', 'اللمبة'] },
+      { id: 'music-box', t: 'علبة الموسيقى', life: 'music', e: '🎶', parts: ['الصندوق الخشبيّ', 'الغطاء والمرآة', 'أسطوانة الموسيقى', 'مفتاح التدوير', 'الراقصة الصغيرة'] },
+      { id: 'car', t: 'السيّارة الصغيرة', life: 'drive', e: '🚗', parts: ['هيكل السيّارة', 'العجلات الأربع', 'المحوران', 'المقود', 'المصباحان'] },
+      { id: 'sailboat', t: 'المركب الشراعيّ', life: 'rock', e: '⛵', parts: ['هيكل المركب', 'الصاري', 'الشراع', 'الدفّة', 'العلم الصغير'] },
+      { id: 'windmill', t: 'طاحونة الهواء', life: 'breeze', e: '🌬️', parts: ['البرج', 'السقف', 'المحور', 'الأجنحة الأربعة', 'الباب الصغير'] },
+      { id: 'squishy-machine', t: 'آلة السكويشي', life: 'pop', e: '🫧', parts: ['الصندوق الكبير', 'القمع', 'المقبض', 'الأنبوب الملوّن', 'زرّ التشغيل'] }] },
+    { n: 5, a: 120, b: 150, ord: 'الخامس', builds: [
+      { id: 'kite', t: 'الطائرة الورقيّة', life: 'float', e: '🪁', parts: ['العودان', 'الورق الملوّن', 'الذيل الطويل', 'الخيط', 'البكرة'] },
+      { id: 'telescope', t: 'التلسكوب', life: 'stars', e: '🔭', parts: ['الأنبوب', 'العدسة الكبيرة', 'العدسة الصغيرة', 'الحامل الثلاثيّ', 'الغطاء'] },
+      { id: 'robot', t: 'الصديق الآليّ', life: 'hop', e: '🤖', parts: ['الرأس', 'الجسم', 'الذراعان', 'العجلات', 'القلب المضيء'] },
+      { id: 'balloon', t: 'المنطاد', life: 'float', e: '🎈', parts: ['البالون الكبير', 'السلّة', 'الحبال', 'الموقد الصغير', 'أكياس الرمل'] },
+      { id: 'cuckoo', t: 'ساعة الوقواق', life: 'cuckoo', e: '🕰️', parts: ['البيت الخشبيّ', 'وجه الساعة', 'العقربان', 'الطائر الصغير', 'البندول'] },
+      { id: 'rocket', t: 'الصاروخ', life: 'launch', e: '🚀', parts: ['جسم الصاروخ', 'الرأس المدبّب', 'الأجنحة الثلاثة', 'النافذة', 'المحرّك'] }] },
+    { n: 6, a: 150, b: 180, ord: 'السادس', builds: [] }];     // Month 6's six builds: hers to choose
+  const labOf = s => LAB.find(m => inM(m, s));
+  const labBooks = m => booksOf(m).sort((x, y) => x.day - y.day);
+  // the part a book gives: book k of the month (0 to 29) gives part k % 5 of build k / 5
+  function partOf(s) { const m = labOf(s), k = s.day - m.a - 1; return { m, b: m.builds[Math.floor(k / 5)] || null, i: k % 5 }; }
+  const partBooks = (m, b) => { const bi = m.builds.indexOf(b); return labBooks(m).slice(bi * 5, bi * 5 + 5); };
+  const partsGot = (m, b) => partBooks(m, b).filter(s => lib.tools.includes(s.id)).length;
+  const labParts = () => lib.tools.filter(id => byId[id] && labOf(byId[id])).length;
+  const labOpen = () => !!lib.lab.opened || labParts() > 0;
+  const isBuilt = b => lib.lab.built.includes(b.id);
+  const LABART = 'assets/library/lab/';
+  const labImg = (file, emo, cls = '') => `<img class="${cls}" src="${LABART}${file}.webp" alt="" draggable="false" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'lab-emo ${cls}',textContent:${esc(JSON.stringify(emo))}}))">`;
+  let LBF = null;                                   // the build on the bench (the first not built yet, or the one she tapped)
+  const labMonths = () => LAB.filter(m => m.builds.length && (started(m) || labBooks(m).some(s => lib.tools.includes(s.id))));
+  function benchBuild() {
+    const all = labMonths().flatMap(m => m.builds.map(b => ({ m, b })));
+    return all.find(x => x.b.id === LBF) || all.find(x => !isBuilt(x.b) && partsGot(x.m, x.b) === 5) || all.find(x => !isBuilt(x.b)) || all[all.length - 1] || null;
+  }
+  function renderLab() {
+    const x = benchBuild(), bench = $('#labBench');
+    if (!x) { bench.innerHTML = '<p class="lab-wait">اقرئي كتاب اليوم لتأخذي أوّل قطعة 🔩</p>'; }
+    else {
+      const { m, b } = x, got = partsGot(m, b), books = partBooks(m, b), done = isBuilt(b);
+      bench.innerHTML = `<h2>${esc(b.t)}</h2>
+        <div class="lab-make${done ? ' made' : ''}" id="labMake" data-b="${b.id}">${labImg(b.id, b.e, 'lab-whole')}
+          ${done ? '' : `<div class="lab-slots">${b.parts.map((pt, i) => { const s = books[i], have = s && lib.tools.includes(s.id);
+            return `<div class="lab-slot${have ? ' got' : ''}" data-i="${i}">${have ? labImg(`${b.id}-${i + 1}`, '⚙️', 'lab-part') : '<span class="lab-q">؟</span>'}
+              <small>${have ? esc(pt) : s ? `الكتاب ${AR(s.day)}` : ''}</small></div>`; }).join('')}</div>`}</div>
+        ${done ? '<p class="lab-hint">المسيها لتتحرّك ✨</p>' : got === 5 ? `<button class="btn btn-good lab-go" id="labGo">ابني «${esc(b.t)}»! 🔧</button>`
+          : `<p class="lab-hint">جمعتِ ${AR(got)} من ${AR(5)} قطع. كلّ كتاب يعطيكِ قطعة.</p>`}`;
+    }
+    $('#labMonths').innerHTML = labMonths().map(m => `<div class="lab-row"><h3>الشهر ${m.ord}</h3><div class="lab-cards">${m.builds.map(b => {
+      const got = partsGot(m, b), done = isBuilt(b), on = x && x.b === b;
+      return `<button class="lab-card${done ? ' made' : got === 5 ? ' ready' : got ? ' some' : ''}${on ? ' on' : ''}" data-b="${b.id}">
+        ${done || got ? labImg(b.id, b.e, 'lab-thumb') : '<span class="lab-q">؟</span>'}<small>${done || got ? esc(b.t) : ''}</small>
+        <b>${done ? '✓' : got === 5 ? 'جاهزة!' : `${AR(got)}/${AR(5)}`}</b></button>`; }).join('')}</div></div>`).join('')
+      || '<p class="lab-wait">هنا يظهر ما ستبنينه هذا الشهر</p>';
+  }
+  function openLab() {
+    leaveRoom(); LBF = null; renderLab(); api.show('llab');
+    const r = $('#labMonths .lab-card.ready'); if (r) setTimeout(() => sparkle(r), 500);
+  }
+  function labOpening(then) {
+    const o = $('#labOpen'); o.hidden = false; o.classList.remove('play'); void o.offsetWidth; o.classList.add('play');
+    SND.fanfare(); setTimeout(() => sparkle($('#labOpen .lab-door')), 300);
+    $('#labOpenOk').onclick = () => { o.hidden = true; then && then(); };
+  }
+  // building: the parts fly to the middle one by one, a flash, and the finished thing comes alive
+  function buildIt(id) {
+    const x = labMonths().flatMap(m => m.builds.map(b => ({ m, b }))).find(y => y.b.id === id);
+    if (!x || isBuilt(x.b) || partsGot(x.m, x.b) < 5) return;
+    const mk = $('#labMake'), go = $('#labGo'); if (go) go.disabled = true;
+    const c = mk.getBoundingClientRect(), slots = [...mk.querySelectorAll('.lab-slot')];
+    const step = motion() ? 380 : 0;
+    slots.forEach((sl, i) => setTimeout(() => {
+      const r = sl.getBoundingClientRect(), dx = c.left + c.width / 2 - (r.left + r.width / 2), dy = c.top + c.height / 2 - (r.top + r.height / 2);
+      sl.animate([{ transform: 'none' }, { transform: `translate(${dx}px, ${dy}px) scale(.4)`, opacity: 0 }], { duration: motion() ? 420 : 1, easing: 'ease-in', fill: 'forwards' });
+      tone(520 + i * 90, 0.38, 0.12, 'triangle', 0.08);
+    }, i * step));
+    setTimeout(() => {
+      lib.lab.built.includes(id) || lib.lab.built.push(id); save();
+      mk.classList.add('made', 'flash'); mk.querySelector('.lab-slots') && mk.querySelector('.lab-slots').remove();
+      sparkle(mk); SND.fanfare();
+      setTimeout(() => { life(mk, x.b); api.toast && api.toast(`🎉 بنيتِ «${x.b.t}»!`); }, motion() ? 700 : 0);
+      setTimeout(() => { LBF = id; renderLab(); }, motion() ? 3600 : 0);
+    }, slots.length * step + (motion() ? 450 : 0));
+  }
+  // its little life: a movement (CSS, .life-<kind>), a few floating bits and a sound made in code
+  const LIFE_BITS = { music: '♪♫♪', breeze: '〰〰', pop: '🍡🧁🍓', stars: '✦✧✦', cuckoo: '🐦', glow: '✨', float: '☁️', hop: '❤️', launch: '✨✨' };
+  function life(el, b) {
+    if (!el) return;
+    el.classList.remove('life-' + b.life); void el.offsetWidth; el.classList.add('life-' + b.life);
+    setTimeout(() => el.classList.remove('life-' + b.life), 2600);
+    (LIFE_SND[b.life] || LIFE_SND.glow)();
+    if (!motion() || !LIFE_BITS[b.life]) return;
+    const r = el.getBoundingClientRect(), bits = [...LIFE_BITS[b.life]];
+    bits.forEach((ch, k) => setTimeout(() => {
+      const p = document.createElement('i'); p.className = 'lab-bit'; p.textContent = ch;
+      p.style.left = r.left + r.width * (0.3 + Math.random() * 0.4) + 'px'; p.style.top = r.top + r.height * 0.35 + 'px'; document.body.append(p);
+      p.animate([{ transform: 'translate(-50%,0) scale(.6)', opacity: 0 }, { opacity: 1, offset: 0.2 }, { transform: `translate(calc(-50% + ${(Math.random() - 0.5) * 120}px), -${90 + Math.random() * 60}px) scale(1.2)`, opacity: 0 }],
+        { duration: 1400, easing: 'ease-out' }).finished.then(() => p.remove());
+    }, 250 + k * 320));
+  }
+  function tone(f, at = 0, dur = 0.3, type = 'sine', vol = 0.12, to = 0) {
+    const c = SND.ctx(); if (!c || !lib.sound) return;
+    if (c.state !== 'running') { try { c.resume(); } catch (e) {} }
+    const o = c.createOscillator(), g = c.createGain(), t0 = c.currentTime + at;
+    o.type = type; o.frequency.setValueAtTime(f, t0); if (to) o.frequency.exponentialRampToValueAtTime(to, t0 + dur);
+    g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(vol, t0 + 0.015); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g); g.connect(SND.out); o.start(t0); o.stop(t0 + dur + 0.05);
+  }
+  function whoosh(dur = 1.4, from = 400, to = 1800) {
+    const c = SND.ctx(); if (!c || !lib.sound) return;
+    const n = c.createBuffer(1, c.sampleRate * dur | 0, c.sampleRate), d = n.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.sin(Math.PI * i / d.length);
+    const ns = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(), t0 = c.currentTime;
+    ns.buffer = n; f.type = 'bandpass'; f.Q.value = 1.2; f.frequency.setValueAtTime(from, t0); f.frequency.exponentialRampToValueAtTime(to, t0 + dur); g.gain.value = 0.12;
+    ns.connect(f); f.connect(g); g.connect(SND.out); ns.start(t0);
+  }
+  const LIFE_SND = {
+    glow: () => { tone(330, 0, 0.08, 'square', 0.04); SND.chime(0.1, 0.7); },                                   // a click, and the light
+    music: () => [784, 988, 1175, 988, 784, 659, 784, 988, 784].forEach((f, i) => tone(f, i * 0.24, 0.55, 'triangle', 0.09)),
+    drive: () => { tone(80, 0, 1.2, 'sawtooth', 0.04, 150); tone(660, 1.3, 0.14, 'square', 0.05); tone(660, 1.5, 0.14, 'square', 0.05); },
+    rock: () => [0, 0.8, 1.6].forEach(a => tone(260, a, 0.7, 'sine', 0.06, 200)),
+    breeze: () => whoosh(1.8, 300, 1200),
+    pop: () => [0, 380, 760].forEach(a => setTimeout(() => SND.squish(0.8), a)),
+    float: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.2, 0.7, 'sine', 0.08)),
+    stars: () => [1568, 2093, 1760, 2349, 2637].forEach((f, i) => tone(f, i * 0.22, 0.9, 'sine', 0.05)),
+    hop: () => [880, 1320, 990, 1480].forEach((f, i) => tone(f, i * 0.22, 0.12, 'square', 0.045)),
+    cuckoo: () => [0, 0.8].forEach(a => { tone(784, a, 0.25, 'sine', 0.14); tone(622, a + 0.32, 0.36, 'sine', 0.14); }),
+    launch: () => { whoosh(2, 200, 2400); tone(110, 0, 2, 'sawtooth', 0.035, 700); } };
+  $('#labBack').addEventListener('click', () => home());
+  $('#labTools').addEventListener('click', () => {
+    const ms = LAB.filter(m => labBooks(m).some(s => lib.tools.includes(s.id)) || started(m));
+    $('#labPbody').innerHTML = `<h2>أدوات معملي</h2><p>كلّ كتاب من الشهر الرابع وما بعده يضع أداة جديدة على رفوف المعمل.</p>${ms.map(m => `
+      <h3>أدوات الشهر ${m.ord}: ${AR(toolsOf(m))} من ${AR(booksOf(m).length)}</h3>
+      <div class="st-tools">${labBooks(m).map(s => lib.tools.includes(s.id) ? `<div class="st-tool got">${toolImg(s)}<small>${esc(s.tool.name)}</small></div>`
+        : `<div class="st-tool"><span>؟</span><small>الكتاب ${AR(s.day)}</small></div>`).join('')}</div>`).join('') || '<p class="st-empty">لا أدوات بعد.</p>'}`;
+    const b = $('#labPanel'); b.hidden = false; b.classList.remove('play'); void b.offsetWidth; b.classList.add('play');
+  });
+  $('#labPx').addEventListener('click', () => { $('#labPanel').hidden = true; });
+  $('#labPanel').addEventListener('click', e => { if (e.target.id === 'labPanel') $('#labPanel').hidden = true; });
+  $('#llab').addEventListener('click', e => {
+    if (e.target.closest('#labGo')) { const mk = $('#labMake'); return buildIt(mk && mk.dataset.b); }
+    const card = e.target.closest('.lab-card');
+    if (card) { LBF = card.dataset.b; renderLab(); const mk = $('#labMake'); if (mk && mk.classList.contains('made')) { const x = benchBuild(); life(mk, x.b); } return; }
+    const mk = e.target.closest('#labMake.made'); if (mk) { const x = benchBuild(); x && life(mk, x.b); }
+  });
+
   return {
     home, ready,
-    isOn: () => ['lhome', 'lbook', 'lstudio', 'lcolor', 'lsquish', 'lparent'].some(id => !$('#' + id).hidden),
-    busy: () => !$('#lbook').hidden || busy || !$('#lbCel').hidden || !$('#lbDec').hidden || !$('#lsquish').hidden || !$('#lparent').hidden || !$('#paPin').hidden,
+    isOn: () => ['lhome', 'lbook', 'lstudio', 'lcolor', 'lsquish', 'llab', 'lparent'].some(id => !$('#' + id).hidden),
+    busy: () => !$('#lbook').hidden || busy || !$('#lbCel').hidden || !$('#lbDec').hidden || !$('#lsquish').hidden || !$('#llab').hidden || !$('#labOpen').hidden || !$('#lparent').hidden || !$('#paPin').hidden,
     reload() { lib = load(); },
     snapshot() { return JSON.parse(JSON.stringify(lib)); },
     valid,
@@ -1661,7 +1823,7 @@ function mount(api) {
     leave: leaveRoom,
     // for tests (?dev=1)
     get state() { return lib; }, get reader() { return R; }, get stories() { return ST; }, turn, core, openDeco, milestone, openStudio, studioPlace, openColour,
-    openSquish, openParent, openPin
+    openSquish, openParent, openPin, openLab, buildIt, LAB
   };
 }
 
