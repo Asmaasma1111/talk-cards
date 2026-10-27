@@ -266,7 +266,12 @@ function tasrifItems(st, seed, count = st.perDay || 8) {
 }
 /* ---------- the later lessons (kind 'pick'): a bank of [question, right, [wrong...], what to ask, write?] ---------- */
 function pickItems(st, seed, count = st.perDay || 8) {
-  const rnd = rng(seed), order = shuffleR(st.bank.map((_, i) => i), rnd), out = [];
+  // the kinds of question take turns, so every day mixes them (a random draw could give seven of one kind)
+  const rnd = rng(seed), kinds = {};
+  shuffleR(st.bank.map((_, i) => i), rnd).forEach(i => { const k = st.bank[i][3]; (kinds[k] = kinds[k] || []).push(i); });
+  const lists = shuffleR(Object.values(kinds), rnd), order = [];
+  for (let n = 0; order.length < st.bank.length; n++) lists.forEach(l => { if (n < l.length) order.push(l[n]); });
+  const out = [];
   for (let i = 0; i < count; i++) {
     const [q, right, wrong, ask, write] = st.bank[order[i % order.length]], opts = shuffleR([right, ...wrong], rnd);
     out.push({ t: 'fill', q, opts, ok: opts.indexOf(right), ask, ...(write ? { write: true } : {}) });

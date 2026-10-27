@@ -212,6 +212,8 @@ ok('every card, picture, sentence and step the app needs is in algeria.json', ()
     st.bank.forEach(([q, right, wrong, ask]) => { assert.ok(!wrong.includes(right), q); assert.ok(ask, q); });
     st.worked.forEach(w => { assert.ok(D.lines.some(l => l[0] === w.id) && D.lines.some(l => l[0] === 's-' + w.s), w.id); w.lit.forEach(i => assert.ok(w.w[i], w.id)); });
     C.pickItems(st, 5).forEach(it => assert.ok(it.ok >= 0 && new Set(it.opts).size === it.opts.length, st.id));
+    const asks = new Set(st.bank.map(b => b[3])), day = new Set(C.pickItems(st, 9).map(it => it.ask));   // every kind of question each day
+    assert.ok(day.size >= Math.min(asks.size, 3), st.id + ' mixes its kinds');
     st.explain.forEach(x => assert.ok(D.lines.some(l => l[0] === x.id), x.id));
   });
   D.photos.forEach(p => assert.ok(require('fs').existsSync(path.join(__dirname, '..', p)), p));
