@@ -136,8 +136,10 @@ function mount(api) {
   const tools1 = () => lib.tools.filter(id => byId[id] && byId[id].day <= M1N).length;
   // Month 3 (Days 61-90, 27 Oct 2026): craft tools again, like month 1, which open colouring pictures and six projects
   const M2N = 60, isM2 = s => s.day > M1N && s.day <= M2N;
-  const M3 = () => ST.filter(s => s.day > M2N);
-  const tools3 = () => lib.tools.filter(id => byId[id] && byId[id].day > M2N).length;
+  // Months 3 to 5 (27 Oct 2026): each month has its own craft tools, colouring pictures and six projects (see XM below)
+  const inM = (m, s) => s.day > m.a && s.day <= m.b;
+  const booksOf = m => ST.filter(s => inM(m, s));
+  const toolsOf = m => lib.tools.filter(id => byId[id] && inM(m, byId[id])).length;
   const SQ = root.Squishy;
   function save() { api.lsSet(KEY, JSON.stringify(lib)); }
   const motion = () => !api.reduced();
@@ -930,11 +932,11 @@ function mount(api) {
   }
   function keepTool() {
     const s = R.s, tl = $('#lbTool'), pot = $('#lbStudio');
-    const before = tools1(), before3 = tools3();
+    const xm = monthOf(s), before = tools1(), beforeX = xm ? toolsOf(xm) : 0;
     lib.tools.includes(s.id) || lib.tools.push(s.id); save();
     if (s.day <= M1N && opened(tools1()) > opened(before)) setTimeout(() => api.toast && api.toast('🎨 صورة جديدة للتلوين تنتظركِ في مرسمي'), 1400);
-    const now3 = PICS3.filter(p => p.at === tools3() && p.at > before3);
-    if (s.day > M2N && now3.length) setTimeout(() => api.toast && api.toast(now3.some(p => p.proj) ? '⭐ مشروع جديد ينتظركِ في مرسمي' : '🎨 صورة جديدة للتلوين تنتظركِ في مرسمي'), 1400);
+    const now3 = xm ? xm.list.filter(p => p.at === toolsOf(xm) && p.at > beforeX) : [];
+    if (now3.length) setTimeout(() => api.toast && api.toast(now3.some(p => p.proj) ? '⭐ مشروع جديد ينتظركِ في مرسمي' : '🎨 صورة جديدة للتلوين تنتظركِ في مرسمي'), 1400);
     const ra = tl.getBoundingClientRect(), rb = pot.getBoundingClientRect();
     const g = tl.cloneNode(true); g.removeAttribute('id'); g.classList.add('lb-ghost');
     Object.assign(g.style, { left: ra.left + 'px', top: ra.top + 'px', width: ra.width + 'px', height: ra.height + 'px' });
@@ -1043,21 +1045,37 @@ function mount(api) {
     { id: 'banana', t: 'سكويشي الموزة' }, { id: 'noodles', t: 'سكويشي النودلز' }, { id: 'paper-squishy', t: 'سكويشي من ورق' }, { id: 'butter-toast', t: 'زبدة على خبز محمّص' }, { id: 'bunny', t: 'أرنب سكويشي' }, { id: 'cat', t: 'قطّة سكويشي' },
     { id: 'rainbow', t: 'ملصقة قوس قزح' }, { id: 'treasure', t: 'صندوق الكنز' }, { id: 'bracelet', t: 'سوار الصداقة' },
     { id: 'bookmark', t: 'فاصل كتاب' }];
-  // Month 3's colouring pictures (her choice, 27 Oct 2026: «like Month 1»): 16 pictures spread over the 30 books, squishies first,
-  // and the six projects of her prompt, one every 5 books (proj). at = how many month-3 tools open it.
-  const M3PICS = [
-    { id: 'm3-strawberry-milk', t: 'سكويشي حليب الفراولة' }, { id: 'm3-mochi', t: 'عائلة الموتشي' }, { id: 'm3-icecream', t: 'سكويشي الآيس كريم' },
-    { id: 'm3-avocado', t: 'سكويشي الأفوكادو' }, { id: 'm3-cupcake', t: 'سكويشي الكب كيك' }, { id: 'm3-donut', t: 'سكويشي الدونات' },
-    { id: 'm3-bubble-tea', t: 'سكويشي كوب الفقاعات' }, { id: 'm3-cloud', t: 'سكويشي الغيمة' }, { id: 'm3-panda', t: 'سكويشي الباندا' },
-    { id: 'm3-frog', t: 'سكويشي الضفدع' }, { id: 'm3-watermelon', t: 'سكويشي البطّيخ' }, { id: 'm3-camel', t: 'سكويشي الجمل' },
-    { id: 'm3-paint-box', t: 'علبة ألوان المرسم' }, { id: 'm3-balloon', t: 'منطاد الألوان' }, { id: 'm3-gift', t: 'علبة الهدايا' },
-    { id: 'm3-garden', t: 'حديقة الفراشات' }];
-  const PROJ3 = [
-    { id: 'p3-sock-puppet', t: 'صمّمي دمية جورب' }, { id: 'p3-blanket-fort', t: 'زيّني قلعة البطّانيات' }, { id: 'p3-bracelet', t: 'صمّمي سوار الصداقة' },
-    { id: 'p3-potato-comic', t: 'قصّة مصوّرة: البطاطا الطائرة' }, { id: 'p3-bench-sign', t: 'لوحة المقعد الظليل' }, { id: 'p3-lantern', t: 'زيّني فانوس الصحراء' }];
-  const PICS3 = [...M3PICS.map((p, i) => ({ ...p, at: Math.round((i + 1) * 30 / M3PICS.length) })), ...PROJ3.map((p, k) => ({ ...p, at: 5 * (k + 1), proj: true }))]
-    .sort((a, b) => a.at - b.at || (a.proj ? 1 : 0) - (b.proj ? 1 : 0));
-  const ALLPICS = [...PICS, ...PICS3];
+  // Months 3 to 5: colouring pictures «like Month 1» (her choice, 27 Oct 2026): 16 pictures spread over the month's 30 books,
+  // squishies first, and the six projects of her prompts, one every 5 books (proj). at = how many of the month's tools open it.
+  const XM = [
+    { n: 3, a: 60, b: 90, ord: 'الثالث', pics: [
+      ['m3-strawberry-milk', 'سكويشي حليب الفراولة'], ['m3-mochi', 'عائلة الموتشي'], ['m3-icecream', 'سكويشي الآيس كريم'], ['m3-avocado', 'سكويشي الأفوكادو'],
+      ['m3-cupcake', 'سكويشي الكب كيك'], ['m3-donut', 'سكويشي الدونات'], ['m3-bubble-tea', 'سكويشي كوب الفقاعات'], ['m3-cloud', 'سكويشي الغيمة'],
+      ['m3-panda', 'سكويشي الباندا'], ['m3-frog', 'سكويشي الضفدع'], ['m3-watermelon', 'سكويشي البطّيخ'], ['m3-camel', 'سكويشي الجمل'],
+      ['m3-paint-box', 'علبة ألوان المرسم'], ['m3-balloon', 'منطاد الألوان'], ['m3-gift', 'علبة الهدايا'], ['m3-garden', 'حديقة الفراشات']],
+      proj: [['p3-sock-puppet', 'صمّمي دمية جورب'], ['p3-blanket-fort', 'زيّني قلعة البطّانيات'], ['p3-bracelet', 'صمّمي سوار الصداقة'],
+        ['p3-potato-comic', 'قصّة مصوّرة: البطاطا الطائرة'], ['p3-bench-sign', 'لوحة المقعد الظليل'], ['p3-lantern', 'زيّني فانوس الصحراء']] },
+    { n: 4, a: 90, b: 120, ord: 'الرابع', pics: [
+      ['m4-sushi', 'سكويشي السوشي'], ['m4-penguin', 'سكويشي البطريق'], ['m4-macaron', 'سكويشي الماكرون'], ['m4-pineapple', 'سكويشي الأناناس'],
+      ['m4-whale', 'سكويشي الحوت'], ['m4-pudding', 'سكويشي البودنغ'], ['m4-peach', 'سكويشي الخوخ'], ['m4-hamster', 'سكويشي الهامستر'],
+      ['m4-bread', 'سكويشي رغيف الخبز'], ['m4-lollipop', 'سكويشي المصّاصة'], ['m4-egg', 'سكويشي البيضة المقليّة'], ['m4-honey', 'سكويشي جرّة العسل'],
+      ['m4-cactus', 'الصبّارة المزهرة'], ['m4-music-box', 'علبة الموسيقى'], ['m4-castle', 'قصر الحيوانات'], ['m4-roses', 'باقة الورود الورقيّة']],
+      proj: [['p4-postcard', 'صمّمي بطاقة لصديقة انتقلت'], ['p4-body-portrait', 'لوحة: شكراً يا جسمي'], ['p4-medal', 'صمّمي ميداليّة لأختكِ'],
+        ['p4-mystery-box', 'زيّني الصندوق الغامض'], ['p4-puzzle', 'صمّمي لغزاً'], ['p4-book-cover', 'غلاف كتابكِ']] },
+    { n: 5, a: 120, b: 150, ord: 'الخامس', pics: [
+      ['m5-rocket', 'سكويشي الصاروخ'], ['m5-fox', 'سكويشي الثعلب'], ['m5-goat', 'سكويشي الماعز'], ['m5-worm-cupcake', 'كعكة الدودتين'],
+      ['m5-teapot', 'سكويشي إبريق الشاي'], ['m5-snail', 'سكويشي الحلزون'], ['m5-owl', 'سكويشي البومة'], ['m5-pistachio', 'سكويشي آيس كريم الفستق'],
+      ['m5-sunflower', 'سكويشي عبّاد الشمس'], ['m5-ladybird', 'سكويشي الدعسوقة'], ['m5-bear', 'سكويشي الدبّ'], ['m5-duck-chef', 'البطّة الطبّاخة'],
+      ['m5-penguin-scarf', 'البطريق ذو الوشاح'], ['m5-souq', 'سوق البهارات'], ['m5-snakes-ladders', 'السلّم والثعبان'], ['m5-sewing-box', 'علبة الخياطة']],
+      proj: [['p5-jar-label', 'صمّمي ملصق حصّالتكِ'], ['p5-kite', 'صمّمي طائرة ورقيّة'], ['p5-memory-box', 'زيّني علبة ذكريات'],
+        ['p5-lantern', 'فانوس ليلة السمر'], ['p5-bracelet', 'صمّمي سوار الرقم'], ['p5-postcard', 'بطاقة إلى صديقة بعيدة']] }];
+  XM.forEach(m => {
+    m.list = [...m.pics.map(([id, t], i) => ({ id, t, m: m.n, at: Math.round((i + 1) * 30 / m.pics.length) })),
+      ...m.proj.map(([id, t], k) => ({ id, t, m: m.n, at: 5 * (k + 1), proj: true }))].sort((x, y) => x.at - y.at || (x.proj ? 1 : 0) - (y.proj ? 1 : 0));
+  });
+  const XOF = n => XM.find(m => m.n === n), monthOf = s => XM.find(m => inM(m, s));
+  const PICSX = XM.flatMap(m => m.list);
+  const ALLPICS = [...PICS, ...PICSX];
   const PIC = Object.fromEntries(ALLPICS.map(p => [p.id, p]));
 
   /* ---------- colouring pictures (her request, 17 Oct 2026) ----------
@@ -1089,7 +1107,7 @@ function mount(api) {
   }
   const openAt = i => Math.round((i + 1) * M1N / PICS.length);                // how many month-1 tools open picture i (from 0)
   const opened = tools => PICS.filter((p, i) => tools >= openAt(i)).length;
-  const artOpen = id => PIC[id] && PIC[id].at ? PIC[id].at <= tools3() : PICS.findIndex(p => p.id === id) < opened(tools1());
+  const artOpen = id => PIC[id] && PIC[id].m ? PIC[id].at <= toolsOf(XOF(PIC[id].m)) : PICS.findIndex(p => p.id === id) < opened(tools1());
   const WIP = n => 'tc:maria:colour:' + n;
   let CL = null;
   function openColour(n) {                      // n: the picture's id
@@ -1204,9 +1222,11 @@ function mount(api) {
   // the big cork board: six dashed frames that show the newest pictures she coloured; the small board: the missions she kept for «لاحقاً»
   const FRAMES = [[65.1, 15.6], [76.2, 15.6], [87.3, 15.6], [65.1, 28.3], [76.2, 28.3], [87.3, 28.3]];
   // Month 3: the room keeps growing (her prompt): a new piece every 5 books from book 65. [book, id, left, top, width] in % of the painting
-  const GROW3 = [[65, 'cushions', 7, 68, 14], [70, 'lights', 31, -1, 68], [75, 'bookshelf', 90, 44, 10], [80, 'window2', 63.5, 0.5, 9], [85, 'pegboard', 30.3, 5, 5.4], [90, 'tent', 83, 60, 16]];
-  const read3 = () => M3().filter(s => lib.read[s.id]).length;
-  const growHTML = () => GROW3.filter(([n]) => read3() >= n - M2N).map(([, id, x, y, w]) =>
+  // Months 3 to 5: the room keeps growing (her prompts): a new piece every 5 books. [book, id, left, top, width] in % of the painting
+  const GROW = [[65, 'cushions', 7, 68, 14], [70, 'lights', 31, -1, 68], [75, 'bookshelf', 90, 44, 10], [80, 'window2', 63.5, 0.5, 9], [85, 'pegboard', 30.3, 5, 5.4], [90, 'tent', 83, 60, 16],
+    [95, 'rug', 38, 84, 26], [100, 'banner100', 36, 0.5, 22], [105, 'sill-plant', 21, 49, 4.5], [110, 'roses', 47, 52, 4.2], [115, 'desk', 72, 56, 11], [120, 'lina-books', 77, 46, 9],
+    [125, 'kite', 3, 6, 6], [130, 'sewing', 0, 74, 9], [135, 'games', 88, 30, 8], [140, 'lanterns', 31, 6, 68], [145, 'window-box', 8, 47, 14], [150, 'ribbon', 43, 6.5, 6]];
+  const growHTML = () => GROW.filter(([n]) => lib.read['d' + String(n).padStart(2, '0')] || ST.filter(s => s.day <= n && s.day > M2N).every(s => lib.read[s.id])).map(([, id, x, y, w]) =>
     `<img class="st-grow g-${id}" src="assets/library/grow/${id}.webp" alt="" draggable="false" onerror="this.remove()" style="left:${x}%;top:${y}%;width:${w}%">`).join('');
   const SEEN_KEY = 'tc:maria:studioSeen';   // how many tools she has already seen in the room (so a new one arrives with a pop)
   function shelfHTML(fresh) {
@@ -1241,7 +1261,7 @@ function mount(api) {
   function renderSpots() {
     const later = Object.values(lib.missions).filter(m => m.state === 'later').length;
     const toColour = ALLPICS.filter(p => artOpen(p.id) && !lib.art[p.id]).length;
-    const badge = { table: toColour ? AR(toColour) : '', tools: m3Started() ? `${AR(tools1() + tools3())}/${AR(M1().length + M3().length)}` : `${AR(tools1())}/${AR(M1().length)}`, missions: later ? AR(later) : '', corner: lib.notebook.length + lib.feelings.length ? AR(lib.notebook.length + lib.feelings.length) : '' };
+    const badge = { table: toColour ? AR(toColour) : '', tools: (() => { const ms = XM.filter(started); return `${AR(tools1() + ms.reduce((t, m) => t + toolsOf(m), 0))}/${AR(M1().length + ms.reduce((t, m) => t + booksOf(m).length, 0))}`; })(), missions: later ? AR(later) : '', corner: lib.notebook.length + lib.feelings.length ? AR(lib.notebook.length + lib.feelings.length) : '' };
     $('#stBoard').innerHTML = boardHTML();
     badge.jar = sqWaiting() ? '✨' : '';
     badge.mail = babaSealed().length ? AR(babaSealed().length) : '';
@@ -1260,10 +1280,10 @@ function mount(api) {
     if (id === 'tools') {
       panel(`<h2>أدواتي</h2><p>جمعتِ ${AR(n)} من ${AR(M1().length)} أداة. كلّ كتاب من الشهر الأوّل يضع أداة جديدة هنا.</p>
         <div class="st-tools">${M1().map(s => lib.tools.includes(s.id) ? `<div class="st-tool got"><img src="assets/library/tools/${s.id}.webp" alt=""><small>${esc(s.tool.name)}</small></div>`
-          : `<div class="st-tool"><span>؟</span><small>الكتاب ${AR(s.day)}</small></div>`).join('')}</div>${m3Started() ? `
-        <h3>أدوات الشهر الثالث: ${AR(tools3())} من ${AR(M3().length)}</h3>
-        <div class="st-tools">${M3().map(s => lib.tools.includes(s.id) ? `<div class="st-tool got">${toolImg(s)}<small>${esc(s.tool.name)}</small></div>`
-          : `<div class="st-tool"><span>؟</span><small>الكتاب ${AR(s.day)}</small></div>`).join('')}</div>` : ''}`);
+          : `<div class="st-tool"><span>؟</span><small>الكتاب ${AR(s.day)}</small></div>`).join('')}</div>${XM.filter(started).map(m => `
+        <h3>أدوات الشهر ${m.ord}: ${AR(toolsOf(m))} من ${AR(booksOf(m).length)}</h3>
+        <div class="st-tools">${booksOf(m).map(s => lib.tools.includes(s.id) ? `<div class="st-tool got">${toolImg(s)}<small>${esc(s.tool.name)}</small></div>`
+          : `<div class="st-tool"><span>؟</span><small>الكتاب ${AR(s.day)}</small></div>`).join('')}</div>`).join('')}`);
     } else if (id === 'corner') {
       const nb = lib.notebook.map(i => byId[i]).filter(Boolean), fl = lib.feelings.map(i => byId[i]).filter(Boolean);
       panel(`<h2>ركن الكلمات</h2>
@@ -1284,12 +1304,12 @@ function mount(api) {
         <div class="st-projects">${PICS.map((p, i) => { const open = artOpen(p.id);
           return `<div class="st-proj${open ? ' open' : ''}${lib.art[p.id] ? ' done' : ''}"><b>${AR(i + 1)}</b><span>${p.t}</span>${open
             ? `<button class="st-colour" data-art="${p.id}">${lib.art[p.id] ? '🖼️ في المعرض، لوّنيها من جديد' : '🎨 لوّني'}</button>`
-            : `<small>عند ${AR(openAt(i))} أدوات</small>`}</div>`; }).join('')}</div>${m3Started() ? `
-        <h3>الشهر الثالث: كلّ أداة جديدة تقرّبكِ من صورة، وكلّ ${AR(5)} أدوات تفتح مشروعاً ⭐</h3>
-        <div class="st-projects">${PICS3.map((p, i) => { const open = artOpen(p.id);
-          return `<div class="st-proj${open ? ' open' : ''}${lib.art[p.id] ? ' done' : ''}${p.proj ? ' star' : ''}"><b>${p.proj ? '⭐' : AR(PICS3.slice(0, i + 1).filter(x => !x.proj).length)}</b><span>${p.t}</span>${open
+            : `<small>عند ${AR(openAt(i))} أدوات</small>`}</div>`; }).join('')}</div>${XM.filter(started).map(m => `
+        <h3>الشهر ${m.ord}: كلّ أداة جديدة تقرّبكِ من صورة، وكلّ ${AR(5)} أدوات تفتح مشروعاً ⭐</h3>
+        <div class="st-projects">${m.list.map((p, i) => { const open = artOpen(p.id);
+          return `<div class="st-proj${open ? ' open' : ''}${lib.art[p.id] ? ' done' : ''}${p.proj ? ' star' : ''}"><b>${p.proj ? '⭐' : AR(m.list.slice(0, i + 1).filter(x => !x.proj).length)}</b><span>${p.t}</span>${open
             ? `<button class="st-colour" data-art="${p.id}">${lib.art[p.id] ? '🖼️ في المعرض، لوّنيها من جديد' : '🎨 لوّني'}</button>`
-            : `<small>عند ${AR(p.at)} ${p.at <= 10 && p.at > 2 ? 'أدوات' : 'أداة'} من الشهر الثالث</small>`}</div>`; }).join('')}</div>` : ''}`);
+            : `<small>عند ${AR(p.at)} ${p.at <= 10 && p.at > 2 ? 'أدوات' : 'أداة'} من الشهر ${m.ord}</small>`}</div>`; }).join('')}</div>`).join('')}`);
     } else if (id === 'voice') {
       panel(`<h2>صوتي</h2><div id="stVoice"><p class="st-empty">…</p></div>`);
       const box = () => $('#stVoice');
@@ -1412,7 +1432,8 @@ function mount(api) {
 
   /* ---------- صانعة السكويشي (month 2): the glass jar on the studio table and the maker screen ---------- */
   const m2Started = () => lib.sq.pieces.length > 0 || (M1().length > 0 && M1().every(s => lib.read[s.id]));
-  const m3Started = () => M3().some(s => lib.read[s.id]) || (M3().length > 0 && ST.filter(isM2).every(s => lib.read[s.id] || s.hidden_until_parent_approves));
+  // a month's studio part shows once she has read one of its books, or finished every book before it
+  const started = m => booksOf(m).some(s => lib.read[s.id]) || (booksOf(m).length > 0 && ST.filter(s => s.day <= m.a).every(s => lib.read[s.id] || s.hidden_until_parent_approves));
   const toolImg = s => `<img src="assets/library/tools/${s.id}.webp" alt="" draggable="false" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'st-temo',textContent:${esc(JSON.stringify(s.tool.emoji || '🎨'))}}))">`;
   const sqSlots = () => Math.min(SQ.MAX, Math.floor(lib.sq.pieces.length / SQ.PER));
   const sqWaiting = () => Math.max(0, sqSlots() - lib.sq.made.length);
