@@ -2,7 +2,7 @@
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
 // The same file serves both apps: Talk Cards registers sw.js, Prepositions registers sw.js?app=prepositions.
 const APP = new URL(location.href).searchParams.get('app') === 'prepositions' ? 'prepositions' : 'talk-cards';
-const VERSION = APP + '-v140';
+const VERSION = APP + '-v141';
 const FILES = APP === 'prepositions' ? [
   './',
   'index.html',
@@ -110,7 +110,12 @@ const FILES = APP === 'prepositions' ? [
   'assets/library/deco/starlamp.webp',
   'assets/library/deco/books.webp',
   'assets/library/deco/lights.webp',
-  'assets/library/deco/bunting.webp'
+  'assets/library/deco/bunting.webp',
+  // استوديو ماريا (studio/): its own page, styles, ES modules and fonts; its tile picture
+  'assets/apps/studio.svg',
+  'studio/', 'studio/index.html', 'studio/css/app.css',
+  ...'app copybook dnd gallery home jars journey parent projects sound station station1 station2 station3 station4 station5 station6 station7 station8 station9 store ui welcome'.split(' ').map(n => `studio/js/${n}.js`),
+  'studio/fonts/baloo2-arabic.woff2', 'studio/fonts/baloo2-latin.woff2', 'studio/fonts/Tajawal-Regular.ttf', 'studio/fonts/Tajawal-Bold.ttf'
 ];
 
 // The recorded voice: audio/voice.json lists every clip; all of them are cached so the car works offline.

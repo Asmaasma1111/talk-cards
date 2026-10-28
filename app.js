@@ -1348,9 +1348,10 @@ const DEVICE_DBS = [   // [database, stores to back up, every store the app crea
   ['maktabati-baba', ['audio'], ['audio']],
   ['maria-reads', ['mine'], ['sounds', 'mine']],    // Mama's sounds already travel inside Maria Reads' own backup
   ['curiosity-box', ['clips', 'photos'], ['clips', 'photos']],  // her questions (voice) and Mama's photos
-  ['algeria-trip', ['clips', 'pages'], ['clips', 'pages']]       // her talks about the picture, her readings, the photos of her pages
+  ['algeria-trip', ['clips', 'pages'], ['clips', 'pages']],      // her talks about the picture, her readings, the photos of her pages
+  ['mariaStudio', ['pages'], ['pages']]                           // استوديو ماريا: her copybook pages, photos, poster and pitch recording
 ];
-const DEVICE_KEYS = k => k.startsWith('tc:maria:colour:') || ['tc:maria:libpin', 'tc:maria:studioSeen', 'tc:last', 'tc:deck'].includes(k);
+const DEVICE_KEYS = k => k.startsWith('tc:maria:colour:') || ['tc:maria:libpin', 'tc:maria:studioSeen', 'tc:last', 'tc:deck', 'mariaStudio.v1'].includes(k);   // mariaStudio.v1: استوديو ماريا's progress
 function openStoreDB(name, stores) {
   return new Promise((ok, bad) => {
     if (!window.indexedDB) return bad(new Error('no IndexedDB'));

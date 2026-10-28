@@ -3039,6 +3039,15 @@ body[data-profile="mama"] .deck-apps { display: none; }
 .ap-tiles.six .ap-art { width: clamp(84px, 11vh, 122px); }
 .ap-tiles.six .ap-name { font-size: clamp(21px, 2.3vw, 27px); }
 .ap-tiles.six .ap-state { font-size: 15px; padding: 4px 12px; margin-top: 6px; }
+/* استوديو ماريا: the seventh tile (four on the first row, three on the second) */
+.t-studio { background: linear-gradient(170deg, #FDE3EE 0%, #FFFFFF 70%); }
+.t-studio .ap-art { animation-delay: -2s; }
+.ap-tiles.seven { max-width: 1120px; margin: 0 auto; gap: clamp(10px, 1.6vw, 20px); }
+.ap-tiles.seven .ap-tile { width: clamp(150px, calc((min(100vw, 1120px) - 120px) / 4), 250px); padding: 12px 10px 14px; }
+.ap-tiles.seven .ap-art { width: clamp(80px, 10.5vh, 118px); }
+.ap-tiles.seven .ap-name { font-size: clamp(20px, 2.2vw, 26px); }
+.ap-tiles.seven .ap-state { font-size: 15px; padding: 4px 12px; margin-top: 6px; }
+@media (max-width: 900px) { .ap-tiles.seven .ap-tile { width: clamp(150px, calc((100vw - 110px) / 3), 240px); } }
 @media (prefers-reduced-motion: reduce) { .dz-city.here i, .dz-myplane, .dz-plane, .dz-pane, .dz-stampbig { animation: none !important; } }
 /* the trip's maths in Saudi digits (her rule, 23 Oct 2026): the thousands blue, the units green, as in the place table */
 .dz-n .g-th { color: #2F7FB8; } .dz-n .g-un { color: var(--g7); }
