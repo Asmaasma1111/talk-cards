@@ -3049,6 +3049,14 @@ body[data-profile="mama"] .deck-apps { display: none; }
 .ap-tiles.seven .ap-name { font-size: clamp(20px, 2.2vw, 26px); }
 .ap-tiles.seven .ap-state { font-size: 15px; padding: 4px 12px; margin-top: 6px; }
 @media (max-width: 900px) { .ap-tiles.seven .ap-tile { width: clamp(150px, calc((100vw - 110px) / 3), 240px); } }
+/* an upright iPad: four and three, so the seventh tile stays clear of the footer (29 Oct 2026) */
+@media (min-width: 600px) and (max-width: 900px) { .ap-tiles.seven .ap-tile { width: clamp(140px, calc((100vw - 100px) / 4), 200px); padding: 10px 8px 12px; } }
+/* a sideways iPad: slimmer tiles so the second row stays clear of the footer */
+@media (orientation: landscape) and (max-height: 860px) {
+  .ap:has(.ap-tiles.seven) { gap: clamp(10px, 1.6vh, 14px); }
+  .ap-tiles.seven .ap-tile { padding: 8px 10px 10px; }
+  .ap-tiles.seven .ap-art { width: clamp(68px, 9vh, 100px); }
+}
 @media (prefers-reduced-motion: reduce) { .dz-city.here i, .dz-myplane, .dz-plane, .dz-pane, .dz-stampbig { animation: none !important; } }
 /* the trip's maths in Saudi digits (her rule, 23 Oct 2026): the thousands blue, the units green, as in the place table */
 .dz-n .g-th { color: #2F7FB8; } .dz-n .g-un { color: var(--g7); }
