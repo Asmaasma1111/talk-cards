@@ -31,8 +31,7 @@ export function jarsPanel() {
     el('div', { class: 'jars' }, JARS.map(j => {
       const v = s.jars[j.key] || 0;
       return el('div', { class: 'jar' + (v > 0 ? ' has' : '') },
-        el('div', { class: 'glass' }, art(`jar_${j.key}_${v > 0 ? 'full' : 'empty'}.png`),
-          el('div', { class: 'coins' }, Array.from({ length: Math.min(Math.floor(v), 12) }, () => art('coin.png')))),
+        el('div', { class: 'glass' }, art(`jar_${j.key}_${v > 0 ? 'full' : 'empty'}.png`)),   // the full picture shows its coins
         el('h3', {}, j.name),
         el('span', { class: 'share' }, v ? riyals(v) : 'فارغة'),
         j.key === 'give' ? el('button', { class: 'btn garden-btn', onclick: () => { play('tap'); location.hash = 'garden'; } }, '🌾 حديقة الآخرة') : null);

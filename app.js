@@ -1279,9 +1279,17 @@ function renderParent() {
       </div></div>
     </div>
 
+    ${APP === 'talk-cards' ? studioRows() : ''}
+
     ${backupRows()}
   </div>`;
 }
+// مختبر ماريا للمال stays locked on her apps page until Mama opens it here (her rule, 29 Oct 2026: locked till Maria makes progress in her other apps)
+const STUDIO_KEY = 'tc:maria:studioOpen';
+const studioRows = () => `
+    <div class="p-group">
+      <div class="p-row"><span>Maria's Money Lab<span class="sub" lang="ar" dir="rtl">مختبر ماريا للمال: مقفل حتى تفتحيه</span></span><button class="switch" role="switch" aria-checked="${lsGet(STUDIO_KEY) === '1'}" data-act="studio" aria-label="Maria's Money Lab open"></button></div>
+    </div>`;
 function openParent() { Speech.stop(); renderParent(); show('parent'); $('#parent').scrollTop = 0; }
 function onParentClick(e) {
   const b = e.target.closest('button'); if (!b) return;
@@ -1311,6 +1319,12 @@ function onParentClick(e) {
       const el = document.createElement('div');
       SFX.init(); primeSpeech(); unlockVoice();
       Speech.play(renderText(el, isMama() ? CARD[PCARDS[0]].spoken : "Hello! / What's your name?", true));
+      break;
+    }
+    case 'studio': {
+      const on = lsGet(STUDIO_KEY) !== '1';
+      lsSet(STUDIO_KEY, on ? '1' : '0'); b.setAttribute('aria-checked', String(on));
+      toast(on ? "Maria's Money Lab is open on her apps page." : "Maria's Money Lab is locked again.");
       break;
     }
     case 'sfx':
@@ -1349,9 +1363,9 @@ const DEVICE_DBS = [   // [database, stores to back up, every store the app crea
   ['maria-reads', ['mine'], ['sounds', 'mine']],    // Mama's sounds already travel inside Maria Reads' own backup
   ['curiosity-box', ['clips', 'photos'], ['clips', 'photos']],  // her questions (voice) and Mama's photos
   ['algeria-trip', ['clips', 'pages'], ['clips', 'pages']],      // her talks about the picture, her readings, the photos of her pages
-  ['mariaStudio', ['pages'], ['pages']]                           // استوديو ماريا: her copybook pages, photos, poster and pitch recording
+  ['mariaStudio', ['pages'], ['pages']]                           // مختبر ماريا للمال: her copybook pages, photos, poster and pitch recording
 ];
-const DEVICE_KEYS = k => k.startsWith('tc:maria:colour:') || ['tc:maria:libpin', 'tc:maria:studioSeen', 'tc:last', 'tc:deck', 'mariaStudio.v1'].includes(k);   // mariaStudio.v1: استوديو ماريا's progress
+const DEVICE_KEYS = k => k.startsWith('tc:maria:colour:') || ['tc:maria:libpin', 'tc:maria:studioSeen', 'tc:maria:studioOpen', 'tc:last', 'tc:deck', 'mariaStudio.v1'].includes(k);   // mariaStudio.v1: مختبر ماريا للمال's progress
 function openStoreDB(name, stores) {
   return new Promise((ok, bad) => {
     if (!window.indexedDB) return bad(new Error('no IndexedDB'));

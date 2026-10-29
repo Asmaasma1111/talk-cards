@@ -3,7 +3,7 @@
 // money so far against her goal, printed vs digital profit, and a gentle check if sales are slow.
 // Riyals here are real money from sales; stars are only for effort (writing what a customer said).
 import * as store from './store.js';
-import { el, ar, art, topbar, taskCard, screen, primary, ICON, award, awardBadge, celebrate, toast, riyals, copiesWord, confirmBox } from './ui.js';
+import { el, ar, art, topbar, taskCard, screen, primary, ICON, award, awardBadge, celebrate, toast, riyals, copiesWord, confirmBox, emo } from './ui.js';
 import { play } from './sound.js';
 import { renderPage } from './copybook.js';
 import { planData, costPerCopy, coinsFor, stepper, num, round2, money } from './station4.js';
@@ -102,8 +102,8 @@ export async function station7Screen(app) {
   const taskP = el('p', {});
 
   const saleBtn = el('button', { class: 'sale-btn', onclick: sell, 'aria-label': 'بيعة جديدة' },
-    el('span', { class: 'sale-plus', dir: 'ltr' }, '+١'), el('b', {}, 'بيعة'), el('span', { class: 'sub' }, `نسخة ورقية ${biRiyals(price)}`));
-  const giftBtn = el('button', { class: 'btn', onclick: giftDialog }, el('span', { 'aria-hidden': 'true' }, '🎁'), 'هدية أو خصم');
+    art('coin.png', { cls: 'sale-coin' }), el('span', { class: 'sale-plus', dir: 'ltr' }, '+١'), el('b', {}, 'بيعة'), el('span', { class: 'sub' }, `نسخة ورقية ${biRiyals(price)}`));
+  const giftBtn = el('button', { class: 'btn', onclick: giftDialog }, el('span', { 'aria-hidden': 'true' }, emo('🎁')), 'هدية أو خصم');
 
   function sell() {
     play('coin');
@@ -128,9 +128,9 @@ export async function station7Screen(app) {
     const pick = el('div', { class: 'gift-pick' });
     const showMain = () => pick.replaceChildren(
       el('button', { class: 'card gift-opt', onclick: () => { logGift(); close(); } },
-        el('span', { class: 'big', 'aria-hidden': 'true' }, '🎁'), el('b', {}, 'أهديتُ نسخة'), el('span', {}, 'أعطيتُها مجانًا')),
+        el('span', { class: 'big', 'aria-hidden': 'true' }, emo('🎁')), el('b', {}, 'أهديتُ نسخة'), el('span', {}, 'أعطيتُها مجانًا')),
       price > 1 ? el('button', { class: 'card gift-opt', onclick: () => { play('tap'); showDiscount(); } },
-        el('span', { class: 'big', 'aria-hidden': 'true' }, '🏷️'), el('b', {}, 'بعتُ بسعر أقل'), el('span', {}, 'خصم')) : null);
+        el('span', { class: 'big', 'aria-hidden': 'true' }, emo('🏷️')), el('b', {}, 'بعتُ بسعر أقل'), el('span', {}, 'خصم')) : null);
     const showDiscount = () => pick.replaceChildren(el('div', { class: 'discount' },
       el('p', {}, `السعر ${riyals(price)}. بكم بعتِها؟`),
       stepper({ value: paid, min: 1, max: price - 1, label: 'بكم بعتِها', format: (v) => riyals(v), onChange: (v) => { paid = v; } }),
@@ -189,7 +189,7 @@ export async function station7Screen(app) {
       el('div', { class: 'faces' }, FACES.map(f => el('button', {
         class: 'face' + (sale.face === f.key ? ' on' : ''), 'aria-pressed': String(sale.face === f.key), 'aria-label': f.name,
         onclick: () => { play('tap'); store.update(() => { sale.face = sale.face === f.key ? null : f.key; }); render(); },
-      }, el('span', { 'aria-hidden': 'true' }, f.icon), el('small', {}, f.name)))),
+      }, emo(f.icon), el('small', {}, f.name)))),
       el('button', { class: 'btn said', onclick: () => {
         play('tap');
         store.update(() => { sale.said = saidId(sale); });
@@ -209,7 +209,7 @@ export async function station7Screen(app) {
       const valEl = el('b', {});
       money(valEl, label, v);
       return el('div', { class: 'cmp-row' },
-        el('span', { class: 'cmp-k' }, icon, ' ', copiesWord(n)),
+        el('span', { class: 'cmp-k' }, emo(icon), ' ', copiesWord(n)),
         el('span', { class: 'cmp-bar' }, el('i', { class: v < 0 ? 'neg' : '', style: { width: Math.round(Math.abs(v) / max * 100) + '%' } })),
         valEl);
     };
@@ -246,14 +246,14 @@ export async function station7Screen(app) {
     ].sort((a, b) => b.at.localeCompare(a.at));
     if (!items.length) return el('div', { class: 'empty' }, art('mascot_wave.png'), el('p', {}, 'اضغطي «+١ بيعة» عندما تبيعين نسخة.'));
     return el('ol', { class: 'sale-log' }, items.slice(0, 30).map(({ s, g }) => {
-      if (g) return el('li', {}, el('span', { class: 'ic', 'aria-hidden': 'true' }, '🎁'), el('b', {}, 'هدية: نسخة مجانية'), el('small', {}, dateWord(g.at)));
+      if (g) return el('li', {}, el('span', { class: 'ic', 'aria-hidden': 'true' }, emo('🎁')), el('b', {}, 'هدية: نسخة مجانية'), el('small', {}, dateWord(g.at)));
       const disc = d.gifts.find(x => x.group === s.id);
       const face = FACES.find(f => f.key === s.face);
       const label = s.kind === 'digital' ? `بيعة رقمية ${biRiyals(s.price)}` : disc ? `بيعة ${biRiyals(s.price - disc.amount)} (خصم)` : `بيعة ${biRiyals(s.price)}`;
       const li = el('li', { class: s.kind === 'print' ? 'tap' : '' },
         el('span', { class: 'ic', 'aria-hidden': 'true' }, s.kind === 'digital' ? '🌐' : disc ? '🏷️' : '📘'),
         el('b', {}, label),
-        face ? el('span', { 'aria-label': face.name }, face.icon) : null,
+        face ? el('span', { 'aria-label': face.name }, emo(face.icon)) : null,
         s.said && hasInk(said.get(s.id)) ? el('span', { 'aria-label': 'كتبتُ ما قاله' }, '✍️') : null,
         el('small', {}, dateWord(s.at)));
       if (s.kind === 'print') {

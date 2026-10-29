@@ -12,7 +12,7 @@ export function welcomeScreen(app, step = 'name') {
   const input = el('input', {
     class: 'field', type: 'text', maxlength: '16', dir: 'rtl', lang: 'ar',
     autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false',
-    'aria-label': 'اسم صديقي', placeholder: 'اكتبي الاسم هنا',
+    'aria-label': 'اسم صديقتي', placeholder: 'اكتبي الاسم هنا',
     oninput: () => refresh(),
   });
   const padHost = el('div', { class: 'pad-wrap' });
@@ -49,8 +49,8 @@ export function welcomeScreen(app, step = 'name') {
   }
 
   app.replaceChildren(screen('pink',
-    el('header', { class: 'topbar' }, el('h1', { class: 'title' }, 'استوديو ماريا')),
-    taskCard('مرحبًا! أنا صديقكِ الجديد. ما اسمي؟', 'wave'),
+    el('header', { class: 'topbar' }, el('h1', { class: 'title' }, 'مختبر ماريا للمال')),
+    taskCard('مرحبًا! أنا صديقتكِ الجديدة. ما اسمي؟', 'wave'),
     el('main', { class: 'work' },
       el('div', { class: 'center-col' },
         el('div', { class: 'seg', role: 'group', 'aria-label': 'طريقة كتابة الاسم' }, segType, segHand),
@@ -63,13 +63,13 @@ export function welcomeScreen(app, step = 'name') {
 
 function helloStep(app) {
   app.replaceChildren(screen('pink',
-    el('header', { class: 'topbar' }, el('h1', { class: 'title' }, 'استوديو ماريا')),
+    el('header', { class: 'topbar' }, el('h1', { class: 'title' }, 'مختبر ماريا للمال')),
     el('section', { class: 'task' }, art('mascot_celebrate.png'), el('p', {}, 'أنا ', mascotName(), '! سأكون معكِ في كل خطوة.')),
     el('main', { class: 'work' },
       el('div', { class: 'center-col' },
         el('div', { class: 'card name-card' },
           art('studio_1.png', { size: 160 }),
-          el('p', { class: 'big-line' }, 'هذا استوديوك. هنا تصنعين مشاريعك، وتجعلين المال يعمل لكِ.'),
+          el('p', { class: 'big-line' }, 'هذا مختبرك. هنا تجرّبين مشاريعك، وتجعلين المال يعمل لكِ.'),
         ),
       ),
     ),

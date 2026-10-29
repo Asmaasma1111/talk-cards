@@ -1,6 +1,7 @@
 // Shared UI helpers: elements, Arabic digits, art with placeholders, skeleton parts, overlays.
 import * as store from './store.js';
 import { play } from './sound.js';
+import { STATIONS } from './journey.js';
 
 // Object.assign can't set CSS custom properties (--x), so use setProperty for those.
 export function setStyle(n, styles) {
@@ -50,13 +51,16 @@ const PH = {
 };
 
 const avail = new Map();
+// The pictures are ChatGPT drawings saved as .webp (scripts/studio_pics.py); the code keeps the brief's .png names.
+export const assetUrl = (name) => 'assets/' + name.replace(/\.png$/, '.webp');
+
 export function assetOk(name) {
   if (!avail.has(name)) {
     avail.set(name, new Promise((resolve) => {
       const i = new Image();
       i.onload = () => resolve(true);
       i.onerror = () => resolve(false);
-      i.src = 'assets/' + name;
+      i.src = assetUrl(name);
     }));
   }
   return avail.get(name);
@@ -80,7 +84,7 @@ export function art(file, { size, alt = '', cls = '' } = {}) {
   if (size) setStyle(box, { width: size + 'px', height: size + 'px', '--size': size + 'px' });
   box.append(phFor(file));
   assetOk(file).then(ok => {
-    if (ok) box.replaceChildren(el('img', { src: 'assets/' + file, alt: '', draggable: 'false' }));
+    if (ok) box.replaceChildren(el('img', { src: assetUrl(file), alt: '', draggable: 'false' }));
   });
   return box;
 }
@@ -128,6 +132,27 @@ export function mascotSVG(pose = 'wave') {
   </svg>`;
 }
 
+// ---------- Clay icons (ChatGPT, scripts/studio_pics.py) in place of the emoji used as stand-ins ----------
+const EMO = {
+  '📘': 'book', '🎁': 'gift', '🌐': 'online', '🏷️': 'tag', '🧺': 'basket', '📦': 'later', '🖼️': 'poster', '🧾': 'receipt',
+  '👪': 'family', '🏡': 'neighbours', '🏫': 'school', '📱': 'tablet', '☀️': 'sun', '⬜': 'plain', '🚫': 'nophoto', '💰': 'money',
+  '😊': 'happy', '🙂': 'ok', '🤔': 'unsure', '😣': 'worried', '😟': 'worried', '💻': 'tablet', '🙏': 'thanks', '✅': 'tick', '✨': 'sparkle', '💗': 'heart',
+  '👩': 'mama', '👨': 'baba', '👧': 'sister', '🧒': 'friend', '🛠️': 'tools', '⭐': 'star', '📷': 'camera', '🔒': 'lock',
+  '📝': 'list', '🏠': 'home', '✍️': 'write', '🎨': 'palette',
+};
+// The emoji shows until its picture (assets/ic_<name>.webp) has loaded, so a missing picture never leaves a gap.
+export function emo(e) {
+  const key = EMO[e];
+  const s = el('span', { class: 'emo', 'aria-hidden': 'true' }, e);
+  if (key) assetOk(`ic_${key}.png`).then(ok => { if (ok) s.replaceChildren(el('img', { src: assetUrl(`ic_${key}.png`), alt: '', draggable: 'false' })); });
+  return s;
+}
+// "📘 نسخ ورقية" → the icon, then the words
+export function withEmo(text) {
+  const e = Object.keys(EMO).find(k => typeof text === 'string' && text.startsWith(k + ' '));
+  return e ? [emo(e), text.slice(e.length)] : text;
+}
+
 // ---------- Icons ----------
 export const ICON = {
   back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
@@ -170,10 +195,16 @@ export function soundBtn() {
   return b;
 }
 
+function stationIcon(title) {
+  const st = STATIONS.find(s => s.name === title);
+  return st ? art(st.icon, { size: 40, cls: 'title-ic' }) : null;
+}
+
 export function topbar({ title, back, plain = false, end = [], step = null }) {
   return el('header', { class: 'topbar' },
     back ? iconBtn('back', 'رجوع', back) : null,
-    title ? el('h1', { class: 'title' + (plain ? ' plain' : '') }, title) : null,
+    // a station's own icon sits in its title (her request, 29 Oct 2026: the icons inside the sections they belong to)
+    title ? el('h1', { class: 'title' + (plain ? ' plain' : '') }, stationIcon(title), title) : null,
     step ? el('div', { class: 'steps', 'aria-label': `الخطوة ${ar(step[0])} من ${ar(step[1])}` },
       Array.from({ length: step[1] }, (_, i) => el('i', { class: i + 1 < step[0] ? 'on' : i + 1 === step[0] ? 'now' : '' }))) : null,
     el('div', { class: 'spacer' }),
@@ -198,8 +229,8 @@ export function primary(label, onclick, attrs = {}) {
 export function mascotName() {
   const s = store.get();
   if (s.mascotName) return document.createTextNode(s.mascotName);
-  if (s.mascotNameImg) return el('img', { class: 'name-img', src: s.mascotNameImg, alt: 'اسم صديقي' });
-  return document.createTextNode('صديقي');
+  if (s.mascotNameImg) return el('img', { class: 'name-img', src: s.mascotNameImg, alt: 'اسم صديقتي' });
+  return document.createTextNode('صديقتي');
 }
 
 // Stars are for effort. They are never money and never touch the jars.

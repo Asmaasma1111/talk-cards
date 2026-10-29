@@ -2,7 +2,7 @@
 // materials basket → copies → cost of one copy → what customers said → prices in shops →
 // my price (slider with zones) → why (copybook) → my goal → printed and digital → done.
 import * as store from './store.js';
-import { el, ar, art, topbar, taskCard, screen, primary, ICON, award, celebrate, riyals, toast, copiesWord } from './ui.js';
+import { el, ar, art, topbar, taskCard, screen, primary, ICON, award, celebrate, riyals, toast, copiesWord, emo } from './ui.js';
 import { play } from './sound.js';
 import { createDnD } from './dnd.js';
 import { renderPage, mountInk } from './copybook.js';
@@ -155,12 +155,12 @@ function materials(app, d) {
   function render() {
     const inBasket = new Set(d.items.map(i => i.key));
     shelf.replaceChildren(...[...ITEMS.filter(i => !inBasket.has(i.key)), { key: 'other', name: 'شيء آخر', file: '' }].map(it => {
-      const c = el('div', { class: 'mat' }, it.file ? art(it.file) : el('div', { class: 'art' }, el('div', { class: 'ph', style: { '--ph': '#FFFFFF' } }, '✍️')), el('span', {}, it.name));
+      const c = el('div', { class: 'mat' }, it.file ? art(it.file) : art('item_other.png'), el('span', {}, it.name));
       dnd.draggable(c, { data: { from: 'shelf', key: it.key } });
       return c;
     }));
     basket.replaceChildren(
-      el('div', { class: 'basket-head' }, el('span', { class: 'big', 'aria-hidden': 'true' }, '🧺'), el('b', {}, 'سلّتي')),
+      el('div', { class: 'basket-head' }, el('span', { class: 'big', 'aria-hidden': 'true' }, emo('🧺')), el('b', {}, 'سلّتي')),
       ...(d.items.length ? d.items.map(i => {
         const row = el('div', { class: 'line' },
           el('div', { class: 'grab' }, art(i.key === 'other' ? 'item_other.png' : ITEMS.find(x => x.key === i.key).file), el('span', { class: 'nm' }, itemName(i))),
@@ -186,7 +186,7 @@ function materials(app, d) {
 // ---------- 4a-2. How many copies? ----------
 function copies(app, d) {
   const pile = el('div', { class: 'copies-pile', 'aria-hidden': 'true' });
-  const draw = () => pile.replaceChildren(...Array.from({ length: Math.min(d.copies, 30) }, () => el('span', { class: 'book' }, '📘')),
+  const draw = () => pile.replaceChildren(...Array.from({ length: Math.min(d.copies, 30) }, () => el('span', { class: 'book' }, emo('📘'))),
     d.copies > 30 ? el('b', {}, '…') : null);
   draw();
   app.replaceChildren(frame('copies', 'كم نسخة ستصنعين؟', 'think',
@@ -211,7 +211,7 @@ function cost(app, d) {
   const total = materialsTotal(d), c = costPerCopy(d);
   const exact = Number.isInteger(total / d.copies) || round2(total / d.copies) === total / d.copies;
   const piles = el('div', { class: 'piles' },
-    ...Array.from({ length: Math.min(d.copies, 10) }, () => el('div', { class: 'pile-one' }, el('span', { class: 'book' }, '📘'), el('div', { class: 'coins-row' }, coinsFor(c)))),
+    ...Array.from({ length: Math.min(d.copies, 10) }, () => el('div', { class: 'pile-one' }, el('span', { class: 'book' }, emo('📘')), el('div', { class: 'coins-row' }, coinsFor(c)))),
     d.copies > 10 ? el('b', { class: 'more' }, `… و${copiesWord(d.copies - 10)} أخرى`) : null);
   app.replaceChildren(frame('cost', 'كم تكلّفني النسخة الواحدة؟', 'think',
     el('div', { class: 'cost' },
@@ -302,7 +302,7 @@ function priceSlider({ value, c, best, copies, totalCost, onChange }) {
     big.textContent = riyals(p);
     zoneTag.textContent = ZONE[z].text;
     zoneTag.style.background = ZONE[z].color;
-    face.textContent = ZONE[z].face;
+    face.replaceChildren(emo(ZONE[z].face));
     money(per, 'ربح النسخة', round2(p - c));
     if (totalCost == null) tot.textContent = ''; else money(tot, 'الربح المتوقّع', p * copies - totalCost);
     onChange(p);
@@ -368,8 +368,8 @@ function digital(app, d) {
   app.replaceChildren(frame('digital', 'ترسمين مرة واحدة، وتبيعين مرات كثيرة. هكذا يعمل المال لكِ!', 'celebrate',
     el('div', { class: 'center-col' },
       el('div', { class: 'two-copies' },
-        el('div', { class: 'card copy-kind' }, el('span', { class: 'big' }, '📘'), el('b', {}, 'النسخة الورقية'), el('span', {}, `للأهل والأصدقاء: ${riyals(d.price)}`)),
-        el('div', { class: 'card copy-kind' }, el('span', { class: 'big' }, '💻'), el('b', {}, 'النسخة الرقمية'), el('span', {}, 'تبيعها ماما على الإنترنت'), el('span', { class: 'zero' }, 'كل نسخة إضافية تكلّف ٠'))),
+        el('div', { class: 'card copy-kind' }, el('span', { class: 'big' }, emo('📘')), el('b', {}, 'النسخة الورقية'), el('span', {}, `للأهل والأصدقاء: ${riyals(d.price)}`)),
+        el('div', { class: 'card copy-kind' }, el('span', { class: 'big' }, emo('💻')), el('b', {}, 'النسخة الرقمية'), el('span', {}, 'تبيعها ماما على الإنترنت'), el('span', { class: 'zero' }, 'كل نسخة إضافية تكلّف ٠'))),
       el('div', { class: 'card price-card' },
         priceSlider({ value: p, c: 0, best, copies: 0, totalCost: null, onChange: v => { p = v; } }))),
     [primary('هذا سعر النسخة الرقمية', () => { store.update(() => { d.digital = p; }); advance(d, 'done'); })]));

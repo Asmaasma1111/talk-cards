@@ -10,6 +10,9 @@ import { parentScreen } from './parent.js';
 import { galleryScreen } from './gallery.js';
 import { toast } from './ui.js';
 
+// Locked until Mama opens it in the parent area of تطبيقات ماريا (tc:maria:studioOpen): back to her apps page.
+try { if (localStorage.getItem('tc:maria:studioOpen') !== '1') location.replace('../'); } catch (e) { /* storage blocked: stay */ }
+
 store.load();
 const app = document.getElementById('app');
 let cleanup = null;
@@ -28,7 +31,12 @@ async function route() {
 
   switch (parts[0]) {
     case 'welcome': welcomeScreen(app, parts[1]); break;
-    case 'station': { const r = await stationScreen(app, Number(parts[1]), parts[2]); cleanup = typeof r === 'function' ? r : null; break; }
+    case 'station': {
+      const r = await stationScreen(app, Number(parts[1]), parts[2]);
+      cleanup = typeof r === 'function' ? r : null;
+      app.querySelector('.screen')?.setAttribute('data-station', parts[1]);   // its scene (ChatGPT) shows faintly behind it
+      break;
+    }
     case 'copybook': cleanup = await copybookScreen(app, { id: parts[1], ...q }); break;
     case 'next-projects': await nextProjectsScreen(app); break;
     case 'jars': jarsScreen(app); break;

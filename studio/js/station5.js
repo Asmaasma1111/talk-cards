@@ -1,7 +1,7 @@
 // Station 5, أَصنع (Make): handwritten task cards on a two-column board ("أعمل عليها" → "انتهيتُ"),
 // product photos (product only, never faces), and a "مشكلة وحللتُها" note that earns a badge.
 import * as store from './store.js';
-import { el, ar, art, topbar, taskCard, screen, primary, ICON, award, awardBadge, celebrate, toast, iconBtn } from './ui.js';
+import { el, ar, art, topbar, taskCard, screen, primary, ICON, award, awardBadge, celebrate, toast, iconBtn, withEmo } from './ui.js';
 import { play } from './sound.js';
 import { createDnD } from './dnd.js';
 import { renderPage } from './copybook.js';
@@ -54,8 +54,8 @@ async function tasks(app, d) {
 
   const todo = el('div', { class: 'col-cards' });
   const doneCol = el('div', { class: 'col-cards' });
-  const todoBox = el('section', { class: 'col todo', 'aria-label': 'أعمل عليها' }, el('h3', {}, '🛠️ أعمل عليها'), todo);
-  const doneBox = el('section', { class: 'col done', 'aria-label': 'انتهيتُ' }, el('h3', {}, '✅ انتهيتُ'), doneCol);
+  const todoBox = el('section', { class: 'col todo', 'aria-label': 'أعمل عليها' }, el('h3', {}, withEmo('🛠️ أعمل عليها')), todo);
+  const doneBox = el('section', { class: 'col done', 'aria-label': 'انتهيتُ' }, el('h3', {}, withEmo('✅ انتهيتُ')), doneCol);
   const undoBtn = el('button', { class: 'btn side', disabled: true, onclick: () => dnd.undo() },
     el('span', { html: ICON.undo, style: { width: '28px', height: '28px', display: 'inline-flex' } }), 'تراجع');
   const next = primary('التالي', () => advance(d, 'photos'));

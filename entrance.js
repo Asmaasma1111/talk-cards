@@ -1,6 +1,6 @@
 /* تطبيقات ماريا اليوميّة: the entrance page of Talk Cards (Maria only).
-   Big tiles open her apps (Talk Cards, جدول الضرب, مكتبتي, ماريا تقرأ, علبة الفضول, هيا نتعلم في الجزائر, استوديو ماريا); each app has a «تطبيقاتي» chip back here.
-   استوديو ماريا is its own page in studio/ (its own styles and ES modules), so its tile opens that page instead of a screen here.
+   Big tiles open her apps (Talk Cards, جدول الضرب, مكتبتي, ماريا تقرأ, علبة الفضول, هيا نتعلم في الجزائر, مختبر ماريا للمال); each app has a «تطبيقاتي» chip back here.
+   مختبر ماريا للمال is its own page in studio/ (its own styles and ES modules), so its tile opens that page instead of a screen here.
    Her photo is chosen on the iPad, made small and kept in her progress (and her backup file), never in the app's files. */
 (function (root) {
 'use strict';
@@ -39,7 +39,7 @@ function mount(api) {
     <button class="ap-tile t-reads" data-app="reads" hidden><span class="ap-art"><img src="assets/apps/reads.webp" alt=""></span><span class="ap-name">ماريا تقرأ</span><span class="ap-en" lang="en" dir="ltr">Maria Reads</span><span class="ap-state" id="apReads"></span></button>
     <button class="ap-tile t-cbox" data-app="cbox" hidden><span class="ap-art"><img src="assets/apps/curiosity.webp" alt=""></span><span class="ap-name">علبة الفضول</span><span class="ap-en">سؤال كلّ يوم</span><span class="ap-state" id="apCbox"></span></button>
     <button class="ap-tile t-dz" data-app="dz" hidden><span class="ap-art"><img src="assets/apps/algeria.webp" alt=""></span><span class="ap-name">هيا نتعلم في الجزائر</span><span class="ap-en">مدينة بعد مدينة</span><span class="ap-state" id="apDz"></span></button>
-    <button class="ap-tile t-studio" data-app="studio"><span class="ap-art"><img src="assets/apps/studio.svg" alt=""></span><span class="ap-name">استوديو ماريا</span><span class="ap-en">مشاريعي الحقيقية</span><span class="ap-state" id="apStudio"></span></button>
+    <button class="ap-tile t-studio" data-app="studio"><span class="ap-art"><img src="assets/apps/studio.webp" alt=""></span><span class="ap-name">مختبر ماريا للمال</span><span class="ap-en">أكسب وأدّخر وأعطي</span><span class="ap-state" id="apStudio"></span></button>
   </div>
   <!-- backup and restore: one small grey line in English at the foot, for Mama (her request, 23 Oct 2026: Maria was tapping the big buttons) -->
   <div class="ap-foot" lang="en" dir="ltr">Designed by Dr Asma Khattala<span class="ap-sep">·</span><button class="ap-footlink" id="apBackup">Back up</button><span class="ap-sep">·</span><label class="ap-footlink">Restore<input type="file" id="apRestore" accept="application/json,.json" hidden></label></div>
@@ -71,9 +71,11 @@ function mount(api) {
     el.className = 'ap-state' + (done ? ' done' : '');
     el.innerHTML = done ? `${tick}<span>${text}</span>` : `<span>${text}</span>`;
   }
-  // استوديو ماريا keeps its progress in localStorage under mariaStudio.v1 (studio/js/store.js); the tile shows her next station.
+  // مختبر ماريا للمال keeps its progress in localStorage under mariaStudio.v1 (studio/js/store.js); the tile shows her next station.
   const STUDIO = ['هدفي', 'أفكاري', 'أسأل زبائني', 'خُطّتي', 'أَصنع', 'أُخبِر الناس', 'أَبيع', 'حساباتي وزجاجاتي', 'مشروعي القادم'];
+  const studioOpen = () => { try { return localStorage.getItem('tc:maria:studioOpen') === '1'; } catch (e) { return false; } };
   function studioText() {
+    if (!studioOpen()) return 'قريبًا 🔒';
     let s = null;
     try { s = JSON.parse(localStorage.getItem('mariaStudio.v1') || 'null'); } catch (e) {}
     if (!s || !s.setupDone) return 'مشروعكِ الأوّل ينتظركِ';
@@ -96,6 +98,7 @@ function mount(api) {
     const tiles = keys.length + 1;   // + the studio tile (not a daily app, so it is not in the day's dots)
     $('#apps .ap-tiles').classList.toggle('four', tiles === 4); $('#apps .ap-tiles').classList.toggle('five', tiles === 5); $('#apps .ap-tiles').classList.toggle('six', tiles === 6); $('#apps .ap-tiles').classList.toggle('seven', tiles === 7);
     state($('#apStudio'), false, studioText());
+    $('#apps .t-studio').classList.toggle('locked', !studioOpen());
     if (s.reads) state($('#apReads'), s.reads.done, s.reads.done ? 'قرأتِ اليوم' : `الدرس ${AR(s.reads.lesson)} ينتظركِ`);
     if (s.cbox) state($('#apCbox'), s.cbox.done, s.cbox.done ? 'فتحتِ علبة اليوم' : 'علبة اليوم تنتظركِ');
     if (s.dz) state($('#apDz'), s.dz.done, s.dz.done ? 'أنجزتِ رحلة اليوم' : s.dz.city ? `${s.dz.city} تنتظركِ` : 'رحلة اليوم تنتظركِ');
@@ -111,6 +114,7 @@ function mount(api) {
     const t = e.target.closest('[data-app]'); if (!t) return;
     api.SFX.init();
     t.classList.remove('press'); void t.offsetWidth; t.classList.add('press');
+    if (t.dataset.app === 'studio' && !studioOpen()) { api.toast('مختبر ماريا للمال يُفتح قريبًا'); return; }   // Mama opens it in the parent area
     setTimeout(() => { if (t.dataset.app === 'studio') location.href = 'studio/'; else api.open(t.dataset.app); }, 170);
   });
   $('#apPhoto').addEventListener('click', () => { api.SFX.init(); $('#apFile').click(); });

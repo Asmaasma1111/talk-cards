@@ -2,7 +2,7 @@
 // types whole answers, is shown the others) → plan vs what happened → project statement → split into the زجاجات.
 // Jars are always زجاجات, never جِرار.
 import * as store from './store.js';
-import { el, ar, art, topbar, taskCard, screen, primary, ICON, award, celebrate, toast, riyals } from './ui.js';
+import { el, ar, art, topbar, taskCard, screen, primary, ICON, award, celebrate, toast, riyals, emo, withEmo } from './ui.js';
 import { play } from './sound.js';
 import { createDnD } from './dnd.js';
 import { renderPage, printWith } from './copybook.js';
@@ -62,7 +62,7 @@ function words(app, d) {
   const next = primary('هيّا نحسب', () => advance(d, 'ladder'), { disabled: d.flipped.length < WORDS.length });
   const cards = WORDS.map((c, i) => {
     const b = el('button', { class: 'flip', 'aria-pressed': 'false', 'aria-label': c.w },
-      el('span', { class: 'face front' }, el('span', { class: 'big' }, c.icon), el('b', {}, c.w)),
+      el('span', { class: 'face front' }, el('span', { class: 'big' }, emo(c.icon)), el('b', {}, c.w)),
       el('span', { class: 'face back' }, el('b', {}, c.w), el('span', {}, c.m)));
     b.onclick = () => {
       play('tap');
@@ -148,7 +148,7 @@ async function ladder(app, d) {
   function waterfall() {
     const done = (n) => d.line >= n;
     const box = (cls, label, n, v) => el('div', { class: 'fall ' + cls + (done(n) ? ' on' : '') },
-      el('b', {}, label),
+      el('b', {}, withEmo(label)),
       done(n) ? el('div', { class: 'coins-row' }, coinsFor(Math.min(Math.abs(v), 10)).filter(Boolean)) : el('span', { class: 'q' }, '؟'),
       done(n) ? el('span', { class: 'val' }, v < 0 ? `خسارة ${num(-v)}` : num(v)) : null);
     const L = (n) => lines[n - 1].v;
@@ -417,7 +417,7 @@ function jars(app, d) {
   const pile = el('div', { class: 'pile', 'aria-label': 'كومة الربح' });
   const jarEls = {};
   const undoBtn = el('button', { class: 'btn side', disabled: true, onclick: () => dnd.undo() }, btnIcon('undo'), 'تراجع');
-  const autoBtn = el('button', { class: 'btn', onclick: auto }, '✨ وزّعي عنّي');
+  const autoBtn = el('button', { class: 'btn', onclick: auto }, withEmo('✨ وزّعي عنّي'));
   const doneBtn = primary('ضعيها في زجاجاتي', () => finishStation(d, amounts), { disabled: true });
 
   const dnd = createDnD({

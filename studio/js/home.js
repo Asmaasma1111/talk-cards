@@ -1,8 +1,8 @@
 // Home screen: the journey path with nine stations.
 import * as store from './store.js';
-import { el, ar, art, assetOk, starsPill, soundBtn, primary, toast, iconBtn } from './ui.js';
+import { el, ar, art, assetOk, assetUrl, starsPill, soundBtn, primary, toast, iconBtn, emo, withEmo } from './ui.js';
 import { play } from './sound.js';
-import { STATIONS, SPOTS, SPOTS_PORTRAIT, statusOf, currentStation, studioLevel } from './journey.js';
+import { STATIONS, SPOTS, SPOTS_PORTRAIT, ROW_SCALE, statusOf, currentStation, studioLevel } from './journey.js';
 
 const portraitMQ = matchMedia('(orientation: portrait)');
 
@@ -52,16 +52,16 @@ export function homeScreen(app) {
     portrait ? placeholderBg(spots, 300, 400) : placeholderBg(spots, 400, 300));
   const bgFile = portrait ? 'home_bg_portrait.png' : 'home_bg.png';
   assetOk(bgFile).then(ok => {
-    if (ok) map.querySelector('.bg').replaceChildren(el('img', { src: 'assets/' + bgFile, alt: '' }));
+    if (ok) map.querySelector('.bg').replaceChildren(el('img', { class: 'mirror', src: assetUrl(bgFile), alt: '' }));
   });
 
   STATIONS.forEach((st, i) => {
     const status = statusOf(st.n);
     const [x, y] = spots[i];
     const node = el('button', {
-      class: `station ${status}`,
+      class: `station ${status}${i >= 6 ? ' back' : ''}`,   // the back row: names above the girls (her request, 29 Oct 2026)
       'data-accent': st.accent,
-      style: { left: x + '%', top: y + '%' },
+      style: { left: x + '%', top: y + '%', '--s': String(ROW_SCALE[i]) },
       'aria-label': `${st.name}${status === 'done' ? '، انتهت' : status === 'locked' ? '، مقفلة' : ''}`,
       onclick: () => {
         if (status === 'locked') { play('tap'); toast('أكملي المحطة التي قبلها أولًا.'); return; }
@@ -69,17 +69,21 @@ export function homeScreen(app) {
         location.hash = 'station/' + st.n;
       },
     },
-      el('span', { class: 'disc' },
-        art(st.icon, { size: 96 }),
+      // the girl doing what the station is about; its icon stands in until her picture has loaded
+      el('span', { class: 'fig' },
+        el('span', { class: 'disc' }, art(st.icon, { size: 96 })),
         status === 'done' ? el('span', { class: 'badge' }, '✓') : null,
-        status === 'locked' ? el('span', { class: 'badge' }, '🔒') : null,
+        status === 'locked' ? el('span', { class: 'badge' }, emo('🔒')) : null,
       ),
       el('span', { class: 'label' }, st.name),
     );
+    assetOk(`girl_st${st.n}.png`).then(ok => {
+      if (ok) node.querySelector('.disc').replaceWith(el('img', { class: 'girl', src: assetUrl(`girl_st${st.n}.png`), alt: '', draggable: 'false' }));
+    });
     map.append(node);
   });
 
-  const studio = el('div', { class: 'studio-thumb', 'aria-label': 'الاستوديو' }, art(`studio_${studioLevel()}.png`));
+  const studio = el('div', { class: 'studio-thumb', 'aria-label': 'مختبري' }, art(`studio_${studioLevel()}.png`));
   const jars = el('button', { class: 'jars-mini', 'aria-label': 'زجاجاتي', onclick: () => { play('tap'); location.hash = 'jars'; } },
     JARS.map(([k, name, c]) => el('span', { class: 'j', title: name },
       el('i', { class: 'dot', style: { '--c': c } }),
@@ -90,7 +94,7 @@ export function homeScreen(app) {
   const view = el('div', { class: 'screen home', 'data-accent': curSt.accent },
     el('header', { class: 'topbar' },
       // back to تطبيقات ماريا, like the «تطبيقاتي» chip on every one of her apps
-      el('button', { class: 'apps-chip', onclick: () => { play('tap'); location.href = '../'; } }, el('span', { 'aria-hidden': 'true' }, '🏠'), 'تطبيقاتي'),
+      el('button', { class: 'apps-chip', 'aria-label': 'تطبيقاتي', onclick: () => { play('tap'); location.href = '../'; } }, emo('🏠'), el('span', { class: 't' }, 'تطبيقاتي')),
       studio,
       el('h1', { class: 'project-name' }, s.current.name),
       el('div', { class: 'spacer' }),
@@ -102,7 +106,7 @@ export function homeScreen(app) {
     ),
     el('main', { class: 'map-wrap' }, map),
     el('footer', { class: 'actions' },
-      el('button', { class: 'btn side', onclick: () => { play('tap'); location.hash = 'next-projects'; } }, '📝 مشاريعي القادمة'),
+      el('button', { class: 'btn side', onclick: () => { play('tap'); location.hash = 'next-projects'; } }, withEmo('📝 مشاريعي القادمة')),
       primary('خطوتي التالية', () => { location.hash = 'station/' + cur; }),
     ),
   );

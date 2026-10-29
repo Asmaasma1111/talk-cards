@@ -111,11 +111,13 @@ const FILES = APP === 'prepositions' ? [
   'assets/library/deco/books.webp',
   'assets/library/deco/lights.webp',
   'assets/library/deco/bunting.webp',
-  // استوديو ماريا (studio/): its own page, styles, ES modules and fonts; its tile picture
-  'assets/apps/studio.svg',
+  // مختبر ماريا للمال (studio/): its own page, styles, ES modules and fonts; its tile picture
+  'assets/apps/studio.webp',
   'studio/', 'studio/index.html', 'studio/css/app.css',
   ...'app copybook dnd gallery home jars journey parent projects sound station station1 station2 station3 station4 station5 station6 station7 station8 station9 store ui welcome'.split(' ').map(n => `studio/js/${n}.js`),
-  'studio/fonts/baloo2-arabic.woff2', 'studio/fonts/baloo2-latin.woff2', 'studio/fonts/Tajawal-Regular.ttf', 'studio/fonts/Tajawal-Bold.ttf'
+  'studio/fonts/baloo2-arabic.woff2', 'studio/fonts/baloo2-latin.woff2', 'studio/fonts/Tajawal-Regular.ttf', 'studio/fonts/Tajawal-Bold.ttf',
+  // its ChatGPT pictures (scripts/studio_pics.py writes this line)
+  ...'badge_brave badge_finish badge_fix badge_give badge_pitch badge_spoke card_green card_pink card_yellow coin cork garden_bg girl_st1 girl_st2 girl_st3 girl_st4 girl_st5 girl_st6 girl_st7 girl_st8 girl_st9 grow_machine_1 grow_machine_2 grow_machine_3 home_bg home_bg_portrait ic_baba ic_basket ic_book ic_camera ic_family ic_friend ic_gift ic_happy ic_heart ic_home ic_later ic_list ic_lock ic_mama ic_money ic_neighbours ic_nophoto ic_ok ic_online ic_palette ic_plain ic_poster ic_receipt ic_school ic_sister ic_sparkle ic_star ic_sun ic_tablet ic_tag ic_thanks ic_tick ic_tools ic_unsure ic_worried ic_write item_bag item_markers item_other item_paper item_print item_stapler item_stickers jar_give_empty jar_give_full jar_grow_empty jar_grow_full jar_save_empty jar_save_full jar_spend_empty jar_spend_full mascot_celebrate mascot_think mascot_wave mascot_write scene_1 scene_2 scene_3 scene_4 scene_5 scene_6 scene_7 scene_8 scene_9 seed sprout st1_dream st2_ideas st3_customers st4_plan st5_make st6_market st7_sell st8_jars st9_next stalks7 studio_1 studio_2 studio_3'.split(' ').map(n => `studio/assets/${n}.webp`)
 ];
 
 // The recorded voice: audio/voice.json lists every clip; all of them are cached so the car works offline.

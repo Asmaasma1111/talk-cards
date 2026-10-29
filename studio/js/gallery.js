@@ -1,7 +1,7 @@
 // معرض مشاريعي: every finished project, "with their copybook pages, photos, sales and jar results"
 // (brief, Station 9), plus its project statement (8d). Pages and photos stay in IndexedDB under the project id.
 import * as store from './store.js';
-import { el, ar, art, topbar, screen, primary, riyals, copiesWord, BADGES } from './ui.js';
+import { el, ar, art, topbar, screen, primary, riyals, copiesWord, BADGES, emo, withEmo } from './ui.js';
 import { play } from './sound.js';
 import { renderPage, printWith } from './copybook.js';
 import { JARS } from './station1.js';
@@ -38,7 +38,7 @@ export async function galleryScreen(app, id) {
     el('main', { class: 'work' },
       list.length
         ? el('div', { class: 'gallery-grid' }, list.map((g, i) => el('button', { class: 'card g-card', onclick: () => { play('tap'); location.hash = 'gallery/' + g.id; } },
-          covers[i] ? el('img', { src: covers[i], alt: '' }) : el('span', { class: 'big', 'aria-hidden': 'true' }, '📘'),
+          covers[i] ? el('img', { src: covers[i], alt: '' }) : el('span', { class: 'big', 'aria-hidden': 'true' }, emo('📘')),
           el('b', {}, g.name),
           el('small', {}, dateWord(g.finishedAt)),
           el('div', { class: 'g-badges' }, (g.badges || []).map(b => BADGES[b] ? art(BADGES[b].file, { size: 40, alt: BADGES[b].name }) : null)))))
@@ -55,7 +55,7 @@ async function projectScreen(app, id) {
   const photos = pages.filter(p => p.photo);
   const s7 = g.data?.s7, s8 = g.data?.s8;
 
-  const section = (title, ...body) => el('section', { class: 'card g-section' }, el('h3', {}, title), ...body);
+  const section = (title, ...body) => el('section', { class: 'card g-section' }, el('h3', {}, withEmo(title)), ...body);
 
   const pagesSec = section('📒 صفحات دفتري',
     written.length
@@ -104,5 +104,5 @@ async function projectScreen(app, id) {
 }
 
 function fact(k, v) {
-  return el('div', { class: 'g-fact' }, el('span', {}, k), el('b', {}, v));
+  return el('div', { class: 'g-fact' }, el('span', {}, withEmo(k)), el('b', {}, v));
 }

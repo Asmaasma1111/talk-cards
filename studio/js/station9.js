@@ -3,7 +3,7 @@
 // gallery, the studio grows, and the journey starts again at Station 1 with the new project.
 // It opens early, after her first sale, so she chooses before this project ends.
 import * as store from './store.js';
-import { el, ar, art, topbar, taskCard, screen, primary, ICON, award, awardBadge, celebrate, toast, riyals, BADGES, hasBadge } from './ui.js';
+import { el, ar, art, topbar, taskCard, screen, primary, ICON, award, awardBadge, celebrate, toast, riyals, BADGES, hasBadge, emo, withEmo } from './ui.js';
 import { play } from './sound.js';
 import { createDnD } from './dnd.js';
 import { renderPage } from './copybook.js';
@@ -89,7 +89,7 @@ async function pick(app, d) {
   render();
   app.replaceChildren(frame('pick', 'اختاري مشروعك القادم من قائمتك، واسحبيه إلى مكانه.', 'think',
     el('div', { class: 'pick-area' }, pool, el('div', { class: 'slot-col' }, slot,
-      el('button', { class: 'btn', onclick: () => { play('tap'); location.hash = 'next-projects'; } }, '📝 مشاريعي القادمة'))),
+      el('button', { class: 'btn', onclick: () => { play('tap'); location.hash = 'next-projects'; } }, withEmo('📝 مشاريعي القادمة')))),
     [undoBtn, next]));
 }
 
@@ -142,7 +142,7 @@ function budget(app, d) {
       el('div', { class: 'coins-row' }, coins(inJar)),
       el('b', { class: 'amt' }, inJar ? riyals(inJar) : 'فارغة'));
     box.replaceChildren(
-      el('span', { class: 'big', 'aria-hidden': 'true' }, '📦'),
+      el('span', { class: 'big', 'aria-hidden': 'true' }, emo('📦')),
       el('h3', {}, 'ميزانية مشروعي القادم'),
       el('div', { class: 'coins-row' }, coins(d.budget)),
       el('b', { class: 'amt' }, d.budget ? riyals(d.budget) : 'لا شيء بعد'));
@@ -236,6 +236,6 @@ function switchProject(d, chosen) {
   setTimeout(() => {
     celebrate();
     award(1);
-    setTimeout(() => toast(grew ? 'كبر الاستوديو! مشروع جديد يبدأ من «هدفي».' : 'مشروع جديد يبدأ من «هدفي».'), 1800);
+    setTimeout(() => toast(grew ? 'كبر مختبرك! مشروع جديد يبدأ من «هدفي».' : 'مشروع جديد يبدأ من «هدفي».'), 1800);
   }, 300);
 }

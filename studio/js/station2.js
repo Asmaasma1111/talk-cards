@@ -1,7 +1,7 @@
 // Station 2, أفكاري (Idea storm): three prompt cards → a corkboard of handwritten idea cards
 // (a star per idea, celebration at 20, drag to rearrange, drag one onto another to mix them) → done.
 import * as store from './store.js';
-import { el, ar, art, topbar, taskCard, screen, primary, ICON, award, celebrate, toast, iconBtn } from './ui.js';
+import { el, ar, art, topbar, taskCard, screen, primary, ICON, award, celebrate, toast, iconBtn, emo, withEmo } from './ui.js';
 import { play } from './sound.js';
 import { createDnD } from './dnd.js';
 import { renderPage } from './copybook.js';
@@ -51,8 +51,8 @@ function advance(d, next) {
 function spark(app, d) {
   const cards = PROMPTS.map((p, i) => {
     const c = el('button', { class: 'flip', 'aria-pressed': 'false', 'aria-label': `بطاقة ${ar(i + 1)}` },
-      el('span', { class: 'face front' }, el('span', { class: 'big' }, p.icon), el('span', {}, 'اقلبيني')),
-      el('span', { class: 'face back' }, el('span', { class: 'big' }, p.icon), el('b', {}, p.q)),
+      el('span', { class: 'face front' }, el('span', { class: 'big' }, emo(p.icon)), el('span', {}, 'اقلبيني')),
+      el('span', { class: 'face back' }, el('span', { class: 'big' }, emo(p.icon)), el('b', {}, p.q)),
     );
     c.onclick = () => { play('tap'); c.setAttribute('aria-pressed', String(c.getAttribute('aria-pressed') !== 'true')); };
     return c;
@@ -118,7 +118,7 @@ async function board(app, d) {
   const count = el('b', {});
   const bar = el('span', { class: 'fill' });
   const hint = el('span', { class: 'hint' });
-  const mixBtn = el('button', { class: 'btn', 'aria-pressed': 'false' }, '✨ امزجي فكرتين');
+  const mixBtn = el('button', { class: 'btn', 'aria-pressed': 'false' }, withEmo('✨ امزجي فكرتين'));
   const taskP = el('p', {});
   const cork = el('div', { class: 'cork' });
   const undoBtn = el('button', { class: 'btn side', disabled: true, onclick: () => dnd.undo() },
@@ -147,7 +147,7 @@ async function board(app, d) {
       if (i < 0 || j < 0) return false;
       if (mixing) {
         const target = cork.querySelector(`[data-id="${to}"]`);
-        target?.append(el('span', { class: 'sparkle', 'aria-hidden': 'true' }, '✨'));
+        target?.append(el('span', { class: 'sparkle', 'aria-hidden': 'true' }, emo('✨')));
         play('celebrate');
         const a = ideas[i], b = ideas[j];
         setTimeout(() => openIdea(newIdea([a.id, b.id]), [a.page, b.page]), 650);
@@ -182,7 +182,7 @@ async function board(app, d) {
       const card = el('div', { class: 'idea', 'data-id': idea.id, role: 'button', 'aria-label': `فكرة ${ar(k + 1)}`, style: { '--rot': rot(idea.id) + 'deg' } },
         el('i', { class: 'pin', 'aria-hidden': 'true' }),
         el('span', { class: 'num' }, ar(k + 1)),
-        idea.mix ? el('span', { class: 'mixed', 'aria-label': 'فكرة ممزوجة' }, '✨') : null,
+        idea.mix ? el('span', { class: 'mixed', 'aria-label': 'فكرة ممزوجة' }, emo('✨')) : null,
         el('img', { src: thumb(pg), alt: '' }),
         edit,
       );
@@ -193,7 +193,7 @@ async function board(app, d) {
     cork.replaceChildren(add, ...cards);
   }
 
-  const paperBtn = photo ? el('button', { class: 'btn', onclick: () => { play('tap'); showPhoto(photo.photo); } }, '📷 صفحتي الورقية') : null;
+  const paperBtn = photo ? el('button', { class: 'btn', onclick: () => { play('tap'); showPhoto(photo.photo); } }, withEmo('📷 صفحتي الورقية')) : null;
 
   setTask();
   const view = screen(ACCENT,

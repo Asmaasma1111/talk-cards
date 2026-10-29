@@ -1,7 +1,7 @@
 // مشاريعي القادمة: the running list of future projects. Drag to reorder (the top card is her next favourite),
 // star one favourite, or drag a card to the small "لاحقًا" box to set it aside.
 import * as store from './store.js';
-import { el, ar, art, topbar, taskCard, screen, primary, ICON } from './ui.js';
+import { el, ar, art, topbar, taskCard, screen, primary, ICON, emo } from './ui.js';
 import { play } from './sound.js';
 import { createDnD } from './dnd.js';
 import { thumb } from './station2.js';
@@ -79,7 +79,7 @@ export async function nextProjectsScreen(app) {
 
   function render() {
     const active = list().filter(p => !p.later), later = list().filter(p => p.later);
-    laterBox.replaceChildren(el('span', { class: 'big', 'aria-hidden': 'true' }, '📦'), el('b', {}, 'لاحقًا'), el('span', {}, ar(later.length)));
+    laterBox.replaceChildren(el('span', { class: 'big', 'aria-hidden': 'true' }, emo('📦')), el('b', {}, 'لاحقًا'), el('span', {}, ar(later.length)));
     laterBox.setAttribute('aria-pressed', String(showLater));
     const add = el('button', { class: 'idea add', onclick: newCard }, el('span', { class: 'big' }, '+'), el('span', {}, 'مشروع جديد'));
     if (showLater) {

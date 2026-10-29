@@ -3,7 +3,7 @@
 // caring for customers → where I tell people → (photo for Mama to post online) → done.
 // Always "أُخبِر الناس", never "أُعلِن" or "إعلان".
 import * as store from './store.js';
-import { el, ar, art, topbar, taskCard, screen, primary, ICON, award, unaward, awardBadge, celebrate, toast, riyals, mascotSVG, assetOk } from './ui.js';
+import { el, ar, art, topbar, taskCard, screen, primary, ICON, award, unaward, awardBadge, celebrate, toast, riyals, mascotSVG, assetOk, assetUrl, emo, withEmo } from './ui.js';
 import { play } from './sound.js';
 import { createDnD } from './dnd.js';
 import { renderPage, mountInk, inkImage, drawStrokes, printWith, INK, DESIGN_PENS } from './copybook.js';
@@ -84,7 +84,7 @@ function pageCard(label, page, onOpen, emptyIcon = '✍️') {
   const ok = hasInk(page);
   return el('button', { class: 'card page-card' + (ok ? ' ok' : ''), onclick: () => { play('tap'); onOpen(); } },
     el('b', {}, label),
-    ok ? el('img', { src: renderPage(page, 4), alt: label }) : el('span', { class: 'big', 'aria-hidden': 'true' }, emptyIcon),
+    ok ? el('img', { src: renderPage(page, 4), alt: label }) : el('span', { class: 'big', 'aria-hidden': 'true' }, emo(emptyIcon)),
     el('span', { class: 'btn' }, btnIcon('pencil'), ok ? 'عدّلي' : 'ابدئي'));
 }
 
@@ -121,7 +121,7 @@ async function brand(app, d) {
       pageCard('اسمي', name, () => openPage(ID.brand(), { title: 'اسم علامتي', task: 'اكتبي اسم علامتك بخطّك الجميل.', back })),
       el('div', { class: 'card page-card' + (logo ? ' ok' : '') },
         el('b', {}, 'شعاري'),
-        logo ? el('img', { src: logo.thumb, alt: 'شعاري' }) : el('span', { class: 'big', 'aria-hidden': 'true' }, '🎨'),
+        logo ? el('img', { src: logo.thumb, alt: 'شعاري' }) : el('span', { class: 'big', 'aria-hidden': 'true' }, emo('🎨')),
         el('div', { class: 'row' },
           el('button', { class: 'btn', onclick: () => { play('tap'); openPage(ID.logo(), { size: 'logo', design: true, task: 'ارسمي شعار علامتك بالألوان.', back }); } }, btnIcon('pencil'), 'ارسميه'),
           el('button', { class: 'btn', onclick: () => {
@@ -185,7 +185,7 @@ async function posterSources() {
   if (hasInk(name)) out.push({ key: 'name', label: 'اسمي', w: 120, src: inkImage(name.strokes, name.size) });
   const price = planData().price;
   if (price != null) out.push({ key: 'price', label: 'السعر', w: 70, src: await priceTag(price) });
-  out.push({ key: 'mascot', label: 'صديقي', w: 60, src: (await assetOk('mascot_wave.png')) ? 'assets/mascot_wave.png' : svgURL(mascotSVG('wave')) });
+  out.push({ key: 'mascot', label: 'صديقتي', w: 60, src: (await assetOk('mascot_wave.png')) ? assetUrl('mascot_wave.png') : svgURL(mascotSVG('wave')) });
   for (const id of makeData().photos) {
     const pg = await store.getPage(id);
     if (pg?.photo) out.push({ key: 'photo:' + id, label: 'صورة منتجي', w: 90, src: pg.photo });
@@ -556,7 +556,7 @@ async function sample(app, d) {
     total.textContent = t ? `المجموع: ${riyals(t)}` : 'المجموع: لا شيء بعد';
     coins.replaceChildren(...coinsFor(t).filter(Boolean));
     steppers.replaceChildren(
-      el('div', { class: 'cost-line' }, el('span', {}, '🖼️ ملصقات طبعتُها'),
+      el('div', { class: 'cost-line' }, el('span', {}, withEmo('🖼️ ملصقات طبعتُها')),
         stepper({ value: d.posters, min: 0, max: 20, label: 'ملصقات طبعتُها', onChange: (v) => { store.update(() => { d.posters = v; }); renderCost(); } })),
       el('div', { class: 'cost-line' }, el('span', {}, '📄 عيّنات أعطيتُها'),
         stepper({ value: d.samples, min: 0, max: 20, label: 'عيّنات أعطيتُها', onChange: (v) => { store.update(() => { d.samples = v; }); renderCost(); } })));
@@ -610,7 +610,7 @@ async function voice(app, d) {
     recB.classList.toggle('on', on);
     playB.replaceChildren(btnIcon(player && !player.paused ? 'stop' : 'play'), 'استمعي');
     playB.disabled = on || !saved?.audio;
-    status.textContent = on ? 'أنا أستمع… تكلّمي بصوت واضح.' : saved?.audio ? 'التسجيل محفوظ هنا في الاستوديو فقط.' : 'تكلّمي بصوت واضح، كأنك تخبرين صديقة.';
+    status.textContent = on ? 'أنا أستمع… تكلّمي بصوت واضح.' : saved?.audio ? 'التسجيل محفوظ هنا في التطبيق فقط.' : 'تكلّمي بصوت واضح، كأنك تخبرين صديقة.';
   }
 
   function stopMeter() {
@@ -729,7 +729,7 @@ function ladder(app, d) {
         'aria-pressed': String(doneR),
         'aria-label': doneR ? `قدّمتُ عرضي لـ${r.who}` : `قدّمي عرضك لـ${r.who}`,
       },
-        el('span', { class: 'who', 'aria-hidden': 'true' }, r.icon),
+        el('span', { class: 'who', 'aria-hidden': 'true' }, emo(r.icon)),
         el('b', {}, r.who),
         el('span', { class: 'mark' }, doneR ? '✓' : now ? 'اضغطي بعد العرض' : ''));
       b.onclick = () => {
@@ -765,8 +765,8 @@ function care(app, d) {
   const next = primary('التالي', () => advance(d, 'where'), { disabled: d.flipped.length < CARE.length });
   const cards = CARE.map((c, i) => {
     const b = el('button', { class: 'flip', 'aria-pressed': 'false', 'aria-label': `بطاقة ${ar(i + 1)}` },
-      el('span', { class: 'face front' }, el('span', { class: 'big' }, c.icon), el('span', {}, 'اقلبيني')),
-      el('span', { class: 'face back' }, el('span', { class: 'big' }, c.icon), el('b', {}, c.text)));
+      el('span', { class: 'face front' }, el('span', { class: 'big' }, emo(c.icon)), el('span', {}, 'اقلبيني')),
+      el('span', { class: 'face back' }, el('span', { class: 'big' }, emo(c.icon)), el('b', {}, c.text)));
     b.onclick = () => {
       play('tap');
       b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
@@ -818,10 +818,10 @@ function where(app, d) {
   function card(p, inPlan) {
     const locked = p.school && !schoolOk();
     const c = el('div', { class: 'place' + (locked ? ' locked' : ''), role: 'button', 'aria-label': p.name + (locked ? '، مقفل' : '') },
-      el('span', { class: 'big', 'aria-hidden': 'true' }, p.icon),
+      el('span', { class: 'big', 'aria-hidden': 'true' }, emo(p.icon)),
       el('b', {}, p.name),
       p.note ? el('span', { class: 'note' }, p.note) : null,
-      locked ? el('span', { class: 'note' }, '🔒 بعد موافقة ماما') : null);
+      locked ? el('span', { class: 'note' }, withEmo('🔒 بعد موافقة ماما')) : null);
     dnd.draggable(c, {
       data: { key: p.key, inPlan },
       canPick: () => !locked,
@@ -865,7 +865,7 @@ async function online(app, d) {
   }
   app.replaceChildren(frame('online', ok ? 'جاهز! ماما تنشره لكِ.' : 'صوّري منتجك، واكتبي سطرًا قصيرًا عنه. ماما تنشره لكِ.', ok ? 'celebrate' : 'write',
     el('div', { class: 'online-area' },
-      el('div', { class: 'tips' }, TIPS.map(([i, t]) => el('span', { class: 'tip-chip' }, el('span', { 'aria-hidden': 'true' }, i), t))),
+      el('div', { class: 'tips' }, TIPS.map(([i, t]) => el('span', { class: 'tip-chip' }, emo(i), t))),
       el('div', { class: 'pair' },
         photo?.photo
           ? el('button', { class: 'card page-card ok', onclick: capture }, el('b', {}, 'صورتي'), el('img', { src: photo.photo, alt: 'صورة المنتج' }), el('span', { class: 'btn' }, btnIcon('camera'), 'صوّري من جديد'))

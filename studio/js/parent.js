@@ -3,7 +3,7 @@
 // Backup / Restore (JSON with drawings) · reset a project or the whole app (double confirm).
 // Also from section 6f: Mama confirms the school allows the friends card, and posts the online photo.
 import * as store from './store.js';
-import { el, ar, topbar, screen, ICON, toast, confirmBox, riyals, copiesWord } from './ui.js';
+import { el, ar, topbar, screen, ICON, toast, confirmBox, riyals, copiesWord, emo, withEmo } from './ui.js';
 import { play } from './sound.js';
 import { renderPage } from './copybook.js';
 import { planData, stepper } from './station4.js';
@@ -130,7 +130,7 @@ async function cornerScreen(app) {
     const label = kind === 'digital' ? 'بيعة رقمية' : kind === 'gift' ? 'هدية (نسخة مجانية)' : disc ? 'بيعة بخصم' : 'بيعة ورقية';
     const money = kind === 'gift' ? '' : disc ? `${riyals(x.price - disc.amount)} (السعر ${riyals(x.price)})` : riyals(x.price);
     const row = el('div', { class: 'p-row' },
-      el('span', { class: 'ic' }, kind === 'digital' ? '🌐' : kind === 'gift' ? '🎁' : disc ? '🏷️' : '📘'),
+      emo(kind === 'digital' ? '🌐' : kind === 'gift' ? '🎁' : disc ? '🏷️' : '📘'),
       el('b', {}, label), el('span', {}, money), el('small', {}, dateWord(x.at)),
       kind === 'gift' ? null : el('button', { class: 'btn small', onclick: () => { play('tap'); editRow(); } }, btnIcon('pencil'), 'تعديل'),
       el('button', { class: 'btn small', onclick: async () => {
@@ -208,7 +208,7 @@ async function cornerScreen(app) {
 }
 
 function section(title, ...body) {
-  return el('section', { class: 'card p-section' }, el('h3', {}, title), ...body);
+  return el('section', { class: 'card p-section' }, el('h3', {}, withEmo(title)), ...body);
 }
 
 // ---------- Backup / Restore ----------
@@ -232,7 +232,7 @@ function restore(app) {
     if (!f) return;
     let data;
     try { data = JSON.parse(await f.text()); } catch (e) { toast('هذا الملف ليس نسخة احتياطية.'); return; }
-    if (data?.app !== 'mariaStudio' || !data.state?.current || !Array.isArray(data.pages)) { toast('هذا الملف ليس نسخة احتياطية من الاستوديو.'); return; }
+    if (data?.app !== 'mariaStudio' || !data.state?.current || !Array.isArray(data.pages)) { toast('هذا الملف ليس نسخة احتياطية من «مختبر ماريا للمال».'); return; }
     if (!await confirmBox(`استرجاع نسخة ${dateWord(data.at)}؟ سيُستبدل كل ما في التطبيق الآن.`, 'نعم، استرجعي')) return;
     await store.clearPages();
     for (const p of data.pages) if (p?.id) await store.putPage(p);

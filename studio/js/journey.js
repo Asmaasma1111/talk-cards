@@ -13,19 +13,21 @@ export const STATIONS = [
   { n: 9, name: 'مشروعي القادم', icon: 'st9_next.png', accent: 'green', task: 'اختاري مشروعك القادم.' },
 ];
 
-// Where each station sits on the home picture (% of width, % of height).
-// Right-to-left zig-zag. Nudge these when home_bg.png arrives so they sit on its painted spots.
+// Where each station's girl stands on the home picture (% of the map): her feet on a painted ring of home_bg.
+// The picture is shown mirrored, and the path is walked from the front: the first stations stand in the front row (right
+// to left), the last ones at the back, a little smaller (her request, 29 Oct 2026). scripts/studio_pics.py prints the rings.
 export const SPOTS = [
-  [84, 20], [50, 22], [16, 20],
-  [16, 50], [50, 52], [84, 50],
-  [84, 80], [50, 82], [16, 80],
+  [79.7, 82.3], [50.6, 82.5], [21.1, 82.0],
+  [21.5, 48.7], [50.0, 47.9], [76.3, 45.7],
+  [67.8, 17.2], [43.0, 17.9], [17.9, 17.3],
 ];
-// Upright iPad: a taller map (3:4). Used with home_bg_portrait.png if it exists.
+// Upright iPad: the taller map (3:4) and home_bg_portrait, the same way.
 export const SPOTS_PORTRAIT = [
-  [80, 14], [50, 17], [20, 14],
-  [20, 48], [50, 51], [80, 48],
-  [80, 82], [50, 85], [20, 82],
+  [77.6, 85.4], [49.3, 85.5], [20.8, 85.8],
+  [21.5, 45.1], [49.5, 44.1], [75.7, 44.6],
+  [75.4, 9.9], [49.5, 10.1], [21.5, 10.2],
 ];
+export const ROW_SCALE = [1, 1, 1, 0.84, 0.84, 0.84, 0.68, 0.68, 0.68];   // nearer is bigger
 
 export function isDone(n) { return store.get().current.stationsDone.includes(n); }
 
