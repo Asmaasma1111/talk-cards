@@ -525,12 +525,12 @@ function mount(api) {
   async function phaseIntro(s, n, host = $('#cbsess')) {
     if (s && !live(s)) return;
     const ov = document.createElement('div'); ov.className = 'cb-phase';
-    ov.innerHTML = `<div class="cb-phcard"><img class="cb-phimg" src="${badge(n)}" alt="" onerror="this.remove()">
-      <small>${L.phase}</small><b class="cb-phnum">${AR(n)}</b><p>${L['ph' + n]}</p></div>`;
+    // only the phase's picture and its title under it, and nothing read aloud (Mama's request, 29 Oct 2026)
+    ov.innerHTML = `<div class="cb-phcard"><img class="cb-phimg" src="${badge(n)}" alt="" onerror="this.remove()"><p>${L['ph' + n]}</p></div>`;
     host.append(ov);
     let skip; const tapped = new Promise(ok => { skip = ok; });
     ov.addEventListener('click', () => skip(), { once: true });
-    api.SFX.init(); chime(); say('ph' + n);
+    api.SFX.init(); chime();
     await Promise.race([tapped, sleep(api.reduced() ? 600 : 2300)]);
     ov.classList.add('out'); await sleep(320); ov.remove();
   }
