@@ -69,4 +69,23 @@ ok('one by one: only the first topic at the start; the next opens after two good
   assert.strictEqual(M.openTopics({}, [], true).length, M.TOPICS.length, 'Mama opens them all');
 });
 
+
+ok('halves and doubles: one skill at a time (halves first), small numbers first, two good rounds a step, all mixed at the end', () => {
+  assert.strictEqual(M.maxLevel('double'), 14); assert.strictEqual(M.maxLevel('x10'), 3);
+  const kinds = lv => new Set([1, 2, 3, 4, 5, 6].flatMap(s => M.round('double', lv, s).map(x => x.q.split(' ')[1])));
+  assert.deepStrictEqual([...kinds(1)], ['نصفُ']); assert.deepStrictEqual([...kinds(3)], ['نصفُ']); assert.deepStrictEqual([...kinds(4)], ['ضعفُ']);
+  assert.deepStrictEqual([...kinds(7)], ['ربعُ']); assert.ok(kinds(12).size === 4);
+  const big = lv => Math.max(...[1, 2, 3, 4, 5].flatMap(s => M.round('double', lv, s).map(x => x.size)));
+  assert.ok(big(1) <= 20 && big(4) <= 10 && big(12) <= 100 && big(13) <= 999);
+  M.round('double', 5, 9).forEach(x => assert.ok(String(x.size).split('').every(d => d <= '4')));    // double, no carrying
+  for (let s = 1; s < 30; s++) for (let lv = 1; lv <= 14; lv++) M.round('double', lv, s).forEach(x => assert.ok(Number.isInteger(x.ans) && x.ans > 0));
+  const r = M.round('double', 6, 3).map(x => x.size); assert.deepStrictEqual(r, r.slice().sort((a, b) => a - b));
+  const c = {};
+  M.addRound(c, 'double', 8, 8, 'd1'); assert.strictEqual(c.double.level, 1);     // one good round is not enough
+  M.addRound(c, 'double', 7, 8, 'd2'); assert.strictEqual(c.double.level, 2);
+  assert.ok(!M.mastered(c, 'double'));                                            // good days, but she is still on halves
+  for (let i = 0; i < 40; i++) M.addRound(c, 'double', 8, 8, 'e' + i);
+  assert.strictEqual(c.double.level, 14); assert.ok(M.mastered(c, 'double'));
+});
+
 console.log(n, 'tests passed');

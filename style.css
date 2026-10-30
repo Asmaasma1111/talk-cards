@@ -3407,3 +3407,12 @@ span.lab-whole { font-size: 120px; line-height: 1; }
 @keyframes lifeShake { 10%, 30%, 50%, 70% { transform: rotate(-4deg); } 20%, 40%, 60%, 80% { transform: rotate(4deg); } }
 @keyframes lifeLaunch { 20% { transform: translateX(-3px); } 25% { transform: translateX(3px); } 30% { transform: translateX(-3px); } 60% { transform: translateY(-70%); opacity: 1; } 61% { opacity: 0; } 80% { transform: translateY(30%); opacity: 0; } 100% { transform: none; opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .lab-make .lab-whole, .lab-card, .lab-go { animation: none !important; } }
+
+/* هيا نتعلم في الجزائر: the 🔊 that reads instructions, rules and explanations only when she taps it (Mama, 30 Oct 2026) */
+.dz-listen, .mc-listen { flex: none; display: grid; place-items: center; width: 58px; height: 58px; padding: 0; border: 0; border-radius: 50%;
+  background: #fff; font-size: 28px; box-shadow: 0 4px 0 #DCCFE6, 0 6px 14px rgba(43, 35, 64, .1); cursor: pointer; }
+.dz-pane > .dz-listen { align-self: flex-end; margin-bottom: calc(-1 * clamp(10px, 2vh, 20px)); }
+.dz-excard > .dz-listen, .mc-lesson > .mc-listen { float: left; margin: 0 0 6px 8px; }
+.dz-listen:active, .mc-listen:active { transform: translateY(3px); box-shadow: 0 1px 0 #DCCFE6; }
+.dz-listen.on, .mc-listen.on { background: #FFE17A; animation: dzListen 1s ease-in-out infinite alternate; }
+@keyframes dzListen { to { transform: scale(1.08); } }

@@ -36,6 +36,15 @@ const TRIP = () => (root.AlgeriaTrip && root.AlgeriaTrip.core) || null;
      {k:'subcol', a, b}               «الطرح بالإضافة», digit by digit
    ===================================================================================================== */
 const TOPICS = [];
+// الضعف والنصف والربع, step by step: [kinds, size (small | easy: two digits, no carrying | carry | digits), her step's name]
+const DOUBLE_STEPS = [
+  [['half'], 'small', 'النصف: أعدادٌ صغيرة'], [['half'], 'easy', 'النصف: عددٌ من رقمين'], [['half'], 'carry', 'النصف: أعدادٌ أكبر'],
+  [['double'], 'small', 'الضعف: أعدادٌ صغيرة'], [['double'], 'easy', 'الضعف: عددٌ من رقمين'], [['double'], 'carry', 'الضعف: أعدادٌ أكبر'],
+  [['quarter'], 'small', 'الربع: أعدادٌ صغيرة'], [['quarter'], 'easy', 'الربع: أعدادٌ أكبر'],
+  [['four'], 'small', 'أربعةُ أمثال: أعدادٌ صغيرة'], [['four'], 'easy', 'أربعةُ أمثال: أعدادٌ أكبر'],
+  [['half', 'double'], 'carry', 'النصف والضعف معًا'], [['half', 'double', 'quarter', 'four'], 'carry', 'كلُّها معًا'],
+  [['half', 'double', 'quarter', 'four'], 3, 'كلُّها معًا: ثلاثةُ أرقام'], [['half', 'double', 'quarter', 'four'], 4, 'كلُّها معًا: أربعةُ أرقام'],
+];
 const T = (id, icon, title, lesson, gen) => TOPICS.push({ id, icon, title, lesson, gen });
 
 T('words', '✍️', 'كتابة الأعداد بالحروف', {
@@ -62,15 +71,23 @@ T('double', '🔁', 'الضعف والنصف والربع', {
   rule: ['ضعفُ العدد: نضربه في ٢.  نصفُ العدد: نقسمه على ٢.', 'ربعُ العدد: نقسمه على ٤ (نصفُ النصف).  أربعةُ أمثاله: نضربه في ٤.'],
   ex: ['ضعفُ ٣١٤٢ = ٦٢٨٤', 'نصفُ ٨٢٤٦ = ٤١٢٣', 'ربعُ ٤٠٠ = ١٠٠'] },
   (rnd, lv) => {
-    const d = [2, 3, 4][lv - 1], kind = pick(rnd, lv === 1 ? ['double', 'half'] : ['double', 'half', 'quarter', 'four']);
-    let n = digitsNum(rnd, d);
-    if (kind === 'half') n -= n % 2;
-    if (kind === 'quarter') n -= n % 4;
-    if (n < 4) n = 8;
+    // one skill at a time, small numbers first (Mama, 30 Oct 2026: "focus on the half only, extensive practice, then the next
+    // one when she masters it; at the end combine all of them"); every step needs two rounds of 7 of 8 before the next
+    const [kinds, size] = DOUBLE_STEPS[lv - 1];
+    const kind = pick(rnd, kinds), easy2 = top => int(rnd, 1, top) * 10 + int(rnd, 0, top);   // tens and ones at most top
+    const base = {   // the number she starts from, for each size
+      small: { half: () => 2 * int(rnd, 1, 10), double: () => int(rnd, 1, 10), quarter: () => 4 * int(rnd, 1, 10), four: () => int(rnd, 1, 10) },
+      easy: { half: () => 2 * easy2(4), double: () => easy2(4), quarter: () => 4 * int(rnd, 11, 22), four: () => int(rnd, 11, 22) },
+      carry: { half: () => 2 * int(rnd, 15, 49), double: () => int(rnd, 15, 99), quarter: () => 4 * int(rnd, 11, 25), four: () => int(rnd, 11, 25) },
+    }[size];
+    let n = base ? base[kind]() : digitsNum(rnd, size);
+    if (!base && kind === 'half') n -= n % 2;
+    if (!base && kind === 'quarter') n -= n % 4;
     const name = { double: 'ضعفُ', half: 'نصفُ', quarter: 'ربعُ', four: 'أربعةُ أمثالِ' }[kind];
     const ans = { double: n * 2, half: n / 2, quarter: n / 4, four: n * 4 }[kind];
-    return { k: 'pad', q: `ما ${name} العدد ${AR(n)}؟`, ans };
+    return { k: 'pad', q: `ما ${name} العدد ${AR(n)}؟`, ans, size: n };
   });
+Object.assign(TOPICS[TOPICS.length - 1], { levels: DOUBLE_STEPS.length, perLevel: 2, steps: DOUBLE_STEPS.map(x => x[2]) });
 
 T('distrib', '🧩', 'خاصية التوزيع', {
   rule: ['نفكّكُ العددَ إلى عشراتٍ وآحاد، ونضربُ كلَّ جزءٍ وحدَه، ثمّ نجمع.'],
@@ -389,8 +406,10 @@ function svgNet(cells) {
 /* ---------- a round: eight items of one topic, at her level in it ---------- */
 function round(topicId, level, seed, n = 8) {
   const t = TOPICS.find(x => x.id === topicId), rnd = rng(seed);
-  return Array.from({ length: n }, () => t.gen(rnd, level));
+  const items = Array.from({ length: n }, () => t.gen(rnd, level));
+  return items.every(x => x.size) ? items.sort((x, y) => x.size - y.size) : items;   // small numbers first, then bigger
 }
+const maxLevel = id => (TOPICS.find(t => t.id === id) || {}).levels || 3;
 // her progress in the corner: {topic: {rounds, best, right, total, level, last}}; a round with 7 of 8 or more moves her level up
 function cleanCorner(o) { return o && typeof o === 'object' && !Array.isArray(o) ? o : {}; }
 function addRound(c, topicId, right, total, day) {
@@ -398,8 +417,10 @@ function addRound(c, topicId, right, total, day) {
   x.rounds++; x.right += right; x.total += total; x.best = Math.max(x.best, right); x.last = day;
   if (!Array.isArray(x.good)) x.good = [];
   if (right >= total - 1 && !x.good.includes(day)) x.good.push(day);
-  const up = right >= total - 1 && x.level < 3;
-  if (up) x.level++;
+  const t = TOPICS.find(y => y.id === topicId) || {}, good = right >= total - 1;
+  if (good) x.lvGood = (x.lvGood || 0) + 1;
+  const up = good && x.level < maxLevel(topicId) && x.lvGood >= (t.perLevel || 1);
+  if (up) { x.level++; x.lvGood = 0; }
   return { up, level: x.level };
 }
 // the digits she writes in a column sum, right to left: {c, d} and, for multiplication, the carry written above the next
@@ -423,26 +444,33 @@ function colSteps(a, b, op) {
 }
 // one by one (her request, 23 Oct 2026): the topics open in order; the next opens when the one before is mastered (two good
 // rounds on two different days, the trip's own rule). A topic the trip has reached is open too, and Mama can open them all.
-const mastered = (c, id) => !!(c[id] && Array.isArray(c[id].good) && c[id].good.length >= 2);
+const mastered = (c, id) => !!(c[id] && Array.isArray(c[id].good) && c[id].good.length >= 2
+  && (maxLevel(id) <= 3 || c[id].level >= maxLevel(id) - 2));      // a topic with many steps: once she reaches «كلُّها معًا»
 function openTopics(c, trip = [], all = false) {
   if (all) return TOPICS.map(t => t.id);
   const out = [];
   TOPICS.forEach((t, i) => { if (i === 0 || mastered(c, TOPICS[i - 1].id) || trip.includes(t.id) || (c[t.id] && c[t.id].rounds)) out.push(t.id); });
   return out;
 }
-const core = { TOPICS, round, addRound, mastered, openTopics, cleanCorner, cubeNet, NET_BAD, colSteps, rng, seedOf, AR };
+const core = { TOPICS, round, maxLevel, addRound, mastered, openTopics, cleanCorner, cubeNet, NET_BAD, colSteps, rng, seedOf, AR };
 
 /* =====================================================================================================
    The screens. ctx from algeria.js: api, state() (the trip's progress), save(), back() (the trip's home), say(id).
    ===================================================================================================== */
 function mount(ctx) {
   const { api } = ctx, $ = (s, el = document) => el.querySelector(s);
-  const corner = () => { const r = ctx.state(); r.corner = cleanCorner(r.corner); return r.corner; };
+  const corner = () => {
+    const r = ctx.state(); r.corner = cleanCorner(r.corner);
+    const d = r.corner.double;   // 30 Oct 2026: the halves and doubles now go one skill at a time; she starts again at step 1
+    if (d && !d.steps14) { d.level = 1; d.lvGood = 0; d.steps14 = true; ctx.save(); }
+    return r.corner;
+  };
   document.body.insertAdjacentHTML('beforeend', `<section id="dzmc" class="screen dz dz-mc" dir="rtl" lang="ar" hidden></section>`);
   const el = $('#dzmc');
   let S = null;
   const live = s => S === s;
-  const stars = x => (!x ? '' : '⭐'.repeat(x.level - 1) + (x.level < 3 ? '☆'.repeat(3 - x.level) : ''));
+  const stepName = (x, id) => { const t = TOPICS.find(y => y.id === id); return t && t.steps ? `${t.steps[(x ? x.level : 1) - 1]} (${AR(x ? x.level : 1)} من ${AR(t.steps.length)})` : ''; };
+  const stars = (x, id) => { const mx = maxLevel(id); if (mx > 3) return stepName(x, id); return !x ? '' : '⭐'.repeat(x.level - 1) + (x.level < mx ? '☆'.repeat(mx - x.level) : ''); };
 
   const lessonsLeft = n => (n === 1 ? 'درسٌ واحد ينتظركِ' : n === 2 ? 'درسان ينتظرانكِ' : n <= 10 ? `${AR(n)} دروس تنتظركِ` : `${AR(n)} درسًا ينتظركِ`);
   const rounds = n => `${AR(n)} ${n === 1 ? 'جولة' : n === 2 ? 'جولتان' : n <= 10 ? 'جولات' : 'جولة'}`;
@@ -466,7 +494,7 @@ function mount(ctx) {
     el.innerHTML = `<div class="dz-top"><button class="quit" id="mcQuit" aria-label="الجزائر"><svg aria-hidden="true"><use href="#i-close"/></svg></button><h1 class="dz-ptitle">🚂 قطار الرياضيات</h1></div>
       <div class="tr-wrap"><div class="tr-scene"><div class="tr-track" aria-hidden="true"></div>${st}${train}</div></div>
       ${now ? `<button class="tr-now" data-t="${now.id}">${pic(now, 'mc-pic-ic')}<span class="tr-nowtxt"><small>المحطّة ${AR(ni + 1)} من ${AR(TOPICS.length)}</small><b>${esc(now.title)}</b>
-        <em>${x ? `${stars(x)} · ${rounds(x.rounds)}` : 'محطّتكِ الجديدة'}</em></span><span class="mc-go">انطلقي ←</span></button>` : '<p class="mc-left">🌟 وصل القطارُ إلى آخر محطّة!</p>'}
+        <em>${x ? `${stars(x, now.id)} · ${rounds(x.rounds)}` : 'محطّتكِ الجديدة'}</em></span><span class="mc-go">انطلقي ←</span></button>` : '<p class="mc-left">🌟 وصل القطارُ إلى آخر محطّة!</p>'}
       ${done.length ? `<h2 class="mc-h">محطّاتٌ مررتُ بها</h2><div class="tr-donelist">${done.map(t => `<button class="tr-chip" data-t="${t.id}">${pic(t, 'mc-pic-h')} ${esc(t.title)} ✓</button>`).join('')}</div>` : ''}
       ${left ? `<p class="mc-left">🔒 ${stationsLeft(left)}</p>` : ''}`;
     $('#mcQuit').onclick = () => { api.SFX.init(); ctx.back(); };
@@ -539,7 +567,7 @@ function mount(ctx) {
   }
   const workedHTML = t => t.lesson.worked.map((w, k) => `<div class="mc-wk"><p class="mc-wk-q">${esc(w.q)}</p><ol class="mc-wk-steps">${w.steps.map(([m, why], j) =>
     `<li data-id="mt-${t.id}-w${k + 1}-${j + 1}"><span class="mc-wk-m">${esc(m)}</span><span class="mc-wk-why">${esc(why)}</span></li>`).join('')}</ol></div>`).join('');
-  // the voice reads the rule and the red reasons once, each line lit as it is read (her rule: a text once)
+  // the voice reads the rule and the red reasons, each line lit as it is read: only from the lesson's 🔊 (Mama, 30 Oct 2026)
   async function readLesson(box, alive) {
     for (const el of box.querySelectorAll('[data-id]')) {
       if (!alive()) return;
@@ -550,19 +578,25 @@ function mount(ctx) {
   function lesson(id) {
     const t = TOPICS.find(x => x.id === id), x = corner()[id];
     el.innerHTML = `<div class="dz-top"><button class="quit" id="mcBack" aria-label="الركن"><svg aria-hidden="true"><use href="#i-close"/></svg></button><h1 class="dz-ptitle">${pic(t, 'mc-pic-h')} ${esc(t.title)}</h1></div>
-      <div class="dz-pane"><div class="dz-rule mc-lesson"><h3>تعلّمتُ</h3>${t.lesson.rule.map((l, i) => `<p data-id="mt-${t.id}-r${i + 1}">${esc(l)}</p>`).join('')}
+      <div class="dz-pane"><div class="dz-rule mc-lesson"><button class="mc-listen" id="mcListen" aria-label="استمعي">🔊</button><h3>تعلّمتُ</h3>${t.lesson.rule.map((l, i) => `<p data-id="mt-${t.id}-r${i + 1}">${esc(l)}</p>`).join('')}
         ${t.lesson.worked.length ? `<h3>مثالٌ محلول: انظري كيف نحلّ</h3>${workedHTML(t)}` : t.lesson.ex.length ? `<h3>مثال</h3>${t.lesson.ex.map(l => `<p class="mc-ex">${esc(l)}</p>`).join('')}` : ''}
         ${id === 'tools' ? `<div class="mc-tools">${['ruler', 'square', 'compass'].map(k => `<span class="mc-svgopt">${svgTool(k)}</span>`).join('')}</div>` : ''}
         ${id === 'net' ? `<div class="mc-tools"><span class="mc-svgopt">${paperImg('net_cross')}<b>منشور مكعب ✓</b></span></div>` : ''}
         ${id === 'lines' ? `<div class="mc-tools"><span class="mc-svgopt">${paperImg('par')}<b>متوازيان</b></span><span class="mc-svgopt">${paperImg('perp')}<b>متعامدان</b></span></div>` : ''}
         ${id === 'midpoint' ? `<div class="mc-tools"><span class="mc-svgopt">${paperImg('seg_mid')}<b>المنتصف</b></span></div>` : ''}</div>
-        <p class="mc-lv">مستواكِ في هذا الدرس: ${AR(x ? x.level : 1)} من ٣</p>
+        <p class="mc-lv">${maxLevel(id) > 3 ? `خطوتُكِ الآن: ${stepName(x, id)}` : `مستواكِ في هذا الدرس: ${AR(x ? x.level : 1)} من ٣`}</p>
         <div class="dz-row"><button class="dz-big" id="mcGo">ابدئي التدريب ✏️</button></div></div>`;
-    const lk = S = { lesson: id }, alive = () => S === lk;
+    S = { lesson: id };
     $('#mcBack').onclick = () => { api.SFX.init(); S = null; if (ctx.stop) ctx.stop(); open(); };
     $('#mcGo').onclick = () => { api.SFX.init(); S = null; if (ctx.stop) ctx.stop(); play(id); };
     api.show('dzmc');
-    readLesson(el.querySelector('.mc-lesson'), alive);
+    $('#mcListen').onclick = async () => {
+      const b = $('#mcListen'); api.SFX.init(); if (ctx.stop) ctx.stop();
+      if (b.classList.contains('on')) { S = { lesson: id }; b.classList.remove('on'); return; }   // a second tap stops it
+      const k = S = { lesson: id }; b.classList.add('on');
+      await readLesson(el.querySelector('.mc-lesson'), () => S === k);
+      if (S === k) { b.classList.remove('on'); }
+    };
   }
   async function play(id) {
     const t = TOPICS.find(x => x.id === id), lv = (corner()[id] || { level: 1 }).level;
