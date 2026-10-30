@@ -76,8 +76,9 @@ function reviewToday(r, n, t) {
   if (L.mastered || L.days.includes(t)) return false;
   return L.days.length >= 5 && L.review.length < 2 * Math.floor(L.days.length / 5);
 }
-// only Mama's mastery check moves the path on, and only after the lesson's minimum days
-const canAdvance = (r, D, n) => { const L = rec(r, n); return !!L.mastered && L.days.length >= minDays(r, D, n) && n < 65; };
+// a sound for 3 days, then the next lesson opens by itself (Mama, 30 Oct 2026: "5 days is a lot, 3 is more than sufficient";
+// her mastery check is no longer needed to move on); with today's date, it waits for the next day, never mid-day
+const canAdvance = (r, D, n, t) => { const L = rec(r, n); return L.days.length >= minDays(r, D, n) && !(t && L.days.includes(t)) && n < 65; };
 function streakOf(r, t) {
   const s = new Set(r.use); let d = s.has(t) ? t : addDays(t, -1), n = 0;
   while (s.has(d)) { n++; d = addDays(d, -1); }
@@ -472,7 +473,7 @@ function mount(api) {
     const t = today();
     if (!r.placement) return placement();
     let moved = false;
-    while (canAdvance(r, D, r.current) && D.lessons[r.current - 1]) { r.current++; moved = true; }
+    while (canAdvance(r, D, r.current, t) && D.lessons[r.current - 1]) { r.current++; moved = true; }
     if (moved) save();
     $('#rdStreak').textContent = AR(streakOf(r, t));
     $('#rdStars').textContent = AR(r.stars.total);
@@ -1777,7 +1778,7 @@ function mount(api) {
       <section class="rp-card rp-today"><h2>Today</h2>
         <p class="rp-big">Lesson ${n}: ${esc(L.title)}${L.ready ? '' : ' <em>(coming in a later phase)</em>'}</p>
         <p>Day ${R.days.length} on this lesson (at least ${min} ${min === 1 ? 'day, fast lane' : 'days'}) · ${sessionsToday(t)} session${sessionsToday(t) === 1 ? '' : 's'} today${reviewToday(r, n, t) ? ' · <b>review day</b>' : ''}</p>
-        <p>${R.mastered ? `Mastered on ${fmtDay(R.mastered)}.${canAdvance(r, D, n) ? '' : ` Lesson ${n + 1} opens after ${min - R.days.length} more day${min - R.days.length === 1 ? '' : 's'} of practice.`}` : 'Mastery not checked yet.'}</p>
+        <p>${R.days.length >= min ? `Lesson ${n + 1} opens tomorrow.` : `Lesson ${n + 1} opens after ${min - R.days.length} more day${min - R.days.length === 1 ? '' : 's'} on this one.`}${R.mastered ? ` Mastery check passed on ${fmtDay(R.mastered)}.` : ''} The mastery check is optional.</p>
         <div class="rp-row"><button class="rp-btn main" data-act="check">Mastery check</button>
         <button class="rp-btn${miss.length ? ' warn' : ''}" data-act="rec">Record sounds${miss.length ? ` (${miss.length} needed)` : ''}</button>
         <button class="rp-btn" data-act="ref">Parent reference</button></div>
@@ -1902,7 +1903,7 @@ function mount(api) {
       const now = pass && canAdvance(r, D, n);
       $('#rcheck').innerHTML = `<div class="rc"><header class="rp-head"><h1>Mastery check · lesson ${n}</h1></header>
         <p class="rc-res">${right} of 5 correct.</p>
-        <p>${pass ? (now ? `Mastered. Lesson ${n + 1} opens now.` : `Mastered. Lesson ${n + 1} opens on its own after ${minDays(r, D, n) - R.days.length} more day${minDays(r, D, n) - R.days.length === 1 ? '' : 's'} of lesson ${n}.`) : 'Not yet. She keeps practising this lesson; after 5 days a 2-day review comes on its own.'}</p>
+        <p>${pass ? (now ? `Mastered. Lesson ${n + 1} opens now.` : `Mastered. Lesson ${n + 1} opens on its own after ${Math.max(1, minDays(r, D, n) - R.days.length)} more day${minDays(r, D, n) - R.days.length > 1 ? 's' : ''} of lesson ${n}.`) : 'Not yet. She keeps practising this lesson; after 5 days a 2-day review comes on its own.'}</p>
         <div class="rc-btns"><button class="rp-btn main" data-act="${now ? 'home' : 'back'}">${now ? 'Show Maria' : 'Back'}</button></div></div>`;
     };
     $('#rcheck').onclick = e => {

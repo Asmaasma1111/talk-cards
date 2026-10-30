@@ -18,13 +18,13 @@ assert.strictEqual(core.minDays(r, D, 4), 3);      // C not known
 r.placement = { known: ['a', 'b', 'k', 't', 'u', 's', 'p', 'o', 'h', 'n'] };
 assert.strictEqual(core.minDays(r, D, 13), 3);     // never past lesson 12
 
-// mastery moves on only after the minimum days
+// three days on a sound, then the next lesson the following day (no mastery check needed)
 r = core.blank(); r.placement = { known: [] };
 core.finish(r, { n: 1, mode: 'lesson' }, day(0));
-core.rec(r, 1).mastered = day(0);
-assert.strictEqual(core.canAdvance(r, D, 1), false);
+assert.strictEqual(core.canAdvance(r, D, 1, day(1)), false);
 core.finish(r, { n: 1, mode: 'lesson' }, day(1)); core.finish(r, { n: 1, mode: 'lesson' }, day(2));
-assert.strictEqual(core.canAdvance(r, D, 1), true);
+assert.strictEqual(core.canAdvance(r, D, 1, day(2)), false);     // not in the middle of her third day
+assert.strictEqual(core.canAdvance(r, D, 1, day(3)), true);
 
 // after 5 lesson days without mastery: 2 review days, then the lesson again
 r = core.blank();
