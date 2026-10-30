@@ -37,10 +37,12 @@ ok(Number.isNaN(C.parseSpoken('مرحبا')), 'no number in the words is NaN');
 ok(Number.isNaN(C.parseSpoken('')), 'nothing said is NaN');
 
 /* ---------- the facts, in teaching order ---------- */
-eq(C.FACTS.length, 100, '100 facts');
-eq(new Set(C.FACTS.map(f => `${f.a}x${f.b}`)).size, 100, 'all different');
-eq(C.FACTS.slice(0, 10).map(f => f.id), Array.from({ length: 10 }, (_, i) => `m1x${i + 1}`), 'table 1 first, ×1 to ×10');
-eq([...new Set(C.FACTS.map(f => f.table))], [1, 10, 2, 5, 3, 4, 9, 6, 7, 8], 'table order');
+eq(C.FACTS.length, 110, '110 facts (table 0 included)');
+eq(new Set(C.FACTS.map(f => `${f.a}x${f.b}`)).size, 110, 'all different');
+eq(C.FACTS.slice(0, 10).map(f => f.id), Array.from({ length: 10 }, (_, i) => `m0x${i + 1}`), 'table 0 first, ×1 to ×10');
+eq(C.FACTS.slice(0, 10).every(f => f.ans === 0), true, 'every answer in table 0 is 0');
+eq(C.FACTS.slice(10, 20).map(f => f.id), Array.from({ length: 10 }, (_, i) => `m1x${i + 1}`), 'then table 1');
+eq([...new Set(C.FACTS.map(f => f.table))], [0, 1, 10, 2, 5, 3, 4, 9, 6, 7, 8], 'table order');
 ok(C.FACTS.every(f => f.ans === f.a * f.b), 'answers');
 eq(C.twinOf(C.FACT.m7x3).id, 'm3x7', 'twin of 7×3');
 eq(C.twinOf(C.FACT.m4x4), null, 'a square has no twin');
@@ -64,31 +66,31 @@ ok(C.batchesFor(4).every(b => new Set(b.map(id => C.FACT[id].table)).size === 1)
 {
   const m = C.blank();
   const items = C.buildSession(m, T0);
-  eq(items.map(x => x.id), ['m1x1', 'm1x2', 'm1x3', 'm1x4'], 'first session = first set');
+  eq(items.map(x => x.id), ['m0x1', 'm0x2', 'm0x3', 'm0x4'], 'first session = first set');
   ok(items.every(x => x.step === 'show'), 'new facts start with the dots');
-  eq(m.open, ['m1x1', 'm1x2', 'm1x3', 'm1x4'], 'four facts open');
+  eq(m.open, ['m0x1', 'm0x2', 'm0x3', 'm0x4'], 'four facts open');
   const r = C.answer(m, items[0], true, 2000, true, T0, 1);
   eq(r.again, 'learn', 'after the first look it comes back without dots');
   eq(r.stars, 1, 'one star (no bonus with the dots)');
-  eq(C.peek(m, 'm1x1').box, 0, 'still learning');
-  const r2 = C.answer(m, { id: 'm1x1', step: 'learn' }, true, 1500, false, T0, 2);
+  eq(C.peek(m, 'm0x1').box, 0, 'still learning');
+  const r2 = C.answer(m, { id: 'm0x1', step: 'learn' }, true, 1500, false, T0, 2);
   eq(r2.stars, 2, 'fast answer: a bonus star');
-  eq([C.peek(m, 'm1x1').box, C.peek(m, 'm1x1').due], [2, day(2)], 'learn + Easy → box 2, due in 2 days');
-  C.answer(m, { id: 'm1x2', step: 'show' }, true, 3000, true, T0, 1);
-  C.answer(m, { id: 'm1x2', step: 'learn' }, true, 6000, false, T0, 2);
-  eq([C.peek(m, 'm1x2').box, C.peek(m, 'm1x2').due], [1, day(1)], 'learn + Good → box 1, due tomorrow');
+  eq([C.peek(m, 'm0x1').box, C.peek(m, 'm0x1').due], [2, day(2)], 'learn + Easy → box 2, due in 2 days');
+  C.answer(m, { id: 'm0x2', step: 'show' }, true, 3000, true, T0, 1);
+  C.answer(m, { id: 'm0x2', step: 'learn' }, true, 6000, false, T0, 2);
+  eq([C.peek(m, 'm0x2').box, C.peek(m, 'm0x2').due], [1, day(1)], 'learn + Good → box 1, due tomorrow');
   // wrong while learning: back again, at most three looks
-  C.answer(m, { id: 'm1x3', step: 'show' }, false, 3000, true, T0, 1);
-  eq(C.answer(m, { id: 'm1x3', step: 'learn' }, false, 3000, false, T0, 2).again, 'learn', 'wrong → again in this session');
-  eq(C.answer(m, { id: 'm1x3', step: 'learn' }, false, 3000, false, T0, 3).again, null, 'no fourth look');
-  eq(C.peek(m, 'm1x3').box, 0, 'never right yet: still learning');
+  C.answer(m, { id: 'm0x3', step: 'show' }, false, 3000, true, T0, 1);
+  eq(C.answer(m, { id: 'm0x3', step: 'learn' }, false, 3000, false, T0, 2).again, 'learn', 'wrong → again in this session');
+  eq(C.answer(m, { id: 'm0x3', step: 'learn' }, false, 3000, false, T0, 3).again, null, 'no fourth look');
+  eq(C.peek(m, 'm0x3').box, 0, 'never right yet: still learning');
   ok(!C.batchReady(m), 'set not ready while a fact is still learning');
   // she stops here; the next session brings the unfinished ones back, without dots, and no new set
   const m2 = C.clean(JSON.parse(JSON.stringify(m)));          // save and reload
   eq(m2.cards, m.cards, 'cards survive save and reload');
   const next = C.buildSession(m2, T0);
   const fresh = next.filter(x => x.step !== 'warm');
-  eq(fresh.map(x => [x.id, x.step]), [['m1x3', 'learn'], ['m1x4', 'show']], 'unfinished facts come back; no new set yet');
+  eq(fresh.map(x => [x.id, x.step]), [['m0x3', 'learn'], ['m0x4', 'show']], 'unfinished facts come back; no new set yet');
   ok(next.length >= 4 && next.filter(x => x.step === 'warm').length === next.length - 2, 'topped up with learned facts');
   eq(m2.open.length, 4, 'nothing new opened');
 }
@@ -97,26 +99,26 @@ ok(C.batchesFor(4).every(b => new Set(b.map(id => C.FACT[id].table)).size === 1)
 {
   const m = C.blank();
   C.release(m);
-  const c = C.rec(m, 'm1x1'); Object.assign(c, { box: 1, due: T0, up: day(-1), seen: 2, right: 2 });
-  eq(C.answer(m, { id: 'm1x1', step: 'review' }, true, 6000, false, T0, 1).again, null, 'review Good: done');
+  const c = C.rec(m, 'm0x1'); Object.assign(c, { box: 1, due: T0, up: day(-1), seen: 2, right: 2 });
+  eq(C.answer(m, { id: 'm0x1', step: 'review' }, true, 6000, false, T0, 1).again, null, 'review Good: done');
   eq([c.box, c.due], [2, day(2)], 'box 1 + Good → box 2, in 2 days');
-  C.answer(m, { id: 'm1x1', step: 'review' }, true, 1000, false, T0, 1);
+  C.answer(m, { id: 'm0x1', step: 'review' }, true, 1000, false, T0, 1);
   eq(c.box, 2, 'moves up at most once a day');
   c.due = day(2);
-  C.answer(m, { id: 'm1x1', step: 'review' }, true, 1000, false, day(2), 1);
+  C.answer(m, { id: 'm0x1', step: 'review' }, true, 1000, false, day(2), 1);
   eq([c.box, c.due], [4, day(9)], 'box 2 + Easy → box 4, in 7 days');
-  eq(C.answer(m, { id: 'm1x1', step: 'review' }, false, 1000, false, day(9), 1).again, 'relearn', 'review Again → once more now');
+  eq(C.answer(m, { id: 'm0x1', step: 'review' }, false, 1000, false, day(9), 1).again, 'relearn', 'review Again → once more now');
   eq([c.box, c.due, c.lapses], [1, day(10), 1], 'Again → box 1, tomorrow');
-  eq(C.answer(m, { id: 'm1x1', step: 'relearn' }, true, 1000, false, day(9), 2).again, null, 'relearned');
+  eq(C.answer(m, { id: 'm0x1', step: 'relearn' }, true, 1000, false, day(9), 2).again, null, 'relearned');
   eq(c.box, 1, 'relearning does not move it up the same day');
-  const w = C.rec(m, 'm1x2'); Object.assign(w, { box: 3, due: day(20), seen: 3, right: 3 });
-  C.answer(m, { id: 'm1x2', step: 'warm' }, true, 1000, false, day(9), 1);
+  const w = C.rec(m, 'm0x2'); Object.assign(w, { box: 3, due: day(20), seen: 3, right: 3 });
+  C.answer(m, { id: 'm0x2', step: 'warm' }, true, 1000, false, day(9), 1);
   eq([w.box, w.due], [3, day(20)], 'warm-up right: schedule unchanged');
-  C.answer(m, { id: 'm1x2', step: 'warm' }, false, 1000, false, day(9), 1);
+  C.answer(m, { id: 'm0x2', step: 'warm' }, false, 1000, false, day(9), 1);
   eq([w.box, w.due], [1, day(10)], 'warm-up wrong: relearn from box 1');
   eq(C.INTERVAL, [0, 1, 2, 4, 7, 14, 30], 'intervals');
-  const p = C.rec(m, 'm1x3'); Object.assign(p, { box: 2, due: day(30) });
-  C.answer(m, { id: 'm1x3', step: 'practice' }, false, 1000, false, day(9), 1, 'practice');
+  const p = C.rec(m, 'm0x3'); Object.assign(p, { box: 2, due: day(30) });
+  C.answer(m, { id: 'm0x3', step: 'practice' }, false, 1000, false, day(9), 1, 'practice');
   eq([p.box, p.due], [2, day(30)], 'practice rounds never change the schedule');
 }
 
@@ -126,7 +128,7 @@ ok(C.batchesFor(4).every(b => new Set(b.map(id => C.FACT[id].table)).size === 1)
   C.release(m);                                  // 1×1 to 1×4
   m.batch.forEach(id => Object.assign(C.rec(m, id), { box: 1, due: day(1), intro: T0, seen: 2, right: 2 }));
   ok(!C.canRelease(m, T0), 'all in box 1: not yet');
-  ['m1x1', 'm1x2', 'm1x3'].forEach(id => { C.rec(m, id).box = 2; });
+  ['m0x1', 'm0x2', 'm0x3'].forEach(id => { C.rec(m, id).box = 2; });
   ok(C.canRelease(m, T0), 'three of four in box 2: mostly mastered');
   m.settings.newPerDay = 6;
   ok(!C.canRelease(m, T0), '4 today + 3 more > 6 a day: wait for tomorrow');
@@ -143,11 +145,11 @@ ok(C.batchesFor(4).every(b => new Set(b.map(id => C.FACT[id].table)).size === 1)
   eq(C.twinKnown(m, C.FACT.m3x7).id, 'm7x3', 'hint: نفس ٧ × ٣');
 
   const s = C.blank();
-  C.tableIds(1).forEach(id => { s.open.push(id); Object.assign(C.rec(s, id), { box: 4, due: day(5), up: day(-1), seen: 3, right: 3 }); });
-  Object.assign(C.rec(s, 'm1x10'), { box: 3, due: T0 });
-  const r = C.answer(s, { id: 'm1x10', step: 'review' }, true, 6000, false, T0, 1);
-  ok(r.events.some(e => e.type === 'sticker' && e.table === 1), 'sticker for the 1 table when the last fact reaches box 4');
-  eq(s.stickers[1], T0, 'sticker saved');
+  C.tableIds(0).forEach(id => { s.open.push(id); Object.assign(C.rec(s, id), { box: 4, due: day(5), up: day(-1), seen: 3, right: 3 }); });
+  Object.assign(C.rec(s, 'm0x10'), { box: 3, due: T0 });
+  const r = C.answer(s, { id: 'm0x10', step: 'review' }, true, 6000, false, T0, 1);
+  ok(r.events.some(e => e.type === 'sticker' && e.table === 0), 'sticker for the 0 table when the last fact reaches box 4');
+  eq(s.stickers[0], T0, 'sticker saved');
 
   // the daily goal: minutes with a card on screen, at most 2 a card, a bonus star once a day
   const g = C.blank(); g.settings.goalMin = 2;
@@ -157,7 +159,7 @@ ok(C.batchesFor(4).every(b => new Set(b.map(id => C.FACT[id].table)).size === 1)
   eq(g.stars.total, 1, 'one bonus star for the goal');
   C.addActive(g, day(1), 500);
   eq(g.active[day(1)], C.CARD_CAP, 'at most 2 minutes count for one card');
-  const answerOn = t => C.answer(g, { id: 'm1x1', step: 'practice' }, true, 1000, false, t, 1, 'practice');
+  const answerOn = t => C.answer(g, { id: 'm0x1', step: 'practice' }, true, 1000, false, t, 1, 'practice');
   answerOn(T0);
   eq(C.streakNow(g, T0), 1, 'streak 1');
   answerOn(day(1));
@@ -168,14 +170,14 @@ ok(C.batchesFor(4).every(b => new Set(b.map(id => C.FACT[id].table)).size === 1)
   eq(C.streakNow(g, day(3)), 3, 'a day registered by a parent fills the gap');
   answerOn(day(5));
   eq(C.streakNow(g, day(5)), 1, 'starts again at 1');
-  eq(C.answer(g, { id: 'm1x1', step: 'practice' }, true, 1000, false, day(5), 1, 'practice').events.filter(e => e.type === 'target'), [], 'answers alone no longer trigger the goal');
+  eq(C.answer(g, { id: 'm0x1', step: 'practice' }, true, 1000, false, day(5), 1, 'practice').events.filter(e => e.type === 'target'), [], 'answers alone no longer trigger the goal');
 }
 
 /* ---------- registering practice from before the daily goal ring ---------- */
 {
-  const old = { v: 1, cards: { m1x1: { box: 2, seen: 2, right: 2 } }, open: ['m1x1'], batch: ['m1x1'],
+  const old = { v: 1, cards: { m0x1: { box: 2, seen: 2, right: 2 } }, open: ['m0x1'], batch: ['m0x1'],
     days: { [T0]: { n: 8, ok: 8 }, [day(1)]: { n: 4, ok: 3 } }, daily: { day: day(1), correct: 10, hit: true }, streak: { n: 2, last: day(1) },
-    log: [[T0, 'm1x1', 1, 2000], [T0, 'm1x2', 1, 3000], [day(1), 'm1x1', 0, 400000]], settings: { target: 10 } };
+    log: [[T0, 'm0x1', 1, 2000], [T0, 'm0x2', 1, 3000], [day(1), 'm0x1', 0, 400000]], settings: { target: 10 } };
   const m = C.clean(JSON.parse(JSON.stringify(old)));
   eq(m.reg, [T0, day(1)], 'every day she answered is registered as practised');
   eq([m.active[T0], m.active[day(1)]], [11, 120], 'minutes estimated from her answer times (+3 s a card, at most 2 minutes a card)');
@@ -189,7 +191,7 @@ ok(C.batchesFor(4).every(b => new Set(b.map(id => C.FACT[id].table)).size === 1)
 /* ---------- weakest facts for the parent area: missed or slow only ---------- */
 {
   const m = C.blank();
-  Object.assign(C.rec(m, 'm1x1'), { seen: 3, right: 3, msSum: 4000, msN: 3 });
+  Object.assign(C.rec(m, 'm0x1'), { seen: 3, right: 3, msSum: 4000, msN: 3 });
   Object.assign(C.rec(m, 'm7x8'), { seen: 3, right: 1, wrong: 2, msSum: 9000, msN: 1 });
   Object.assign(C.rec(m, 'm6x7'), { seen: 2, right: 2, msSum: 22000, msN: 2 });
   eq(C.weakest(m).map(x => x.f.id), ['m7x8', 'm6x7'], 'weakest: missed first, then slow; quick right answers left out');
@@ -245,7 +247,7 @@ for (const [seed, skill, spd] of [[1, 0.75, 1], [2, 0.6, 2], [3, 0.85, 2], [4, 0
   eq(r.problems, [], `simulation ${seed}: no pacing problems`);
   ok(r.maxDistinct <= 10, `simulation ${seed}: at most 10 facts a session (got ${r.maxDistinct})`);
   ok(r.maxViews <= C.MAX_VIEWS, `simulation ${seed}: at most 3 looks at a card`);
-  console.log(`  learner ${seed} (skill ${skill}, ${spd}/day): ${r.open}/100 open, all open by ${r.lastOpen || '-'}, ${r.stickers}/10 stickers (first ${r.firstSticker || '-'}), sessions ${r.minSession}-${r.maxDistinct} facts`);
+  console.log(`  learner ${seed} (skill ${skill}, ${spd}/day): ${r.open}/110 open, all open by ${r.lastOpen || '-'}, ${r.stickers}/11 stickers (first ${r.firstSticker || '-'}), sessions ${r.minSession}-${r.maxDistinct} facts`);
 }
 
 console.log(`\n${passed} passed, ${failed} failed`);

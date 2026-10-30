@@ -49,8 +49,9 @@ function parseSpoken(text) {
   return any ? total : NaN;
 }
 
-/* ---------- the 100 facts, in teaching order: tables 1, 10, 2, 5, 3, 4, 9, 6, 7, 8; ×1 to ×10 in each ---------- */
-const TABLES = [1, 10, 2, 5, 3, 4, 9, 6, 7, 8];
+/* ---------- the 110 facts, in teaching order: tables 0, 1, 10, 2, 5, 3, 4, 9, 6, 7, 8; ×1 to ×10 in each ----------
+   (table 0 added 30 Oct 2026, Mama's request; first in the order, so it is the next new table she meets) */
+const TABLES = [0, 1, 10, 2, 5, 3, 4, 9, 6, 7, 8];
 const FACTS = [], FACT = {};
 TABLES.forEach(t => {
   for (let k = 1; k <= 10; k++) {
@@ -471,7 +472,7 @@ function mount(api) {
       box.append(b);
     });
     const all = TABLES.every(x => m.stickers[x]);
-    $('#mxNow').textContent = all ? 'أتقنتِ كلَّ الجداول!' : cur ? `الآن: جدول ${toAr(cur)}` : '';
+    $('#mxNow').textContent = all ? 'أتقنتِ كلَّ الجداول!' : cur !== null ? `الآن: جدول ${toAr(cur)}` : '';
     if (garden) garden.homeCard();
     api.show('mhome');
   }
@@ -616,6 +617,14 @@ function mount(api) {
     const box = document.createElement('div');
     box.className = 'mx-dots' + (counted ? ' counted' : '');
     box.dir = dir();
+    if (!f.a) {                          // ٠ × ٤: no groups at all, so an empty plate, and on the back its count ٠
+      const line = document.createElement('div'); line.className = 'mx-line';
+      const plate = document.createElement('i'); plate.className = 'mx-dot mx-empty';
+      line.append(plate);
+      if (counted) { const n = document.createElement('b'); n.className = 'mx-cum last'; n.textContent = toAr(0); line.append(n); }
+      box.append(line);
+      return box;
+    }
     for (let r = 0; r < f.a; r++) {
       const line = document.createElement('div');
       line.className = 'mx-line' + (r === 4 && f.a > 5 ? ' five' : '');
@@ -688,9 +697,10 @@ function mount(api) {
     // room left in the card under the sum (and the "same as" hint); the picture and the sum stay centred together
     const used = [...q.children].filter(el => el !== area).reduce((n, el) => n + el.getBoundingClientRect().height + 12, 0);
     const W = q.clientWidth, H = Math.max(40, q.clientHeight - used - 4);
-    const wc = f.b + 0.35 * (f.b - 1) + (f.b > 5 ? 0.5 : 0) + 0.7 + (counted ? 2.8 : 0);
-    const hc = f.a * 1.7 + 0.3 * (f.a - 1) + (f.a > 5 ? 0.4 : 0);
-    const d = Math.max(5, Math.min(f.a * f.b <= 4 ? 54 : 42, Math.floor(Math.min(W / wc, H / hc))));
+    const cols = f.a ? f.b : 1, rows = Math.max(1, f.a);           // ٠ × ٤ shows one empty plate
+    const wc = cols + 0.35 * (cols - 1) + (cols > 5 ? 0.5 : 0) + 0.7 + (counted ? 2.8 : 0);
+    const hc = rows * 1.7 + 0.3 * (rows - 1) + (rows > 5 ? 0.4 : 0);
+    const d = Math.max(5, Math.min(rows * cols <= 4 ? 54 : 42, Math.floor(Math.min(W / wc, H / hc))));
     box.style.setProperty('--d', d + 'px');
   }
   function layout() {

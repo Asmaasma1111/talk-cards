@@ -23,7 +23,7 @@ OUT = os.path.join(V.AUDIO, 'mx')
 V.DECKS['maths'] = {'voice': 'Aoede', 'say_rate': 180,
                     'style': 'a warm, kind Saudi woman teacher speaking clear Modern Standard Arabic to an eight-year-old girl; '
                              'natural and human, cheerful, at a brisk easy pace, each line said once as a friendly question'}
-TABLES = [1, 10, 2, 5, 3, 4, 9, 6, 7, 8]              # the teaching order in maths.js
+TABLES = [0, 1, 10, 2, 5, 3, 4, 9, 6, 7, 8]           # the teaching order in maths.js (table 0 from 30 Oct 2026)
 WORDS = ['صفر', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة', 'عشرة']
 # what the voice reads: fully vowelled, so every letter is said clearly (without marks it said «عشرة» with a weak «ع»)
 VOWELLED = ['صِفْر', 'وَاحِد', 'اِثْنَان', 'ثَلَاثَة', 'أَرْبَعَة', 'خَمْسَة', 'سِتَّة', 'سَبْعَة', 'ثَمَانِيَة', 'تِسْعَة', 'عَشَرَة']
@@ -122,7 +122,7 @@ def cmd_split(a):
 
 
 ASK = 'Transcribe this short Arabic clip verbatim, in Arabic script, exactly as spoken. Reply with the words only, or "-" if silent.'
-NUMS = {'واحد': 1, 'اثنان': 2, 'اثنين': 2, 'ثلاثه': 3, 'ثلاث': 3, 'اربعه': 4, 'اربع': 4, 'خمسه': 5, 'خمس': 5, 'سته': 6, 'ست': 6,
+NUMS = {'صفر': 0, 'واحد': 1, 'اثنان': 2, 'اثنين': 2, 'ثلاثه': 3, 'ثلاث': 3, 'اربعه': 4, 'اربع': 4, 'خمسه': 5, 'خمس': 5, 'سته': 6, 'ست': 6,
         'سبعه': 7, 'سبع': 7, 'ثمانيه': 8, 'ثمان': 8, 'تسعه': 9, 'تسع': 9, 'عشره': 10, 'عشر': 10}
 
 
