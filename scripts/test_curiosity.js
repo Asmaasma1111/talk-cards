@@ -95,28 +95,7 @@ ok('clean() keeps her data and mends a broken file', () => {
   assert.ok(C.valid(r)); assert.ok(!C.valid({}));
 });
 
-ok('Phase 2: the game opens in week 2 (or when Mama opens it); Friday is Big Question Day', () => {
-  const r = C.blank();
-  run(r, '2026-11-01', 1);
-  assert.ok(!C.gameOpen(r, '2026-11-05'));
-  assert.ok(C.gameOpen(r, '2026-11-08'));                         // day 8: her second week
-  r.settings.gameOpen = true; assert.ok(C.gameOpen(r, '2026-11-02'));
-  assert.ok(C.isBigDay('2026-11-06')); assert.ok(!C.isBigDay('2026-11-07'));
-  r.qs.push({ id: 'a', day: '2026-10-31' }, { id: 'b', day: '2026-11-02' }, { id: 'c', day: '2026-11-06' });
-  assert.deepStrictEqual(C.weekQs(r, '2026-11-06').map(q => q.id), ['b', 'c']);   // Sunday to Friday only
-});
-
-ok("Phase 2: Baba's dinner question is an earlier one, still wondering first, the same all day", () => {
-  const r = C.blank();
-  assert.strictEqual(C.dinnerPick(r, '2026-11-02'), null);
-  r.qs.push({ id: 'q1', day: '2026-11-01', status: 'found' }, { id: 'q2', day: '2026-11-01', status: 'wondering' }, { id: 'q3', day: '2026-11-02', status: 'wondering' });
-  assert.strictEqual(C.dinnerPick(r, '2026-11-02'), 'q2');         // not today's, and the one she still wonders about
-  assert.strictEqual(C.dinnerPick(r, '2026-11-02'), C.dinnerPick(r, '2026-11-02'));
-  r.dinner['2026-11-02'] = { q: 'q1', asked: true };
-  assert.strictEqual(C.dinnerPick(r, '2026-11-02'), 'q1');
-});
-
-ok('Phase 2: an older file gains the new fields and keeps everything else', () => {
+ok('an older file keeps everything (her old Phase 2 records stay saved, though the home no longer shows them)', () => {
   const r = C.clean({ qs: [{ id: 'q1' }], days: {}, settings: { storm: 120 } });
   assert.deepStrictEqual([r.games, r.big, r.dinner, r.settings.gameOpen, r.settings.storm], [[], [], {}, false, 120]);
 });
