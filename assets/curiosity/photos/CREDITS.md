@@ -28,7 +28,7 @@ Real photos (her rule, 20 Oct 2026), cropped to 4:3. Pexels photos are under the
 | C5 | Wikimedia Commons (Simon Tonge) | CC0 | https://commons.wikimedia.org/wiki/File:Oryx_leucoryx_11747503.jpg |
 | C6 | Wikimedia Commons (Grendelkhan) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Beekeeper_holding_frame_at_El_Sol_Winery.jpg |
 | C7 | Pexels | Pexels License | https://www.pexels.com/photo/9096994/ |
-| C8 | Wikimedia Commons (U. S. Fish and Wildlife Service - Northeast Region) | Public domain | https://commons.wikimedia.org/wiki/File:Monarch_butterfly_caterpillar_(44518187971).jpg |
+| C8 | Pexels | Pexels License | https://www.pexels.com/photo/2353299/ |
 | C9 | Wikimedia Commons (Kytabu) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Peregrine_falcon_(Falco_peregrinus)_in_flight,_Cape_Baily,_Kamay_Botany_Bay_NSW_Jun_2022.jpg |
 | D1 | Pexels | Pexels License | https://www.pexels.com/photo/5524754/ |
 | D2 | Wikimedia Commons (NASA) | Public domain | https://commons.wikimedia.org/wiki/File:ISS-20_Koichi_Wakata_with_a_water_bubble_in_the_Harmony_node.jpg |
@@ -55,25 +55,25 @@ Real photos (her rule, 20 Oct 2026), cropped to 4:3. Pexels photos are under the
 | F8 | Wikimedia Commons (MikeRun) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Attractive-electric-force-between-hair-and-balloon.jpg |
 | G1 | Pexels | Pexels License | https://www.pexels.com/photo/8003131/ |
 | G2 | Wikimedia Commons (Trixia Lao) | CC0 | https://commons.wikimedia.org/wiki/File:Bright_blue_sky_with_scenic_white_cloud_patterns.jpg |
-| G3 | Wikimedia Commons (Richard Mortel) | CC BY 2.0 | https://commons.wikimedia.org/wiki/File:Sarawat_Mountains,_Asir_Region,_Saudi_Arabia_(6).jpg |
+| G3 | Pexels | Pexels License | https://www.pexels.com/photo/39360611/ |
 | G4 | Pexels | Pexels License | https://www.pexels.com/photo/11006331/ |
-| G5 | Wikimedia Commons (Benlisquare) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Italian_honeybee_eggs_and_larvae.jpg |
+| G5 | Pexels | Pexels License | https://www.pexels.com/photo/3731845/ |
 | G6 | Wikimedia Commons (Vinoth Selvaraj) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Ants_with_its_food_or_egg.jpg |
-| G7 | Wikimedia Commons (Joshua Tree National Park) | Public domain | https://commons.wikimedia.org/wiki/File:Desert_Gold_Bloom_Near_Eagle_Mountain_(46534368655).jpg |
+| G7 | Pexels | Pexels License | https://www.pexels.com/photo/785695/ |
 | G8 | Pexels | Pexels License | https://www.pexels.com/photo/8765718/ |
 | H1 | Wikimedia Commons (National Marine Sanctuaries) | Public domain | https://commons.wikimedia.org/wiki/File:Humpback_Whale_And_Calf_(42854767822).jpg |
 | I1 | Pexels | Pexels License | https://www.pexels.com/photo/14076390/ |
 | I10 | Wikimedia Commons (Ruth Hartnup from Vancouver, Canada) | CC BY 2.0 | https://commons.wikimedia.org/wiki/File:Crushed_cans_(9691248780).jpg |
 | I11 | Wikimedia Commons (shankar s. from Dubai, united arab emirates) | CC BY 2.0 | https://commons.wikimedia.org/wiki/File:Arabian_Leopard_Nimr_(8454247265).jpg |
 | I12 | Wikimedia Commons (Richard Mortel) | CC BY 2.0 | https://commons.wikimedia.org/wiki/File:Elephant_Rock_2020.jpg |
-| I13 | Wikimedia Commons (SariSabban) | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Wahbah_Crater_Panorama.JPG |
+| I13 | Pexels | Pexels License | https://www.pexels.com/photo/34589697/ |
 | I14 | Wikimedia Commons (Gary Todd) | CC0 | https://commons.wikimedia.org/wiki/File:Lycoptera_Fish_Fossil_01.jpg |
 | I15 | Pexels | Pexels License | https://www.pexels.com/photo/17064914/ |
 | I2 | Pexels | Pexels License | https://www.pexels.com/photo/37271972/ |
 | I3 | Wikimedia Commons (Katekor1) | CC BY 4.0 | https://commons.wikimedia.org/wiki/File:Onion_skin_cells_under_a_microscope.jpg |
-| I4 | Wikimedia Commons (Fumikas Sagisavas) | CC0 | https://commons.wikimedia.org/wiki/File:Pomegranate_pearls.jpg |
-| I5 | Pexels | Pexels License | https://www.pexels.com/photo/4485012/ |
-| I6 | Wikimedia Commons (Clinton &amp; Charles Robertson from RAF Lakenheath, UK &amp; San Marcos, TX, USA &amp; UK) | CC BY-SA 2.0 | https://commons.wikimedia.org/wiki/File:Honey_Bee_Covered_in_Pollen_(129878390).jpg |
+| I4 | Pexels | Pexels License | https://www.pexels.com/photo/7033902/ |
+| I5 | Pexels | Pexels License | https://www.pexels.com/photo/38369133/ |
+| I6 | Pexels | Pexels License | https://www.pexels.com/photo/31709306/ |
 | I7 | Wikimedia Commons (U.S. Fish and Wildlife Service) | Public domain | https://commons.wikimedia.org/wiki/File:Close_up_of_a_cactus_thorns.jpg |
 | I8 | Wikimedia Commons (gbohne from Berlin, Germany) | CC BY-SA 2.0 | https://commons.wikimedia.org/wiki/File:Huge_phasmid_insect_from_N-Sumatra_(8188131090).jpg |
 | I9 | Pexels | Pexels License | https://www.pexels.com/photo/6934550/ |
@@ -84,16 +84,16 @@ Real photos (her rule, 20 Oct 2026), cropped to 4:3. Pexels photos are under the
 |---|---|---|---|
 | H1 | Wikimedia Commons (Humpbackwhale2.ogg, faded in and out, made gentler) | CC0 | https://commons.wikimedia.org/wiki/File:Humpbackwhale2.ogg |
 | I16 | Pexels | Pexels License | https://www.pexels.com/photo/4626145/ |
-| I17 | Pexels | Pexels License | https://www.pexels.com/photo/2362750/ |
-| I18 | Pexels | Pexels License | https://www.pexels.com/photo/35696740/ |
-| I19 | Pexels | Pexels License | https://www.pexels.com/photo/768089/ |
-| I20 | Pexels | Pexels License | https://www.pexels.com/photo/29836224/ |
+| I17 | Pexels | Pexels License | https://www.pexels.com/photo/33398870/ |
+| I18 | Pexels | Pexels License | https://www.pexels.com/photo/7432780/ |
+| I19 | Pexels | Pexels License | https://www.pexels.com/photo/5125097/ |
+| I20 | Pexels | Pexels License | https://www.pexels.com/photo/37930503/ |
 | I21 | Pexels | Pexels License | https://www.pexels.com/photo/30585967/ |
-| I22 | Pexels | Pexels License | https://www.pexels.com/photo/38344785/ |
+| I22 | Pexels | Pexels License | https://www.pexels.com/photo/18859864/ |
 | I23 | Pexels | Pexels License | https://www.pexels.com/photo/209439/ |
-| I24 | Wikimedia Commons (Bernard Gagnon) | CC BY 4.0 | https://commons.wikimedia.org/wiki/File:Canyon_de_Ghoufi_01.jpg |
-| I25 | Wikimedia Commons (Abdousid) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Bejaia_Cap_Carbon_view.jpg |
+| I24 | Pexels | Pexels License | https://www.pexels.com/photo/11183944/ |
+| I25 | Pexels | Pexels License | https://www.pexels.com/photo/40687918/ |
 | I26 | Wikimedia Commons (Mohammed Amri) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:%D8%A7%D8%B3%D9%83%D8%B1%D8%A7%D9%85_2_-_%D8%AA%D9%85%D9%86%D8%B1%D8%A7%D8%B3%D8%AA.jpg |
-| I27 | Pexels | Pexels License | https://www.pexels.com/photo/30520816/ |
-| I28 | Pexels | Pexels License | https://www.pexels.com/photo/35137859/ |
-| I29 | Wikimedia Commons (Benboulaid) | Public domain | https://commons.wikimedia.org/wiki/File:Chelia.jpg |
+| I27 | Wikimedia Commons (PeterKopias) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Sand_Australia_Gold_Coast.jpg |
+| I28 | Wikimedia Commons (Herzi Pinki) | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Stalactite_drop.jpg |
+| I29 | Wikimedia Commons (Till Niermann) | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Weathering_freeze_thaw_action_iceland.jpg |

@@ -1282,7 +1282,7 @@
     2
    ],
    "photo": "assets/curiosity/photos/c8.webp",
-   "credit": "Wikimedia Commons, U. S. Fish and Wildlife Service - Northeast Region, Public domain",
+   "credit": "Pexels, Pexels License",
    "ready": true
   },
   {
@@ -2696,7 +2696,7 @@
     5
    ],
    "photo": "assets/curiosity/photos/g3.webp",
-   "credit": "Wikimedia Commons, Richard Mortel, CC BY 2.0",
+   "credit": "Pexels, Pexels License",
    "ready": true
   },
   {
@@ -2815,7 +2815,7 @@
     2
    ],
    "photo": "assets/curiosity/photos/g5.webp",
-   "credit": "Wikimedia Commons, Benlisquare, CC BY-SA 4.0",
+   "credit": "Pexels, Pexels License",
    "ready": true
   },
   {
@@ -2935,7 +2935,7 @@
     4
    ],
    "photo": "assets/curiosity/photos/g7.webp",
-   "credit": "Wikimedia Commons, Joshua Tree National Park, Public domain",
+   "credit": "Pexels, Pexels License",
    "ready": true
   },
   {
@@ -3295,7 +3295,7 @@
     }
    ],
    "photo": "assets/curiosity/photos/i4.webp",
-   "credit": "Wikimedia Commons, Fumikas Sagisavas, CC0",
+   "credit": "Pexels, Pexels License",
    "ready": true
   },
   {
@@ -3397,7 +3397,7 @@
     }
    ],
    "photo": "assets/curiosity/photos/i6.webp",
-   "credit": "Wikimedia Commons, Clinton &amp; Charles Robertson from RAF Lakenheath, UK &amp; San Marcos, TX, USA &amp; UK, CC BY-SA 2.0",
+   "credit": "Pexels, Pexels License",
    "ready": true
   },
   {
@@ -3754,7 +3754,7 @@
     }
    ],
    "photo": "assets/curiosity/photos/i13.webp",
-   "credit": "Wikimedia Commons, SariSabban, CC BY-SA 3.0",
+   "credit": "Pexels, Pexels License",
    "ready": true
   },
   {
@@ -4312,7 +4312,7 @@
     }
    ],
    "photo": "assets/curiosity/photos/i24.webp",
-   "credit": "Wikimedia Commons, Bernard Gagnon, CC BY 4.0",
+   "credit": "Pexels, Pexels License",
    "ready": true
   },
   {
@@ -4359,7 +4359,7 @@
     }
    ],
    "photo": "assets/curiosity/photos/i25.webp",
-   "credit": "Wikimedia Commons, Abdousid, CC BY-SA 4.0",
+   "credit": "Pexels, Pexels License",
    "ready": true
   },
   {
@@ -4461,7 +4461,7 @@
     }
    ],
    "photo": "assets/curiosity/photos/i27.webp",
-   "credit": "Pexels, Pexels License",
+   "credit": "Wikimedia Commons, PeterKopias, CC BY-SA 4.0",
    "ready": true
   },
   {
@@ -4508,7 +4508,7 @@
     }
    ],
    "photo": "assets/curiosity/photos/i28.webp",
-   "credit": "Pexels, Pexels License",
+   "credit": "Wikimedia Commons, Herzi Pinki, CC BY-SA 3.0",
    "ready": true
   },
   {
@@ -4559,12 +4559,14 @@
     }
    ],
    "photo": "assets/curiosity/photos/i29.webp",
-   "credit": "Wikimedia Commons, Benboulaid, Public domain",
+   "credit": "Wikimedia Commons, Till Niermann, CC BY-SA 3.0",
    "ready": true
   }
  ],
  "focus": [
   2,
   5
- ]
+ ],
+ "first": "C8",
+ "firstFrom": "2026-11-06"
 }

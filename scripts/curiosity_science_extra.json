@@ -93,10 +93,9 @@
    ],
    "find": "Compare her baby photos with Mama's and Baba's",
    "src": {
-    "from": "assets/reads/photos/cubs.webp",
-    "fy": 0.5,
+    "from": "content/curiosity/photos/big/new-I17.jpg",
     "credit": "Pexels, Pexels License",
-    "link": "https://www.pexels.com/photo/2362750/"
+    "link": "https://www.pexels.com/photo/33398870/"
    },
    "card": [
     {
@@ -143,10 +142,9 @@
    ],
    "find": "Watch a video of a newborn camel standing up",
    "src": {
-    "from": "assets/reads/photos/camel.webp",
-    "fy": 1.0,
+    "from": "content/curiosity/photos/big/new-I18.jpg",
     "credit": "Pexels, Pexels License",
-    "link": "https://www.pexels.com/photo/35696740/"
+    "link": "https://www.pexels.com/photo/7432780/"
    },
    "card": [
     {
@@ -197,10 +195,9 @@
    ],
    "find": "Soak dried peas overnight and split one open",
    "src": {
-    "from": "assets/reads/photos/pea.webp",
-    "fy": 0.5,
+    "from": "content/curiosity/photos/big/new-I19.jpg",
     "credit": "Pexels, Pexels License",
-    "link": "https://www.pexels.com/photo/768089/"
+    "link": "https://www.pexels.com/photo/5125097/"
    },
    "card": [
     {
@@ -251,10 +248,9 @@
    ],
    "find": "Look at photos of a beetle larva and pupa together",
    "src": {
-    "from": "assets/reads/photos/insect.webp",
-    "fy": 0.5,
+    "from": "content/curiosity/photos/big/new-I20.jpg",
     "credit": "Pexels, Pexels License",
-    "link": "https://www.pexels.com/photo/29836224/"
+    "link": "https://www.pexels.com/photo/37930503/"
    },
    "card": [
     {
@@ -359,10 +355,9 @@
    ],
    "find": "Watch a video of puppies opening their eyes",
    "src": {
-    "from": "assets/reads/photos/puppy.webp",
-    "fy": 0.4,
+    "from": "content/curiosity/photos/big/new-I22.jpg",
     "credit": "Pexels, Pexels License",
-    "link": "https://www.pexels.com/photo/38344785/"
+    "link": "https://www.pexels.com/photo/18859864/"
    },
    "card": [
     {
@@ -467,10 +462,9 @@
    ],
    "find": "Pour water slowly over a sand pile and watch a valley form",
    "src": {
-    "from": "assets/algeria/photos/btn4.webp",
-    "fy": 0.5,
-    "credit": "Wikimedia Commons, Bernard Gagnon, CC BY 4.0",
-    "link": "https://commons.wikimedia.org/wiki/File:Canyon_de_Ghoufi_01.jpg"
+    "from": "content/curiosity/photos/big/new-I24.jpg",
+    "credit": "Pexels, Pexels License",
+    "link": "https://www.pexels.com/photo/11183944/"
    },
    "card": [
     {
@@ -521,10 +515,9 @@
    ],
    "find": "Shake sugar cubes in a closed jar and see the corners wear away",
    "src": {
-    "from": "assets/algeria/photos/bja1.webp",
-    "fy": 0.5,
-    "credit": "Wikimedia Commons, Abdousid, CC BY-SA 4.0",
-    "link": "https://commons.wikimedia.org/wiki/File:Bejaia_Cap_Carbon_view.jpg"
+    "from": "content/curiosity/photos/big/new-I25.jpg",
+    "credit": "Pexels, Pexels License",
+    "link": "https://www.pexels.com/photo/40687918/"
    },
    "card": [
     {
@@ -625,10 +618,9 @@
    ],
    "find": "Look at sand grains with a magnifying glass",
    "src": {
-    "from": "assets/reads/photos/sand.webp",
-    "fy": 0.5,
-    "credit": "Pexels, Pexels License",
-    "link": "https://www.pexels.com/photo/30520816/"
+    "from": "content/curiosity/photos/big/new-I27.jpg",
+    "credit": "Wikimedia Commons, PeterKopias, CC BY-SA 4.0",
+    "link": "https://commons.wikimedia.org/wiki/File:Sand_Australia_Gold_Coast.jpg"
    },
    "card": [
     {
@@ -679,10 +671,9 @@
    ],
    "find": "Let water drip onto a bar of soap and see the hollow",
    "src": {
-    "from": "assets/reads/photos/drip.webp",
-    "fy": 0.5,
-    "credit": "Pexels, Pexels License",
-    "link": "https://www.pexels.com/photo/35137859/"
+    "from": "content/curiosity/photos/big/new-I28.jpg",
+    "credit": "Wikimedia Commons, Herzi Pinki, CC BY-SA 3.0",
+    "link": "https://commons.wikimedia.org/wiki/File:Stalactite_drop.jpg"
    },
    "card": [
     {
@@ -729,10 +720,9 @@
    ],
    "find": "Freeze a full plastic cup of water and see the ice rise",
    "src": {
-    "from": "assets/algeria/photos/btn3.webp",
-    "fy": 0.5,
-    "credit": "Wikimedia Commons, Benboulaid, Public domain",
-    "link": "https://commons.wikimedia.org/wiki/File:Chelia.jpg"
+    "from": "content/curiosity/photos/big/new-I29.jpg",
+    "credit": "Wikimedia Commons, Till Niermann, CC BY-SA 3.0",
+    "link": "https://commons.wikimedia.org/wiki/File:Weathering_freeze_thaw_action_iceland.jpg"
    },
    "card": [
     {
@@ -749,5 +739,7 @@
     }
    ]
   }
- ]
+ ],
+ "first": "C8",
+ "firstFrom": "2026-11-06"
 }

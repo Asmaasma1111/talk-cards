@@ -3,7 +3,7 @@ const assert = require('assert');
 const path = require('path');
 const { core: C } = require(path.join(__dirname, '..', 'curiosity.js'));
 const DS = require(path.join(__dirname, '..', 'curiosity.json'));      // as published: her class's chapters first
-const D = { ...DS, focus: [] };                                          // her usual weekly themes, for the rotation tests
+const D = { ...DS, focus: [], first: null };                                       // her usual weekly themes, for the rotation tests
 let n = 0;
 const ok = (name, fn) => { fn(); n++; console.log('ok', name); };
 
@@ -124,11 +124,22 @@ ok("her class's chapters (2 and 5, 6 Nov 2026) fill every day, taking turns, the
   const twos = DS.mysteries.filter(m => m.ready && (m.theme === 'I' ? m.chapter === 2 : (m.tags || []).includes(2))).length;
   assert.ok(twos >= 12 && fives >= 8, `${twos} / ${fives}`);
   assert.deepStrictEqual(got.slice(0, 4).map(id => ch(id)[0]), [2, 5, 2, 5]);    // turns: life cycles, then Earth changes
-  assert.strictEqual(got[0], 'I4');                                              // the book's own mysteries come first
+  assert.strictEqual(got[0], 'C8');                                              // Mama's first choice, 6 Nov 2026
+  assert.strictEqual(got[2], 'I4');                                              // then the book's own mysteries
   const sci = got.slice(0, twos + fives - 1);
   assert.ok(sci.every(id => ch(id).some(c => c === 2 || c === 5)), sci.join(' '));
   assert.strictEqual(new Set(got).size, got.length);                             // nothing twice
   assert.ok(!ch(got[39]).includes(2) && !ch(got[39]).includes(5));               // all met: her weekly themes again
+});
+
+ok("Mama's first choice comes once: over an unfinished box, even if met before, not over a finished one", () => {
+  const r = C.blank(), t = '2026-11-06'; r.used.C8 = '2026-10-01'; r.days[t] = { m: 'I4', step: 'box', at: 1, done: false };
+  assert.strictEqual(C.todayPick(r, DS, t), 'C8');
+  assert.strictEqual(C.openDay(r, DS, t).m, 'C8');
+  assert.notStrictEqual(C.todayPick(r, DS, '2026-11-07'), 'C8');
+  const d = C.blank(); d.days[t] = { m: 'I4', step: 'done', at: 1, done: true };
+  assert.strictEqual(C.todayPick(d, DS, t), 'I4');
+  assert.strictEqual(C.todayPick(d, DS, '2026-11-07'), 'C8');
 });
 
 ok('Mama can change the chapters, or tick none for the usual themes', () => {

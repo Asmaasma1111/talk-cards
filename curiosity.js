@@ -86,7 +86,14 @@ function rotationPick(r, D, t) {
   return old ? old[0] : null;                                                                    // everything met: the oldest comes back
 }
 // today's mystery: fixed once she opens the box; before that, Mama's queue (science lesson, her own photo, her pick) comes first
+// Mama can put one mystery first (curiosity.json "first", from the date "firstFrom"): it comes on the next box, even if she
+// has met it before or has today's box open and unfinished, and only once
+function firstUp(r, D, t) {
+  const id = D.first; if (!id || t < (D.firstFrom || '') || !byId(D)[id] || !byId(D)[id].ready || dayDone(r, t)) return null;
+  return Object.entries(r.days).some(([d, x]) => d >= (D.firstFrom || '') && x && x.m === id) ? null : id;
+}
 function todayPick(r, D, t) {
+  const f = firstUp(r, D, t); if (f) return f;
   if (r.days[t] && r.days[t].m) return r.days[t].m;
   const q = r.queue.find(x => usable(r, D, x.m));
   return q ? q.m : rotationPick(r, D, t);
@@ -98,7 +105,7 @@ function tomorrowPick(r, D, t) {
   return todayPick(x, D, addDays(t, 1));
 }
 function openDay(r, D, t) {
-  if (r.days[t] && r.days[t].m) return r.days[t];
+  if (r.days[t] && r.days[t].m && !firstUp(r, D, t)) return r.days[t];
   const m = todayPick(r, D, t);
   if (!m) return null;
   r.queue = r.queue.filter(x => x.m !== m);

@@ -39,6 +39,7 @@ def merge(D):
         if m['theme'] == 'I':
             D.setdefault('chapters', {}).setdefault(str(m['chapter']), m['chapterName'])
     D['focus'] = E.get('focus', [])
+    D['first'], D['firstFrom'] = E.get('first'), E.get('firstFrom')      # Mama's choice of what comes first (see firstUp in curiosity.js)
     return D
 
 
