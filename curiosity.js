@@ -38,6 +38,7 @@ function clean(o) {
   ['days', 'used', 'mine', 'dinner'].forEach(k => { if (!r[k] || typeof r[k] !== 'object' || Array.isArray(r[k])) r[k] = {}; });
   ['qs', 'queue', 'science', 'own', 'games', 'big'].forEach(k => { if (!Array.isArray(r[k])) r[k] = []; });
   r.settings.storm = [120, 180].includes(Number(r.settings.storm)) ? Number(r.settings.storm) : 180;
+  if ('focus' in r.settings && !(Array.isArray(r.settings.focus) && r.settings.focus.every(n => Number.isInteger(Number(n))))) delete r.settings.focus;
   r.settings.hintAfter = Math.max(5, Math.min(30, Math.round(Number(r.settings.hintAfter)) || 10));
   return r;
 }
@@ -55,8 +56,27 @@ function nextInTheme(r, D, th, t) {
   const w1 = (D.week1 || []).find(id => id[0] === th && cand.some(m => m.id === id));
   return w1 || (cand[0] ? cand[0].id : null);
 }
+// the science chapters her class is on now (Mama's choice, else curiosity.json's "focus"; none = her usual themes)
+const focusOf = (r, D) => (Array.isArray(r.settings.focus) ? r.settings.focus : (D.focus || [])).map(Number);
+const chaptersOf = m => (m.theme === 'I' ? [m.chapter] : (m.tags || []));
+// while there is a focus, every day's mystery comes from those chapters: the chapter she met least lately goes first,
+// its book mysteries (theme I) before the tagged ones; when they are all met, her weekly rotation comes back
+function sciencePick(r, D, t) {
+  const f = focusOf(r, D); if (!f.length) return null;
+  const wk = weekOf(r, t), queued = new Set(r.queue.map(x => x.m));
+  const last = ch => Object.entries(r.days).filter(([d, x]) => d !== t && x && x.m && !isOwn(x.m) && byId(D)[x.m] && chaptersOf(byId(D)[x.m]).includes(ch))
+    .reduce((a, [d]) => (d > a ? d : a), '');
+  const order = f.map((ch, i) => [ch, last(ch), i]).sort((a, b) => (a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : a[2] - b[2])).map(x => x[0]);
+  for (const ch of order) {
+    const cand = D.mysteries.filter(m => m.ready && !r.used[m.id] && !queued.has(m.id) && (m.weekMin || 1) <= wk && chaptersOf(m).includes(ch));
+    const pick = cand.find(m => m.theme === 'I') || cand[0];
+    if (pick) return pick.id;
+  }
+  return null;
+}
 // her weekly rotation: the weekday chooses the theme; two themes on one day take turns, the first one first
 function rotationPick(r, D, t) {
+  const sp = sciencePick(r, D, t); if (sp) return sp;
   const wd = weekday(t), themes = D.rotation[wd] || ['A'];
   const met = th => Object.entries(r.days).filter(([d, x]) => d !== t && x && x.m && weekday(d) === wd && themeOf(x.m) === th).length;
   const order = themes.map((th, i) => [th, met(th), i]).sort((a, b) => a[1] - b[1] || a[2] - b[2]).map(x => x[0]);
@@ -118,7 +138,7 @@ function weekStats(r, t) {   // her week so far (Sunday to Saturday), for Mama o
            flips: qs.filter(q => q.flipOf).length, found: r.qs.filter(q => q.status === 'found' && q.foundDay && inWeek(q.foundDay)).length,
            wondering: qs.filter(q => q.status === 'wondering').length };
 }
-const core = { blank, clean, valid, addDays, dayDiff, weekday, weekOf, themeOf, nextInTheme, rotationPick, todayPick, tomorrowPick, openDay,
+const core = { blank, clean, valid, addDays, dayDiff, weekday, weekOf, themeOf, nextInTheme, focusOf, sciencePick, rotationPick, todayPick, tomorrowPick, openDay,
                dayDone, streakOf, treeCounts, scienceAdd, weekStats };
 
 /* =====================================================================================================
@@ -1088,6 +1108,12 @@ function mount(api) {
         ${nm ? `<p>Next: <b>${esc(nm.id)}</b> <span class="ar" lang="ar" dir="rtl">${esc(nm.verse ? '﴿' + nm.verse.text + '﴾' : nm.line)}</span>${drawing(nm) ? ` <label class="rp-btn warn">Photograph her ${nm.id === 'D8' ? 'space ' : ''}drawing tonight<input type="file" accept="image/*" capture="environment" data-photo="${nm.id}" hidden></label>${PH['m-' + nm.id] ? ' ✓ photo ready' : ''}` : ''}
           ${nm.homeTip ? `<br><span class="sub">Best with your own photo: ${esc(nm.homeTip)}.</span> <label class="rp-btn${PH['m-' + nm.id] ? '' : ' warn'}">${PH['m-' + nm.id] ? 'Retake' : 'Take'} the photo<input type="file" accept="image/*" capture="environment" data-photo="${nm.id}" hidden></label>${PH['m-' + nm.id] ? ' ✓ your photo is ready' : ''}` : ''}</p>` : ''}
       </section>
+      <section class="rp-card"><h2>Her class is on</h2>
+        <p>Every day's mystery comes from the chapters ticked here, until all of them are met. Tick none for her usual weekly themes.</p>
+        <div class="rp-row cbp-focus">${Object.entries(D.chapters).map(([n, name]) => {
+          const left = D.mysteries.filter(x => x.ready && !r.used[x.id] && chaptersOf(x).includes(Number(n))).length;
+          return `<label class="rp-chip"><input type="checkbox" data-focus="${n}"${focusOf(r, D).includes(Number(n)) ? ' checked' : ''}> ${n}: ${esc(name)} <span class="sub">(${left} left)</span></label>`; }).join('')}</div>
+      </section>
       <section class="rp-card"><h2>Science book</h2>
         <p>Mark the chapter her class starts next. Her next session (this evening, or tomorrow if today's is done) meets it with a mystery of its own.</p>
         <div class="rp-set"><select id="cbpCh">${chOpts}</select><button class="rp-btn main" data-act="science">Her class starts this next</button></div>
@@ -1161,6 +1187,10 @@ function mount(api) {
         return openParent();
       }
       if (el.id === 'cbpOwnPh') { const f = el.files && el.files[0]; el.value = ''; if (!f) return; try { ownPhoto = await shrinkPhoto(f); $('#cbpOwnOk').textContent = '✓ photo ready'; } catch (err) { api.toast('That photo did not open.'); } return; }
+      if (el.dataset.focus) {
+        r.settings.focus = [...P.querySelectorAll('[data-focus]')].filter(x => x.checked).map(x => Number(x.dataset.focus)); save();
+        api.toast(r.settings.focus.length ? 'Her next mysteries come from those chapters.' : 'Her usual weekly themes again.'); return openParent();
+      }
       if (el.id === 'cbpStorm') { r.settings.storm = Number(el.value); save(); }
       if (el.id === 'cbpHint') { r.settings.hintAfter = Number(el.value); save(); }
       if (el.id === 'cbpRules') { r.settings.rules = el.value; save(); }

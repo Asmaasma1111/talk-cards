@@ -6,6 +6,7 @@ Reads (local only, content/ is not in the repository):
   content/curiosity/bank.md            her 75 mysteries, word for word (a copy of ~/Downloads/Curiosity_Box_Mysteries.md)
   content/curiosity/parent-cards-*.md  the parent cards (English), one "## N. ... · ID · ..." section per mystery
   scripts/curiosity_photo_picks.json   which real photo each mystery uses (made by scripts/curiosity_photos.py)
+  scripts/curiosity_science_extra.json the science-class mysteries and the daily focus (scripts/curiosity_science.py)
 Writes curiosity.json, which the app reads.
 
 Maria's Arabic (the mystery line and the hints) is taken from the bank exactly, never retyped. The Qur'anic verses
@@ -183,6 +184,10 @@ def main():
          'rules': ['اسألي أكبر عدد من الأسئلة', 'لا تتوقفي لتجيبي', 'قوليها كما خطرت لكِ', 'حوّلي الجملة إلى سؤال'],
          'themes': {k: {'ar': a, 'en': e} for k, (a, e) in THEMES.items()}, 'rotation': ROTATION, 'week1': week1,
          'chapters': chapters, 'tips': TIPS, 'mysteries': rows}
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import curiosity_science            # the science-class mysteries (6 Nov 2026) and the daily focus stay after a rebuild
+    D = curiosity_science.merge(D)
+    rows = D['mysteries']
     with open(OUT, 'w', encoding='utf-8') as f:
         json.dump(D, f, ensure_ascii=False, indent=1)
     ready = [x['id'] for x in rows if x['ready']]

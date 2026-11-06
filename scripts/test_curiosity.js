@@ -2,17 +2,18 @@
 const assert = require('assert');
 const path = require('path');
 const { core: C } = require(path.join(__dirname, '..', 'curiosity.js'));
-const D = require(path.join(__dirname, '..', 'curiosity.json'));
+const DS = require(path.join(__dirname, '..', 'curiosity.json'));      // as published: her class's chapters first
+const D = { ...DS, focus: [] };                                          // her usual weekly themes, for the rotation tests
 let n = 0;
 const ok = (name, fn) => { fn(); n++; console.log('ok', name); };
 
 // play a run of days: every day she opens the box and finishes
-function run(r, from, days, skip = []) {
+function run(r, from, days, skip = [], data = D) {
   const out = [];
   for (let i = 0; i < days; i++) {
     const t = C.addDays(from, i);
     if (skip.includes(t)) continue;
-    const d = C.openDay(r, D, t); d.done = true; out.push(d.m);
+    const d = C.openDay(r, data, t); d.done = true; out.push(d.m);
   }
   return out;
 }
@@ -112,6 +113,36 @@ ok('every ready mystery has her Arabic line, three hints and a parent card; F ha
     if (m.theme === 'G') assert.ok(m.verse && m.verse.text, m.id);
     if (m.kind === 'photo') assert.ok(m.photo, m.id);
   });
+});
+
+ok("her class's chapters (2 and 5, 6 Nov 2026) fill every day, taking turns, then the rotation comes back", () => {
+  assert.deepStrictEqual(DS.focus, [2, 5]);
+  const r = C.blank();
+  const got = run(r, '2026-11-08', 40, [], DS);
+  const ch = id => { const m = DS.mysteries.find(x => x.id === id); return m.theme === 'I' ? [m.chapter] : (m.tags || []); };
+  const fives = DS.mysteries.filter(m => m.ready && (m.theme === 'I' ? m.chapter === 5 : (m.tags || []).includes(5))).length;
+  const twos = DS.mysteries.filter(m => m.ready && (m.theme === 'I' ? m.chapter === 2 : (m.tags || []).includes(2))).length;
+  assert.ok(twos >= 12 && fives >= 8, `${twos} / ${fives}`);
+  assert.deepStrictEqual(got.slice(0, 4).map(id => ch(id)[0]), [2, 5, 2, 5]);    // turns: life cycles, then Earth changes
+  assert.strictEqual(got[0], 'I4');                                              // the book's own mysteries come first
+  const sci = got.slice(0, twos + fives - 1);
+  assert.ok(sci.every(id => ch(id).some(c => c === 2 || c === 5)), sci.join(' '));
+  assert.strictEqual(new Set(got).size, got.length);                             // nothing twice
+  assert.ok(!ch(got[39]).includes(2) && !ch(got[39]).includes(5));               // all met: her weekly themes again
+});
+
+ok('Mama can change the chapters, or tick none for the usual themes', () => {
+  const r = C.blank(); r.settings.focus = [];
+  assert.strictEqual(C.openDay(r, DS, '2026-11-01').m, 'A1');
+  const r2 = C.blank(); r2.settings.focus = [5];
+  assert.strictEqual(C.openDay(r2, DS, '2026-11-01').m, 'I12');
+  assert.strictEqual(C.clean({ qs: [], days: {}, settings: { focus: 'x' } }).settings.focus, undefined);
+  assert.deepStrictEqual(C.clean({ qs: [], days: {}, settings: { focus: [2] } }).settings.focus, [2]);
+});
+
+ok('the science mysteries all have their photo', () => {
+  const fs = require('fs');
+  DS.mysteries.filter(m => m.theme === 'I').forEach(m => assert.ok(m.ready && fs.existsSync(path.join(__dirname, '..', m.photo)), m.id));
 });
 
 console.log(n, 'tests passed');

@@ -1,0 +1,753 @@
+{
+ "_note": "علبة الفضول: the science-class mysteries added on 6 Nov 2026 (Maria found the photos boring; Mama asked for the topics her class is on now: chapter 2, life cycles, and chapter 5, Earth changes). make_curiosity.py adds these after her bank, so a rebuild keeps them; a bank mystery with the same id wins. 'focus' is the default for the daily pick: every day's mystery comes from these chapters until they are used up (Mama can change it in her area). Photos reuse real photos already in the app (Maria Reads and the Algeria app), cropped to 4:3 by scripts/curiosity_science_photos.py.",
+ "focus": [
+  2,
+  5
+ ],
+ "mysteries": [
+  {
+   "id": "I16",
+   "theme": "I",
+   "n": 16,
+   "chapter": 2,
+   "chapterName": "Life cycles",
+   "kind": "photo",
+   "weekMin": 1,
+   "line": "ثلاثُ بيضاتٍ في عُشّ",
+   "hints": [
+    {
+     "w": "من",
+     "k": [
+      "صغار",
+      "داخل"
+     ]
+    },
+    {
+     "w": "متى",
+     "k": [
+      "تفقس",
+      "أيّام"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "نقاط",
+      "لون"
+     ]
+    }
+   ],
+   "find": "Spot a bird's nest from a distance in a park",
+   "src": {
+    "from": "assets/reads/photos/nest.webp",
+    "fy": 0.5,
+    "credit": "Pexels, Pexels License",
+    "link": "https://www.pexels.com/photo/4626145/"
+   },
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Birds start life as eggs. A parent sits on the eggs to keep them warm, and a chick grows inside each one.\n  - Her hint about when they hatch: small birds hatch after about two weeks; a hen's eggs take 21 days.\n  - Her hint about the spots: speckles help the eggs hide among twigs and leaves, so other animals do not see them.\n  - The chick grows feathers, learns to fly, becomes an adult and lays eggs of its own. That circle is a life cycle:\n    egg, chick, adult, then eggs again."
+    },
+    {
+     "label": "Find out together",
+     "md": "look for nests in trees or under roofs on a walk, from a distance, and watch if a parent bird comes back."
+    },
+    {
+     "label": "Safety",
+     "md": "never touch a nest or its eggs: the parents may leave it."
+    }
+   ]
+  },
+  {
+   "id": "I17",
+   "theme": "I",
+   "n": 17,
+   "chapter": 2,
+   "chapterName": "Life cycles",
+   "kind": "photo",
+   "weekMin": 1,
+   "line": "شبلانِ صغيران سيصيران أسدَين",
+   "hints": [
+    {
+     "w": "كم",
+     "k": [
+      "حليب",
+      "شهر"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "يتعلّم",
+      "صيد"
+     ]
+    },
+    {
+     "w": "هل",
+     "k": [
+      "يشبه",
+      "أمّه"
+     ]
+    }
+   ],
+   "find": "Compare her baby photos with Mama's and Baba's",
+   "src": {
+    "from": "assets/reads/photos/cubs.webp",
+    "fy": 0.5,
+    "credit": "Pexels, Pexels License",
+    "link": "https://www.pexels.com/photo/2362750/"
+   },
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Lions are mammals: the cubs are born, not hatched, and drink their mother's milk for about six months.\n  - Cubs are born with spots on their fur; the spots fade as they grow.\n  - Her hint about hunting: cubs learn by playing. Chasing, pouncing and play-fighting with each other is practice.\n  - Her hint \"does it look like its mother?\": young animals grow to look like their parents. Features passed from\n    parents to young are called inherited traits.\n  - A male lion grows his mane at about two to three years old."
+    },
+    {
+     "label": "Find out together",
+     "md": "look at her baby photos next to Mama's and Baba's. Which features did she get from whom?"
+    }
+   ]
+  },
+  {
+   "id": "I18",
+   "theme": "I",
+   "n": 18,
+   "chapter": 2,
+   "chapterName": "Life cycles",
+   "kind": "photo",
+   "weekMin": 1,
+   "line": "الحُوار يمشي بعد ساعاتٍ من ولادته",
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "يمشي",
+      "سريعًا"
+     ]
+    },
+    {
+     "w": "ماذا",
+     "k": [
+      "يأكل",
+      "أوّلًا"
+     ]
+    },
+    {
+     "w": "متى",
+     "k": [
+      "يكبر",
+      "سنام"
+     ]
+    }
+   ],
+   "find": "Watch a video of a newborn camel standing up",
+   "src": {
+    "from": "assets/reads/photos/camel.webp",
+    "fy": 1.0,
+    "credit": "Pexels, Pexels License",
+    "link": "https://www.pexels.com/photo/35696740/"
+   },
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - A baby camel is called a حُوار. It grows inside its mother for about 13 months, longer than a human baby.\n  - Her hint about walking so fast: in the desert the herd keeps moving, so the calf stands within an hour or two and\n    walks the same day to stay close to its mother and safe.\n  - Its first food is its mother's milk, which it drinks for about a year.\n  - Its hump is small at first and grows as it eats well. A camel is fully grown at about five years old."
+    },
+    {
+     "label": "Find out together",
+     "md": "watch a short video of a newborn camel standing for the first time and count how many tries it takes."
+    },
+    {
+     "label": "Safety",
+     "md": "if you see camels with young, stay at a distance: mothers protect their calves."
+    }
+   ]
+  },
+  {
+   "id": "I19",
+   "theme": "I",
+   "n": 19,
+   "chapter": 2,
+   "chapterName": "Life cycles",
+   "kind": "photo",
+   "weekMin": 1,
+   "line": "حبّات البازلاء بذورٌ في قرن",
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "تنبت",
+      "ماء"
+     ]
+    },
+    {
+     "w": "أين",
+     "k": [
+      "زهرة",
+      "قرن"
+     ]
+    },
+    {
+     "w": "ماذا",
+     "k": [
+      "داخل",
+      "بذرة"
+     ]
+    }
+   ],
+   "find": "Soak dried peas overnight and split one open",
+   "src": {
+    "from": "assets/reads/photos/pea.webp",
+    "fy": 0.5,
+    "credit": "Pexels, Pexels License",
+    "link": "https://www.pexels.com/photo/768089/"
+   },
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - The pod is the fruit of the pea plant, and each pea inside is a seed.\n  - Her hint about what is inside: every seed holds a tiny baby plant and a store of food for it.\n  - Her hint about the flower: the pod grows from a pea flower after pollination.\n  - With water and warmth the seed sprouts (germination), grows into a young plant, flowers, makes pods, and the\n    pods hold new seeds: the same steps as in her garden, بذرة، إنبات، نبتة صغيرة، نبات مزهر، تلقيح، ثمرة وبذور."
+    },
+    {
+     "label": "Find out together",
+     "md": "soak a few dried peas or beans in water overnight. Split one gently and find the baby plant inside.\n  Put the others on wet cotton and watch them sprout over a few days."
+    },
+    {
+     "label": "Safety",
+     "md": "do not eat the soaked raw peas or beans. Wash hands afterwards."
+    }
+   ]
+  },
+  {
+   "id": "I20",
+   "theme": "I",
+   "n": 20,
+   "chapter": 2,
+   "chapterName": "Life cycles",
+   "kind": "photo",
+   "weekMin": 1,
+   "line": "الخنفساء كانت دودةً صغيرة",
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "تغيّرت",
+      "شكل"
+     ]
+    },
+    {
+     "w": "أين",
+     "k": [
+      "تعيش",
+      "تراب"
+     ]
+    },
+    {
+     "w": "كم",
+     "k": [
+      "مرحلة",
+      "عمر"
+     ]
+    }
+   ],
+   "find": "Look at photos of a beetle larva and pupa together",
+   "src": {
+    "from": "assets/reads/photos/insect.webp",
+    "fy": 0.5,
+    "credit": "Pexels, Pexels License",
+    "link": "https://www.pexels.com/photo/29836224/"
+   },
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - A beetle has four stages: egg, larva, pupa, adult. That is the same plan as the butterfly in her garden.\n  - Her hint about the shape: the larva is a soft, pale grub, like a small worm with legs. Inside the pupa its body\n    is rebuilt into the hard, shiny adult with wings under its wing cases.\n  - Her hint about where: many beetle larvae live hidden in soil, in rotting wood or inside plants, eating and growing.\n  - Her hint \"how many stages\": four. Some beetles finish in a few weeks; some spend years as larvae underground."
+    },
+    {
+     "label": "Find out together",
+     "md": "look at photos of a beetle larva and pupa, then put the four stages in order. Compare them with the\n  butterfly stages in her garden."
+    },
+    {
+     "label": "Safety",
+     "md": "look at beetles, do not pick them up: some bite or give off a smelly liquid."
+    }
+   ]
+  },
+  {
+   "id": "I21",
+   "theme": "I",
+   "n": 21,
+   "chapter": 2,
+   "chapterName": "Life cycles",
+   "kind": "photo",
+   "weekMin": 1,
+   "line": "زهرةٌ صغيرة صارت زيتونة",
+   "hints": [
+    {
+     "w": "متى",
+     "k": [
+      "تنضج",
+      "لون"
+     ]
+    },
+    {
+     "w": "أين",
+     "k": [
+      "بذرة",
+      "داخل"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "زيت",
+      "يخرج"
+     ]
+    }
+   ],
+   "find": "Cut an olive open and find its stone",
+   "src": {
+    "from": "assets/reads/photos/olive.webp",
+    "fy": 0.5,
+    "credit": "Pexels, Pexels License",
+    "link": "https://www.pexels.com/photo/30585967/"
+   },
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - In spring the olive tree has tiny white flowers. The wind carries the pollen, and each pollinated flower grows\n    into an olive, the fruit.\n  - Her hint about ripening: olives start green and turn purple, then black. They ripen in autumn, so it is olive\n    season now.\n  - Her hint about the seed: the hard stone inside is the seed. Planted, it can grow into a new tree.\n  - Her hint about the oil: ripe olives are crushed and pressed, and the oil comes out of the fruit.\n  - Olive trees can live for hundreds of years. Al-Jouf in the north of Saudi Arabia has millions of them."
+    },
+    {
+     "label": "Find out together",
+     "md": "cut an olive open (an adult holds the knife) and find the stone. Press a piece of olive on paper and look\n  for the oil spot."
+    },
+    {
+     "label": "Safety",
+     "md": "an adult uses the knife."
+    }
+   ]
+  },
+  {
+   "id": "I22",
+   "theme": "I",
+   "n": 22,
+   "chapter": 2,
+   "chapterName": "Life cycles",
+   "kind": "photo",
+   "weekMin": 1,
+   "line": "الجرو يُولَد مُغمَض العينين",
+   "hints": [
+    {
+     "w": "لماذا",
+     "k": [
+      "عيون",
+      "مغلقة"
+     ]
+    },
+    {
+     "w": "متى",
+     "k": [
+      "يفتح",
+      "يرى"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "يعرف",
+      "أمّه"
+     ]
+    }
+   ],
+   "find": "Watch a video of puppies opening their eyes",
+   "src": {
+    "from": "assets/reads/photos/puppy.webp",
+    "fy": 0.4,
+    "credit": "Pexels, Pexels License",
+    "link": "https://www.pexels.com/photo/38344785/"
+   },
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Puppies grow inside their mother for about two months and are born with their eyes and ears closed.\n  - Her hint about why: their eyes are not finished yet. The closed lids protect them while they keep growing.\n  - Her hint about when: the eyes open at about 10 to 14 days, and puppies see clearly a few weeks later.\n  - Her hint about finding their mother: by smell and warmth. Newborn puppies crawl towards her to drink milk.\n  - Kittens are the same. A puppy becomes an adult dog at about one to two years old."
+    },
+    {
+     "label": "Find out together",
+     "md": "watch a short video of puppies or kittens in their first weeks and notice what changes each week."
+    },
+    {
+     "label": "Safety",
+     "md": "do not touch newborn puppies or kittens: the mother may bite to protect them."
+    }
+   ]
+  },
+  {
+   "id": "I23",
+   "theme": "I",
+   "n": 23,
+   "chapter": 2,
+   "chapterName": "Life cycles",
+   "kind": "photo",
+   "weekMin": 1,
+   "line": "في قلب التفاحة نجمةٌ من البذور",
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "نجمة",
+      "نقطع"
+     ]
+    },
+    {
+     "w": "كم",
+     "k": [
+      "بذور",
+      "عدد"
+     ]
+    },
+    {
+     "w": "هل",
+     "k": [
+      "شجرة",
+      "تنبت"
+     ]
+    }
+   ],
+   "find": "Cut an apple across the middle and count the seeds",
+   "src": {
+    "from": "assets/reads/photos/apple.webp",
+    "fy": 0.5,
+    "credit": "Pexels, Pexels License",
+    "link": "https://www.pexels.com/photo/209439/"
+   },
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Her hint about the star: cut an apple across its middle (not from top to bottom) and the core shows a\n    five-pointed star. Each point is a small room that holds seeds.\n  - The apple grew from an apple flower after a bee pollinated it, just like the pomegranate in her garden.\n  - Her hint about a tree: yes, a seed can grow into an apple tree, but it takes several years before it gives fruit,\n    and the apples are often different from the parent's."
+    },
+    {
+     "label": "Find out together",
+     "md": "cut an apple across the middle (an adult holds the knife), find the star and count the seeds. Then cut a\n  second apple from top to bottom and compare."
+    },
+    {
+     "label": "Safety",
+     "md": "an adult uses the knife. Do not chew or eat the seeds."
+    }
+   ]
+  },
+  {
+   "id": "I24",
+   "theme": "I",
+   "n": 24,
+   "chapter": 5,
+   "chapterName": "Earth changes",
+   "kind": "photo",
+   "weekMin": 1,
+   "line": "وادٍ عميق حفرَه الماء",
+   "hints": [
+    {
+     "w": "كم",
+     "k": [
+      "سنة",
+      "عمق"
+     ]
+    },
+    {
+     "w": "كيف",
+     "k": [
+      "ماء",
+      "صخر"
+     ]
+    },
+    {
+     "w": "أين",
+     "k": [
+      "نهر",
+      "ذهب"
+     ]
+    }
+   ],
+   "find": "Pour water slowly over a sand pile and watch a valley form",
+   "src": {
+    "from": "assets/algeria/photos/btn4.webp",
+    "fy": 0.5,
+    "credit": "Wikimedia Commons, Bernard Gagnon, CC BY 4.0",
+    "link": "https://commons.wikimedia.org/wiki/File:Canyon_de_Ghoufi_01.jpg"
+   },
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - This is the Ghoufi canyon in the Aurès mountains of Algeria.\n  - Her hint about how: a river flowed here for a very long time. The water carried sand and pebbles that scraped\n    the rock, a tiny bit every day, and the valley grew deeper and deeper. This wearing away is called erosion.\n  - Her hint about how many years: hundreds of thousands, even millions. It is a slow change, too slow to see.\n  - Her hint \"where did the river go\": it is still there, small, at the bottom. The cut rock it carried away went\n    downstream as sand and mud."
+    },
+    {
+     "label": "Find out together",
+     "md": "make a pile of damp sand in a tray and pour water slowly from a cup at the top. Watch the water cut a\n  little valley and carry the sand to the bottom."
+    },
+    {
+     "label": "Safety",
+     "md": "do it outdoors or in a tray. Wash hands afterwards."
+    }
+   ]
+  },
+  {
+   "id": "I25",
+   "theme": "I",
+   "n": 25,
+   "chapter": 5,
+   "chapterName": "Earth changes",
+   "kind": "photo",
+   "weekMin": 1,
+   "line": "البحر ينحتُ الصخور",
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "أمواج",
+      "تضرب"
+     ]
+    },
+    {
+     "w": "أين",
+     "k": [
+      "صخور",
+      "تذهب"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "منحدر",
+      "حادّ"
+     ]
+    }
+   ],
+   "find": "Shake sugar cubes in a closed jar and see the corners wear away",
+   "src": {
+    "from": "assets/algeria/photos/bja1.webp",
+    "fy": 0.5,
+    "credit": "Wikimedia Commons, Abdousid, CC BY-SA 4.0",
+    "link": "https://commons.wikimedia.org/wiki/File:Bejaia_Cap_Carbon_view.jpg"
+   },
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - This is Cap Carbon near Béjaïa, in Algeria.\n  - Her hint about the waves: every day the waves hit the cliffs and throw sand and stones against them. Little by\n    little, pieces break off. Over a long time this carves cliffs, caves and arches.\n  - Her hint about where the rock goes: the broken pieces roll in the water, wear smooth and become pebbles and sand\n    on the beaches.\n  - Her hint about the steep cliff: the sea eats the bottom of the cliff, the top falls, and the cliff stays steep."
+    },
+    {
+     "label": "Find out together",
+     "md": "put a few sugar cubes in a closed jar and shake it for a minute. The sharp corners wear away, like rock in\n  the waves."
+    }
+   ]
+  },
+  {
+   "id": "I26",
+   "theme": "I",
+   "n": 26,
+   "chapter": 5,
+   "chapterName": "Earth changes",
+   "kind": "photo",
+   "weekMin": 1,
+   "line": "قممٌ تشبه الأصابع في الصحراء",
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "بركان",
+      "حمم"
+     ]
+    },
+    {
+     "w": "لماذا",
+     "k": [
+      "طويلة",
+      "ضيّقة"
+     ]
+    },
+    {
+     "w": "من",
+     "k": [
+      "صنعها",
+      "شكل"
+     ]
+    }
+   ],
+   "find": "Bury a stone in sand, wash the sand away and see what stays",
+   "src": {
+    "from": "assets/algeria/photos/tmr1.webp",
+    "fy": 0.5,
+    "credit": "Wikimedia Commons, Mohammed Amri, CC BY-SA 4.0",
+    "link": "https://commons.wikimedia.org/wiki/File:%D8%A7%D8%B3%D9%83%D8%B1%D8%A7%D9%85_2_-_%D8%AA%D9%85%D9%86%D8%B1%D8%A7%D8%B3%D8%AA.jpg"
+   },
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - These peaks are at Assekrem, in the Hoggar mountains in the south of Algeria.\n  - Her hint about volcanoes: long ago there were volcanoes here. Lava cooled inside them and became very hard rock.\n  - Her hint about why they are tall and thin: the softer rock around them was slowly worn away by wind, rain and\n    heat over millions of years. The hard cores were left standing, like fingers.\n  - Her hint \"who made them\": no one. A fast change (the volcano) and a slow change (erosion) made them together."
+    },
+    {
+     "label": "Find out together",
+     "md": "stand a stone upright in a mound of damp sand in a tray, then pour water gently over it. The sand washes\n  away and the hard stone stays standing."
+    },
+    {
+     "label": "Safety",
+     "md": "in a tray or outdoors. Wash hands afterwards."
+    }
+   ]
+  },
+  {
+   "id": "I27",
+   "theme": "I",
+   "n": 27,
+   "chapter": 5,
+   "chapterName": "Earth changes",
+   "kind": "photo",
+   "weekMin": 1,
+   "line": "الرمل كان صخرةً كبيرة",
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "صغير",
+      "يصير"
+     ]
+    },
+    {
+     "w": "من",
+     "k": [
+      "كسر",
+      "صخرة"
+     ]
+    },
+    {
+     "w": "كم",
+     "k": [
+      "حبّة",
+      "عدد"
+     ]
+    }
+   ],
+   "find": "Look at sand grains with a magnifying glass",
+   "src": {
+    "from": "assets/reads/photos/sand.webp",
+    "fy": 0.5,
+    "credit": "Pexels, Pexels License",
+    "link": "https://www.pexels.com/photo/30520816/"
+   },
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - Most desert sand is made of tiny pieces of rock, mainly a hard mineral called quartz.\n  - Her hint \"who broke the rock\": nobody. In the desert the rock heats up by day and cools at night, so it cracks.\n    Wind and water then break the pieces and rub them smaller and smaller. This breaking is called weathering.\n  - Her hint about how many grains: a single handful holds tens of thousands.\n  - The wind carries the grains and piles them into ripples, like in the photo, and into dunes."
+    },
+    {
+     "label": "Find out together",
+     "md": "look at a pinch of sand on dark paper with a magnifying glass (or the phone camera zoomed in). The\n  grains have different colours and shapes."
+    },
+    {
+     "label": "Safety",
+     "md": "do not rub eyes with sandy hands."
+    }
+   ]
+  },
+  {
+   "id": "I28",
+   "theme": "I",
+   "n": 28,
+   "chapter": 5,
+   "chapterName": "Earth changes",
+   "kind": "photo",
+   "weekMin": 1,
+   "line": "قطرةٌ بعد قطرة تحفرُ الحجر",
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "ضعيفة",
+      "تحفر"
+     ]
+    },
+    {
+     "w": "كم",
+     "k": [
+      "وقت",
+      "طويل"
+     ]
+    },
+    {
+     "w": "أين",
+     "k": [
+      "حفرة",
+      "تظهر"
+     ]
+    }
+   ],
+   "find": "Let water drip onto a bar of soap and see the hollow",
+   "src": {
+    "from": "assets/reads/photos/drip.webp",
+    "fy": 0.5,
+    "credit": "Pexels, Pexels License",
+    "link": "https://www.pexels.com/photo/35137859/"
+   },
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - One drop does nothing to a stone. But millions of drops falling on the same spot, year after year, wear a\n    hollow into it.\n  - Her hint about time: for stone it takes many years. Under old taps and in caves you can see the hollows.\n  - Each drop carries away a tiny bit of the stone. That is erosion again: slow, but it never stops.\n  - The Arab saying: «قطرة الماء تثقب الحجر لا بالعنف ولكن بالتكرار». Small steps, repeated, do big things."
+    },
+    {
+     "label": "Find out together",
+     "md": "put a bar of soap under a slowly dripping tap (or drip water on it from a spoon) for a while and look for\n  the hollow. Catch the water in a bowl and give it to a plant afterwards."
+    }
+   ]
+  },
+  {
+   "id": "I29",
+   "theme": "I",
+   "n": 29,
+   "chapter": 5,
+   "chapterName": "Earth changes",
+   "kind": "photo",
+   "weekMin": 1,
+   "line": "الثلج يكسرُ الصخور",
+   "hints": [
+    {
+     "w": "كيف",
+     "k": [
+      "يتجمّد",
+      "يكبر"
+     ]
+    },
+    {
+     "w": "متى",
+     "k": [
+      "ليل",
+      "برد"
+     ]
+    },
+    {
+     "w": "أين",
+     "k": [
+      "شقوق",
+      "جبل"
+     ]
+    }
+   ],
+   "find": "Freeze a full plastic cup of water and see the ice rise",
+   "src": {
+    "from": "assets/algeria/photos/btn3.webp",
+    "fy": 0.5,
+    "credit": "Wikimedia Commons, Benboulaid, Public domain",
+    "link": "https://commons.wikimedia.org/wiki/File:Chelia.jpg"
+   },
+   "card": [
+    {
+     "label": "Explanation",
+     "md": "  - This is Chelia, the highest mountain in the north of Algeria. In winter it has snow.\n  - Her hint about cracks: melting snow runs into small cracks in the rock.\n  - Her hint about freezing: at night the water freezes, and ice takes more space than water, so it pushes the crack\n    wider. By day it melts and runs deeper.\n  - Again and again, night after night, the rock breaks into pieces. This is weathering, a slow change."
+    },
+    {
+     "label": "Find out together",
+     "md": "fill a plastic cup to the very top with water and put it in the freezer. The next day the ice stands above\n  the rim: it grew."
+    },
+    {
+     "label": "Safety",
+     "md": "use plastic, never glass, in the freezer."
+    }
+   ]
+  }
+ ]
+}

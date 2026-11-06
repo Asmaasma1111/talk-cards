@@ -83,3 +83,17 @@ Real photos (her rule, 20 Oct 2026), cropped to 4:3. Pexels photos are under the
 | Mystery | Source | Licence | Link |
 |---|---|---|---|
 | H1 | Wikimedia Commons (Humpbackwhale2.ogg, faded in and out, made gentler) | CC0 | https://commons.wikimedia.org/wiki/File:Humpbackwhale2.ogg |
+| I16 | Pexels | Pexels License | https://www.pexels.com/photo/4626145/ |
+| I17 | Pexels | Pexels License | https://www.pexels.com/photo/2362750/ |
+| I18 | Pexels | Pexels License | https://www.pexels.com/photo/35696740/ |
+| I19 | Pexels | Pexels License | https://www.pexels.com/photo/768089/ |
+| I20 | Pexels | Pexels License | https://www.pexels.com/photo/29836224/ |
+| I21 | Pexels | Pexels License | https://www.pexels.com/photo/30585967/ |
+| I22 | Pexels | Pexels License | https://www.pexels.com/photo/38344785/ |
+| I23 | Pexels | Pexels License | https://www.pexels.com/photo/209439/ |
+| I24 | Wikimedia Commons (Bernard Gagnon) | CC BY 4.0 | https://commons.wikimedia.org/wiki/File:Canyon_de_Ghoufi_01.jpg |
+| I25 | Wikimedia Commons (Abdousid) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Bejaia_Cap_Carbon_view.jpg |
+| I26 | Wikimedia Commons (Mohammed Amri) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:%D8%A7%D8%B3%D9%83%D8%B1%D8%A7%D9%85_2_-_%D8%AA%D9%85%D9%86%D8%B1%D8%A7%D8%B3%D8%AA.jpg |
+| I27 | Pexels | Pexels License | https://www.pexels.com/photo/30520816/ |
+| I28 | Pexels | Pexels License | https://www.pexels.com/photo/35137859/ |
+| I29 | Wikimedia Commons (Benboulaid) | Public domain | https://commons.wikimedia.org/wiki/File:Chelia.jpg |
