@@ -4,14 +4,16 @@
    then it stays there for good. */
 (function (KD) {
 'use strict';
-const { el, icon, pic } = KD.ui;
+const { el, icon, pic, hasPic } = KD.ui;
 const COUNT = 60;
+// only stickers already made (in files.json) are offered, so she never sees an empty box while the rest are being drawn
+const made = () => { const m = []; for (let n = 1; n <= COUNT; n++) if (hasPic(KD.page.stickerFile(n))) m.push(n); return m.length >= 3 ? m : Array.from({ length: COUNT }, (_, i) => i + 1); };
 
 function offer() {
   const b = KD.store.get().book;
-  let left = [];
-  for (let n = 1; n <= COUNT; n++) if (!b.seenStickers.includes(n)) left.push(n);
-  if (left.length < 3) { b.seenStickers = []; left = Array.from({ length: COUNT }, (_, i) => i + 1); }
+  const all = made();
+  let left = all.filter(n => !b.seenStickers.includes(n));
+  if (left.length < 3) { b.seenStickers = b.seenStickers.filter(n => !all.includes(n)); left = all.slice(); }
   const three = [];
   while (three.length < 3) { const n = left.splice(Math.floor(Math.random() * left.length), 1)[0]; three.push(n); }
   b.seenStickers.push(...three);
