@@ -18,7 +18,8 @@ function extras(s) {
   if (!Array.isArray(s.book.books)) s.book.books = [];
   if (!s.book.stickerDays || typeof s.book.stickerDays !== 'object') s.book.stickerDays = {};
   if (!Array.isArray(s.book.seenStickers)) s.book.seenStickers = [];
-  s.prefs = { muted: false, pencilOnly: null, pen: 'blue', ...(s.prefs && typeof s.prefs === 'object' ? s.prefs : {}) };
+  s.prefs = { muted: false, pencilOnly: null, pen: 'blue', met: [], ...(s.prefs && typeof s.prefs === 'object' ? s.prefs : {}) };
+  if (!Array.isArray(s.prefs.met)) s.prefs.met = [];        // the skills whose opening page she has seen
   return s;
 }
 function load() {

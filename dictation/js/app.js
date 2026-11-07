@@ -9,6 +9,8 @@ async function boot() {
   try {
     const [, , data] = await Promise.all([KD.ui.initAssets(), KD.voice.init(), fetch('data/cards.json').then(r => r.json())]);
     KD.data = data;
+    // the light paper texture under the Seyès lines, once Mama has made it in ChatGPT
+    if (KD.ui.hasPic('paper.png')) document.documentElement.style.setProperty('--paper-tex', "url('assets/paper.png')");
     KD.E = window.KDEngine.create(data, window.KDText.clipId);
     KD.skill = id => (Array.isArray(data.skills) ? data.skills.find(s => s.id === id) : data.skills[id]) || null;
     KD.store.load();
@@ -26,7 +28,8 @@ function route() {
   const [name, arg] = (location.hash.slice(1) || 'home').split('/');
   const B = KD.book;
   // her first visit: she chooses the cover colour and writes her name before anything else
-  if (B && !B.current() && name !== 'parent' && name !== 'welcome') { location.replace('#welcome'); return; }
+  // (after a full copybook, the next one begins when she comes back to the home screen)
+  if (B && !B.current() && (name === 'home' || name === 'session')) { location.replace('#welcome'); return; }
   KD.voice.stop();
   if (name === 'session') return KD.session.start(app);
   if (name === 'welcome' && B) return B.welcome(app);

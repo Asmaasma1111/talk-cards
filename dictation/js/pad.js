@@ -14,7 +14,7 @@ const PALM = 34;          // a touch wider than this (px) is a palm, not a finge
 function create(host, opts = {}) {
   const prefs = () => KD.store.get().prefs;
   const tall = !!opts.tall;
-  host.classList.add('pad', 'seyes'); if (tall) host.classList.add('tall');
+  host.classList.add('pad'); if (!opts.plain) host.classList.add('seyes'); if (tall) host.classList.add('tall');
   const sheet = el('div', { class: 'pad-sheet' });
   const cv = el('canvas', { class: 'pad-ink' });
   sheet.append(cv); host.replaceChildren(sheet);

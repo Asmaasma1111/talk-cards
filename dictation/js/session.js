@@ -69,6 +69,23 @@ function start(app) {
     if (!item) { finishAll(); return; }
     const c = cardOf(item.id);
     if (!c) { next(); return; }
+    if (c.type !== 'hard' && !m.prefs.met.includes(c.skill)) { opening(c.skill, item); return; }
+    draw(item, c);
+  }
+
+  // a skill's opening page, once: its picture, its name and its rule
+  function opening(skillId, item) {
+    const sk = KD.skill(skillId);
+    m.prefs.met.push(skillId); KD.store.save();
+    front.replaceChildren(KD.ui.pic(sk.pic, 'skill-art'), el('h2', { class: 'skill-name ar' }, sk.name), ...sk.rules.map(r => el('div', { class: 'rule' }, r)));
+    back.replaceChildren(); toolsRow.replaceChildren();
+    card.style.transition = 'none'; card.className = 'card t-opening'; void card.offsetWidth; card.style.transition = '';
+    earSteps = [];
+    KD.sound.play('page');
+    bar.replaceChildren(el('button', { class: 'btn btn-next', 'aria-label': 'next', onclick: () => { queue.unshift(item); next(); } }, icon('next')));
+  }
+
+  function draw(item, c) {
     run.views[item.id] = (run.views[item.id] || 0) + 1;
     run.skills[c.skill] = (run.skills[c.skill] || 0) + 1;
     prog.style.width = Math.min(100, (run.done / Math.max(1, run.done + queue.length + 1)) * 100) + '%';
