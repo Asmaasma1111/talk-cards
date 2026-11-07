@@ -259,7 +259,7 @@ function tasrifItems(st, seed, count = st.perDay || 8) {
   const common = st.prons.slice(0, 8), pickP = () => { const from = rnd() < 0.8 ? common : st.prons; return from[Math.floor(rnd() * from.length)]; };
   for (let i = 0; i < count; i++) {
     const v = st.verbs[vids[i % vids.length]], p = pickP(), opts = shuffleR([p, ...st.wrong[p]], rnd);
-    if (TKINDS[i % TKINDS.length] === 'verb') { const fs = opts.map(x => v.forms[x]); out.push({ t: 'fill', ask: 'pickVerb', q: `${p} ___ ${v.obj}.`, opts: fs, ok: fs.indexOf(v.forms[p]) }); }
+    if (TKINDS[i % TKINDS.length] === 'verb') { const fs = opts.map(x => v.forms[x]); out.push({ t: 'fill', ask: 'pickVerb', q: `${p} ___ ${v.obj}.`, opts: fs, ok: fs.indexOf(v.forms[p]), icon: v.icon, masdar: v.masdar }); }
     else out.push({ t: 'fill', ask: 'fillDami', q: `___ ${v.forms[p]} ${v.obj}.`, opts, ok: opts.indexOf(p) });
   }
   return out;
@@ -900,7 +900,7 @@ function mount(api) {
   }
   function writeItem(s, st, it, top, alone) {
     const ans = it.opts[it.ok];
-    const P = pane(`${top}<p class="dz-q">${it.ask && it.ask.startsWith('write') ? L[it.ask] : L.writeVerb}</p><p class="dz-words big">${esc(it.q).replace('___', '<span class="dz-blank wide" id="dzBlank">✍️</span>')}</p>
+    const P = pane(`${top}<p class="dz-q">${it.ask && it.ask.startsWith('write') ? L[it.ask] : L.writeVerb}</p>${it.masdar ? `<p class="dz-vhint"><span>${it.icon || ''}</span>${esc(it.masdar)}</p>` : ''}<p class="dz-words big">${esc(it.q).replace('___', `<span class="dz-blank wide" id="dzBlank">${it.icon || '✍️'}</span>`)}</p>
       <div class="dz-wpad" id="dzPad"><canvas></canvas><div class="dz-wans" id="dzAns" hidden><small>${L.theAns}</small><b>${esc(ans)}</b></div></div>
       <div class="dz-row" id="dzWRow"><button class="dz-btn soft" id="dzClear">${L.clearPad}</button><button class="dz-big" id="dzShow">${L.showAns}</button></div><div class="dz-fb" id="dzFb"></div>`, 'step');
     const pd = pad(P.querySelector('#dzPad'));
@@ -928,7 +928,7 @@ function mount(api) {
     const grid = () => `<div class="dz-ttable">${st.prons.map(p => `<span class="p">${esc(p)}</span><span class="f${done[p] ? ' ok' : ''}">${done[p] ? esc(v.forms[p]) : '…'}</span>`).join('')}</div>`;
     for (const p of st.prons) {
       if (!live(s)) return;
-      const opts = shuffleR([p, ...st.wrong[p]], rnd).map(x => v.forms[x]), it = { t: 'fill', ask: 'pickVerb', q: `${p} ___ ${v.obj}.`, opts, ok: opts.indexOf(v.forms[p]) };
+      const opts = shuffleR([p, ...st.wrong[p]], rnd).map(x => v.forms[x]), it = { t: 'fill', ask: 'pickVerb', q: `${p} ___ ${v.obj}.`, opts, ok: opts.indexOf(v.forms[p]), icon: v.icon, masdar: v.masdar };
       if (write) {
         const missed = await writeItem(s, st, it, head(L.tableW) + grid(), true);
         if (missed) { addMiss(r, s.t, damiCard(st, it)); save(); }

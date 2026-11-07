@@ -3328,6 +3328,9 @@ body[data-profile="mama"] .deck-apps { display: none; }
 .dz-wans { position: absolute; top: 10px; left: 12px; display: flex; flex-direction: column; align-items: center; padding: 6px 16px; border-radius: 16px; background: var(--g1); box-shadow: 0 0 0 3px var(--g4); pointer-events: none; }
 .dz-wans small { font: 700 14px var(--apfont); color: var(--g6); } .dz-wans b { font: 800 40px var(--apfont); color: var(--g9); }
 .dz-blank.wide { min-width: 3.2em; }
+/* which verb to write (her request, 7 Nov 2026: she did not know which verb was meant): its picture and its name (المصدر) */
+.dz-vhint { display: inline-flex; align-items: center; gap: 10px; margin: 2px auto 0; padding: 6px 22px 6px 26px; border-radius: 99px; background: #FFF6DA; box-shadow: 0 0 0 3px #F2D27A; font: 800 clamp(24px, 3vw, 30px) var(--apfont); color: #6B4A00; }
+.dz-vhint span { font-size: 1.3em; line-height: 1; }
 .dz-tag { margin: 0; padding: 6px 22px; border-radius: 99px; background: var(--g6); color: #fff; font: 800 clamp(20px, 2.4vw, 26px) var(--apfont); animation: dzIn .35s ease-out; }
 /* the trip's clay icons (ChatGPT) */
 .dz-steps i .dz-uic { width: 34px; height: 34px; object-fit: contain; display: block; }
