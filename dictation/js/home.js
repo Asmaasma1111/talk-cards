@@ -13,7 +13,7 @@ function render(app) {
   KD.ui.holdToOpen(gear, 2000, () => { location.hash = '#parent'; });
 
   const book = el('button', { class: 'home-book', 'aria-label': 'كرّاسي', onclick: () => { KD.sound.play('page'); location.hash = '#book'; } },
-    B && cur ? B.coverEl(cur) : pic('cover_pink.png', 'cover-art'));
+    B && cur ? B.coverEl(cur) : pic('cover_purple.png', 'cover-art'));
   const start = el('button', { class: 'btn btn-start', onclick: () => { KD.sound.play('tap'); location.hash = '#session'; } }, icon('pencil'), 'ابدئي');
   const shelf = el('button', { class: 'home-shelf', 'aria-label': 'كراريسي', onclick: () => { location.hash = '#shelf'; } },
     B ? B.shelfStrip() : pic('shelf.png', 'shelf-art'));

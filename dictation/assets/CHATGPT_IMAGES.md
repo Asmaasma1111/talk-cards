@@ -28,8 +28,9 @@ Three sizes are used, because they are the sizes ChatGPT makes:
 **1. dict_tile.png**: square 1024 x 1024, transparent background.
 A real Algerian school copybook (a كرّاس like the ones sold in every Algerian school bookshop): a thin, soft-cover
 exercise book about 17 x 22 cm, held by two metal staples on its spine, lying closed and slightly tilted. Its printed
-glossy cover is wrapped, as Algerian pupils do, in a transparent soft-pink plastic cover protector whose edges fold over
-the cover, with gentle shiny reflections on the plastic. Stuck on the front is a white school name label (étiquette) with
+glossy cover is wrapped, as Algerian pupils do, in a transparent soft-purple plastic cover protector whose edges fold
+over the cover, with gentle shiny reflections on the plastic. Under the plastic the cover is printed with darker purple
+flowers. Stuck on the front is a white school name label (étiquette) with
 softly rounded corners, a thin decorative coloured border and three empty dotted lines (no words on it). A classic
 clear-barrelled blue ballpoint pen with a blue cap lies across one corner. Not a hardback, not a notebook with an
 elastic band, not a sketchbook.
@@ -47,14 +48,14 @@ it is centred left to right and takes the middle 60% of the width, its top edge 
 bottom edge at 58%. Keep the inside of the label completely empty, with no lines and no words (her handwritten name goes
 there).
 
-**2. cover_pink.png**: a soft pink plastic cover protector over a printed cover with tiny white stars.
+**2. cover_purple.png**: a soft purple plastic cover protector over a cover printed with darker purple flowers.
 **3. cover_yellow.png**: a warm yellow plastic cover protector over a printed cover with little green leaves.
 **4. cover_green.png**: a fresh green plastic cover protector over a printed cover with small white dots.
 
 ## Her shelf كراريسي
 
-**5. shelf_pink.png**: portrait 1024 x 1536, transparent background.
-The pink copybook from image 2, closed and standing upright on its bottom edge, turned a little so we see its front
+**5. shelf_purple.png**: portrait 1024 x 1536, transparent background.
+The purple copybook from image 2, closed and standing upright on its bottom edge, turned a little so we see its front
 cover at a steep angle and its thin stapled spine (a thin soft-cover exercise book, not a thick book). It fills most of
 the image height, and its bottom edge touches the bottom edge of the image.
 **6. shelf_yellow.png**: the same for the yellow copybook.
@@ -95,7 +96,7 @@ bottom left to the top right, with its cap clipped on the end, shown large and s
 ## A full copybook
 
 **18. copybook_done.png**: square 1024 x 1024, transparent background.
-The Algerian copybook from image 1 (thin, stapled, in its pink plastic cover protector with the white label), closed and tied with a pink ribbon in a bow, with a small gold rosette on the front, surrounded by a few soft
+The Algerian copybook from image 1 (thin, stapled, in its purple plastic cover protector with the white label), closed and tied with a purple ribbon in a bow, with a small gold rosette on the front, surrounded by a few soft
 sparkles and two or three floating confetti pieces in pink, yellow and green.
 
 ## Each skill's opening page (no letters in any of them)

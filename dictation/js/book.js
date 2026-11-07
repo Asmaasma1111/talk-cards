@@ -8,7 +8,7 @@
 (function (KD) {
 'use strict';
 const { el, icon, pic } = KD.ui;
-const PAGES = 30, COLOURS = ['pink', 'yellow', 'green'];
+const PAGES = 30, COLOURS = ['purple', 'yellow', 'green'];
 const B = () => KD.store.get().book;
 
 const current = () => { const b = B().books; const last = b[b.length - 1]; return last && !last.full ? last : null; };
