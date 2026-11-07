@@ -32,6 +32,13 @@ def main():
         name = os.path.basename(f)[3:-4]
         im = Image.open(f)
         im.load()
+        if name == 'shelf' and im.mode == 'RGBA':
+            # the app stands the copybooks on the bottom fifth: crop to the board and put it along the bottom edge
+            box = im.getchannel('A').point(lambda v: 255 if v > 20 else 0).getbbox()
+            board = im.crop(box)
+            canvas = Image.new('RGBA', (board.width, board.height * 5), (0, 0, 0, 0))
+            canvas.paste(board, (0, canvas.height - board.height))
+            im = canvas
         n = target(name)
         if max(im.size) > n:
             im.thumbnail((n, n), Image.LANCZOS)

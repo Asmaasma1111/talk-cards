@@ -1,10 +1,14 @@
 {
  "files": [
   "dictation/",
+  "dictation/assets/basket_pink.png",
   "dictation/assets/cover_green.png",
   "dictation/assets/cover_purple.png",
   "dictation/assets/cover_yellow.png",
   "dictation/assets/dict_tile.png",
+  "dictation/assets/paper.png",
+  "dictation/assets/shelf.png",
+  "dictation/assets/shelf_green.png",
   "dictation/assets/shelf_purple.png",
   "dictation/assets/shelf_yellow.png",
   "dictation/css/dict.css",
