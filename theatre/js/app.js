@@ -37,17 +37,23 @@ function home() {
   const go = el('button', { class: 'btn btn-start', type: 'button' }, d.i ? 'أكملي' : 'ابدئي');
   const doneMsg = el('p', { class: 'home-done' }, 'أحسنتِ! انتهت قصص اليوم.');
   const stage = el('div', { class: 'theatre' },
-    el('div', { class: 'curtain l' }), el('div', { class: 'curtain r' }), el('div', { class: 'valance' }),
-    el('div', { class: 'spot' }),
-    el('div', { class: 'stage-floor' }),
-    el('h1', { class: 'home-title' }, 'مسرح المسائل'));
+    el('div', { class: 'wall-stars' }), el('div', { class: 'beam l' }), el('div', { class: 'beam r' }), el('div', { class: 'spot' }),
+    el('div', { class: 'stage-floor' }), el('div', { class: 'lights' }),
+    el('h1', { class: 'home-title' }, 'مسرح المسائل'),
+    el('div', { class: 'curtain l' }), el('div', { class: 'curtain r' }), el('div', { class: 'tie l' }), el('div', { class: 'tie r' }),
+    el('div', { class: 'valance' }), ...[8, 33, 58, 83].map(x => el('span', { class: 'tassel', style: { left: x + '%', animationDelay: (-x / 30) + 's' } })));
+  // the ChatGPT clay stage and curtain, once their pictures are in assets/stage/
+  if (U.hasPic('stage/stage.webp')) {
+    stage.classList.add('pic'); stage.style.setProperty('--stage', 'url(assets/stage/stage.webp)');
+    if (U.hasPic('stage/curtain.webp')) stage.style.setProperty('--curtain', 'url(assets/stage/curtain.webp)'); else stage.classList.remove('pic');
+  }
   const body = total ? (left > 0 ? go : doneMsg) : el('p', { class: 'home-done' }, 'قصص جديدة قريبًا.');
   const screen = el('section', { class: 'screen home', dir: 'rtl' },
     el('header', { class: 'h-top' }, back, el('span', { class: 'stars' }, '⭐ ', C.ar(st.stars || 0)), mute, gear),
     stage, el('div', { class: 'home-foot' }, total ? dots : null, body));
   app().textContent = ''; app().append(screen);
-  requestAnimationFrame(() => stage.classList.add('open'));
-  go.addEventListener('click', () => { U.sound('curtain'); next(); });
+  setTimeout(() => { stage.classList.add('open'); U.sound('curtain'); }, 450);
+  go.addEventListener('click', () => { U.sound('curtain'); stage.classList.add('closing'); setTimeout(next, 750); });
   mute.addEventListener('click', () => { st.muted = !st.muted; S.save(); U.stop(); home(); });
   U.holdToOpen(gear, 2000, parent);
 }
