@@ -63,17 +63,17 @@ module.exports = function (KD, DATA, { ok, eq }) {
   /* ---------- a session: never twice in a row, at most 3 views ---------- */
   {
     const m = E.blank();
-    const seen = run(m, T0, item => item.step !== 'learn' || Math.random() < 0.3);
+    const r1 = rng(5), seen = run(m, T0, item => item.step !== 'learn' || r1() < 0.3);
     // her first session has only the first set: a card can follow itself only when nothing else is learned yet
     let twice = 0; for (let i = 1; i < seen.length; i++) if (seen[i].id === seen[i - 1].id) twice++;
     const m5 = E.blank(); run(m5, T0, () => true); run(m5, day(1), () => true);
-    const seen2 = run(m5, day(2), item => item.step !== 'learn' || Math.random() < 0.2);
+    const r2 = rng(6), seen2 = run(m5, day(2), item => item.step !== 'learn' || r2() < 0.2);
     let twice2 = 0; for (let i = 1; i < seen2.length; i++) if (seen2[i].id === seen2[i - 1].id) twice2++;
     eq(twice2, 0, 'never the same card twice in a row (once she has learned cards)');
     const q = [{ id: 'S1-CH1', step: 'relearn' }];
     const nx = E.next(q, 'S1-CH1', m5, day(2), rng(9));
     ok(nx.id !== 'S1-CH1' && nx.step === 'warm', 'the last card left after itself: a learned card comes between');
-    const views = {}; seen.forEach(x => { views[x.id] = (views[x.id] || 0) + 1; });
+    const views = {}; seen.filter(x => x.step !== 'warm').forEach(x => { views[x.id] = (views[x.id] || 0) + 1; });   // a warm card in between is not one of its views
     ok(Object.values(views).every(n => n <= 3 + 1), 'a card is shown at most 3 times after its show step');
   }
 

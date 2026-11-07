@@ -6,6 +6,15 @@
   "dictation/files.json",
   "dictation/index.html",
   "dictation/js/app.js",
-  "dictation/js/tashkeel.js"
+  "dictation/js/cards.js",
+  "dictation/js/engine.js",
+  "dictation/js/home.js",
+  "dictation/js/pad.js",
+  "dictation/js/session.js",
+  "dictation/js/sound.js",
+  "dictation/js/store.js",
+  "dictation/js/tashkeel.js",
+  "dictation/js/ui.js",
+  "dictation/js/voice.js"
  ]
 }
