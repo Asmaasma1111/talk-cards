@@ -804,7 +804,29 @@ function mount(api) {
     bs.forEach(b => b.addEventListener('click', () => { api.SFX.init(); bs.forEach(x => { x.disabled = true; }); b.classList.add('picked'); ok(b); }, { once: true }));
   });
 
-  /* ---------- point and swipe: tap each letter left to right, then swipe under the word; the help ladder ---------- */
+  /* ---------- the reading line (her request, 7 Nov 2026): she draws a line from left to right under the word, from the
+     green dot to the star; the ink follows her finger, forwards only. Her teacher stands beside it: waves, points at the
+     line when it is her turn, thinks with her when she is stuck, claps when she has read it. ---------- */
+  const lineRow = ready => `<div class="rd-lrow"><img class="rd-teach" id="rdTeach" src="assets/reads/teacher/${ready ? 'point' : 'wave'}.webp" alt="" draggable="false" onerror="this.remove()">
+    <div class="rd-swipe${ready ? ' ready' : ''}" id="rdSwipe"><svg class="rd-pen" aria-hidden="true"><path class="rd-pen-ink" d=""/></svg><i class="rd-pen-go"></i><i class="rd-pen-end">⭐</i><i class="rd-thumb" id="rdThumb"></i></div></div>`;
+  function teach(pose) {
+    const t = $('#rdTeach'); if (!t) return;
+    const src = `assets/reads/teacher/${pose}.webp`; if (t.getAttribute('src') === src) return;
+    t.setAttribute('src', src); t.classList.remove('pop'); void t.offsetWidth; t.classList.add('pop');
+  }
+  function pen(sw) {
+    const ink = sw.querySelector('.rd-pen-ink'); let pts = [];
+    const draw = () => ink.setAttribute('d', pts.length ? 'M' + pts.map(q => q.map(Math.round).join(' ')).join(' L') : '');
+    const at = e => { const R = sw.getBoundingClientRect(); return [Math.max(0, Math.min(R.width, e.clientX - R.left)), Math.max(14, Math.min(R.height - 14, e.clientY - R.top))]; };
+    return {
+      start(e) { pts = [at(e)]; sw.classList.add('drawing'); draw(); },
+      move(e) { const q = at(e), l = pts[pts.length - 1]; if (!l || q[0] > l[0]) { pts.push(q); draw(); } },
+      clear() { pts = []; sw.classList.remove('drawing'); draw(); },
+      finish() { const R = sw.getBoundingClientRect(), l = pts[pts.length - 1] || [0, R.height / 2]; pts.push([R.width - 34, l[1]]); draw(); }
+    };
+  }
+
+  /* ---------- point and swipe: tap each letter left to right, then draw the line under the word; the help ladder ---------- */
   let helpTimer = null;
   async function beatRead(s, words) {
     for (const w of words) { if (!alive(s)) return; if (D.words[w]) await readWord(s, w); }
@@ -816,7 +838,7 @@ function mount(api) {
     stage.innerHTML = `<div class="rd-read">${pre}
       <div class="rd-word${sight ? ' sight' : ''}" id="rdWord">${W.tiles.map((t, i) => `<button class="rd-tile${sight ? ' wide' : ''}" data-i="${i}">${esc(t)}</button>`).join('')}</div>
       <div class="rd-ltr" id="rdLtr" aria-hidden="true"><i></i></div>
-      <div class="rd-swipe" id="rdSwipe"><span class="rd-sw-hint">${'›'.repeat(3)}</span><i class="rd-thumb" id="rdThumb"></i></div>
+      ${lineRow(false)}
       <div class="rd-after" id="rdAfter"></div>
       <div class="rd-mama" id="rdMama" hidden lang="ar" dir="rtl"><span>👩‍🦰 اسألي ماما</span><button id="rdMamaOk">ساعدتني ماما ✓</button></div>
       <p class="rd-mvcue" id="rdMvCue" lang="ar" dir="rtl"></p>
@@ -825,9 +847,10 @@ function mount(api) {
         <div class="rd-mvbtns">${sight ? '' : '<button data-mv="skip">Skipped a sound</button><button data-mv="add">Added a sound</button><button data-mv="wrong">Wrong sound</button>'}
           <button data-mv="blend">Can't join her sounds</button>${sight || n < 3 ? '' : '<button data-mv="cv">Joins only the end (m… ap)</button>'}<button data-mv="close" aria-label="Close">✕</button></div>
         <p class="rd-mvline" id="rdMvLine">What happened? Tap it, then help her try again.</p></div></div>`;
-    const tiles = [...stage.querySelectorAll('.rd-tile')], sw = $('#rdSwipe'), thumb = $('#rdThumb');
+    const tiles = [...stage.querySelectorAll('.rd-tile')], sw = $('#rdSwipe'), thumb = $('#rdThumb'), ink = pen(sw);
     let next = sight || opts.quick ? n : 0, lv = 0, helped = false, finished = false;
-    if (next === n) $('#rdSwipe').classList.add('ready');
+    const ready = () => { sw.classList.add('ready'); teach('point'); };
+    if (next === n) ready();
     const ltr = () => { const a = $('#rdLtr'); a.classList.remove('go'); void a.offsetWidth; a.classList.add('go'); clearTimeout(a.t); a.t = setTimeout(() => a.classList.remove('go'), 1600); if (tiles[next]) { tiles[next].classList.remove('nudge'); void tiles[next].offsetWidth; tiles[next].classList.add('nudge'); } };
     const sweep = secs => tiles.forEach((t, i) => setTimeout(() => { t.classList.add('sing'); setTimeout(() => t.classList.remove('sing'), 380); }, (secs * 1000 / n) * i));
     return new Promise(done => {
@@ -835,9 +858,11 @@ function mount(api) {
       /* ---------- Mama's tutor moves (the book's troubleshooting): she taps what happened, the app does the move ---------- */
       let mv = null;
       const box = $('#rdMoves'), mvLine = $('#rdMvLine'), cue = $('#rdMvCue');
-      const restart = () => { next = sight || opts.quick ? n : 0; tiles.forEach(t => t.classList.remove('lit', 'nudge')); sw.classList.toggle('ready', next === n); };
+      const restart = () => { next = sight || opts.quick ? n : 0; tiles.forEach(t => t.classList.remove('lit', 'nudge')); sw.classList.toggle('ready', next === n); ink.clear(); teach(next === n ? 'point' : 'wave'); };
       const clearMove = () => { mv = null; stage.querySelectorAll('.rd-gap').forEach(g => g.remove()); };
       const settle = async ms => { await sleep(ms); if (finished) return; tiles.forEach(t => t.classList.remove('hl')); cue.textContent = ''; box.hidden = true; clearMove(); restart(); arm(); };
+      const tch = $('#rdTeach');          // Mama: hold the teacher 2 s for her moves
+      if (tch) { let ht = null; tch.addEventListener('pointerdown', () => { clearTimeout(ht); ht = setTimeout(() => $('#rdMamaB').click(), 2000); }); ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => tch.addEventListener(ev, () => clearTimeout(ht))); tch.addEventListener('contextmenu', e => e.preventDefault()); }
       $('#rdMamaB').addEventListener('click', () => { api.SFX.init(); clearMove(); box.hidden = !box.hidden; mvLine.textContent = 'What happened? Tap it, then help her try again.'; clearTimeout(helpTimer); if (box.hidden) arm(); });
       box.addEventListener('click', async e => {
         const b = e.target.closest('[data-mv]'); if (!b || finished) return;
@@ -879,7 +904,7 @@ function mount(api) {
       };
       async function stuck() {
         if (finished || s !== S) return;
-        helped = true;
+        helped = true; teach('think');
         if (lv === 0) {                                         // (a) the first sound (a sight word: the word itself)
           if (sight) { tiles[0].classList.add('nudge'); await sayWord(w); }
           else {
@@ -898,7 +923,7 @@ function mount(api) {
         if (mv === 'skip' || mv === 'wrong') { tutorLetter(i); return; }
         if (sight) { t.classList.add('lit'); sayWord(w); arm(); return; }
         if (opts.quick) { t.classList.add('lit'); sayLetter(W.says[i]); arm(); return; }
-        if (i === next) { t.classList.add('lit'); t.classList.remove('nudge'); sayLetter(W.says[i]); next++; if (next === n) sw.classList.add('ready'); }
+        if (i === next) { t.classList.add('lit'); t.classList.remove('nudge'); sayLetter(W.says[i]); next++; if (next === n) ready(); }
         else if (i < next) sayLetter(W.says[i]);
         else ltr();
         arm();
@@ -910,21 +935,21 @@ function mount(api) {
         if (next < n) { ltr(); arm(); return; }
         const R = rect(), p = (e.clientX - R.left) / R.width;
         if (p > 0.45) { ltr(); arm(); return; }                 // a swipe starts on the left
-        x0 = e.clientX; maxP = p; try { sw.setPointerCapture(e.pointerId); } catch (err) {} arm();
+        x0 = e.clientX; maxP = p; ink.start(e); try { sw.setPointerCapture(e.pointerId); } catch (err) {} arm();
       });
       sw.addEventListener('pointermove', e => {
         if (x0 == null || finished) return;
         const R = rect(), p = Math.max(0, Math.min(1, (e.clientX - R.left) / R.width));
-        maxP = Math.max(maxP, p); thumb.style.left = `${6 + p * 88}%`;
+        maxP = Math.max(maxP, p); thumb.style.left = `${6 + p * 88}%`; ink.move(e);
         const tx = e.clientX; tiles.forEach(t => { const b = t.getBoundingClientRect(); t.classList.toggle('swept', b.left + b.width / 2 < tx); });
         if (maxP >= 0.82) success();
       });
-      const up = () => { if (x0 == null || finished) return; x0 = null; thumb.style.left = ''; tiles.forEach(t => t.classList.remove('swept')); };
+      const up = () => { if (x0 == null || finished) return; x0 = null; thumb.style.left = ''; ink.clear(); tiles.forEach(t => t.classList.remove('swept')); };
       sw.addEventListener('pointerup', up); sw.addEventListener('pointercancel', up);
       $('#rdMamaOk').addEventListener('click', () => { $('#rdMama').hidden = true; success(); });
       async function success() {
         if (finished) return; finished = true; x0 = null; clearTimeout(helpTimer); $('#rdMama').hidden = true; box.hidden = true; clearMove();
-        sw.classList.add('done'); thumb.style.left = '94%'; tiles.forEach(t => t.classList.add('lit'));
+        sw.classList.add('done'); thumb.style.left = '94%'; ink.finish(); teach('clap'); tiles.forEach(t => t.classList.add('lit'));
         sweep(clipSecs('w-' + w)); await sayWord(w);
         if (s !== S) return;
         if (!opts.quiet) $('#rdAfter').innerHTML = W.sound ? '<span class="rd-sparkle">✨</span>' : picFor(w);
@@ -1166,7 +1191,7 @@ function mount(api) {
     if (s !== S) return;
     stage.innerHTML = `<div class="rd-read rd-sentence">${opts.page ? `<div class="rd-page">${esc(opts.page)}</div>` : ''}
       <div class="rd-line big">${toks.map(t => `<span class="rd-lw on">${esc(t)}</span>`).join(' ')}</div>
-      <div class="rd-swipe ready" id="rdSwipe"><span class="rd-sw-hint">›››</span><i class="rd-thumb" id="rdThumb"></i></div><div class="rd-after" id="rdAfter"></div></div>`;
+      ${lineRow(true)}<div class="rd-after" id="rdAfter"></div></div>`;
     await swipeOnce();
     if (s !== S) return;
     const ws = [...stage.querySelectorAll('.rd-lw')], secs = clipSecs('x-' + id), total = toks.reduce((a, t) => a + t.length + 2, 0);
@@ -1183,7 +1208,7 @@ function mount(api) {
   async function buildUp(s, toks, k, opts = {}) {
     stage.innerHTML = `<div class="rd-read rd-sentence">${opts.page ? `<div class="rd-page">${esc(opts.page)}</div>` : ''}
       <div class="rd-line big">${toks.map((t, i) => `<span class="rd-lw${i < k ? ' on' : ' hide'}">${esc(t)}</span>`).join(' ')}</div>
-      <div class="rd-swipe ready" id="rdSwipe"><span class="rd-sw-hint">›››</span><i class="rd-thumb" id="rdThumb"></i></div><p class="rd-sayit" lang="ar" dir="rtl">من البداية مرة أخرى ↩️</p></div>`;
+      ${lineRow(true)}<p class="rd-sayit" lang="ar" dir="rtl">من البداية مرة أخرى ↩️</p></div>`;
     await swipeOnce(); if (s !== S) return;
     const ws = [...stage.querySelectorAll('.rd-lw.on')];
     for (let i = 0; i < ws.length; i++) {
@@ -1194,16 +1219,16 @@ function mount(api) {
   }
   function swipeOnce() {    // a plain left-to-right swipe under a line
     return new Promise(ok => {
-      const sw = $('#rdSwipe'), th = $('#rdThumb'); let x0 = null, maxP = 0, fin = false;
+      const sw = $('#rdSwipe'), th = $('#rdThumb'), ink = pen(sw); let x0 = null, maxP = 0, fin = false;
       const nudge = setInterval(() => { if (fin) return clearInterval(nudge); const a = $('#rdLtr'); if (!a) { th.classList.remove('nudge'); void th.offsetWidth; th.classList.add('nudge'); } }, 6000);
-      sw.addEventListener('pointerdown', e => { const R = sw.getBoundingClientRect(), p = (e.clientX - R.left) / R.width; if (p > 0.45) return; x0 = e.clientX; maxP = p; try { sw.setPointerCapture(e.pointerId); } catch (err) {} });
+      sw.addEventListener('pointerdown', e => { const R = sw.getBoundingClientRect(), p = (e.clientX - R.left) / R.width; if (p > 0.45 || fin) return; x0 = e.clientX; maxP = p; ink.start(e); try { sw.setPointerCapture(e.pointerId); } catch (err) {} });
       sw.addEventListener('pointermove', e => {
         if (x0 == null || fin) return;
         const R = sw.getBoundingClientRect(), p = Math.max(0, Math.min(1, (e.clientX - R.left) / R.width));
-        maxP = Math.max(maxP, p); th.style.left = `${6 + p * 88}%`;
-        if (maxP >= 0.82) { fin = true; clearInterval(nudge); sw.classList.add('done'); th.style.left = '94%'; ok(); }
+        maxP = Math.max(maxP, p); th.style.left = `${6 + p * 88}%`; ink.move(e);
+        if (maxP >= 0.82) { fin = true; clearInterval(nudge); sw.classList.add('done'); th.style.left = '94%'; ink.finish(); teach('clap'); ok(); }
       });
-      const up = () => { if (!fin) { x0 = null; th.style.left = ''; } };
+      const up = () => { if (!fin) { x0 = null; th.style.left = ''; ink.clear(); } };
       sw.addEventListener('pointerup', up); sw.addEventListener('pointercancel', up);
     });
   }

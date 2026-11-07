@@ -2062,6 +2062,30 @@ body[data-profile="mama"] .deck-apps { display: none; }
 .rd-swipe { position: relative; width: min(620px, 74vw); height: 72px; border-radius: 99px; background: #F2ECF0; touch-action: none; opacity: .55; transition: opacity .2s, background .2s; }
 .rd-swipe.ready { opacity: 1; background: linear-gradient(90deg, #FFF0B8, #FFE3EE); box-shadow: inset 0 0 0 4px var(--ryel); }
 .rd-swipe.done { background: var(--rmint); box-shadow: inset 0 0 0 4px #8FE3BF; }
+/* the reading line (7 Nov 2026): she draws it from the green dot to the star; her teacher stands beside it */
+.rd-lrow { display: flex; align-items: flex-end; justify-content: center; gap: 10px; direction: ltr; }
+.rd-teach { --th: clamp(300px, 42vh, 440px); flex: none; height: var(--th); width: auto; margin: calc(150px - var(--th)) 0 -40px; position: relative; z-index: 0; -webkit-user-drag: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; filter: drop-shadow(0 6px 10px rgba(43, 35, 64, .12)); }
+.rd-teach.pop { animation: rdTeachPop .45s ease; }
+.rd-read .rd-mamab { display: none; }
+@media (orientation: portrait) { .rd-teach { --th: clamp(300px, 32vh, 400px); margin-top: -40px; } }   /* portrait has room: she stands below the word, never behind it */
+.rd-read .rd-word, .rd-read .rd-line, .rd-read .rd-page { position: relative; z-index: 2; }   /* long words and sentences stay in front of the teacher */   /* Mama's moves open by holding the teacher 2 s (her request: no teacher face at the bottom) */
+@keyframes rdTeachPop { 0% { transform: translateY(8px) scale(.94); } 60% { transform: translateY(-6px) scale(1.03); } 100% { transform: none; } }
+.rd-lrow .rd-swipe { width: min(540px, 60vw); height: 110px; border-radius: 30px; background: rgba(255, 255, 255, .7); box-shadow: inset 0 0 0 3px #EADDE4; }
+.rd-lrow .rd-swipe::before { content: ''; position: absolute; left: 34px; right: 34px; top: 50%; border-top: 6px dashed #D9C9E6; translate: 0 -50%; pointer-events: none; }
+.rd-lrow .rd-swipe.ready { background: #FFFDF5; box-shadow: inset 0 0 0 4px var(--ryel), 0 6px 18px rgba(242, 123, 168, .15); }
+.rd-lrow .rd-swipe.done { background: #F1FBF5; box-shadow: inset 0 0 0 4px #8FE3BF; }
+.rd-pen { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: 2; }
+.rd-pen-ink { fill: none; stroke: #9B5DE5; stroke-width: 16; stroke-linecap: round; stroke-linejoin: round; }
+.rd-swipe.done .rd-pen-ink { stroke: var(--rgreen); transition: stroke .3s; }
+.rd-pen-go { position: absolute; left: 34px; top: 50%; width: 34px; height: 34px; translate: -50% -50%; border-radius: 50%; background: var(--rgreen); box-shadow: 0 0 0 6px #fff, 0 3px 8px rgba(0, 0, 0, .15); pointer-events: none; z-index: 1; }
+.rd-pen-end { position: absolute; right: 34px; top: 50%; translate: 50% -50%; font-style: normal; font-size: 40px; line-height: 1; pointer-events: none; z-index: 1; }
+.rd-swipe:not(.ready) .rd-pen-go, .rd-swipe:not(.ready) .rd-pen-end { opacity: .35; }
+.rd-lrow .rd-swipe.ready .rd-pen-end { animation: rdStarPulse 1.4s ease-in-out infinite; }
+@keyframes rdStarPulse { 50% { transform: scale(1.18); } }
+.rd-lrow .rd-thumb { top: 50%; width: 30px; height: 30px; translate: -50% -50%; background: #9B5DE5; opacity: 0; box-shadow: 0 0 0 5px rgba(155, 93, 229, .25); z-index: 3; }
+.rd-lrow .rd-swipe.ready:not(.drawing):not(.done) .rd-thumb { opacity: .85; animation: rdPenDemo 2.2s ease-in-out infinite; }
+@keyframes rdPenDemo { 0% { left: 6%; opacity: 0; } 15% { opacity: .85; } 75% { left: 92%; opacity: .85; } 100% { left: 92%; opacity: 0; } }
+.rd-lrow .rd-swipe.drawing .rd-thumb, .rd-lrow .rd-swipe.done .rd-thumb { opacity: 0; animation: none; }
 .rd-sw-hint { position: absolute; inset: 0; display: grid; place-items: center; font: 800 44px/1 var(--read); letter-spacing: 12px; color: rgba(158, 47, 99, .3); pointer-events: none; }
 .rd-thumb { position: absolute; top: 8px; left: 6%; width: 56px; height: 56px; translate: -50% 0; border-radius: 50%; background: var(--rpink); box-shadow: 0 4px 12px rgba(242, 123, 168, .5); pointer-events: none; }
 .rd-swipe.ready .rd-thumb { animation: rdThumb 1.6s ease-in-out infinite; }
