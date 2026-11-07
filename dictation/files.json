@@ -12,6 +12,7 @@
   "dictation/js/home.js",
   "dictation/js/pad.js",
   "dictation/js/page.js",
+  "dictation/js/parent.js",
   "dictation/js/session.js",
   "dictation/js/sound.js",
   "dictation/js/sticker.js",
