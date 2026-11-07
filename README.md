@@ -95,6 +95,15 @@ Always use the Home Screen icon. The icon and a Safari tab keep separate progres
 - **Voice:** words and sentences in Kore (`gemini-3.8-flash-tts`) with a clean ending, by `scripts/reads_voice.py` (clips in `audio/rd/`, deck `reads` in `audio/voice.json`). Single sounds are built in, cut from those approved takes (`scripts/reads_cut_sounds.py`), so no "uh" follows a stop sound; Mama may record her own instead.
 - **Photos:** real photos (Pexels, free licence) by `scripts/reads_photos.py`; choices in `scripts/reads_photo_picks.json`, credits in `assets/reads/photos/CREDITS.md`.
 
+## كرّاس الإملاء (the dictation copybook)
+
+- Its own page in `dictation/`, opened from a tile on her entrance page. **Locked** until Mama turns on its switch in the parent area (`tc:maria:dictationOpen`); while locked the page sends her back.
+- **Content:** all eight skills in `dictation/data/skills.json` (full tashkeel, `|` marks the chunk breaks, `voiced` holds the vowelled text the voice reads for each prompt). `node scripts/build_dictation.js` builds `dictation/data/cards.json`, `dictation/audio/lines.json` and `dictation/files.json` (the list the service worker caches). Tests: `node scripts/test_dictation.js` and `node scripts/test_dictation_engine.js`.
+- **Code:** `dictation/js/`, one small file each: `tashkeel.js` and `engine.js` (the card engine, ported from the times tables), `store.js` (progress in `mariaDictation.v1`, her writing as small PNGs in the IndexedDB `mariaDictation`), `pad.js` (the Seyès writing space), `cards.js` (the nine card types), `session.js`, `book.js`, `page.js` and `sticker.js` (her copybook, its pages and the sticker of the day), `home.js`, `parent.js` (Mama's view: hold the gear for 2 seconds), `app.js` (the router). Styles in `dictation/css/dict.css`.
+- **Backup:** Mama's view saves and restores only the dictation part; the whole تطبيقات ماريا backup carries it too.
+- **Pictures:** all made by Asma in ChatGPT from `dictation/assets/CHATGPT_IMAGES.md`. Until a picture exists the app shows a soft box with its file name. Save new pictures in `dictation/assets/` and run the build script.
+- **Voice:** `dictation/audio/lines.md` (written by `node scripts/dictation_lines_md.js`) lists every line to record, for Mama to check first. `scripts/dictation_voice.py samples` made the three voice samples in `voice-work/dictation/samples/`. Recording waits for her choice; until then the iPad's own voice reads.
+
 ## Changing the cards
 
 - Maria's cards are in `sets.json`; add new sets at the end. Mama's are in `prepositions.json` (keep each card `id` unchanged, because progress is stored by `id`), then run the export script for the Prepositions app.

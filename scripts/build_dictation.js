@@ -15,10 +15,11 @@ const errors = [];
 const fail = (id, msg) => errors.push(`${id}: ${msg}`);
 
 /* ---------- speech: every line gets an id from its text, so a sentence used twice is recorded once ---------- */
+const VOICED = SRC.voiced || {};   // prompt and praise lines: the fully vowelled text the voice reads
 const LINES = new Map();   // id -> {text, kind, uses: [card ids]}
 function say(text, kind, use) {
   const t = String(text).trim(), id = T.clipId(t);
-  if (!LINES.has(id)) LINES.set(id, { id, text: t, kind, uses: [] });
+  if (!LINES.has(id)) LINES.set(id, Object.assign({ id, text: t, kind, uses: [] }, VOICED[t] ? { tts: VOICED[t] } : {}));
   if (use && !LINES.get(id).uses.includes(use)) LINES.get(id).uses.push(use);
   return id;
 }

@@ -1,6 +1,6 @@
 {
  "title": "كرّاس الإملاء",
- "note": "Source of all content (the brief, section 7). Full tashkeel everywhere; '|' marks the chunk breaks for dictation. 'r' = which rule line shows on the back (0 = the first). 'partial' maps an item id to the words that keep their full tashkeel when the skill is set to جزئي (empty for now). Build: node scripts/build_dictation.js",
+ "note": "Source of all content (the brief, section 7). Full tashkeel everywhere; '|' marks the chunk breaks for dictation. 'r' = which rule line shows on the back (0 = the first). 'partial' maps an item id to the words that keep their full tashkeel when the skill is set to جزئي (empty for now). Build: node scripts/build_dictation.js 'voiced': the fully vowelled text the voice reads for each prompt and praise line (the card shows the short form).",
  "prompts": {
   "choose": "أيّهما صحيح؟",
   "sort": "ضعي كلّ كلمة في سلّتها.",
@@ -29,6 +29,28 @@
   "أهلًا يا ماريا، كرّاسكِ ينتظركِ."
  ],
  "end": "انتهى إملاء اليوم. اختاري ملصقكِ!",
+ "voiced": {
+  "أيّهما صحيح؟": "أَيُّهُمَا صَحِيحٌ؟",
+  "ضعي كلّ كلمة في سلّتها.": "ضَعِي كُلَّ كَلِمَةٍ فِي سَلَّتِهَا.",
+  "اكتبي الحرف الناقص.": "اُكْتُبِي الْحَرْفَ النَّاقِصَ.",
+  "الكلمة الحمراء: صحيحة أم خطأ؟": "الْكَلِمَةُ الْحَمْرَاءُ: صَحِيحَةٌ أَمْ خَطَأٌ؟",
+  "اكتبيها صحيحة.": "اُكْتُبِيهَا صَحِيحَةً.",
+  "اسمعي، ثم اكتبي.": "اِسْمَعِي، ثُمَّ اكْتُبِي.",
+  "اسمعي النصّ، ثم اكتبي.": "اِسْمَعِي النَّصَّ، ثُمَّ اكْتُبِي.",
+  "انظري، اقرئي، غطّي، اكتبي، تأكّدي.": "اُنْظُرِي، اِقْرَئِي، غَطِّي، اُكْتُبِي، تَأَكَّدِي.",
+  "هل كتبتِها صحيحة؟": "هَلْ كَتَبْتِهَا صَحِيحَةً؟",
+  "هل كتبتِه صحيحًا؟": "هَلْ كَتَبْتِهِ صَحِيحًا؟",
+  "لا بأس، انظري جيّدًا.": "لَا بَأْسَ، اُنْظُرِي جَيِّدًا.",
+  "الكلمات الحمراء: صحيحة أم خطأ؟": "الْكَلِمَاتُ الْحَمْرَاءُ: صَحِيحَةٌ أَمْ خَطَأٌ؟",
+  "أحسنتِ يا ماريا!": "أَحْسَنْتِ يَا مَارْيَا!",
+  "رائع!": "رَائِعٌ!",
+  "خطّكِ جميل!": "خَطُّكِ جَمِيلٌ!",
+  "ممتاز!": "مُمْتَازٌ!",
+  "إملاء بلا أخطاء!": "إِمْلَاءٌ بِلَا أَخْطَاءٍ!",
+  "هيّا إلى الإملاء!": "هَيَّا إِلَى الْإِمْلَاءِ!",
+  "أهلًا يا ماريا، كرّاسكِ ينتظركِ.": "أَهْلًا يَا مَارْيَا، كُرَّاسُكِ يَنْتَظِرُكِ.",
+  "انتهى إملاء اليوم. اختاري ملصقكِ!": "اِنْتَهَى إِمْلَاءُ الْيَوْمِ. اِخْتَارِي مُلْصَقَكِ!"
+ },
  "skills": [
   {
    "id": "S1",
