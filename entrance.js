@@ -43,7 +43,10 @@ function mount(api) {
     <button class="ap-tile t-studio" data-app="studio"><span class="ap-art"><img src="assets/apps/studio.webp" alt=""></span><span class="ap-name">مختبر ماريا للمال</span><span class="ap-en">أكسب وأدّخر وأعطي</span><span class="ap-state" id="apStudio"></span></button>
     <button class="ap-tile t-dict" data-app="dict"><span class="ap-art"><img src="dictation/assets/dict_tile.png" alt=""></span><span class="ap-name">كرّاس الإملاء</span><span class="ap-en">إملاء كلّ يوم</span><span class="ap-state" id="apDict"></span></button>
     <button class="ap-tile t-theatre" data-app="theatre"><span class="ap-art"><img src="theatre/assets/theatre_tile.png" alt="" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'ap-emo',textContent:'🎭'}))"></span><span class="ap-name">مسرح المسائل</span><span class="ap-en">قصّة وحساب</span><span class="ap-state" id="apTheatre"></span></button>
+    <button class="ap-tile t-locked" id="apLocked" hidden><span class="ap-art ap-stack" id="apLockArt"></span><span class="ap-name">تطبيقات مقفلة</span><span class="ap-state" id="apLockN"></span></button>
   </div>
+  <!-- the apps Mama has not opened yet wait in one tile, so the page does not look like a long list of waiting apps (her request, 7 Nov 2026) -->
+  <div class="ap-lockbox" id="apLockBox" hidden><div class="ap-lockcard"><button class="ap-lockclose" id="apLockClose" aria-label="إغلاق">✕</button><h2 class="ap-locktitle">🔒 تطبيقات مقفلة</h2><div class="ap-lockgrid" id="apLockGrid"></div></div></div>
   <!-- backup and restore: one small grey line in English at the foot, for Mama (her request, 23 Oct 2026: Maria was tapping the big buttons) -->
   <div class="ap-foot" lang="en" dir="ltr">Designed by Dr Asma Khattala<span class="ap-sep">·</span><button class="ap-footlink" id="apBackup">Back up</button><span class="ap-sep">·</span><label class="ap-footlink">Restore<input type="file" id="apRestore" accept="application/json,.json" hidden></label></div>
   <input type="file" id="apFile" accept="image/*" hidden>
@@ -125,7 +128,16 @@ function mount(api) {
     state($('#apLib'), s.lib.done, s.lib.done ? 'قرأتِ قصّة اليوم' : s.lib.open ? 'قصّة اليوم مفتوحة' : 'قصّة اليوم تنتظركِ');
     const keys = ['talk', 'math', 'lib'].concat(s.reads ? ['reads'] : [], s.cbox ? ['cbox'] : [], s.dz ? ['dz'] : []);
     $('#apps .t-reads').hidden = !s.reads; $('#apps .t-cbox').hidden = !s.cbox; $('#apps .t-dz').hidden = !s.dz;
-    const tiles = keys.length + 3;   // + the studio, dictation and theatre tiles (not in the day's dots); 8 tiles use the 4-a-row layout of 7
+    // the studio, dictation and theatre tiles (not in the day's dots): open ones stay on the page, locked ones go into the «تطبيقات مقفلة» tile
+    const later = [['.t-studio', studioOpen()], ['.t-dict', dictOpen()], ['.t-theatre', theatreOpen()]];
+    const grid = $('#apps .ap-tiles'), folder = $('#apLocked'), shut = later.filter(([, o]) => !o).map(([c]) => c);
+    later.forEach(([c, o]) => { const el = $('#apps ' + c); if (o) grid.insertBefore(el, folder); else $('#apLockGrid').appendChild(el); });
+    folder.hidden = !shut.length;
+    $('#apLockArt').innerHTML = shut.map(c => { const a = $('#apLockGrid ' + c + ' .ap-art'); return `<span>${a ? a.innerHTML : ''}</span>`; }).join('') + '<b class="ap-lockpin">🔒</b>';
+    $('#apLockArt').dataset.n = shut.length;
+    $('#apLockN').textContent = shut.length === 1 ? 'تطبيق واحد' : shut.length === 2 ? 'تطبيقان' : `${AR(shut.length)} تطبيقات`;
+    if (!shut.length) $('#apLockBox').hidden = true;
+    const tiles = keys.length + (3 - shut.length) + (shut.length ? 1 : 0);   // 8 tiles use the 4-a-row layout of 7
     $('#apps .ap-tiles').classList.toggle('four', tiles === 4); $('#apps .ap-tiles').classList.toggle('five', tiles === 5); $('#apps .ap-tiles').classList.toggle('six', tiles === 6); $('#apps .ap-tiles').classList.toggle('seven', tiles >= 7); $('#apps .ap-tiles').classList.toggle('nine', tiles >= 9);
     state($('#apStudio'), false, studioText());
     $('#apps .t-studio').classList.toggle('locked', !studioOpen());
@@ -144,6 +156,8 @@ function mount(api) {
     api.show('apps');
   }
 
+  $('#apLocked').addEventListener('click', () => { api.SFX.init(); $('#apLockBox').hidden = false; });
+  $('#apLockBox').addEventListener('click', e => { if (e.target.id === 'apLockBox' || e.target.closest('#apLockClose')) $('#apLockBox').hidden = true; });
   $('#apps').addEventListener('click', e => {
     const t = e.target.closest('[data-app]'); if (!t) return;
     api.SFX.init();

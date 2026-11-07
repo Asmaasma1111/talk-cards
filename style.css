@@ -3478,3 +3478,28 @@ span.lab-whole { font-size: 120px; line-height: 1; }
   .ap-tiles.nine .ap-name { font-size: clamp(18px, 2vw, 24px); }
   .ap-tiles.nine .ap-state { font-size: 14px; padding: 3px 10px; margin-top: 5px; }
 }
+
+/* ---------- «تطبيقات مقفلة»: the apps Mama has not opened yet, in one tile that opens a box (7 Nov 2026) ---------- */
+.t-locked { background: linear-gradient(170deg, #EEEAF3 0%, #FFFFFF 70%); }
+.ap-stack { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 6%; padding: 6%; border-radius: 28%;
+  background: rgba(255, 255, 255, .7); box-shadow: inset 0 0 0 3px rgba(184, 146, 242, .25); animation: none; }
+.ap-stack[data-n="1"] { grid-template-columns: 1fr; padding: 14%; }
+.ap-stack > span { display: grid; place-items: center; min-width: 0; filter: grayscale(.35); opacity: .8; }
+.ap-stack > span img { width: 100%; height: 100%; object-fit: contain; filter: none; }
+.ap-stack .ap-emo { font-size: clamp(24px, 3.5vh, 40px); }
+.ap-stack .ap-ph { display: none; }
+.ap-lockpin { position: absolute; left: -6%; bottom: -6%; display: grid; place-items: center; width: 40%; aspect-ratio: 1; border-radius: 50%;
+  background: #fff; box-shadow: 0 4px 10px rgba(150, 60, 110, .2); font-size: clamp(18px, 2.6vh, 28px); }
+.ap-lockbox { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 20px; background: rgba(43, 35, 64, .35); }
+.ap-lockbox[hidden] { display: none; }
+.ap-lockcard { position: relative; width: min(860px, 100%); max-height: calc(100% - 20px); overflow: auto; padding: 26px 22px 30px; border-radius: 40px;
+  background: linear-gradient(170deg, #FFF3F8 0%, #FFFFFF 60%); box-shadow: 0 24px 60px rgba(43, 35, 64, .25); animation: apLockIn .25s ease; }
+@keyframes apLockIn { from { transform: scale(.94); opacity: 0; } to { transform: none; opacity: 1; } }
+.ap-locktitle { margin: 0 0 18px; text-align: center; font: 800 clamp(26px, 3.2vw, 34px) var(--apfont); color: var(--deep); }
+.ap-lockgrid { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(12px, 2vw, 22px); }
+.ap-lockgrid .ap-tile { width: clamp(150px, 24vw, 230px); padding: 12px 10px 14px; }
+.ap-lockgrid .ap-art { width: clamp(80px, 11vh, 120px); }
+.ap-lockgrid .ap-name { font-size: clamp(20px, 2.4vw, 26px); }
+.ap-lockgrid .ap-state { font-size: 15px; padding: 4px 12px; margin-top: 6px; }
+.ap-lockclose { position: absolute; top: 14px; left: 14px; width: 52px; height: 52px; border: 0; border-radius: 50%; cursor: pointer;
+  background: rgba(255, 255, 255, .95); box-shadow: 0 3px 10px rgba(150, 60, 110, .18); font: 800 22px var(--en); color: var(--deep); }
