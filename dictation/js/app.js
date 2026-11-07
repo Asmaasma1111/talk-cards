@@ -9,8 +9,6 @@ async function boot() {
   try {
     const [, , data] = await Promise.all([KD.ui.initAssets(), KD.voice.init(), fetch('data/cards.json').then(r => r.json())]);
     KD.data = data;
-    // the light paper texture under the Seyès lines, once Mama has made it in ChatGPT
-    if (KD.ui.hasPic('paper.png')) document.documentElement.style.setProperty('--paper-tex', "url('assets/paper.png')");
     KD.E = window.KDEngine.create(data, window.KDText.clipId);
     KD.skill = id => (Array.isArray(data.skills) ? data.skills.find(s => s.id === id) : data.skills[id]) || null;
     KD.store.load();

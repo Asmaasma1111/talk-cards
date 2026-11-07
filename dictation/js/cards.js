@@ -269,7 +269,7 @@ function dictate(c, S) {
   const steps = dictation(c);
   S.front.append(el('div', { class: 'listen' }, icon('ear', 'ear-big'), promptEl(key)));
   const tall = c.type === 'text';
-  const host = writingSpace(S, tall, c.type === 'sent' ? (c.long ? 7 : 6) : 4);
+  const host = writingSpace(S, tall, c.type === 'sent' ? (c.long ? 6 : 5) : 3);
   S.front.append(host);
   const pad = KD.pad.create(host, { tall, onChange: () => { done.disabled = pad.empty; } });
   S.tools(pad);

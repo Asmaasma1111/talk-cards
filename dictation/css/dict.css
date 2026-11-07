@@ -5,8 +5,8 @@
 
 :root {
   --pink: #F27BA8; --pink-soft: #FFE1EC; --yellow: #F7C531; --yellow-soft: #FFF3C4; --green: #3FB571; --green-soft: #DDF4E5;
-  --ink: #1E4FB8; --plum: #3B2A4A; --paper: #FFFDF6; --red: #D93A3A; --orange: #F08A24; --line: #8F9BD6; --line-soft: #DCE0F4;
-  --margin: #E8837E; --paper-tex: none; --sq: 32px;
+  --ink: #1E4FB8; --plum: #3B2A4A; --paper: #FFFFFF; --red: #D93A3A; --orange: #F08A24; --line: #AEBBEA; --line-soft: #EEF0FA;
+  --margin: #E8837E; --sq: 42px;
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; height: 100%; background: #FFF6EA; color: var(--plum); font-family: 'Baloo Bhaijaan 2', system-ui, sans-serif; overscroll-behavior: none; }
@@ -25,11 +25,8 @@ button:disabled { opacity: .38; cursor: default; }
   background-color: var(--paper);
   background-image:
     linear-gradient(to left, transparent 44px, var(--margin) 44px, var(--margin) 46px, transparent 46px),
-    repeating-linear-gradient(to bottom, var(--line) 0 1.4px, transparent 1.4px var(--sq)),
-    repeating-linear-gradient(to bottom, var(--line-soft) 0 1px, transparent 1px calc(var(--sq) / 4)),
-    repeating-linear-gradient(to left, #E4E7F7 0 1px, transparent 1px var(--sq)),
-    var(--paper-tex);
-  background-size: auto, auto, auto, auto, cover;
+    repeating-linear-gradient(to bottom, var(--line) 0 1px, transparent 1px var(--sq)),
+    repeating-linear-gradient(to left, #F0F2FB 0 1px, transparent 1px var(--sq));
 }
 
 /* ---------- placeholders for the ChatGPT pictures ---------- */
@@ -75,8 +72,8 @@ img.pic { display: block; max-width: 100%; }
 .card:not(.flipped) .face.back { pointer-events: none; }
 .prompt { font-size: 28px; font-weight: 700; color: var(--plum); background: rgba(255,255,255,.85); padding: 4px 18px; border-radius: 14px; }
 .big { font-size: clamp(64px, 9vw, 104px); line-height: 1.5; color: #23263A; text-align: center; direction: rtl; }
-.big.sentence { font-size: clamp(38px, 4.4vw, 52px); line-height: calc(var(--sq) * 2.25); }
-.big.para { font-size: clamp(30px, 3.4vw, 40px); line-height: calc(var(--sq) * 2); text-align: right; }
+.big.sentence { font-size: clamp(38px, 4.4vw, 52px); line-height: calc(var(--sq) * 2); }
+.big.para { font-size: clamp(30px, 3.4vw, 40px); line-height: calc(var(--sq) * 1.5); text-align: right; }
 .tg { color: #1565E8; font-weight: inherit; }
 b.red { color: var(--red); font-weight: inherit; border-radius: 10px; padding: 0 4px; }
 b.red.focus { outline: 4px solid var(--yellow); outline-offset: 4px; }
@@ -97,9 +94,9 @@ b.red.said-no { box-shadow: inset 0 -5px 0 var(--pink-soft); }
 .pad { position: relative; overflow: hidden; touch-action: none; }
 /* inside a page, the writing space has the copybook lines but not a second red margin */
 .pad.seyes { background-image:
-    repeating-linear-gradient(to bottom, var(--line) 0 1.4px, transparent 1.4px var(--sq)),
-    repeating-linear-gradient(to bottom, var(--line-soft) 0 1px, transparent 1px calc(var(--sq) / 4)),
-    repeating-linear-gradient(to left, #E4E7F7 0 1px, transparent 1px var(--sq)); }
+    repeating-linear-gradient(to bottom, var(--line) 0 1px, transparent 1px var(--sq)),
+    repeating-linear-gradient(to bottom, transparent 0 calc(var(--sq) / 2), var(--line-soft) calc(var(--sq) / 2) calc(var(--sq) / 2 + 1px), transparent calc(var(--sq) / 2 + 1px) var(--sq)),
+    repeating-linear-gradient(to left, #F0F2FB 0 1px, transparent 1px var(--sq)); }
 .pad.tall { overflow-y: auto; flex: 1; min-height: 260px; touch-action: none; }
 .pad.tall.pencil { touch-action: pan-y; }
 .pad-sheet { position: relative; width: 100%; }
@@ -119,7 +116,6 @@ b.red.said-no { box-shadow: inset 0 -5px 0 var(--pink-soft); }
 .show-word { position: relative; padding: 0 30px; }
 .show-word .cover { position: absolute; inset: -6px; border-radius: 18px; background: var(--pink-soft); transform: scaleX(0); transform-origin: right; transition: transform .35s; }
 .show-word.covered .cover { transform: scaleX(1); }
-.is-show .face.front { background-color: #FFFBEF; }
 
 /* B. choose */
 .options { display: flex; gap: 34px; justify-content: center; flex-wrap: wrap; }
