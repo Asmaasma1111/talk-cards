@@ -70,6 +70,19 @@ ok('one by one: only the first topic at the start; the next opens after two good
 });
 
 
+ok('the bar to the next station agrees with the rule that opens it', () => {
+  const c = {}; assert.deepStrictEqual([M.toNext(c, 'x10').pct, M.toNext(c, 'x10').left, M.toNext(c, 'x10').byDay], [0, 2, true]);
+  M.addRound(c, 'x10', 7, 8, '2026-11-01'); M.addRound(c, 'x10', 8, 8, '2026-11-01');          // one day only
+  assert.strictEqual(M.toNext(c, 'x10').pct, 50); assert.strictEqual(M.mastered(c, 'x10'), false);
+  M.addRound(c, 'x10', 7, 8, '2026-11-02'); assert.strictEqual(M.toNext(c, 'x10').left, 0); assert.ok(M.mastered(c, 'x10'));
+  const d = {}; assert.strictEqual(M.toNext(d, 'double').left, 22);
+  let k = 0, day = 1; while (!M.mastered(d, 'double')) { M.addRound(d, 'double', 8, 8, `2026-11-${10 + (day++ % 2)}`); k++; assert.ok(k < 40); }
+  assert.strictEqual(k, 22); assert.strictEqual(M.toNext(d, 'double').left, 0); assert.strictEqual(M.toNext(d, 'double').pct, 100);
+  M.addRound(d, 'double', 3, 8, '2026-11-12'); assert.strictEqual(M.toNext(d, 'double').pct, 100);   // a weak round takes nothing away
+  const e = {}; for (let i = 0; i < 6; i++) M.addRound(e, 'double', 7, 8, '2026-11-03');       // the halves done: step 4
+  assert.strictEqual(e.double.level, 4); assert.strictEqual(M.toNext(e, 'double').left, 16); assert.strictEqual(M.toNext(e, 'double').pct, 27);
+});
+
 ok('halves and doubles: one skill at a time (halves first), small numbers first, two good rounds a step, all mixed at the end', () => {
   assert.strictEqual(M.maxLevel('double'), 14); assert.strictEqual(M.maxLevel('x10'), 3);
   const kinds = lv => new Set([1, 2, 3, 4, 5, 6].flatMap(s => M.round('double', lv, s).map(x => x.q.split(' ')[1])));

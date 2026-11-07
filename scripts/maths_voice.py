@@ -21,12 +21,13 @@ WORK = os.path.join(V.WORK, 'maths')
 PLAN = os.path.join(WORK, 'plan.json')
 OUT = os.path.join(V.AUDIO, 'mx')
 V.DECKS['maths'] = {'voice': 'Aoede', 'say_rate': 180,
-                    'style': 'a warm, kind Saudi woman teacher speaking clear Modern Standard Arabic to an eight-year-old girl; '
-                             'natural and human, cheerful, at a brisk easy pace, each line said once as a friendly question'}
-TABLES = [0, 1, 10, 2, 5, 3, 4, 9, 6, 7, 8]           # the teaching order in maths.js (table 0 from 30 Oct 2026)
-WORDS = ['صفر', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة', 'عشرة']
+                    'style': 'a calm woman teacher reading a list of sums in clear Modern Standard Arabic; a natural human voice, '
+                             'neutral and even, not cheerful and not dramatic, at a steady easy pace; each line said once, plainly; '
+                             'only the written words: no laughter, no um or ah, no sighs, no added words'}   # neutral: Mama, 7 Nov 2026
+TABLES = [0, 1, 10, 2, 5, 3, 4, 9, 6, 7, 8, 11, 12]   # the teaching order in maths.js (table 0 from 30 Oct 2026; 11 and 12 from 7 Nov)
+WORDS = ['صفر', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة', 'عشرة', 'أحد عشر', 'اثنا عشر']
 # what the voice reads: fully vowelled, so every letter is said clearly (without marks it said «عشرة» with a weak «ع»)
-VOWELLED = ['صِفْر', 'وَاحِد', 'اِثْنَان', 'ثَلَاثَة', 'أَرْبَعَة', 'خَمْسَة', 'سِتَّة', 'سَبْعَة', 'ثَمَانِيَة', 'تِسْعَة', 'عَشَرَة']
+VOWELLED = ['صِفْر', 'وَاحِد', 'اِثْنَان', 'ثَلَاثَة', 'أَرْبَعَة', 'خَمْسَة', 'سِتَّة', 'سَبْعَة', 'ثَمَانِيَة', 'تِسْعَة', 'عَشَرَة', 'أَحَدَ عَشَرَ', 'اِثْنَا عَشَرَ']
 BATCH = 25
 GAP = 1.0                                            # a silence this long separates two questions in a take
 
@@ -60,7 +61,8 @@ def cmd_record(a, only=None):
     todo = [f for f in facts() if fid(*f) in (only or set()) or (not only and fid(*f) not in have)]
     if not todo:
         V.finish(0, 'nothing to record')
-    chunks = [todo[i:i + BATCH] for i in range(0, len(todo), BATCH)][:a.max or None]
+    size = getattr(a, 'batch', 0) or BATCH
+    chunks = [todo[i:i + size] for i in range(0, len(todo), size)][:a.max or None]
     from google import genai
     client = genai.Client(api_key=V.api_key())
     n = max([int(k[1:]) for k in plan['batches']] + [0])
@@ -122,6 +124,8 @@ def cmd_split(a):
 
 
 ASK = 'Transcribe this short Arabic clip verbatim, in Arabic script, exactly as spoken. Reply with the words only, or "-" if silent.'
+CLEAN = ('Listen to this short Arabic clip. Besides the plain spoken words, is there any laugh, chuckle, um, ah, sigh, gasp, '
+         'hum, or other added sound? Reply with the single word CLEAN if there is none, otherwise name the sound.')
 NUMS = {'صفر': 0, 'واحد': 1, 'اثنان': 2, 'اثنين': 2, 'ثلاثه': 3, 'ثلاث': 3, 'اربعه': 4, 'اربع': 4, 'خمسه': 5, 'خمس': 5, 'سته': 6, 'ست': 6,
         'سبعه': 7, 'سبع': 7, 'ثمانيه': 8, 'ثمان': 8, 'تسعه': 9, 'تسع': 9, 'عشره': 10, 'عشر': 10}
 
@@ -130,6 +134,7 @@ def two_numbers(text):
     """The two numbers in what the checker heard: digits, or the number words (marks and letter shapes ignored)."""
     t = text.translate(str.maketrans('٠١٢٣٤٥٦٧٨٩', '0123456789'))
     t = re.sub('[\u064B-\u065F\u0670\u0640]', '', t).replace('أ', 'ا').replace('إ', 'ا').replace('ة', 'ه')
+    t = re.sub('احد عشره?', '11', t); t = re.sub('اثن[اي] عشره?', '12', t)
     out = []
     for w in re.findall(r'\d+|[\u0621-\u064A]+', t):
         if w.isdigit(): out.append(int(w))
@@ -147,6 +152,13 @@ def cmd_verify(a):
         heard = ear.hear(os.path.join(WORK, 'clips', f'{i}.wav'), ASK)
         n = two_numbers(heard)
         ok = len(n) == 2 and f'm{n[0]}x{n[1]}' == i
+        # 7 Nov 2026: a clip with an extra sound passed once («أوكيه؟ ٨×١٠»); now no other word, no long clip, no laugh or um
+        words = re.findall(r'[\u0621-\u064A]+|[A-Za-z]+', heard)
+        extra = [w for w in words if w not in ('في', 'فى') and re.sub('[\u0623\u0625]', 'ا', w).replace('ة', 'ه') not in NUMS
+                 and not re.match('^(احد|اثن[اي]|عشر|عشره|واحد|و.+)$', re.sub('[\u0623\u0625]', 'ا', w).replace('ة', 'ه'))]
+        sounds = ear.hear(os.path.join(WORK, 'clips', f'{i}.wav'), CLEAN)
+        c['sounds'] = sounds
+        ok = ok and not extra and c['seconds'] <= (3.1 if i[:3] in ('m11', 'm12') else 2.1) and sounds.strip().upper().startswith('CLEAN')
         c['heard'] = heard; c['ok'] = ok
         if not ok:
             bad.append(i)
@@ -183,7 +195,7 @@ def cmd_build(a):
 if __name__ == '__main__':
     p = argparse.ArgumentParser(); sub = p.add_subparsers(dest='cmd', required=True)
     sub.add_parser('lines')
-    r = sub.add_parser('record'); r.add_argument('--max', type=int, default=0)
+    r = sub.add_parser('record'); r.add_argument('--max', type=int, default=0); r.add_argument('--batch', type=int, default=0)
     sub.add_parser('split')
     v = sub.add_parser('verify'); v.add_argument('--redo', action='store_true'); v.add_argument('--all', action='store_true'); v.add_argument('--max', type=int, default=0)
     sub.add_parser('build')

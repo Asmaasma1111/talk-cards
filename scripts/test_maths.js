@@ -37,12 +37,16 @@ ok(Number.isNaN(C.parseSpoken('مرحبا')), 'no number in the words is NaN');
 ok(Number.isNaN(C.parseSpoken('')), 'nothing said is NaN');
 
 /* ---------- the facts, in teaching order ---------- */
-eq(C.FACTS.length, 110, '110 facts (table 0 included)');
-eq(new Set(C.FACTS.map(f => `${f.a}x${f.b}`)).size, 110, 'all different');
+eq(C.FACTS.length, 130, '130 facts (tables 0, 11 and 12 included)');
+eq(new Set(C.FACTS.map(f => `${f.a}x${f.b}`)).size, 130, 'all different');
 eq(C.FACTS.slice(0, 10).map(f => f.id), Array.from({ length: 10 }, (_, i) => `m0x${i + 1}`), 'table 0 first, ×1 to ×10');
 eq(C.FACTS.slice(0, 10).every(f => f.ans === 0), true, 'every answer in table 0 is 0');
 eq(C.FACTS.slice(10, 20).map(f => f.id), Array.from({ length: 10 }, (_, i) => `m1x${i + 1}`), 'then table 1');
-eq([...new Set(C.FACTS.map(f => f.table))], [0, 1, 10, 2, 5, 3, 4, 9, 6, 7, 8], 'table order');
+eq([...new Set(C.FACTS.map(f => f.table))], [0, 1, 10, 2, 5, 3, 4, 9, 6, 7, 8, 11, 12], 'table order');
+eq(C.FACT.m12x10.ans, 120, '12 × 10');
+eq(C.twinOf(C.FACT.m11x3), null, 'table 11 has no twin: 3 × 11 is not a fact');
+eq(C.twinOf(C.FACT.m3x7).id, 'm7x3', 'twins still work');
+eq([C.parseSpoken('مية وعشرين'), C.parseSpoken('مية وعشرة'), C.parseSpoken('تسعة وتسعين'), C.parseSpoken('اثنعش'), C.parseSpoken('احد عشر')], [120, 110, 99, 12, 11], 'spoken answers up to 120');
 ok(C.FACTS.every(f => f.ans === f.a * f.b), 'answers');
 eq(C.twinOf(C.FACT.m7x3).id, 'm3x7', 'twin of 7×3');
 eq(C.twinOf(C.FACT.m4x4), null, 'a square has no twin');
@@ -247,7 +251,7 @@ for (const [seed, skill, spd] of [[1, 0.75, 1], [2, 0.6, 2], [3, 0.85, 2], [4, 0
   eq(r.problems, [], `simulation ${seed}: no pacing problems`);
   ok(r.maxDistinct <= 10, `simulation ${seed}: at most 10 facts a session (got ${r.maxDistinct})`);
   ok(r.maxViews <= C.MAX_VIEWS, `simulation ${seed}: at most 3 looks at a card`);
-  console.log(`  learner ${seed} (skill ${skill}, ${spd}/day): ${r.open}/110 open, all open by ${r.lastOpen || '-'}, ${r.stickers}/11 stickers (first ${r.firstSticker || '-'}), sessions ${r.minSession}-${r.maxDistinct} facts`);
+  console.log(`  learner ${seed} (skill ${skill}, ${spd}/day): ${r.open}/${C.FACTS.length} open, all open by ${r.lastOpen || '-'}, ${r.stickers}/${C.TABLES.length} stickers (first ${r.firstSticker || '-'}), sessions ${r.minSession}-${r.maxDistinct} facts`);
 }
 
 console.log(`\n${passed} passed, ${failed} failed`);

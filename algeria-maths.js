@@ -446,13 +446,22 @@ function colSteps(a, b, op) {
 // rounds on two different days, the trip's own rule). A topic the trip has reached is open too, and Mama can open them all.
 const mastered = (c, id) => !!(c[id] && Array.isArray(c[id].good) && c[id].good.length >= 2
   && (maxLevel(id) <= 3 || c[id].level >= maxLevel(id) - 2));      // a topic with many steps: once she reaches «كلُّها معًا»
+// how far she is on the way to the next station (her request, 7 Nov 2026: "we want to see progress"): a good round is 7 of 8 or
+// more. A topic with many steps counts the good rounds up to «كلُّها معًا»; the others count two good days. Follows mastered().
+function toNext(c, id) {
+  const x = c[id] || {}, t = TOPICS.find(y => y.id === id) || {}, mx = maxLevel(id), days = Array.isArray(x.good) ? x.good.length : 0;
+  if (mx <= 3) { const done = Math.min(days, 2); return { done, left: 2 - done, need: 2, byDay: true, pct: Math.round(done * 50) }; }
+  const per = t.perLevel || 1, need = (mx - 3) * per, done = Math.min(need, ((x.level || 1) - 1) * per + (x.lvGood || 0));
+  const left = Math.max(need - done, 2 - days), byDay = need === done && left > 0;
+  return { done, left, need, byDay, pct: Math.round(100 * done / (done + left)) };
+}
 function openTopics(c, trip = [], all = false) {
   if (all) return TOPICS.map(t => t.id);
   const out = [];
   TOPICS.forEach((t, i) => { if (i === 0 || mastered(c, TOPICS[i - 1].id) || trip.includes(t.id) || (c[t.id] && c[t.id].rounds)) out.push(t.id); });
   return out;
 }
-const core = { TOPICS, round, maxLevel, addRound, mastered, openTopics, cleanCorner, cubeNet, NET_BAD, colSteps, rng, seedOf, AR };
+const core = { TOPICS, round, maxLevel, addRound, mastered, toNext, openTopics, cleanCorner, cubeNet, NET_BAD, colSteps, rng, seedOf, AR };
 
 /* =====================================================================================================
    The screens. ctx from algeria.js: api, state() (the trip's progress), save(), back() (the trip's home), say(id).
@@ -474,6 +483,17 @@ function mount(ctx) {
 
   const lessonsLeft = n => (n === 1 ? 'درسٌ واحد ينتظركِ' : n === 2 ? 'درسان ينتظرانكِ' : n <= 10 ? `${AR(n)} دروس تنتظركِ` : `${AR(n)} درسًا ينتظركِ`);
   const rounds = n => `${AR(n)} ${n === 1 ? 'جولة' : n === 2 ? 'جولتان' : n <= 10 ? 'جولات' : 'جولة'}`;
+  // the bar on the way to the next station: on the train's card, in the lesson and after every round
+  const goodLeft = p => p.byDay ? (p.left === 1 ? 'جولةٌ ناجحة واحدة في يومٍ جديد' : 'جولتان ناجحتان في يومين مختلفين')
+    : p.left === 1 ? 'جولةٌ ناجحة واحدة' : p.left === 2 ? 'جولتان ناجحتان' : p.left <= 10 ? `${AR(p.left)} جولات ناجحة` : `${AR(p.left)} جولةً ناجحة`;
+  const cheer = pct => (pct >= 75 ? 'اقتربتِ من المحطّة! 🎉' : pct >= 50 ? 'تجاوزتِ نصفَ الطريق! 🌟' : '');
+  const toNextBar = (c, id) => {
+    const p = core.toNext(c, id), i = TOPICS.findIndex(t => t.id === id), next = TOPICS[i + 1];
+    const to = next ? `إلى المحطّة ${AR(i + 2)}` : 'إلى آخر الرحلة';
+    return `<span class="tr-bar"><span class="tr-bar-top"><span>${to}</span><b>${AR(p.pct)}٪</b></span>
+      <span class="tr-bar-rail" role="progressbar" aria-valuenow="${p.pct}" aria-valuemin="0" aria-valuemax="100"><span class="tr-bar-fill" style="width:${Math.max(p.pct, 4)}%"></span></span>
+      <span class="tr-bar-txt">${p.left ? `${cheer(p.pct)} بقيت ${goodLeft(p)} (٧ من ٨ أو أكثر)` : 'وصلتِ! 🎉'}</span></span>`;
+  };
   /* the maths door (her choice, 23 Oct 2026): a train across Algeria, from the sea in the north to the Hoggar in the
      south, on a plain sky and a clear railway (her request, 26 Oct 2026: the panorama hid the stations); each lesson is a
      station on the rail, from right to left.
@@ -494,7 +514,7 @@ function mount(ctx) {
     el.innerHTML = `<div class="dz-top"><button class="quit" id="mcQuit" aria-label="الجزائر"><svg aria-hidden="true"><use href="#i-close"/></svg></button><h1 class="dz-ptitle">🚂 قطار الرياضيات</h1></div>
       <div class="tr-wrap"><div class="tr-scene"><div class="tr-track" aria-hidden="true"></div>${st}${train}</div></div>
       ${now ? `<button class="tr-now" data-t="${now.id}">${pic(now, 'mc-pic-ic')}<span class="tr-nowtxt"><small>المحطّة ${AR(ni + 1)} من ${AR(TOPICS.length)}</small><b>${esc(now.title)}</b>
-        <em>${x ? `${stars(x, now.id)} · ${rounds(x.rounds)}` : 'محطّتكِ الجديدة'}</em></span><span class="mc-go">انطلقي ←</span></button>` : '<p class="mc-left">🌟 وصل القطارُ إلى آخر محطّة!</p>'}
+        <em>${x ? `${stars(x, now.id)} · ${rounds(x.rounds)}` : 'محطّتكِ الجديدة'}</em>${toNextBar(c, now.id)}</span><span class="mc-go">انطلقي ←</span></button>` : '<p class="mc-left">🌟 وصل القطارُ إلى آخر محطّة!</p>'}
       ${done.length ? `<h2 class="mc-h">محطّاتٌ مررتُ بها</h2><div class="tr-donelist">${done.map(t => `<button class="tr-chip" data-t="${t.id}">${pic(t, 'mc-pic-h')} ${esc(t.title)} ✓</button>`).join('')}</div>` : ''}
       ${left ? `<p class="mc-left">🔒 ${stationsLeft(left)}</p>` : ''}`;
     $('#mcQuit').onclick = () => { api.SFX.init(); ctx.back(); };
@@ -584,7 +604,7 @@ function mount(ctx) {
         ${id === 'net' ? `<div class="mc-tools"><span class="mc-svgopt">${paperImg('net_cross')}<b>منشور مكعب ✓</b></span></div>` : ''}
         ${id === 'lines' ? `<div class="mc-tools"><span class="mc-svgopt">${paperImg('par')}<b>متوازيان</b></span><span class="mc-svgopt">${paperImg('perp')}<b>متعامدان</b></span></div>` : ''}
         ${id === 'midpoint' ? `<div class="mc-tools"><span class="mc-svgopt">${paperImg('seg_mid')}<b>المنتصف</b></span></div>` : ''}</div>
-        <p class="mc-lv">${maxLevel(id) > 3 ? `خطوتُكِ الآن: ${stepName(x, id)}` : `مستواكِ في هذا الدرس: ${AR(x ? x.level : 1)} من ٣`}</p>
+        <p class="mc-lv">${maxLevel(id) > 3 ? `خطوتُكِ الآن: ${stepName(x, id)}` : `مستواكِ في هذا الدرس: ${AR(x ? x.level : 1)} من ٣`}</p>${toNextBar(corner(), id)}
         <div class="dz-row"><button class="dz-big" id="mcGo">ابدئي التدريب ✏️</button></div></div>`;
     S = { lesson: id };
     $('#mcBack').onclick = () => { api.SFX.init(); S = null; if (ctx.stop) ctx.stop(); open(); };
@@ -613,7 +633,7 @@ function mount(ctx) {
     if (!live(s)) return;
     const res = addRound(corner(), id, s.right, items.length, api.today()); ctx.save();
     el.innerHTML = `<div class="dz-top"><span></span><h1 class="dz-ptitle">${pic(t, 'mc-pic-h')} ${esc(t.title)}</h1></div><div class="dz-pane"><div class="dz-result ok"><span class="dz-reic">${s.right >= 7 ? '🌟' : '✓'}</span>
-      <p>${AR(s.right)} من ${AR(items.length)}${res.up ? '<br>مستوى جديد! 🎉' : ''}</p></div>
+      <p>${AR(s.right)} من ${AR(items.length)}${res.up ? '<br>مستوى جديد! 🎉' : ''}</p>${toNextBar(corner(), id)}</div>
       <div class="dz-row"><button class="dz-btn soft" id="mcList">إلى الركن</button><button class="dz-big" id="mcAgain">جولة أخرى ✏️</button></div></div>`;
     if (s.right >= 7) api.SFX.good();
     $('#mcList').onclick = () => { api.SFX.init(); open(); };

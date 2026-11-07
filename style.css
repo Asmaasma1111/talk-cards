@@ -626,7 +626,7 @@ body[data-profile="mama"] .deck-math { display: none; }
 .mx-stat span { display: block; font-size: 18px; color: var(--ink-soft); }
 .flame { fill: #FF9F43; stroke: var(--ink); stroke-width: 1.7; stroke-linejoin: round; }
 .btn-start.mx-start { background: var(--gum); font-family: var(--mx); font-weight: 800; font-size: 60px; min-width: 300px; padding-bottom: 6px; }
-.mx-stickers { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; max-width: calc(11 * 58px + 10 * 12px); }
+.mx-stickers { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; max-width: calc(13 * 58px + 12 * 12px); }
 .mx-sticker {
   position: relative;
   width: 58px; height: 58px; padding: 0;
@@ -787,7 +787,7 @@ button.mx-sticker:active { transform: scale(.9); }
   .mx-stat-n { font-size: 32px; }
   .btn-start.mx-start { font-size: 48px; min-width: 240px; }
   .mx-sticker { width: 46px; height: 46px; font-size: 21px; }
-  .mx-stickers { gap: 9px; max-width: calc(6 * 46px + 5 * 9px); }
+  .mx-stickers { gap: 9px; max-width: calc(7 * 46px + 6 * 9px); }
   .mx-now { font-size: 18px; }
   .label.mx-res, .mx-twin { font-size: 21px; }
 }
@@ -3183,6 +3183,13 @@ body[data-profile="mama"] .deck-apps { display: none; }
 .tr-nowtxt small { font-size: 16px; font-weight: 800; color: #2F7FB8; }
 .tr-nowtxt b { font-size: clamp(22px, 2.6vw, 28px); }
 .tr-nowtxt em { font-style: normal; font-size: 15px; font-weight: 700; color: var(--g6); }
+/* the way to the next station (her request, 7 Nov 2026) */
+.tr-bar { display: block; width: min(100%, 560px); margin: 8px auto 0; text-align: right; font-family: var(--apfont); }
+.tr-bar-top { display: flex; justify-content: space-between; gap: 12px; font-size: 16px; font-weight: 800; color: var(--g8); }
+.tr-bar-top b { font-size: 18px; color: #2F7FB8; }
+.tr-bar-rail { display: block; height: 16px; margin: 4px 0; border-radius: 99px; background: #DCEBE2; overflow: hidden; }
+.tr-bar-fill { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--dzgold), #2FA36B); transition: width .6s ease; }
+.tr-bar-txt { display: block; font-size: 15px; font-weight: 700; color: var(--g6); }
 .tr-donelist { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; width: min(100%, 1060px); margin: 0 auto; }
 .tr-chip { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border: 0; border-radius: 99px; background: #fff; font: 800 17px var(--apfont); color: var(--g8); box-shadow: 0 3px 10px rgba(0, 98, 51, .12); }
 

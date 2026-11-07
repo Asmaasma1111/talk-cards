@@ -49,9 +49,10 @@ function parseSpoken(text) {
   return any ? total : NaN;
 }
 
-/* ---------- the 110 facts, in teaching order: tables 0, 1, 10, 2, 5, 3, 4, 9, 6, 7, 8; ×1 to ×10 in each ----------
-   (table 0 added 30 Oct 2026, Mama's request; first in the order, so it is the next new table she meets) */
-const TABLES = [0, 1, 10, 2, 5, 3, 4, 9, 6, 7, 8];
+/* ---------- the 130 facts, in teaching order: tables 0, 1, 10, 2, 5, 3, 4, 9, 6, 7, 8, 11, 12; ×1 to ×10 in each ----------
+   (table 0 added 30 Oct 2026, Mama's request; first in the order, so it is the next new table she meets;
+   tables 11 and 12 added 7 Nov 2026, Mama's request; last in the order, after the rest. 3 × 11 is not a fact, so they have no twin) */
+const TABLES = [0, 1, 10, 2, 5, 3, 4, 9, 6, 7, 8, 11, 12];
 const FACTS = [], FACT = {};
 TABLES.forEach(t => {
   for (let k = 1; k <= 10; k++) {
@@ -59,7 +60,7 @@ TABLES.forEach(t => {
     FACTS.push(f); FACT[f.id] = f;
   }
 });
-const twinOf = f => (f.a === f.b ? null : FACT[`m${f.b}x${f.a}`]);   // 7 × 3 and 3 × 7
+const twinOf = f => (f.a === f.b ? null : FACT[`m${f.b}x${f.a}`] || null);   // 7 × 3 and 3 × 7
 
 /* ---------- dates (same local calendar format as app.js) ---------- */
 const pad2 = n => String(n).padStart(2, '0');
@@ -627,7 +628,7 @@ function mount(api) {
     }
     for (let r = 0; r < f.a; r++) {
       const line = document.createElement('div');
-      line.className = 'mx-line' + (r === 4 && f.a > 5 ? ' five' : '');
+      line.className = 'mx-line' + ((r === 4 || r === 9) && f.a > r + 1 ? ' five' : '');
       line.style.setProperty('--r', r);
       const row = document.createElement('div'); row.className = 'mx-row';
       for (let k = 0; k < f.b; k++) {
@@ -699,7 +700,7 @@ function mount(api) {
     const W = q.clientWidth, H = Math.max(40, q.clientHeight - used - 4);
     const cols = f.a ? f.b : 1, rows = Math.max(1, f.a);           // ٠ × ٤ shows one empty plate
     const wc = cols + 0.35 * (cols - 1) + (cols > 5 ? 0.5 : 0) + 0.7 + (counted ? 2.8 : 0);
-    const hc = rows * 1.7 + 0.3 * (rows - 1) + (rows > 5 ? 0.4 : 0);
+    const hc = rows * 1.7 + 0.3 * (rows - 1) + (rows > 5 ? 0.4 : 0) + (rows > 10 ? 0.4 : 0);
     const d = Math.max(5, Math.min(rows * cols <= 4 ? 54 : 42, Math.floor(Math.min(W / wc, H / hc))));
     box.style.setProperty('--d', d + 'px');
   }
