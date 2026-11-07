@@ -26,27 +26,37 @@ Three sizes are used, because they are the sizes ChatGPT makes:
 ## The app's tile
 
 **1. dict_tile.png**: square 1024 x 1024, transparent background.
-An open Algerian school copybook lying slightly tilted, its pages ruled with fine blue squares and a thin red margin line
-down the right-hand side, a classic blue school pen resting across it, and a tiny pink bookmark ribbon. No writing on the
-pages.
+A real Algerian school copybook (a كرّاس like the ones sold in every Algerian school bookshop): a thin, soft-cover
+exercise book about 17 x 22 cm, held by two metal staples on its spine, lying closed and slightly tilted. Its printed
+glossy cover is wrapped, as Algerian pupils do, in a transparent soft-pink plastic cover protector whose edges fold over
+the cover, with gentle shiny reflections on the plastic. Stuck on the front is a white school name label (étiquette) with
+softly rounded corners, a thin decorative coloured border and three empty dotted lines (no words on it). A classic
+clear-barrelled blue ballpoint pen with a blue cap lies across one corner. Not a hardback, not a notebook with an
+elastic band, not a sketchbook.
 
 ## Her copybook covers (she chooses one colour)
 
-For all three: portrait 1024 x 1536, NOT transparent: the cover fills the whole image edge to edge, seen straight from the
-front, flat, no background around it. In the middle there is an empty white label with softly rounded corners: it is
-centred left to right and takes the middle 60% of the width, its top edge is at 34% of the image height and its bottom
-edge at 58% (her handwritten name goes there, so keep it completely empty). A thin cloth binding strip runs down the
-RIGHT edge (Arabic copybooks open from the right). A few small, simple decorations near the corners only.
+For all three: portrait 1024 x 1536, NOT transparent: the copybook's front fills the whole image edge to edge, seen
+straight from the front, flat, no background around it. It is the same Algerian school copybook as image 1: a thin
+soft-cover exercise book with a glossy printed cover, wrapped in a transparent coloured plastic cover protector (the
+colour below), with soft shiny reflections, and the plastic's folded edges just visible along the sides. The spine with
+its two metal staples runs down the RIGHT edge (Arabic copybooks open from the right). The printed cover under the
+plastic has a calm, simple pattern in the colour family below.
+In the middle there is the white school name label (étiquette) with softly rounded corners and a thin decorative border:
+it is centred left to right and takes the middle 60% of the width, its top edge is at 34% of the image height and its
+bottom edge at 58%. Keep the inside of the label completely empty, with no lines and no words (her handwritten name goes
+there).
 
-**2. cover_pink.png**: the cover in soft pink, with tiny white stars in two corners.
-**3. cover_yellow.png**: the cover in warm yellow, with two little green leaves in the corners.
-**4. cover_green.png**: the cover in fresh green, with small white dots in the corners.
+**2. cover_pink.png**: a soft pink plastic cover protector over a printed cover with tiny white stars.
+**3. cover_yellow.png**: a warm yellow plastic cover protector over a printed cover with little green leaves.
+**4. cover_green.png**: a fresh green plastic cover protector over a printed cover with small white dots.
 
 ## Her shelf كراريسي
 
 **5. shelf_pink.png**: portrait 1024 x 1536, transparent background.
-The pink copybook from image 2, closed and standing upright, seen from the binding side at a slight angle so its spine
-fills most of the height. The bottom of the copybook touches the bottom edge of the image.
+The pink copybook from image 2, closed and standing upright on its bottom edge, turned a little so we see its front
+cover at a steep angle and its thin stapled spine (a thin soft-cover exercise book, not a thick book). It fills most of
+the image height, and its bottom edge touches the bottom edge of the image.
 **6. shelf_yellow.png**: the same for the yellow copybook.
 **7. shelf_green.png**: the same for the green copybook.
 
@@ -85,7 +95,7 @@ bottom left to the top right, with its cap clipped on the end, shown large and s
 ## A full copybook
 
 **18. copybook_done.png**: square 1024 x 1024, transparent background.
-A closed copybook tied with a pink ribbon in a bow, with a small gold rosette on the front, surrounded by a few soft
+The Algerian copybook from image 1 (thin, stapled, in its pink plastic cover protector with the white label), closed and tied with a pink ribbon in a bow, with a small gold rosette on the front, surrounded by a few soft
 sparkles and two or three floating confetti pieces in pink, yellow and green.
 
 ## Each skill's opening page (no letters in any of them)
