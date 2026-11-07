@@ -47,6 +47,8 @@ def main():
         subprocess.run(['pngquant', '--force', '--skip-if-larger', '--quality', '70-92', '--speed', '1', '--output', out, out], check=False)
         print(f'{name}: {im.size[0]}x{im.size[1]} {im.mode}, {os.path.getsize(out) // 1024} KB')
         shutil.move(f, os.path.join(KEEP, os.path.basename(f)))
+    for f in glob.glob(os.path.join(SRC, 'dk-*-alt.png')):   # ChatGPT's second drafts: kept with the originals, not used
+        shutil.move(f, os.path.join(KEEP, os.path.basename(f)))
     print(f'{len(files)} pictures brought in')
 
 
