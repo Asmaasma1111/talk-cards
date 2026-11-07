@@ -45,3 +45,6 @@ _private/
 
 # the live build plan (docs/plan.html): for Mama only, never on the public site
 docs/
+
+# مسرح المسائل: the local test driver
+theatre/_*

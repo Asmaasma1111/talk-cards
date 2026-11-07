@@ -1290,9 +1290,12 @@ const studioRows = () => `
     <div class="p-group">
       <div class="p-row"><span>Maria's Money Lab<span class="sub" lang="ar" dir="rtl">مختبر ماريا للمال: مقفل حتى تفتحيه</span></span><button class="switch" role="switch" aria-checked="${lsGet(STUDIO_KEY) === '1'}" data-act="studio" aria-label="Maria's Money Lab open"></button></div>
       <div class="p-row"><span>Maria's Dictation Copybook<span class="sub" lang="ar" dir="rtl">كرّاس الإملاء: مقفل حتى تفتحيه</span></span><button class="switch" role="switch" aria-checked="${lsGet(DICT_KEY) === '1'}" data-act="dictation" aria-label="Maria's Dictation Copybook open"></button></div>
+      <div class="p-row"><span>Maria's Story Maths Theatre<span class="sub" lang="ar" dir="rtl">مسرح المسائل: مقفل حتى تفتحيه</span></span><button class="switch" role="switch" aria-checked="${lsGet(THEATRE_KEY) === '1'}" data-act="theatre" aria-label="Maria's Story Maths Theatre open"></button></div>
     </div>`;
 // كرّاس الإملاء (dictation/) is locked the same way until Mama opens it here
 const DICT_KEY = 'tc:maria:dictationOpen';
+// مسرح المسائل (theatre/) is locked the same way
+const THEATRE_KEY = 'tc:maria:theatreOpen';
 function openParent() { Speech.stop(); renderParent(); show('parent'); $('#parent').scrollTop = 0; }
 function onParentClick(e) {
   const b = e.target.closest('button'); if (!b) return;
@@ -1336,6 +1339,12 @@ function onParentClick(e) {
       toast(on ? "Maria's Dictation Copybook is open on her apps page." : "Maria's Dictation Copybook is locked again.");
       break;
     }
+    case 'theatre': {
+      const on = lsGet(THEATRE_KEY) !== '1';
+      lsSet(THEATRE_KEY, on ? '1' : '0'); b.setAttribute('aria-checked', String(on));
+      toast(on ? "Maria's Story Maths Theatre is open on her apps page." : "Maria's Story Maths Theatre is locked again.");
+      break;
+    }
     case 'sfx':
       s.sfx = !s.sfx; save(); b.setAttribute('aria-checked', String(s.sfx));
       if (s.sfx) { SFX.init(); SFX.good(); }
@@ -1373,9 +1382,10 @@ const DEVICE_DBS = [   // [database, stores to back up, every store the app crea
   ['curiosity-box', ['clips', 'photos'], ['clips', 'photos']],  // her questions (voice) and Mama's photos
   ['algeria-trip', ['clips', 'pages'], ['clips', 'pages']],      // her talks about the picture, her readings, the photos of her pages
   ['mariaStudio', ['pages'], ['pages']],                          // مختبر ماريا للمال: her copybook pages, photos, poster and pitch recording
-  ['mariaDictation', ['writing'], ['writing']]                    // كرّاس الإملاء: her handwriting answers (small PNGs)
+  ['mariaDictation', ['writing'], ['writing']],                   // كرّاس الإملاء: her handwriting answers (small PNGs)
+  ['mariaTheatre', ['pad'], ['pad']]                              // مسرح المسائل: her drawings beside each story
 ];
-const DEVICE_KEYS = k => k.startsWith('tc:maria:colour:') || ['tc:maria:libpin', 'tc:maria:studioSeen', 'tc:maria:studioOpen', 'tc:maria:dictationOpen', 'tc:last', 'tc:deck', 'mariaStudio.v1', 'mariaDictation.v1'].includes(k);   // mariaStudio.v1: مختبر ماريا للمال's progress; mariaDictation.v1: كرّاس الإملاء's
+const DEVICE_KEYS = k => k.startsWith('tc:maria:colour:') || ['tc:maria:libpin', 'tc:maria:studioSeen', 'tc:maria:studioOpen', 'tc:maria:dictationOpen', 'tc:maria:theatreOpen', 'tc:last', 'tc:deck', 'mariaStudio.v1', 'mariaDictation.v1', 'mariaTheatre.v1'].includes(k);   // mariaStudio.v1: مختبر ماريا للمال's progress; mariaDictation.v1: كرّاس الإملاء's; mariaTheatre.v1: مسرح المسائل's
 function openStoreDB(name, stores) {
   return new Promise((ok, bad) => {
     if (!window.indexedDB) return bad(new Error('no IndexedDB'));

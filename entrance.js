@@ -42,6 +42,7 @@ function mount(api) {
     <button class="ap-tile t-dz" data-app="dz" hidden><span class="ap-art"><img src="assets/apps/algeria.webp" alt=""></span><span class="ap-name">هيا نتعلم في الجزائر</span><span class="ap-en">مدينة بعد مدينة</span><span class="ap-state" id="apDz"></span></button>
     <button class="ap-tile t-studio" data-app="studio"><span class="ap-art"><img src="assets/apps/studio.webp" alt=""></span><span class="ap-name">مختبر ماريا للمال</span><span class="ap-en">أكسب وأدّخر وأعطي</span><span class="ap-state" id="apStudio"></span></button>
     <button class="ap-tile t-dict" data-app="dict"><span class="ap-art"><img src="dictation/assets/dict_tile.png" alt=""></span><span class="ap-name">كرّاس الإملاء</span><span class="ap-en">إملاء كلّ يوم</span><span class="ap-state" id="apDict"></span></button>
+    <button class="ap-tile t-theatre" data-app="theatre"><span class="ap-art"><img src="theatre/assets/theatre_tile.png" alt="" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'ap-emo',textContent:'🎭'}))"></span><span class="ap-name">مسرح المسائل</span><span class="ap-en">قصّة وحساب</span><span class="ap-state" id="apTheatre"></span></button>
   </div>
   <!-- backup and restore: one small grey line in English at the foot, for Mama (her request, 23 Oct 2026: Maria was tapping the big buttons) -->
   <div class="ap-foot" lang="en" dir="ltr">Designed by Dr Asma Khattala<span class="ap-sep">·</span><button class="ap-footlink" id="apBackup">Back up</button><span class="ap-sep">·</span><label class="ap-footlink">Restore<input type="file" id="apRestore" accept="application/json,.json" hidden></label></div>
@@ -104,6 +105,15 @@ function mount(api) {
     try { d = JSON.parse(localStorage.getItem('mariaDictation.v1') || 'null'); } catch (e) {}
     return d && d.days && d.days[api.today()] && d.days[api.today()].n ? 'كتبتِ إملاء اليوم' : 'إملاء اليوم ينتظركِ';
   }
+  // مسرح المسائل is its own page in theatre/ (progress under mariaTheatre.v1); locked until Mama opens it in the parent area
+  const theatreOpen = () => { try { return localStorage.getItem('tc:maria:theatreOpen') === '1'; } catch (e) { return false; } };
+  function theatreText() {
+    if (!theatreOpen()) return 'قريبًا 🔒';
+    let d = null;
+    try { d = JSON.parse(localStorage.getItem('mariaTheatre.v1') || 'null'); } catch (e) {}
+    const t = d && d.days && d.days[api.today()];
+    return t && t.ids && t.i >= t.ids.length ? 'أنجزتِ قصص اليوم' : 'قصص اليوم تنتظركِ';
+  }
   function home() {
     api.leaveAll();
     $('#apHello').textContent = hello();
@@ -115,12 +125,14 @@ function mount(api) {
     state($('#apLib'), s.lib.done, s.lib.done ? 'قرأتِ قصّة اليوم' : s.lib.open ? 'قصّة اليوم مفتوحة' : 'قصّة اليوم تنتظركِ');
     const keys = ['talk', 'math', 'lib'].concat(s.reads ? ['reads'] : [], s.cbox ? ['cbox'] : [], s.dz ? ['dz'] : []);
     $('#apps .t-reads').hidden = !s.reads; $('#apps .t-cbox').hidden = !s.cbox; $('#apps .t-dz').hidden = !s.dz;
-    const tiles = keys.length + 2;   // + the studio and the dictation tiles (not in the day's dots); 8 tiles use the 4-a-row layout of 7
-    $('#apps .ap-tiles').classList.toggle('four', tiles === 4); $('#apps .ap-tiles').classList.toggle('five', tiles === 5); $('#apps .ap-tiles').classList.toggle('six', tiles === 6); $('#apps .ap-tiles').classList.toggle('seven', tiles >= 7);
+    const tiles = keys.length + 3;   // + the studio, dictation and theatre tiles (not in the day's dots); 8 tiles use the 4-a-row layout of 7
+    $('#apps .ap-tiles').classList.toggle('four', tiles === 4); $('#apps .ap-tiles').classList.toggle('five', tiles === 5); $('#apps .ap-tiles').classList.toggle('six', tiles === 6); $('#apps .ap-tiles').classList.toggle('seven', tiles >= 7); $('#apps .ap-tiles').classList.toggle('nine', tiles >= 9);
     state($('#apStudio'), false, studioText());
     $('#apps .t-studio').classList.toggle('locked', !studioOpen());
     state($('#apDict'), false, dictText());
     $('#apps .t-dict').classList.toggle('locked', !dictOpen());
+    state($('#apTheatre'), false, theatreText());
+    $('#apps .t-theatre').classList.toggle('locked', !theatreOpen());
     if (s.reads) state($('#apReads'), s.reads.done, s.reads.done ? 'قرأتِ اليوم' : `الدرس ${AR(s.reads.lesson)} ينتظركِ`);
     if (s.cbox) state($('#apCbox'), s.cbox.done, s.cbox.done ? 'فتحتِ علبة اليوم' : 'علبة اليوم تنتظركِ');
     if (s.dz) state($('#apDz'), s.dz.done, s.dz.done ? 'أنجزتِ رحلة اليوم' : s.dz.city ? `${s.dz.city} تنتظركِ` : 'رحلة اليوم تنتظركِ');
@@ -138,7 +150,8 @@ function mount(api) {
     t.classList.remove('press'); void t.offsetWidth; t.classList.add('press');
     if (t.dataset.app === 'studio' && !studioOpen()) { api.toast('مختبر ماريا للمال يُفتح قريبًا'); return; }   // Mama opens it in the parent area
     if (t.dataset.app === 'dict' && !dictOpen()) { api.toast('كرّاس الإملاء يُفتح قريبًا'); return; }
-    setTimeout(() => { if (t.dataset.app === 'studio') location.href = 'studio/'; else if (t.dataset.app === 'dict') location.href = 'dictation/'; else api.open(t.dataset.app); }, 170);
+    if (t.dataset.app === 'theatre' && !theatreOpen()) { api.toast('مسرح المسائل يُفتح قريبًا'); return; }
+    setTimeout(() => { if (t.dataset.app === 'studio') location.href = 'studio/'; else if (t.dataset.app === 'dict') location.href = 'dictation/'; else if (t.dataset.app === 'theatre') location.href = 'theatre/'; else api.open(t.dataset.app); }, 170);
   });
   $('#apPhoto').addEventListener('click', () => { api.SFX.init(); $('#apFile').click(); });
   $('#apFile').addEventListener('change', async e => {

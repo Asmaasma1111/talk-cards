@@ -198,6 +198,18 @@ async function cacheDictation(cache) {
   } catch (e) { /* it still opens when online */ }
 }
 
+// مسرح المسائل (theatre/): its files are listed in theatre/files.json (scripts/build_theatre.py keeps that list), a recorded
+// voice (later) in theatre/audio/voice.json; one by one, so a missing picture never stops the install
+async function cacheTheatre(cache) {
+  if (APP !== 'talk-cards') return;
+  try {
+    const d = await (await fetch('theatre/files.json', { cache: 'no-cache' })).json();
+    let clips = [];
+    try { const v = await (await fetch('theatre/audio/voice.json', { cache: 'no-cache' })).json(); clips = Object.values(v.clips || {}).map(f => 'theatre/audio/' + f); clips.push('theatre/audio/voice.json'); } catch (e) { /* not recorded yet */ }
+    await Promise.all([...d.files, ...clips].map(f => cache.add(new Request(f, { cache: 'no-cache' })).catch(() => {})));
+  } catch (e) { /* it still opens when online */ }
+}
+
 // علبة الفضول: the real photos listed in curiosity.json, one by one
 async function cacheCuriosity(cache) {
   if (APP !== 'talk-cards') return;
@@ -208,7 +220,7 @@ async function cacheCuriosity(cache) {
 }
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSION).then(async c => { await c.addAll(FILES); await cacheVoice(c); await cacheStickers(c); await cacheStories(c); await cacheColour(c); await cacheReads(c); await cacheCuriosity(c); await cacheAlgeria(c); await cacheDictation(c); }).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(VERSION).then(async c => { await c.addAll(FILES); await cacheVoice(c); await cacheStickers(c); await cacheStories(c); await cacheColour(c); await cacheReads(c); await cacheCuriosity(c); await cacheAlgeria(c); await cacheDictation(c); await cacheTheatre(c); }).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {

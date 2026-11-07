@@ -3079,6 +3079,11 @@ body[data-profile="mama"] .deck-apps { display: none; }
 .t-dict { background: linear-gradient(170deg, #FFF4C9 0%, #FFFFFF 70%); }
 .t-dict .ap-art { animation-delay: -3s; }
 .t-dict.locked .ap-art { filter: grayscale(.55) opacity(.75); animation: none; }
+/* مسرح المسائل (theatre/): locked the same way; a theatre mask until its ChatGPT tile picture exists */
+.t-theatre { background: linear-gradient(170deg, #F6E0F0 0%, #FFFFFF 70%); }
+.t-theatre .ap-art { animation-delay: -4s; }
+.t-theatre.locked .ap-art { filter: grayscale(.55) opacity(.75); animation: none; }
+.ap-emo { display: grid; place-items: center; width: 100%; aspect-ratio: 1; font-size: clamp(48px, 7vh, 80px); line-height: 1; }
 .ap-ph { display: grid; place-items: center; width: 100%; aspect-ratio: 1; border-radius: 22%; background: #F3EEF8; border: 2px dashed #CDBFE0; color: #8A7BA3; font: 600 11px/1.2 system-ui, sans-serif; overflow: hidden; word-break: break-all; padding: 6px; box-sizing: border-box; }
 .ap-tiles.seven { max-width: 1120px; margin: 0 auto; gap: clamp(10px, 1.6vw, 20px); }
 .ap-tiles.seven .ap-tile { width: clamp(150px, calc((min(100vw, 1120px) - 120px) / 4), 250px); padding: 12px 10px 14px; }
@@ -3465,3 +3470,11 @@ span.lab-whole { font-size: 120px; line-height: 1; }
 .dz-listen:active, .mc-listen:active { transform: translateY(3px); box-shadow: 0 1px 0 #DCCFE6; }
 .dz-listen.on, .mc-listen.on { background: #FFE17A; animation: dzListen 1s ease-in-out infinite alternate; }
 @keyframes dzListen { to { transform: scale(1.08); } }
+/* nine tiles (مسرح المسائل, 7 Nov 2026): five then four on an iPad either way up, so the last row stays clear of the footer */
+@media (min-width: 600px) {
+  .ap-tiles.nine { max-width: 1180px; gap: clamp(8px, 1.2vw, 16px); }
+  .ap-tiles.nine .ap-tile { width: clamp(130px, calc((min(100vw, 1180px) - 120px) / 5), 220px); padding: 10px 8px 12px; }
+  .ap-tiles.nine .ap-art { width: clamp(70px, min(9.5vh, 11vw), 104px); }
+  .ap-tiles.nine .ap-name { font-size: clamp(18px, 2vw, 24px); }
+  .ap-tiles.nine .ap-state { font-size: 14px; padding: 3px 10px; margin-top: 5px; }
+}

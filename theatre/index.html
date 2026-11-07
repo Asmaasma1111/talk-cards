@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>مسرح المسائل</title>
+<meta name="theme-color" content="#3B1E3F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="تطبيقات ماريا">
+<!-- one install for all her apps: مسرح المسائل uses تطبيقات ماريا's manifest and icons -->
+<link rel="manifest" href="../manifest.json">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" href="../icon-192.png">
+<link rel="preload" href="../fonts/noto-naskh-arabic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/theatre.css">
+<script>
+  // Locked until Mama opens it in the parent area of تطبيقات ماريا (tc:maria:theatreOpen): back to her apps page.
+  try { if (localStorage.getItem('tc:maria:theatreOpen') !== '1') location.replace('../'); } catch (e) { /* storage blocked: stay */ }
+</script>
+</head>
+<body>
+<main id="app"></main>
+<div id="toast" class="toast" hidden></div>
+<script src="js/core.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/act.js"></script>
+<script src="js/bars.js"></script>
+<script src="js/sentence.js"></script>
+<script src="js/pv.js"></script>
+<script src="js/pad.js"></script>
+<script src="js/story.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
