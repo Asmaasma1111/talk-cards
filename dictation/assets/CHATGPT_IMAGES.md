@@ -68,10 +68,7 @@ the board is transparent and empty.
 
 ## The copybook paper
 
-**9. paper.png**: portrait 1024 x 1536, NOT transparent.
-A very light, warm off-white paper texture filling the whole image: just the soft grain of good school paper, very
-subtle and even, with no lines, no squares, no margin, no stains and no shadows. (The app draws the copybook's blue
-squares and red margin on top of it.)
+**9. paper.png**: no longer used. Mama chose pure white pages with no paper texture (7 Nov 2026).
 
 ## The sorting game
 
