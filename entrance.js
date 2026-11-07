@@ -1,6 +1,7 @@
 /* تطبيقات ماريا اليوميّة: the entrance page of Talk Cards (Maria only).
-   Big tiles open her apps (Talk Cards, جدول الضرب, مكتبتي, ماريا تقرأ, علبة الفضول, هيا نتعلم في الجزائر, مختبر ماريا للمال); each app has a «تطبيقاتي» chip back here.
-   مختبر ماريا للمال is its own page in studio/ (its own styles and ES modules), so its tile opens that page instead of a screen here.
+   Big tiles open her apps (Talk Cards, جدول الضرب, مكتبتي, ماريا تقرأ, علبة الفضول, هيا نتعلم في الجزائر, مختبر ماريا للمال, كرّاس الإملاء); each app has a «تطبيقاتي» chip back here.
+   مختبر ماريا للمال is its own page in studio/ (its own styles and ES modules), so its tile opens that page instead of a screen here;
+   كرّاس الإملاء likewise opens dictation/.
    Her photo is chosen on the iPad, made small and kept in her progress (and her backup file), never in the app's files. */
 (function (root) {
 'use strict';
@@ -40,11 +41,22 @@ function mount(api) {
     <button class="ap-tile t-cbox" data-app="cbox" hidden><span class="ap-art"><img src="assets/apps/curiosity.webp" alt=""></span><span class="ap-name">علبة الفضول</span><span class="ap-en">سؤال كلّ يوم</span><span class="ap-state" id="apCbox"></span></button>
     <button class="ap-tile t-dz" data-app="dz" hidden><span class="ap-art"><img src="assets/apps/algeria.webp" alt=""></span><span class="ap-name">هيا نتعلم في الجزائر</span><span class="ap-en">مدينة بعد مدينة</span><span class="ap-state" id="apDz"></span></button>
     <button class="ap-tile t-studio" data-app="studio"><span class="ap-art"><img src="assets/apps/studio.webp" alt=""></span><span class="ap-name">مختبر ماريا للمال</span><span class="ap-en">أكسب وأدّخر وأعطي</span><span class="ap-state" id="apStudio"></span></button>
+    <button class="ap-tile t-dict" data-app="dict"><span class="ap-art"><img src="dictation/assets/dict_tile.png" alt=""></span><span class="ap-name">كرّاس الإملاء</span><span class="ap-en">إملاء كلّ يوم</span><span class="ap-state" id="apDict"></span></button>
   </div>
   <!-- backup and restore: one small grey line in English at the foot, for Mama (her request, 23 Oct 2026: Maria was tapping the big buttons) -->
   <div class="ap-foot" lang="en" dir="ltr">Designed by Dr Asma Khattala<span class="ap-sep">·</span><button class="ap-footlink" id="apBackup">Back up</button><span class="ap-sep">·</span><label class="ap-footlink">Restore<input type="file" id="apRestore" accept="application/json,.json" hidden></label></div>
   <input type="file" id="apFile" accept="image/*" hidden>
 </section>`);
+
+  // a tile picture not made yet (ChatGPT): a soft box with its file name instead of a broken image
+  document.querySelectorAll('#apps .ap-art img').forEach(im => {
+    const swap = () => {
+      if (!im.isConnected) return;
+      const ph = document.createElement('span'); ph.className = 'ap-ph'; ph.lang = 'en'; ph.dir = 'ltr';
+      ph.textContent = im.getAttribute('src').split('/').pop(); im.replaceWith(ph);
+    };
+    if (im.complete && !im.naturalWidth) swap(); else im.addEventListener('error', swap, { once: true });
+  });
 
   // the English Home and the times-tables Home: their deck chips give way to the chip back here
   [['#home', () => api.leaveTalk()], ['#mhome', () => api.leaveMath()]].forEach(([sel, leave]) => {
@@ -84,6 +96,14 @@ function mount(api) {
     const n = [1, 2, 3, 4, 5, 6, 7, 8, 9].find(k => !done.includes(k) && open(k)) || 9;
     return `«${STUDIO[n - 1]}» تنتظركِ`;
   }
+  // كرّاس الإملاء is its own page in dictation/ (progress under mariaDictation.v1); locked until Mama opens it in the parent area
+  const dictOpen = () => { try { return localStorage.getItem('tc:maria:dictationOpen') === '1'; } catch (e) { return false; } };
+  function dictText() {
+    if (!dictOpen()) return 'قريبًا 🔒';
+    let d = null;
+    try { d = JSON.parse(localStorage.getItem('mariaDictation.v1') || 'null'); } catch (e) {}
+    return d && d.days && d.days[api.today()] && d.days[api.today()].n ? 'كتبتِ إملاء اليوم' : 'إملاء اليوم ينتظركِ';
+  }
   function home() {
     api.leaveAll();
     $('#apHello').textContent = hello();
@@ -95,10 +115,12 @@ function mount(api) {
     state($('#apLib'), s.lib.done, s.lib.done ? 'قرأتِ قصّة اليوم' : s.lib.open ? 'قصّة اليوم مفتوحة' : 'قصّة اليوم تنتظركِ');
     const keys = ['talk', 'math', 'lib'].concat(s.reads ? ['reads'] : [], s.cbox ? ['cbox'] : [], s.dz ? ['dz'] : []);
     $('#apps .t-reads').hidden = !s.reads; $('#apps .t-cbox').hidden = !s.cbox; $('#apps .t-dz').hidden = !s.dz;
-    const tiles = keys.length + 1;   // + the studio tile (not a daily app, so it is not in the day's dots)
-    $('#apps .ap-tiles').classList.toggle('four', tiles === 4); $('#apps .ap-tiles').classList.toggle('five', tiles === 5); $('#apps .ap-tiles').classList.toggle('six', tiles === 6); $('#apps .ap-tiles').classList.toggle('seven', tiles === 7);
+    const tiles = keys.length + 2;   // + the studio and the dictation tiles (not in the day's dots); 8 tiles use the 4-a-row layout of 7
+    $('#apps .ap-tiles').classList.toggle('four', tiles === 4); $('#apps .ap-tiles').classList.toggle('five', tiles === 5); $('#apps .ap-tiles').classList.toggle('six', tiles === 6); $('#apps .ap-tiles').classList.toggle('seven', tiles >= 7);
     state($('#apStudio'), false, studioText());
     $('#apps .t-studio').classList.toggle('locked', !studioOpen());
+    state($('#apDict'), false, dictText());
+    $('#apps .t-dict').classList.toggle('locked', !dictOpen());
     if (s.reads) state($('#apReads'), s.reads.done, s.reads.done ? 'قرأتِ اليوم' : `الدرس ${AR(s.reads.lesson)} ينتظركِ`);
     if (s.cbox) state($('#apCbox'), s.cbox.done, s.cbox.done ? 'فتحتِ علبة اليوم' : 'علبة اليوم تنتظركِ');
     if (s.dz) state($('#apDz'), s.dz.done, s.dz.done ? 'أنجزتِ رحلة اليوم' : s.dz.city ? `${s.dz.city} تنتظركِ` : 'رحلة اليوم تنتظركِ');
@@ -115,7 +137,8 @@ function mount(api) {
     api.SFX.init();
     t.classList.remove('press'); void t.offsetWidth; t.classList.add('press');
     if (t.dataset.app === 'studio' && !studioOpen()) { api.toast('مختبر ماريا للمال يُفتح قريبًا'); return; }   // Mama opens it in the parent area
-    setTimeout(() => { if (t.dataset.app === 'studio') location.href = 'studio/'; else api.open(t.dataset.app); }, 170);
+    if (t.dataset.app === 'dict' && !dictOpen()) { api.toast('كرّاس الإملاء يُفتح قريبًا'); return; }
+    setTimeout(() => { if (t.dataset.app === 'studio') location.href = 'studio/'; else if (t.dataset.app === 'dict') location.href = 'dictation/'; else api.open(t.dataset.app); }, 170);
   });
   $('#apPhoto').addEventListener('click', () => { api.SFX.init(); $('#apFile').click(); });
   $('#apFile').addEventListener('change', async e => {

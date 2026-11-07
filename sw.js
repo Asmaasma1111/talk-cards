@@ -2,7 +2,7 @@
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
 // The same file serves both apps: Talk Cards registers sw.js, Prepositions registers sw.js?app=prepositions.
 const APP = new URL(location.href).searchParams.get('app') === 'prepositions' ? 'prepositions' : 'talk-cards';
-const VERSION = APP + '-v152';
+const VERSION = APP + '-v153';
 const FILES = APP === 'prepositions' ? [
   './',
   'index.html',
@@ -184,6 +184,18 @@ async function cacheAlgeria(cache) {
   } catch (e) { /* the pictures still load when online */ }
 }
 
+// كرّاس الإملاء (dictation/): its files are listed in dictation/files.json (its own build keeps that list), its recorded
+// voice in dictation/audio/voice.json; one by one, so a picture not made yet never stops the install
+async function cacheDictation(cache) {
+  if (APP !== 'talk-cards') return;
+  try {
+    const d = await (await fetch('dictation/files.json', { cache: 'no-cache' })).json();
+    let clips = [];
+    try { const v = await (await fetch('dictation/audio/voice.json', { cache: 'no-cache' })).json(); clips = Object.values(v.clips || {}).map(f => 'dictation/audio/' + f); clips.push('dictation/audio/voice.json'); } catch (e) { /* not recorded yet */ }
+    await Promise.all([...d.files, ...clips].map(f => cache.add(new Request(f, { cache: 'no-cache' })).catch(() => {})));
+  } catch (e) { /* it still opens when online */ }
+}
+
 // علبة الفضول: the real photos listed in curiosity.json, one by one
 async function cacheCuriosity(cache) {
   if (APP !== 'talk-cards') return;
@@ -194,7 +206,7 @@ async function cacheCuriosity(cache) {
 }
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSION).then(async c => { await c.addAll(FILES); await cacheVoice(c); await cacheStickers(c); await cacheStories(c); await cacheColour(c); await cacheReads(c); await cacheCuriosity(c); await cacheAlgeria(c); }).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(VERSION).then(async c => { await c.addAll(FILES); await cacheVoice(c); await cacheStickers(c); await cacheStories(c); await cacheColour(c); await cacheReads(c); await cacheCuriosity(c); await cacheAlgeria(c); await cacheDictation(c); }).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {

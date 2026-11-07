@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>كرّاس الإملاء</title>
+<meta name="theme-color" content="#FFF9EE">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="تطبيقات ماريا">
+<!-- one install for all her apps: كرّاس الإملاء uses تطبيقات ماريا's manifest and icons -->
+<link rel="manifest" href="../manifest.json">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" href="../icon-192.png">
+<link rel="stylesheet" href="css/dict.css">
+<script>
+  // Locked until Mama opens it in the parent area of تطبيقات ماريا (tc:maria:dictationOpen): back to her apps page.
+  try { if (localStorage.getItem('tc:maria:dictationOpen') !== '1') location.replace('../'); } catch (e) { /* storage blocked: stay */ }
+</script>
+</head>
+<body>
+<main id="app"></main>
+<div id="toast" class="toast" hidden></div>
+<script src="js/app.js"></script>
+</body>
+</html>

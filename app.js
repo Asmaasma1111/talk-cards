@@ -1289,7 +1289,10 @@ const STUDIO_KEY = 'tc:maria:studioOpen';
 const studioRows = () => `
     <div class="p-group">
       <div class="p-row"><span>Maria's Money Lab<span class="sub" lang="ar" dir="rtl">مختبر ماريا للمال: مقفل حتى تفتحيه</span></span><button class="switch" role="switch" aria-checked="${lsGet(STUDIO_KEY) === '1'}" data-act="studio" aria-label="Maria's Money Lab open"></button></div>
+      <div class="p-row"><span>Maria's Dictation Copybook<span class="sub" lang="ar" dir="rtl">كرّاس الإملاء: مقفل حتى تفتحيه</span></span><button class="switch" role="switch" aria-checked="${lsGet(DICT_KEY) === '1'}" data-act="dictation" aria-label="Maria's Dictation Copybook open"></button></div>
     </div>`;
+// كرّاس الإملاء (dictation/) is locked the same way until Mama opens it here
+const DICT_KEY = 'tc:maria:dictationOpen';
 function openParent() { Speech.stop(); renderParent(); show('parent'); $('#parent').scrollTop = 0; }
 function onParentClick(e) {
   const b = e.target.closest('button'); if (!b) return;
@@ -1325,6 +1328,12 @@ function onParentClick(e) {
       const on = lsGet(STUDIO_KEY) !== '1';
       lsSet(STUDIO_KEY, on ? '1' : '0'); b.setAttribute('aria-checked', String(on));
       toast(on ? "Maria's Money Lab is open on her apps page." : "Maria's Money Lab is locked again.");
+      break;
+    }
+    case 'dictation': {
+      const on = lsGet(DICT_KEY) !== '1';
+      lsSet(DICT_KEY, on ? '1' : '0'); b.setAttribute('aria-checked', String(on));
+      toast(on ? "Maria's Dictation Copybook is open on her apps page." : "Maria's Dictation Copybook is locked again.");
       break;
     }
     case 'sfx':
@@ -1363,9 +1372,10 @@ const DEVICE_DBS = [   // [database, stores to back up, every store the app crea
   ['maria-reads', ['mine'], ['sounds', 'mine']],    // Mama's sounds already travel inside Maria Reads' own backup
   ['curiosity-box', ['clips', 'photos'], ['clips', 'photos']],  // her questions (voice) and Mama's photos
   ['algeria-trip', ['clips', 'pages'], ['clips', 'pages']],      // her talks about the picture, her readings, the photos of her pages
-  ['mariaStudio', ['pages'], ['pages']]                           // مختبر ماريا للمال: her copybook pages, photos, poster and pitch recording
+  ['mariaStudio', ['pages'], ['pages']],                          // مختبر ماريا للمال: her copybook pages, photos, poster and pitch recording
+  ['mariaDictation', ['writing'], ['writing']]                    // كرّاس الإملاء: her handwriting answers (small PNGs)
 ];
-const DEVICE_KEYS = k => k.startsWith('tc:maria:colour:') || ['tc:maria:libpin', 'tc:maria:studioSeen', 'tc:maria:studioOpen', 'tc:last', 'tc:deck', 'mariaStudio.v1'].includes(k);   // mariaStudio.v1: مختبر ماريا للمال's progress
+const DEVICE_KEYS = k => k.startsWith('tc:maria:colour:') || ['tc:maria:libpin', 'tc:maria:studioSeen', 'tc:maria:studioOpen', 'tc:maria:dictationOpen', 'tc:last', 'tc:deck', 'mariaStudio.v1', 'mariaDictation.v1'].includes(k);   // mariaStudio.v1: مختبر ماريا للمال's progress; mariaDictation.v1: كرّاس الإملاء's
 function openStoreDB(name, stores) {
   return new Promise((ok, bad) => {
     if (!window.indexedDB) return bad(new Error('no IndexedDB'));
