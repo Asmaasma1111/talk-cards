@@ -194,7 +194,7 @@ a.top-btn { color: inherit; text-decoration: none; }
 .cover > .ph { place-items: end center; padding-bottom: 14%; }
 .cover.c-purple > .ph { background: #EDE3FA; } .cover.c-yellow > .ph { background: #FFF1C2; } .cover.c-green > .ph { background: #DDF2E4; }
 /* the label: centred, the middle 60% of the width, from 34% to 58% of the height (the prompt asks for exactly this) */
-.c-label { position: absolute; left: 20%; width: 60%; top: 34%; height: 24%; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2%; }
+.c-label { position: absolute; left: 18%; width: 64%; top: 35%; height: 22%; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2%; }
 .cover > .ph ~ .c-label { background: #fff; box-shadow: 0 0 0 2px rgba(59,42,74,.12); }
 .c-name { max-width: 92%; max-height: 62%; object-fit: contain; }
 .c-num { font-family: 'Naskh', serif; font-size: clamp(14px, 2.4vh, 26px); color: var(--plum); }
@@ -202,6 +202,7 @@ a.top-btn { color: inherit; text-decoration: none; }
 .name-pad { width: 100%; flex: 1; border-radius: 10px; }
 .cover.naming { height: min(66vh, 640px); }
 .cover.naming .c-label { background: #fff; box-shadow: 0 0 0 4px var(--yellow); padding: 4%; }
+.cover.naming > .pic ~ .c-label { background: transparent; box-shadow: none; }   /* the picture's own white label is where she writes */
 
 .welcome { padding: 16px 22px; }
 .welcome-main { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
