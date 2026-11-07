@@ -3317,15 +3317,16 @@ body[data-profile="mama"] .deck-apps { display: none; }
 .cb-bigcard .cb-row { min-height: 50px; border-bottom: 0; }
 
 /* writing it herself with the iPad pen (her request, 26 Oct 2026): two writing lines, the answer appears beside */
-.dz-wpad { position: relative; width: min(92vw, 640px); height: 190px; border-radius: 22px; background-color: #fff; box-shadow: inset 0 0 0 3px var(--g2);
+.dz-wpad { position: relative; width: min(94vw, 820px); height: 254px; border-radius: 22px; background-color: #fff; box-shadow: inset 0 0 0 3px var(--g2);
   /* like an Algerian copybook (her picture, 26 Oct 2026): the three bands between the main blue-violet lines keep, three
      fine green lines inside each band, and the red margin on the RIGHT, the side Arabic starts from */
-  background-image: linear-gradient(90deg, transparent calc(100% - 52px), #E5484D calc(100% - 52px), #E5484D calc(100% - 50px), transparent calc(100% - 50px)),
-    repeating-linear-gradient(transparent 0 62px, #8F86D2 62px 64px),
-    repeating-linear-gradient(transparent 0 15px, #A8D9BC 15px 16px); }
+  /* 7 Nov 2026 (her request): the whole pad and its spaces bigger: bands 64 -> 84 px, fine lines 16 -> 21 px apart */
+  background-image: linear-gradient(90deg, transparent calc(100% - 64px), #E5484D calc(100% - 64px), #E5484D calc(100% - 62px), transparent calc(100% - 62px)),
+    repeating-linear-gradient(transparent 0 82px, #8F86D2 82px 84px),
+    repeating-linear-gradient(transparent 0 20px, #A8D9BC 20px 21px); }
 .dz-wpad canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; -webkit-user-select: none; user-select: none; }
 .dz-wans { position: absolute; top: 10px; left: 12px; display: flex; flex-direction: column; align-items: center; padding: 6px 16px; border-radius: 16px; background: var(--g1); box-shadow: 0 0 0 3px var(--g4); pointer-events: none; }
-.dz-wans small { font: 700 14px var(--apfont); color: var(--g6); } .dz-wans b { font: 800 34px var(--apfont); color: var(--g9); }
+.dz-wans small { font: 700 14px var(--apfont); color: var(--g6); } .dz-wans b { font: 800 40px var(--apfont); color: var(--g9); }
 .dz-blank.wide { min-width: 3.2em; }
 .dz-tag { margin: 0; padding: 6px 22px; border-radius: 99px; background: var(--g6); color: #fff; font: 800 clamp(20px, 2.4vw, 26px) var(--apfont); animation: dzIn .35s ease-out; }
 /* the trip's clay icons (ChatGPT) */
