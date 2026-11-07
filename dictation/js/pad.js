@@ -1,5 +1,5 @@
 /* كرّاس الإملاء: the writing space. A canvas over the copybook ruling (the Seyès lines and the red margin are CSS, see
-   .seyes in dict.css: 42 px squares on pure white, a clear blue line on top of each, one faint middle line, faint verticals, red margin on the right).
+   .seyes in dict.css: 42 px squares, three faint lines in each, a darker line on top, faint verticals, red margin on the right).
    Finger or Apple Pencil. Once a pencil is seen, only the pencil writes (her palm and fingers do nothing; in the tall text
    page a finger scrolls); before that, a large touch (a palm) is ignored. Blue ink by default; green and black in the tray.
    Undo, eraser, clear. A tall pad (the text dictation) grows and scrolls down as she writes.
