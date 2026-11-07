@@ -23,6 +23,7 @@ VOICES = ['Aoede', 'Sulafat', 'Achernar']
 MODELS = ['gemini-3.8-flash-lite-tts', 'gemini-3.8-flash-tts']          # each has its own 10 a day
 STYLE = ('a warm, kind woman teacher reading a dictation in clear Modern Standard Arabic to an eight-year-old girl; '
          'natural and human, calm and encouraging, a little slower than normal speech, every vowel clear, said once')
+VOICE = 'Sulafat'   # chosen by Asma on 7 Nov 2026 from the three samples
 BATCH = 21
 CHECK_MODEL = 'gemini-3.5-flash-lite'
 
