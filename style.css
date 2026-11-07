@@ -2384,8 +2384,16 @@ body[data-profile="mama"] .deck-apps { display: none; }
 .rd-spot { position: absolute; width: 150px; height: 150px; border-radius: 50%; border: 6px solid #fff; background: #fff; box-shadow: 0 8px 0 #E6D3DC, 0 14px 22px rgba(158, 47, 99, .1); display: grid; place-items: center; transition: transform .15s; }
 .rd-spot b { font: 700 86px/1 var(--read); color: var(--ink); }
 .rd-spot.s0 { left: 8%; top: 12%; } .rd-spot.s1 { right: 8%; top: 18%; } .rd-spot.s2 { left: 40%; bottom: 8%; }
-.rd-runner { position: absolute; left: 50%; top: 42%; translate: -50% -100%; font-size: 64px; transition: left .45s ease, top .45s ease; pointer-events: none; }
-.rd-runner.hop, .rd-frog.hop { animation: rdHop .45s ease; }
+.rd-runner { position: absolute; left: 50%; top: 42%; translate: -50% -100%; font-size: 64px; transition: left .55s cubic-bezier(.45, 0, .4, 1), top .55s cubic-bezier(.45, 0, .4, 1); pointer-events: none; z-index: 3; }
+/* her hopping friend (7 Nov 2026): a ChatGPT clay animal; it arcs up between letters, squashes as it lands, and turns to face the way it goes */
+.rd-runner img { display: block; height: clamp(125px, 17vh, 175px); width: auto; transform-origin: 50% 100%; filter: drop-shadow(0 6px 8px rgba(43, 35, 64, .15)); }
+.rd-runner.left img { scale: -1 1; }
+.rd-rshadow { position: absolute; left: 50%; bottom: -6px; width: 70%; height: 14px; translate: -50% 0; border-radius: 50%; background: rgba(43, 35, 64, .14); filter: blur(2px); }
+.rd-runner.hop img { animation: rdArc .56s ease; }
+.rd-runner.hop .rd-rshadow { animation: rdArcShadow .56s ease; }
+@keyframes rdArc { 0% { transform: translateY(0) scale(1.05, .92); } 18% { transform: translateY(-40px) scale(.95, 1.06); } 50% { transform: translateY(-90px); } 85% { transform: translateY(0) scale(1.08, .88); } 100% { transform: none; } }
+@keyframes rdArcShadow { 50% { transform: scale(.55); opacity: .5; } }
+.rd-frog.hop { animation: rdHop .45s ease; }
 @keyframes rdHop { 0% { transform: translateY(0); } 45% { transform: translateY(-46px); } 100% { transform: translateY(0); } }
 
 .rd-shop { gap: 18px; }

@@ -1324,21 +1324,35 @@ function mount(api) {
     }
   }
 
-  /* ---------- Hop to that Sound: letters around the room; she hears a sound and the bunny hops to its letter ---------- */
+  /* ---------- Hop to that Sound: letters around the room; she hears a sound and her friend hops to its letter ----------
+     The friend changes from game to game (her request, 7 Nov 2026): ChatGPT clay animals in assets/reads/hop/<animal>-sit|hop|yay.webp */
+  const HOPPERS = ['bunny', 'cat', 'koala', 'panda'];
+  let lastHopper = null;
   async function beatRun(s, ids) {
     const set = ids.filter(id => SOUND[id] && hasSound(id)).slice(0, 3); if (set.length < 2) return;
-    stage.innerHTML = `<div class="rd-game rd-run"><div class="rd-field">${shuffle(set).map((id, i) => `<button class="rd-spot s${i}" data-id="${id}"><b>${esc(grapheme(id))}</b></button>`).join('')}<span class="rd-runner" id="rdRunner">🐰</span></div>
+    stage.innerHTML = `<div class="rd-game rd-run"><div class="rd-field">${shuffle(set).map((id, i) => `<button class="rd-spot s${i}" data-id="${id}"><b>${esc(grapheme(id))}</b></button>`).join('')}<span class="rd-runner" id="rdRunner"><i class="rd-rshadow"></i><img id="rdRunnerImg" alt="" draggable="false"></span></div>
       <button class="rd-replay" id="rdAgain" aria-label="اسمعي مرة أخرى">${ic('i-speaker')}</button></div>`;
     let cur = null; $('#rdAgain').addEventListener('click', () => { if (cur) sayLetter(cur); });
-    const runner = $('#rdRunner'), field = stage.querySelector('.rd-field');
-    const hopTo = b => { const f = field.getBoundingClientRect(), q = b.getBoundingClientRect(); runner.style.left = `${q.left - f.left + q.width / 2}px`; runner.style.top = `${q.top - f.top}px`; runner.classList.remove('hop'); void runner.offsetWidth; runner.classList.add('hop'); };
+    const runner = $('#rdRunner'), field = stage.querySelector('.rd-field'), rimg = $('#rdRunnerImg');
+    const pool = HOPPERS.filter(a => a !== lastHopper); let who = pool[Math.floor(Math.random() * pool.length)];
+    const pose = p => { rimg.src = `assets/reads/hop/${who}-${p}.webp`; };
+    rimg.onerror = () => { if (who !== 'bunny') { who = 'bunny'; pose('sit'); } else runner.textContent = '🐰'; };   // a friend not drawn yet: the bunny
+    lastHopper = who; pose('sit');
+    let land = null;
+    const hopTo = (b, happy) => {
+      const f = field.getBoundingClientRect(), q = b.getBoundingClientRect(), x = q.left - f.left + q.width / 2, from = parseFloat(runner.style.left) || f.width / 2;
+      runner.classList.toggle('left', x < from - 4); pose('hop');
+      runner.style.left = `${x}px`; runner.style.top = `${q.top - f.top + 18}px`;
+      runner.classList.remove('hop'); void runner.offsetWidth; runner.classList.add('hop');
+      clearTimeout(land); land = setTimeout(() => { pose(happy ? 'yay' : 'sit'); runner.classList.remove('left'); land = setTimeout(() => pose('sit'), 1100); }, 560);
+    };
     for (const id of shuffle([...set, ...set]).slice(0, 6)) {
       if (!alive(s)) return;
       cur = id; stage.querySelectorAll('.rd-spot').forEach(b => { b.disabled = false; b.classList.remove('picked', 'right'); });
       await sleep(600); await sayLetter(id);
-      const ans = await choice('.rd-spot'); hopTo(ans);
-      if (ans.dataset.id === id) { ans.classList.add('right'); api.SFX.good(); }
-      else { api.SFX.again(); const want = stage.querySelector(`.rd-spot[data-id="${id}"]`); want.classList.add('right'); await sleep(500); hopTo(want); await sayLetter(id); }
+      const ans = await choice('.rd-spot'), good = ans.dataset.id === id; hopTo(ans, good);
+      if (good) { ans.classList.add('right'); api.SFX.good(); }
+      else { api.SFX.again(); const want = stage.querySelector(`.rd-spot[data-id="${id}"]`); want.classList.add('right'); await sleep(700); hopTo(want, false); await sayLetter(id); }
       await sleep(1000);
     }
   }
