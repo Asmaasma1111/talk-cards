@@ -114,24 +114,24 @@ link gently snipped open by child-safe round scissors.
 ## The stickers (60): one for each day she practises
 
 For all sixty: square 1024 x 1024, transparent background. Squishy-sticker style: soft, puffy and rounded like a squishy
-toy, with a glossy highlight, a cute calm face where it suits (small dot eyes, rosy cheeks, a little smile), and a clean
-white die-cut sticker border all round. The sticker fills most of the image. Every tenth sticker (10, 20, 30, 40, 50, 60)
+toy, with a glossy highlight, and a clean white die-cut sticker border all round. Most stickers have NO face: draw the
+real object, with no eyes, no mouth and no cheeks. Only the few marked "face" have one, and each face is different. The sticker fills most of the image. Every tenth sticker (10, 20, 30, 40, 50, 60)
 is a special SPARKLY one: the same style plus a gentle glitter shimmer and a few tiny sparkles around it.
 
 School things:
-**27. sticker_01.png**: a yellow pencil with a pink eraser end, smiling.
+**27. sticker_01.png**: a yellow pencil with a pink eraser end. Face: a cute smile.
 **28. sticker_02.png**: a blue school fountain pen.
 **29. sticker_03.png**: a box of coloured pencils, lid open, the pencils in a rainbow of colours.
 **30. sticker_04.png**: a small box of fat crayons in pink, yellow, green and blue.
 **31. sticker_05.png**: a watercolour paint palette with six round colours and a little brush.
-**32. sticker_06.png**: a pink eraser with a happy face.
+**32. sticker_06.png**: a pink eraser. Face: a happy smile.
 **33. sticker_07.png**: a little pencil sharpener with pencil shavings curling out.
 **34. sticker_08.png**: a short wooden ruler with tick marks only (no numbers).
 **35. sticker_09.png**: an open notebook with blank pages and a ribbon bookmark.
 **36. sticker_10.png** (SPARKLY): a shining gold star badge with a ribbon.
 **37. sticker_11.png**: a pink school backpack.
 **38. sticker_12.png**: a zipped pencil case with a pencil peeking out.
-**39. sticker_13.png**: a glue stick with a smiling face.
+**39. sticker_13.png**: a glue stick.
 **40. sticker_14.png**: a pair of child-safe scissors with round handles.
 **41. sticker_15.png**: a paintbrush with a drop of blue paint.
 **42. sticker_16.png**: a little stack of three books in pink, yellow and green.
@@ -141,18 +141,18 @@ School things:
 **46. sticker_20.png** (SPARKLY): a rainbow with a fluffy cloud at each end.
 
 Sky and nature:
-**47. sticker_21.png**: a smiling fluffy white cloud.
-**48. sticker_22.png**: a smiling sun.
-**49. sticker_23.png**: a sleepy crescent moon with two tiny stars.
+**47. sticker_21.png**: a fluffy white cloud. Face: a soft smile.
+**48. sticker_22.png**: a sun. Face: a big happy smile.
+**49. sticker_23.png**: a crescent moon with two tiny stars. Face: sleepy closed eyes.
 **50. sticker_24.png**: a soft rainbow.
-**51. sticker_25.png**: a smiling raindrop.
-**52. sticker_26.png**: a little yellow star with rosy cheeks.
+**51. sticker_25.png**: a raindrop. Face: surprised, a little round "o" mouth.
+**52. sticker_26.png**: a little yellow star. Face: winking.
 **53. sticker_27.png**: a white daisy.
 **54. sticker_28.png**: a pink tulip.
-**55. sticker_29.png**: a small cactus in a pot, smiling.
+**55. sticker_29.png**: a small cactus in a pot.
 **56. sticker_30.png** (SPARKLY): a graduation cap with a gold tassel.
 
-Animals:
+Animals (each with its own natural, realistic little animal face, no rosy cheeks, no cartoon smile, looking calm):
 **57. sticker_31.png**: a fluffy kitten.
 **58. sticker_32.png**: a white bunny.
 **59. sticker_33.png**: a baby panda.
@@ -161,7 +161,7 @@ Animals:
 **62. sticker_36.png**: a hedgehog.
 **63. sticker_37.png**: a butterfly with pink and yellow wings.
 **64. sticker_38.png**: a ladybird.
-**65. sticker_39.png**: a small smiling whale.
+**65. sticker_39.png**: a small whale. Face: happy.
 **66. sticker_40.png** (SPARKLY): a little crown.
 
 Treats and fruit:
@@ -184,8 +184,8 @@ Little adventures and prizes:
 **81. sticker_55.png**: a Ramadan-style lantern (fanous) glowing softly.
 **82. sticker_56.png**: a gold trophy cup.
 **83. sticker_57.png**: a medal on a ribbon (no writing on it).
-**84. sticker_58.png**: an alarm clock with a happy face (no numbers on its face).
-**85. sticker_59.png**: a small desk lamp, smiling.
+**84. sticker_58.png**: an alarm clock (no numbers on its dial).
+**85. sticker_59.png**: a small desk lamp.
 **86. sticker_60.png** (SPARKLY): an open book with little stars flying out of it.
 
 ---
