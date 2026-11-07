@@ -23,13 +23,11 @@ function mount(api) {
 
   document.body.insertAdjacentHTML('beforeend', `
 <section id="apps" class="screen ap" dir="rtl" lang="ar" hidden>
+  <!-- Mama's parent area in the top right corner, as in Talk Cards (her request, 7 Nov 2026); press and hold 2 seconds -->
+  <button class="gear ap-gear" id="apGear" aria-label="Parent area: press and hold"><svg class="ring" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="24"/></svg><svg class="cog" aria-hidden="true"><use href="#i-gear"/></svg></button>
   <div class="ap-sky" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
   <header class="ap-head">
-    <div class="ap-me">
-      <!-- Mama's parent area, above her photo (her request, 7 Nov 2026); press and hold 2 seconds, like the gear in Talk Cards -->
-      <button class="gear ap-gear" id="apGear" aria-label="Parent area: press and hold"><svg class="ring" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="24"/></svg><svg class="cog" aria-hidden="true"><use href="#i-gear"/></svg></button>
-      <button class="ap-photo" id="apPhoto" aria-label="صورتي"><span class="ap-ring"></span><span class="ap-pic" id="apPic"></span><span class="ap-cam" aria-hidden="true">📷</span></button>
-    </div>
+    <button class="ap-photo" id="apPhoto" aria-label="صورتي"><span class="ap-ring"></span><span class="ap-pic" id="apPic"></span><span class="ap-cam" aria-hidden="true">📷</span></button>
     <div class="ap-words">
       <h1 class="ap-title">تطبيقات ماريا اليوميّة</h1>
       <p class="ap-hello" id="apHello"></p>

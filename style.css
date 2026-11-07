@@ -3504,9 +3504,5 @@ span.lab-whole { font-size: 120px; line-height: 1; }
 .ap-lockclose { position: absolute; top: 14px; left: 14px; width: 52px; height: 52px; border: 0; border-radius: 50%; cursor: pointer;
   background: rgba(255, 255, 255, .95); box-shadow: 0 3px 10px rgba(150, 60, 110, .18); font: 800 22px var(--en); color: var(--deep); }
 
-/* Mama's gear above Maria's photo on the apps page (7 Nov 2026): faint, press and hold 2 seconds */
-.ap-me { position: relative; flex: none; }
-.ap .ap-gear { position: absolute; top: auto; right: auto; bottom: calc(100% + 2px); left: 50%; transform: translateX(-50%); width: 48px; height: 48px; opacity: .35; z-index: 2; }
-.ap .ap-gear .ring { width: 48px; height: 48px; }
-.ap .ap-gear .cog { width: 24px; height: 24px; }
-.ap .ap-gear.holding { opacity: 1; }
+/* Mama's gear on the apps page: the top right corner, as in Talk Cards (7 Nov 2026) */
+.ap .ap-gear { z-index: 3; }
