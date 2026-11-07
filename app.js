@@ -1296,7 +1296,8 @@ const studioRows = () => `
 const DICT_KEY = 'tc:maria:dictationOpen';
 // مسرح المسائل (theatre/) is locked the same way
 const THEATRE_KEY = 'tc:maria:theatreOpen';
-function openParent() { Speech.stop(); renderParent(); show('parent'); $('#parent').scrollTop = 0; }
+let parentFromApps = false;   // opened from the gear on her apps page: Done goes back there
+function openParent() { parentFromApps = !!(APPS && APPS.isOn()); Speech.stop(); renderParent(); show('parent'); $('#parent').scrollTop = 0; }
 function onParentClick(e) {
   const b = e.target.closest('button'); if (!b) return;
   const s = st.settings;
@@ -1320,7 +1321,7 @@ function onParentClick(e) {
     return;
   }
   switch (b.dataset.act) {
-    case 'close': renderHome(); break;
+    case 'close': if (parentFromApps && APPS) { parentFromApps = false; APPS.home(); } else renderHome(); break;
     case 'test': {
       const el = document.createElement('div');
       SFX.init(); primeSpeech(); unlockVoice();
@@ -1634,7 +1635,7 @@ async function boot() {
   }
   if (APP === 'talk-cards' && PROFILES.includes('maria') && window.MariaApps) {
     APPS = window.MariaApps.mount({
-      today, show, toast, SFX,
+      today, show, toast, SFX, holdToOpen, openParent,
       photo: () => (prof === 'maria' && st.photo) || '',
       setPhoto: url => { if (prof !== 'maria') return; st.photo = url; save(); },
       status: () => {

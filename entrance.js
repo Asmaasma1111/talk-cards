@@ -25,7 +25,11 @@ function mount(api) {
 <section id="apps" class="screen ap" dir="rtl" lang="ar" hidden>
   <div class="ap-sky" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
   <header class="ap-head">
-    <button class="ap-photo" id="apPhoto" aria-label="صورتي"><span class="ap-ring"></span><span class="ap-pic" id="apPic"></span><span class="ap-cam" aria-hidden="true">📷</span></button>
+    <div class="ap-me">
+      <!-- Mama's parent area, above her photo (her request, 7 Nov 2026); press and hold 2 seconds, like the gear in Talk Cards -->
+      <button class="gear ap-gear" id="apGear" aria-label="Parent area: press and hold"><svg class="ring" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="24"/></svg><svg class="cog" aria-hidden="true"><use href="#i-gear"/></svg></button>
+      <button class="ap-photo" id="apPhoto" aria-label="صورتي"><span class="ap-ring"></span><span class="ap-pic" id="apPic"></span><span class="ap-cam" aria-hidden="true">📷</span></button>
+    </div>
     <div class="ap-words">
       <h1 class="ap-title">تطبيقات ماريا اليوميّة</h1>
       <p class="ap-hello" id="apHello"></p>
@@ -167,6 +171,7 @@ function mount(api) {
     if (t.dataset.app === 'theatre' && !theatreOpen()) { api.toast('مسرح المسائل يُفتح قريبًا'); return; }
     setTimeout(() => { if (t.dataset.app === 'studio') location.href = 'studio/'; else if (t.dataset.app === 'dict') location.href = 'dictation/'; else if (t.dataset.app === 'theatre') location.href = 'theatre/'; else api.open(t.dataset.app); }, 170);
   });
+  if (api.holdToOpen && api.openParent) api.holdToOpen($('#apGear'), 2000, api.openParent);
   $('#apPhoto').addEventListener('click', () => { api.SFX.init(); $('#apFile').click(); });
   $('#apFile').addEventListener('change', async e => {
     const f = e.target.files && e.target.files[0]; e.target.value = '';
