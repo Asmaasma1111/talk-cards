@@ -1,1 +1,11 @@
-{"files": ["dictation/", "dictation/index.html", "dictation/css/dict.css", "dictation/js/app.js"]}
+{
+ "files": [
+  "dictation/",
+  "dictation/css/dict.css",
+  "dictation/data/cards.json",
+  "dictation/files.json",
+  "dictation/index.html",
+  "dictation/js/app.js",
+  "dictation/js/tashkeel.js"
+ ]
+}
