@@ -7,91 +7,105 @@ const C = TH.core, U = TH.ui, { el } = U;
 const COLS = [[1000, 'آلاف'], [100, 'مئات'], [10, 'عشرات'], [1, 'آحاد']];
 const colsFor = n => COLS.filter(([v]) => v === 1 || v <= n);
 
+// the place-value colours, the same on every screen: آلاف pink, مئات blue, عشرات orange, آحاد green
 function chart(n, key, opts) {
   opts = opts || {};
   const cols = colsFor(Math.max(n, opts.atLeast || 0));
   return el('div', { class: 'pv-chart', dir: 'ltr' }, ...cols.map(([v, name]) => {
     const k = Math.floor(n / v) % 10;
     const body = el('div', { class: 'pv-body' });
-    if (!opts.empty) for (let i = 0; i < k; i++) body.append(TH.act.pieceEl(v, key, 'blocks'));
-    return el('div', { class: 'pv-col', 'data-v': v }, el('div', { class: 'pv-name' }, name), body, el('div', { class: 'pv-digit' }, opts.empty ? '' : C.ar(k)));
+    // empty: places kept for the pieces still to come, so nothing jumps when they arrive
+    for (let i = 0; i < k; i++) body.append(opts.empty ? el('span', { class: 'pc-hole', 'data-v': v }, TH.act.pieceEl(v, key, 'blocks')) : TH.act.pieceEl(v, key, 'blocks'));
+    return el('div', { class: 'pv-col c' + v, 'data-v': v }, el('div', { class: 'pv-name' }, name), body, el('div', { class: 'pv-digit' }, opts.empty ? '' : C.ar(k)));
   }));
 }
-function answerPad(host, ask, want, done) {
+// the question and a number pad in the answer place; it waits (dimmed) until the act-out is finished
+function answerPad(dock, ask, want, done) {
   const box = el('span', { class: 'ans-box' }, '');
   let typed = '', wrong = 0;
   const ok = el('button', { class: 'btn btn-done', type: 'button' }, U.icon('tick'));
-  const pad = TH.sentence.keypad(k => { if (k === 'del') typed = typed.slice(0, -1); else if (typed.length < 5) typed += k; box.textContent = C.ar(typed); });
+  const pad = TH.sentence.keypad(k => { if (wrap.classList.contains('wait')) return; if (k === 'del') typed = typed.slice(0, -1); else if (typed.length < 5) typed += k; box.textContent = C.ar(typed); });
   const row = el('div', { class: 'ans-row', dir: 'rtl' }, el('span', { class: 'ask' }, ask), box);
-  const wrap = el('div', { class: 'pv-answer' }, row, el('div', { class: 'ans-foot' }, pad, ok));
-  host.append(wrap);
+  const wrap = el('div', { class: 'ans-wrap pv-answer' }, row, el('div', { class: 'ans-foot' }, pad, ok));
+  dock.append(wrap);
   ok.addEventListener('click', () => {
-    if (!typed) return;
+    if (!typed || wrap.classList.contains('wait')) return;
     if (+typed === want) { U.sound('good'); ok.disabled = true; setTimeout(() => done(+typed), 600); return; }
     wrong++; typed = ''; box.textContent = ''; U.sound('soft'); U.toast(wrong >= 2 ? 'انظري إلى الأعمدة: كم في كل عمود؟' : 'عُدّي مرّة أخرى.');
   });
   return wrap;
 }
+const askOf = story => story.text.split('.').pop().trim();
 
 /* تكوين عدد: the pieces wait in a pile; she drags each into its column; the digits appear; she writes the number */
-function make(host, m, story, done) {
+function make(S, m, story, done) {
   const key = story.thing;
   const pile = el('div', { class: 'pv-pile', 'data-col': 'pile', dir: 'ltr' });
   Object.entries(story.pieces).sort((a, b) => b[0] - a[0]).forEach(([v, k]) => { for (let i = 0; i < k; i++) pile.append(TH.act.pieceEl(+v, key, 'blocks')); });
   const ch = chart(m.ans, key, { empty: true });
-  const wrap = el('div', { class: 'pv make' }, pile, ch);
-  host.append(wrap);
-  const left = () => pile.querySelectorAll('.pc').length;
-  TH.bars.drag(wrap, {
-    chip: '.pc', target: '.pv-col',
+  S.board.append(el('div', { class: 'pv make' }, pile, ch)); U.fit(S.board, { max: 1.6 });
+  const pad = answerPad(S.dock, askOf(story), m.ans, done); pad.classList.add('wait');
+  const left = () => pile.querySelectorAll('.pc:not(.used)').length;
+  TH.bars.drag(S.root, {
+    chip: '.pv-pile .pc', target: '.pv-col',
     accept(p, col) {
       if (+col.dataset.v !== +p.dataset.v) return false;
-      col.querySelector('.pv-body').append(p); p.classList.add('used');
-      const k = col.querySelectorAll('.pc').length; col.querySelector('.pv-digit').textContent = C.ar(k);
+      const spot = col.querySelector('.pc-hole:not(.full)');
+      if (!spot) return false;
+      // its place in the pile stays (empty), and it fills the next place kept for it in the column: nothing else moves
+      p.classList.add('used');
+      spot.textContent = ''; spot.append(TH.act.pieceEl(+p.dataset.v, key, 'blocks')); spot.classList.add('full');
+      const k = col.querySelectorAll('.pc-hole.full').length; col.querySelector('.pv-digit').textContent = C.ar(k);
       U.sound('drop'); U.count(k);
       if (!left()) {
         ch.querySelectorAll('.pv-digit').forEach(d => { if (!d.textContent) d.textContent = '٠'; });
-        setTimeout(() => answerPad(host, story.text.split('.').pop().trim(), m.ans, done), 500);
+        setTimeout(() => { pad.classList.remove('wait'); U.sound('pop'); }, 400);
       }
       return true;
     }
   });
 }
 
-/* مقارنة أعداد: both numbers as columns of blocks; she puts > < or = between them, then picks who has more */
-function compare(host, m, story, done) {
+/* مقارنة أعداد: one table, a row for each child, the places one above the other (as in her book); she puts > < or =
+   between the two numbers, then picks who has more. The signs and the names are always on screen, beside or under the table. */
+function compare(S, m, story, done) {
   const [a, b] = C.known(story), key = story.thing;
-  const side = (n, name) => el('div', { class: 'pv-side' }, el('div', { class: 'pv-who' }, name), chart(n, key, { atLeast: Math.max(a, b) }), el('div', { class: 'pv-num' }, C.ar(n)));
+  const cols = colsFor(Math.max(a, b));
+  const cell = (n, v) => { const k = Math.floor(n / v) % 10; return el('div', { class: 'pt-cell c' + v }, el('div', { class: 'pv-body' }, ...Array.from({ length: k }, () => TH.act.pieceEl(v, key, 'blocks'))), el('div', { class: 'pv-digit' }, C.ar(k))); };
+  const table = el('div', { class: 'pv-table', dir: 'ltr', style: { '--n': cols.length } },
+    ...cols.map(([v, name]) => el('div', { class: 'pt-head c' + v }, name)), el('div', { class: 'pt-corner' }),
+    ...[a, b].map((n, i) => [...cols.map(([v]) => cell(n, v)), el('div', { class: 'pt-who' }, el('b', {}, story.who[i]), el('span', { class: 'pv-num' }, C.ar(n)))]).flat());
+  S.board.append(el('div', { class: 'pv compare' }, table)); U.fit(S.board, { max: 1.5 });
   const slot = el('span', { class: 'sl op' });
   const line = el('div', { class: 'cmp-line', dir: 'ltr' }, el('span', { class: 'n' }, C.ar(a)), slot, el('span', { class: 'n' }, C.ar(b)));
-  const signs = el('div', { class: 'tiles-o' }, ...['>', '<', '='].map(s => el('button', { class: 'tile opk', type: 'button', 'data-v': s }, s)));
-  const wrap = el('div', { class: 'pv compare' }, el('div', { class: 'pv-sides', dir: 'ltr' }, side(a, story.who[0]), side(b, story.who[1])), line, signs);
-  host.append(wrap);
+  // left to right, as the line reads: in a right-to-left row the iPad would draw < as > (bidi mirroring)
+  const signs = el('div', { class: 'tiles-o', dir: 'ltr' }, ...['>', '<', '='].map(s => el('button', { class: 'tile opk', type: 'button', 'data-v': s }, s)));
+  S.dock.append(line, signs);
   const pick = s => {
-    if (s !== m.sign) { U.sound('soft'); U.toast('قارني المئات أوّلًا، ثم العشرات.'); return; }
+    if (slot.classList.contains('filled')) return;
+    if (s !== m.sign) { U.sound('soft'); U.toast('قارني ' + (cols.length > 3 ? 'الآلاف' : 'المئات') + ' أوّلًا.'); return; }
     slot.textContent = s; slot.classList.add('filled'); signs.remove(); U.sound('good');
-    const q = story.text.split('.').pop().trim();
-    const who = el('div', { class: 'who-pick' }, el('div', { class: 'ask' }, q), el('div', { class: 'who-row' }, ...story.who.map(n => el('button', { class: 'btn btn-next', type: 'button', onclick: () => {
-      if (n === m.ans) { U.sound('good'); done(n); } else { U.sound('soft'); U.toast('انظري إلى العلامة.'); }
-    } }, n))));
-    wrap.append(who);
+    S.dock.append(el('div', { class: 'who-pick' }, el('div', { class: 'ask' }, askOf(story)), el('div', { class: 'who-row' }, ...story.who.map(n => el('button', { class: 'btn btn-who', type: 'button', onclick: e => {
+      if (n === m.ans) { U.sound('good'); e.currentTarget.classList.add('right'); setTimeout(() => done(n), 500); } else { U.sound('soft'); U.toast('انظري إلى العلامة.'); }
+    } }, n)))));
   };
-  TH.bars.drag(wrap, { chip: '.tile', target: '.sl', accept: (t) => { pick(t.dataset.v); return true; }, tap: t => pick(t.dataset.v) });
+  TH.bars.drag(S.root, { chip: '.tile', target: '.sl', accept: (t) => { pick(t.dataset.v); return true; }, tap: t => pick(t.dataset.v) });
 }
 
 /* ترتيب أعداد: three cards into three places, from the most to the least */
-function order(host, m, story, done) {
+function order(S, m, story, done) {
   const n = C.known(story);
   const cards = story.who.map((w, i) => el('button', { class: 'ord-card', type: 'button', 'data-w': w }, el('b', {}, w), el('span', {}, C.ar(n[i]))));
   const places = ['الأكثر', '', 'الأقلّ'].map((t, i) => el('div', { class: 'ord-place', 'data-i': i }, el('span', { class: 'ord-tag' }, t)));
   const ok = el('button', { class: 'btn btn-done', type: 'button' }, U.icon('tick'));
-  const wrap = el('div', { class: 'pv order' }, el('div', { class: 'ord-cards' }, ...cards), el('div', { class: 'ord-places' }, ...places), el('div', { class: 'act-foot' }, ok));
-  host.append(wrap);
-  TH.bars.drag(wrap, {
+  const tray = el('div', { class: 'ord-cards' }, ...cards);
+  S.board.append(el('div', { class: 'pv order' }, tray, el('div', { class: 'ord-places' }, ...places))); U.fit(S.board, { max: 1.5 });
+  S.dock.append(ok);
+  TH.bars.drag(S.root, {
     chip: '.ord-card', target: '.ord-place, .ord-cards',
     accept(c, t) {
       if (t.classList.contains('ord-cards')) { t.append(c); U.sound('tap'); return true; }
-      const old = t.querySelector('.ord-card'); if (old) wrap.querySelector('.ord-cards').append(old);
+      const old = t.querySelector('.ord-card'); if (old) tray.append(old);
       t.append(c); U.sound('drop'); return true;
     }
   });
@@ -104,47 +118,48 @@ function order(host, m, story, done) {
 }
 
 /* تقريب: a number line between the two round numbers; she drags the ball to the nearer one */
-function round(host, m, story, done) {
+function round(S, m, story, done) {
   const lo = Math.floor(m.from / m.to) * m.to, hi = lo + m.to, mid = lo + m.to / 2;
   const at = v => ((v - lo) / (hi - lo)) * 100;
   const ball = el('span', { class: 'nl-ball', style: { left: at(m.from) + '%' } }, C.ar(m.from));
   const ends = [lo, hi].map(v => el('span', { class: 'nl-end', 'data-v': v, style: { left: at(v) + '%' } }, el('i'), el('b', {}, C.ar(v))));
   const line = el('div', { class: 'nl', dir: 'ltr' }, el('span', { class: 'nl-bar' }), ...ends,
     el('span', { class: 'nl-mid', style: { left: '50%' } }, el('i'), el('b', {}, C.ar(mid))), ball);
-  const wrap = el('div', { class: 'pv round' }, line);
-  host.append(wrap);
+  S.board.append(el('div', { class: 'pv round' }, line)); U.fit(S.board, { max: 1.4 });
+  const res = el('div', { class: 'cmp-line', dir: 'ltr' }, el('span', { class: 'n' }, C.ar(m.from)), el('span', { class: 'sl op' }, '≈'), el('span', { class: 'sl ans' }, ''));
+  S.dock.append(res);
   let d = null;
+  const xOf = e => { const r = line.getBoundingClientRect(); return (e.clientX - r.left) / r.width; };
   ball.addEventListener('pointerdown', e => { e.preventDefault(); d = { id: e.pointerId }; try { ball.setPointerCapture(e.pointerId); } catch (err) {} ball.classList.add('lifted'); U.sound('pick'); });
-  ball.addEventListener('pointermove', e => {
-    if (!d) return;
-    const r = line.getBoundingClientRect(); const x = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
-    ball.style.left = (x * 100) + '%';
-  });
-  ball.addEventListener('pointerup', e => {
+  ball.addEventListener('pointermove', e => { if (!d) return; ball.style.left = (Math.max(0, Math.min(1, xOf(e))) * 100) + '%'; });
+  const up = e => {
     if (!d) return; d = null; ball.classList.remove('lifted');
-    const r = line.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width;
-    const end = x < 0.2 ? lo : x > 0.8 ? hi : null;
+    const x = xOf(e);
+    const end = x < 0.3 ? lo : x > 0.7 ? hi : null;
     if (end == null) { ball.style.left = at(m.from) + '%'; U.sound('tap'); return; }
     ball.style.left = at(end) + '%';
     if (end === m.ans) { U.sound('good'); ball.textContent = C.ar(end); ends.forEach(e2 => e2.classList.toggle('won', +e2.dataset.v === end));
-      wrap.append(el('div', { class: 'cmp-line', dir: 'ltr' }, el('span', { class: 'n' }, C.ar(m.from)), el('span', { class: 'sl op filled' }, '≈'), el('span', { class: 'n' }, C.ar(end))));
+      const a = res.querySelector('.ans'); a.textContent = C.ar(end); a.classList.add('filled');
       setTimeout(() => done(end), 900); }
     else { U.sound('soft'); U.toast('أيّهما أقرب؟ انظري إلى المنتصف.'); setTimeout(() => { ball.style.left = at(m.from) + '%'; }, 700); }
-  });
+  };
+  ball.addEventListener('pointerup', up);
+  ball.addEventListener('pointercancel', () => { d = null; ball.classList.remove('lifted'); ball.style.left = at(m.from) + '%'; });
 }
 
 /* أكبر عدد / أصغر عدد: three digit cards into the columns */
-function digits(host, m, story, done, smallest) {
+function digits(S, m, story, done, smallest) {
   const cards = m.digits.map(d => el('button', { class: 'dg-card', type: 'button', 'data-d': d }, C.ar(d)));
-  const cols = [[100, 'مئات'], [10, 'عشرات'], [1, 'آحاد']].map(([v, name]) => el('div', { class: 'dg-col', 'data-v': v }, el('div', { class: 'pv-name' }, name), el('div', { class: 'dg-slot' })));
+  const cols = [[100, 'مئات'], [10, 'عشرات'], [1, 'آحاد']].map(([v, name]) => el('div', { class: 'dg-col c' + v, 'data-v': v }, el('div', { class: 'pv-name' }, name), el('div', { class: 'dg-slot' })));
   const ok = el('button', { class: 'btn btn-done', type: 'button' }, U.icon('tick'));
-  const wrap = el('div', { class: 'pv digits' }, el('div', { class: 'dg-cards' }, ...cards), el('div', { class: 'dg-cols', dir: 'ltr' }, ...cols), el('div', { class: 'act-foot' }, ok));
-  host.append(wrap);
-  TH.bars.drag(wrap, {
+  const tray = el('div', { class: 'dg-cards' }, ...cards);
+  S.board.append(el('div', { class: 'pv digits' }, tray, el('div', { class: 'dg-cols', dir: 'ltr' }, ...cols))); U.fit(S.board, { max: 1.5 });
+  S.dock.append(ok);
+  TH.bars.drag(S.root, {
     chip: '.dg-card', target: '.dg-slot, .dg-cards',
     accept(c, t) {
       if (t.classList.contains('dg-cards')) { t.append(c); U.sound('tap'); return true; }
-      const old = t.querySelector('.dg-card'); if (old) wrap.querySelector('.dg-cards').append(old);
+      const old = t.querySelector('.dg-card'); if (old) tray.append(old);
       t.append(c); U.sound('drop'); return true;
     }
   });
@@ -158,16 +173,17 @@ function digits(host, m, story, done, smallest) {
 }
 
 /* قيمة منزلية: notes of 1000, 100, 10 and 1 riyal into the wallet until it holds the price */
-function notes(host, m, story, done) {
-  const supply = el('div', { class: 'notes-supply' }, ...[1000, 100, 10, 1].map(v => el('button', { class: 'note n' + v, type: 'button', 'data-v': v }, C.ar(v))));
-  const wallet = el('div', { class: 'wallet', dir: 'ltr' }, ...[1000, 100, 10, 1].map(v => el('div', { class: 'w-col', 'data-v': v }, el('div', { class: 'w-body' }), el('div', { class: 'pv-digit' }, '٠'))));
+function notes(S, m, story, done) {
+  // the notes lie in the same order as the wallet's columns under them (آلاف on the left, as in her book)
+  const supply = el('div', { class: 'notes-supply', dir: 'ltr' }, ...[1000, 100, 10, 1].map(v => el('button', { class: 'note n' + v, type: 'button', 'data-v': v }, C.ar(v))));
+  const wallet = el('div', { class: 'wallet', dir: 'ltr' }, ...COLS.map(([v, name]) => el('div', { class: 'w-col c' + v, 'data-v': v }, el('div', { class: 'pv-name' }, name), el('div', { class: 'w-body' }), el('div', { class: 'pv-digit' }, '٠'))));
   const total = el('span', { class: 'z-count' }, '٠');
   const ok = el('button', { class: 'btn btn-done', type: 'button' }, U.icon('tick'));
-  const wrap = el('div', { class: 'pv notes' }, supply, el('div', { class: 'wallet-head' }, el('span', {}, 'المحفظة'), total), wallet, el('div', { class: 'act-foot' }, ok));
-  host.append(wrap);
+  S.board.append(el('div', { class: 'pv notes' }, supply, wallet)); U.fit(S.board, { max: 1.4 });
+  S.dock.append(el('div', { class: 'wallet-head' }, el('span', {}, 'المحفظة'), total), ok);
   const sum = () => Array.from(wallet.querySelectorAll('.note')).reduce((t, n) => t + +n.dataset.v, 0);
   const refresh = () => { total.textContent = C.ar(sum()); wallet.querySelectorAll('.w-col').forEach(c => { c.querySelector('.pv-digit').textContent = C.ar(c.querySelectorAll('.note').length); }); };
-  TH.bars.drag(wrap, {
+  TH.bars.drag(S.root, {
     chip: '.note', target: '.w-col, .notes-supply',
     accept(n, t) {
       if (t.classList.contains('notes-supply')) { if (n.closest('.wallet')) { n.remove(); refresh(); U.sound('tap'); } return true; }
@@ -185,9 +201,9 @@ function notes(host, m, story, done) {
   });
 }
 
-function mount(host, m, story, done) {
+function mount(S, m, story, done) {
   ({ 'pv-make': make, 'pv-compare': compare, 'pv-order': order, 'pv-round': round, 'pv-notes': notes,
-     'pv-max': (h, a, b, d) => digits(h, a, b, d, false), 'pv-min': (h, a, b, d) => digits(h, a, b, d, true) })[m.shape](host, m, story, done);
+     'pv-max': (h, a, b, d) => digits(h, a, b, d, false), 'pv-min': (h, a, b, d) => digits(h, a, b, d, true) })[m.shape](S, m, story, done);
 }
 TH.pv = { mount, chart };
 })(window.TH);

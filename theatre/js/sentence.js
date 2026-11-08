@@ -6,14 +6,17 @@
 'use strict';
 const C = TH.core, U = TH.ui, { el } = U;
 
+// iPad on its side: a phone-style block of keys in the answer column. Upright: one row of keys under the stage
+// (CSS reorders them to ١ ٢ ... ٩ ٠ ⌫ with --o).
 function keypad(onKey) {
   const keys = [7, 8, 9, 4, 5, 6, 1, 2, 3, 'del', 0];
+  const row = k => (k === 'del' ? 11 : k === 0 ? 10 : k);
   return el('div', { class: 'keypad', dir: 'ltr' }, ...keys.map(k => el('button', {
-    class: 'key' + (k === 'del' ? ' del' : ''), type: 'button', onclick: () => { U.sound('tap'); onKey(k); }
+    class: 'key' + (k === 'del' ? ' del' : ''), type: 'button', style: { '--o': row(k) }, onclick: () => { U.sound('tap'); onKey(k); }
   }, k === 'del' ? U.icon('del') : C.ar(k))));
 }
 
-function mount(host, m, story, { reread, done }) {
+function mount(S, m, story, { reread, done }) {
   const picture = TH.bars.draw(m, story, { show: Object.fromEntries(Object.entries(TH.bars.slotValues(m)).map(([k, v]) => [k, TH.bars.label(v)])) });
   const slots = [0, 1, 2, 3].map(i => el('button', { class: 'sl' + (i === 1 ? ' op' : ''), type: 'button', 'data-i': i }));
   const line = el('div', { class: 'sentence', dir: 'rtl' }, slots[0], slots[1], slots[2], el('span', { class: 'eq' }, '='), slots[3]);
@@ -22,8 +25,10 @@ function mount(host, m, story, { reread, done }) {
     el('div', { class: 'tiles-n' }, ...nums.map(v => el('button', { class: 'tile num', type: 'button', 'data-v': v }, TH.bars.label(v === '?' ? '?' : +v)))),
     el('div', { class: 'tiles-o' }, ...['+', '−', '×', '÷'].map(v => el('button', { class: 'tile opk', type: 'button', 'data-v': v }, v))));
   const ok = el('button', { class: 'btn btn-done', type: 'button' }, U.icon('tick'));
-  const wrap = el('div', { class: 'sentence-step' }, el('div', { class: 'mini-pic' }, picture), line, tiles, el('div', { class: 'act-foot' }, ok));
-  host.append(wrap);
+  const wrap = S.root;
+  S.board.append(el('div', { class: 'sentence-step' }, el('div', { class: 'mini-pic' }, picture), line));
+  U.fit(S.board, { max: 1.3 });
+  S.dock.append(tiles, ok);
   const val = Array(4).fill(null);
   const tileOf = v => Array.from(tiles.querySelectorAll('.tile')).find(t => t.dataset.v === v && t.classList.contains('used'));
   function put(i, t) {
@@ -61,7 +66,7 @@ function mount(host, m, story, { reread, done }) {
   });
 
   function askAnswer(sentence) {
-    tiles.remove(); ok.parentNode.remove();
+    S.dock.textContent = '';
     const box = el('span', { class: 'ans-box' }, '');
     const ok2 = el('button', { class: 'btn btn-done', type: 'button' }, U.icon('tick'));
     let typed = '';
@@ -70,7 +75,7 @@ function mount(host, m, story, { reread, done }) {
       box.textContent = C.ar(typed);
     });
     const ansRow = el('div', { class: 'ans-row', dir: 'rtl' }, el('span', { class: 'q' }, '؟'), el('span', { class: 'eq' }, '='), box);
-    wrap.append(ansRow, el('div', { class: 'ans-foot' }, pad, ok2));
+    S.dock.append(el('div', { class: 'ans-wrap' }, ansRow, el('div', { class: 'ans-foot' }, pad, ok2)));
     let wrong = 0;
     ok2.addEventListener('click', () => {
       if (!typed) return;
@@ -88,7 +93,6 @@ function mount(host, m, story, { reread, done }) {
       } else U.toast('عُدّي مرّة أخرى.');
     });
   }
-  return wrap;
 }
 
 TH.sentence = { mount, keypad };

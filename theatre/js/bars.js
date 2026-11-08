@@ -12,7 +12,7 @@ const C = TH.core, U = TH.ui, { el } = U;
 // accept(chip, target) -> true to place it; a refused chip floats back. Tapping a chip then a target works too.
 function drag(root, { chip, target, accept, tap }) {
   let d = null, picked = null;
-  const targetAt = (x, y) => { const h = document.elementFromPoint(x, y); const t = h && h.closest && h.closest(target); return t && root.contains(t) ? t : null; };
+  const targetAt = (x, y) => U.dropAt(root, target, x, y);
   root.addEventListener('pointerdown', e => {
     const c = e.target.closest(chip);
     if (!c || !root.contains(c) || c.classList.contains('used')) {
@@ -26,15 +26,13 @@ function drag(root, { chip, target, accept, tap }) {
   });
   root.addEventListener('pointermove', e => {
     if (!d || e.pointerId !== d.id) return;
-    if (!d.moved && Math.hypot(e.clientX - d.x, e.clientY - d.y) < 9) return;
+    if (!d.moved && Math.hypot(e.clientX - d.x, e.clientY - d.y) < 7) return;
     if (!d.moved) {
       d.moved = true; unpick(); U.sound('pick');
-      const r = d.c.getBoundingClientRect();
-      d.g = d.c.cloneNode(true); d.g.classList.add('ghost'); d.ox = d.x - r.left; d.oy = d.y - r.top;
-      Object.assign(d.g.style, { width: r.width + 'px', height: r.height + 'px' }); document.body.append(d.g);
+      d.g = U.ghost(d.c, d.x, d.y);
       d.c.classList.add('lifted');
     }
-    d.g.style.left = (e.clientX - d.ox) + 'px'; d.g.style.top = (e.clientY - d.oy) + 'px';
+    d.g.move(e.clientX, e.clientY);
     root.querySelectorAll('.over').forEach(x => x.classList.remove('over'));
     const t = targetAt(e.clientX, e.clientY); if (t) t.classList.add('over');
   });
@@ -86,17 +84,17 @@ function slotValues(m) {
 }
 const label = v => v === '?' ? '؟' : C.ar(v);
 
-/* step 2: the numbers and the ? go onto the parts */
-function numbers(host, m, story, done) {
+/* step 2: the numbers and the ? go onto the parts. S: { board, dock, root } from the story screen */
+function numbers(S, m, story, done) {
   const want = slotValues(m);
   const pic = draw(m, story, { show: {} });
   const chips = Object.values(want).map(v => el('button', { class: 'chip num', type: 'button', 'data-v': String(v) }, label(v)));
   for (let i = chips.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [chips[i], chips[j]] = [chips[j], chips[i]]; }
-  const tray = el('div', { class: 'chip-tray' }, ...chips);
-  const wrap = el('div', { class: 'draw-step' }, pic, tray);
-  host.append(wrap);
+  S.board.textContent = ''; S.dock.textContent = '';
+  S.board.append(el('div', { class: 'draw-step' }, pic)); U.fit(S.board, { max: 1.3 });
+  S.dock.append(el('div', { class: 'chip-tray' }, ...chips));
   let left = 3;
-  drag(wrap, {
+  drag(S.root, {
     chip: '.chip', target: '.slot',
     accept(chip, t) {
       if (t.textContent || String(want[t.dataset.slot]) !== chip.dataset.v) return false;
@@ -106,11 +104,10 @@ function numbers(host, m, story, done) {
       return true;
     }
   });
-  return wrap;
 }
 
 /* step 3: she builds the picture from pieces, then puts the numbers on */
-function build(host, m, story, done) {
+function build(S, m, story, done) {
   const b = m.bar, c = U.colour(story.thing);
   const W = b.layout === 'parts' ? b.whole : b.big;
   const len = v => Math.max(16, Math.round(v / W * 100));
@@ -125,11 +122,15 @@ function build(host, m, story, done) {
   const card = el('div', { class: 'hint-card', hidden: true }, draw(m, story, { show: {} }));
   hint.addEventListener('click', () => { card.hidden = !card.hidden; U.sound('tap'); });
   const ok = el('button', { class: 'btn btn-done', type: 'button' }, U.icon('tick'));
-  const wrap = el('div', { class: 'draw-step build' }, el('div', { class: 'build-top' }, hint, card), lanes, palette, el('div', { class: 'act-foot' }, ok));
-  host.append(wrap);
-  drag(wrap, {
+  S.board.textContent = ''; S.dock.textContent = '';
+  // the lanes keep the board's full width, so a bar is as long here as in the palette below
+  S.board.append(el('div', { class: 'draw-step build' }, el('div', { class: 'build-top' }, hint, card), lanes, palette));
+  U.fit(S.board, { max: 1.2 });
+  S.dock.append(ok);
+  drag(S.root, {
     chip: '.bp', target: '.lane, .bp-palette',
     accept(p, t) {
+      if (!lanes.isConnected) return false;
       if (t.classList.contains('bp-palette')) { palette.append(p); U.sound('tap'); return true; }
       t.append(p); U.sound('drop'); return true;
     }
@@ -145,10 +146,9 @@ function build(host, m, story, done) {
       const rows = [r1, r2];
       right = !top.length && rows.some(r => r.join() === 'big') && rows.some(r => r.join() === 'small,gap');
     }
-    if (right) { U.sound('good'); wrap.remove(); numbers(host, m, story, done); }
+    if (right) { U.sound('good'); numbers(S, m, story, done); }
     else { U.sound('soft'); card.hidden = false; U.toast('انظري إلى الصورة الصغيرة، ثم رتّبي القطع.'); }
   });
-  return wrap;
 }
 
 TH.bars = { draw, numbers, build, slotValues, drag, label };

@@ -226,6 +226,55 @@ async function allPads() {
   return new Promise(ok => { try { const q = d.transaction('pad').objectStore('pad').getAll(); q.onsuccess = () => ok(q.result || []); q.onerror = () => ok([]); } catch (e) { ok([]); } });
 }
 
-TH.ui = { el, $, $$, icon, toast, holdToOpen, wait, thing, pack, colour, THINGS, pic, hasPic, initAssets, sound, say, stop, count, initVoice };
+/* ---------- the screen never scrolls (her report, 8 Nov 2026: the compare box was far down and could not be reached) ----------
+   fit(box, opts): box holds one child; that child is laid out at its own size and scaled to fill the box without spilling,
+   whatever the iPad's turn and however many things are on it. It refits when the box changes size or its content changes.
+   opts.max: the largest scale (things grow on a big screen); opts.top: keep it at the top instead of the middle. */
+function fit(box, opts) {
+  opts = opts || {};
+  const inner = box.firstElementChild; if (!inner) return;
+  const max = opts.max || 1, min = 0.25;
+  box.classList.add('fit-box'); inner.classList.add('fit-in');
+  let raf = 0;
+  const later = () => { if (!raf) raf = requestAnimationFrame(apply); };
+  function apply() {
+    raf = 0;
+    const bw = box.clientWidth, bh = box.clientHeight; if (!bw || !bh || !inner.isConnected) return;
+    const fits = s => { inner.style.width = (bw / s) + 'px'; return inner.scrollWidth * s <= bw + 0.5 && inner.scrollHeight * s <= bh + 0.5; };
+    let s = max;
+    if (!fits(max)) { let lo = min, hi = max; for (let i = 0; i < 8; i++) { const mid = (lo + hi) / 2; if (fits(mid)) lo = mid; else hi = mid; } s = lo; fits(s); }
+    const dy = opts.top ? 0 : Math.max(0, (bh - inner.scrollHeight * s) / 2);
+    inner.style.transform = `translate(0, ${dy}px) scale(${s})`;
+    box.style.setProperty('--s', s);
+  }
+  new ResizeObserver(later).observe(box);
+  new MutationObserver(later).observe(inner, { childList: true, subtree: true, characterData: true });
+  apply();
+  return later;
+}
+// the copy that follows her finger: the same size as the thing she lifted (even when its board is scaled), moved with transform
+function ghost(node, x, y) {
+  const r = node.getBoundingClientRect(), k = node.offsetWidth ? r.width / node.offsetWidth : 1;
+  const g = node.cloneNode(true); g.classList.remove('lifted', 'picked', 'nope'); g.classList.add('ghost');
+  Object.assign(g.style, { width: node.offsetWidth + 'px', height: node.offsetHeight + 'px', left: '0', top: '0' });
+  const ox = x - r.left, oy = y - r.top;
+  const move = (cx, cy) => { g.style.transform = `translate3d(${cx - ox}px, ${cy - oy}px, 0) scale(${k * 1.12})`; };
+  move(x, y); document.body.append(g);
+  return { move, remove: () => g.remove() };
+}
+// where a finger lets go: the target under it, or the nearest one within reach (little fingers miss by a few millimetres)
+function dropAt(root, sel, x, y, reach) {
+  const h = document.elementFromPoint(x, y); const t = h && h.closest && h.closest(sel);
+  if (t && root.contains(t)) return t;
+  let best = null, bd = reach == null ? 60 : reach;
+  root.querySelectorAll(sel).forEach(n => {
+    const r = n.getBoundingClientRect(); if (!r.width) return;
+    const d = Math.hypot(Math.max(r.left - x, 0, x - r.right), Math.max(r.top - y, 0, y - r.bottom));
+    if (d < bd) { bd = d; best = n; }
+  });
+  return best;
+}
+
+TH.ui = { el, $, $$, icon, toast, holdToOpen, wait, thing, pack, colour, THINGS, pic, hasPic, initAssets, sound, say, stop, count, initVoice, fit, ghost, dropAt };
 TH.store = store; TH.pads = { put: putPad, get: getPad, all: allPads };
 })(window.TH);

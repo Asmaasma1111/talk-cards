@@ -35,7 +35,7 @@ function mount(host, m, story, opts) {
 
   function renderZone(z) {
     const box = zoneEls[z.id];
-    const body = box.querySelector('.z-body'); body.textContent = '';
+    const body = box.querySelector('.zb-in'); body.textContent = '';
     const key = z.thing || story.thing;
     SIZES.forEach(v => {
       const list = bag[z.id].filter(x => x === v); if (!list.length) return;
@@ -58,15 +58,15 @@ function mount(host, m, story, opts) {
   function makeZone(z) {
     const box = el('div', { class: 'zone' + (z.out ? ' z-out' : '') + (z.big ? ' z-big' : '') + (z.row ? ' z-rowz' : '') + (z.fixed ? ' z-fixed' : ''), 'data-zone': z.id },
       el('div', { class: 'z-head' }, el('span', { class: 'z-label' }, z.label), el('span', { class: 'z-count' }, '٠')),
-      el('div', { class: 'z-body' }),
+      el('div', { class: 'z-body' }, el('div', { class: 'zb-in' })),
       el('button', { class: 'z-tie', hidden: true, type: 'button' }));
     zoneEls[z.id] = box; return box;
   }
   function supplyEl() {
     const s = el('div', { class: 'zone z-supply', 'data-zone': 'more' }, el('div', { class: 'z-head' }, el('span', { class: 'z-label' }, m.supply.label)));
-    const body = el('div', { class: 'z-body' });
+    const inn = el('div', { class: 'zb-in' }), body = el('div', { class: 'z-body' }, inn);
     const top = Math.max(...m.zones.map(z => Math.max(z.start, z.target || 0)));
-    (m.mode === 'ones' ? [1] : SIZES.filter(v => v === 1 || v <= top)).forEach(v => body.append(el('span', { class: 'z-row s' + v }, pieceEl(v, story.thing, m.mode))));
+    (m.mode === 'ones' ? [1] : SIZES.filter(v => v === 1 || v <= top)).forEach(v => inn.append(el('span', { class: 'z-row s' + v }, pieceEl(v, story.thing, m.mode))));
     s.append(body); return s;
   }
 
@@ -81,6 +81,8 @@ function mount(host, m, story, opts) {
   if (m.pairs) board.append(el('div', { class: 'pairs' }, el('span', { class: 'pairs-l' }, 'أزواج'), el('span', { class: 'pairs-n' }, '٠')));
   host.append(board);
   m.zones.forEach(renderZone);
+  // every box keeps all its things in sight: they shrink to fit as more come in
+  board.querySelectorAll('.z-body').forEach(b => U.fit(b, { max: 1.25, top: !b.closest('.z-supply') }));
 
   /* ---------- dragging ---------- */
   let drag = null;
@@ -98,16 +100,13 @@ function mount(host, m, story, opts) {
   board.addEventListener('pointermove', e => {
     if (!drag || e.pointerId !== drag.id) return;
     const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
-    if (!drag.moved && Math.hypot(dx, dy) < 9) return;
+    if (!drag.moved && Math.hypot(dx, dy) < 7) return;
     if (!drag.moved) {
       drag.moved = true; U.sound('pick');
-      const r = drag.p.getBoundingClientRect();
-      drag.ghost = drag.p.cloneNode(true); drag.ghost.classList.add('ghost');
-      Object.assign(drag.ghost.style, { width: r.width + 'px', height: r.height + 'px', left: r.left + 'px', top: r.top + 'px' });
-      document.body.append(drag.ghost); drag.ox = drag.x - r.left; drag.oy = drag.y - r.top;
+      drag.ghost = U.ghost(drag.p, drag.x, drag.y);
       if (drag.from !== 'more') drag.p.classList.add('lifted');
     }
-    drag.ghost.style.left = (e.clientX - drag.ox) + 'px'; drag.ghost.style.top = (e.clientY - drag.oy) + 'px';
+    drag.ghost.move(e.clientX, e.clientY);
     const over = zoneAt(e.clientX, e.clientY);
     board.querySelectorAll('.zone.over').forEach(x => x.classList.remove('over'));
     if (over && over !== drag.from) { const ze = board.querySelector(`[data-zone="${over}"]`); ze && ze.classList.add('over'); }
@@ -125,10 +124,7 @@ function mount(host, m, story, opts) {
   board.addEventListener('pointerup', endDrag);
   board.addEventListener('pointercancel', e => { if (drag && drag.ghost) drag.ghost.remove(); if (drag) drag.p.classList.remove('lifted'); drag = null; });
 
-  function zoneAt(x, y) {
-    const hit = document.elementFromPoint(x, y); const z = hit && hit.closest && hit.closest('[data-zone]');
-    return z && board.contains(z) ? z.dataset.zone : null;
-  }
+  function zoneAt(x, y) { const z = U.dropAt(board, '[data-zone]', x, y, 40); return z ? z.dataset.zone : null; }
   const zoneOf = id => m.zones.find(z => z.id === id);
   function take(id, v) { const i = bag[id].indexOf(v); if (i < 0) return false; bag[id].splice(i, 1); return true; }
 
@@ -191,7 +187,7 @@ async function replay(host, m, story) {
     zb.classList.add('lit');
     const n = 12;
     for (let k = 1; k <= n; k++) { c.textContent = C.ar(Math.round(z.start + (want - z.start) * k / n)); if (k % 3 === 0) U.sound(want > z.start ? 'drop' : 'tap'); await U.wait(55); }
-    const body = zb.querySelector('.z-body'); body.textContent = '';
+    const body = zb.querySelector('.zb-in'); body.textContent = '';
     [1000, 100, 10, 1].forEach(v => {
       const list = C.pieces(want, m.mode).filter(x => x === v); if (!list.length) return;
       const row = el('span', { class: 'z-row s' + v });
