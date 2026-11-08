@@ -358,6 +358,14 @@ a { color: inherit; text-decoration: none; }
 .key { height: 64px; border-radius: 16px; background: #fff; font-size: 32px; box-shadow: 0 4px 0 var(--line); }
 .key.del { font-size: 28px; color: #9C5A6C; }
 .key:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--line); }
+/* her keypad (8 Nov 2026): "simple ... kind of transparent, and when she clicks, it lightens up with a purple color".
+   See-through frosted keys with a thin outline; a tap lights the key purple for a moment (.lit, set on the touch itself). */
+.keypad.glass .key { background: rgba(255, 255, 255, .28); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  border: 2px solid rgba(124, 77, 196, .28); box-shadow: none; color: var(--plum); transition: background .35s, color .35s, box-shadow .35s, border-color .35s; }
+.keypad.glass .key.del { color: #7C4DC4; }
+.keypad.glass .key:active { transform: none; }
+.keypad.glass .key.lit { background: #8B5CF6; border-color: #8B5CF6; color: #fff; transition: none;
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, .25), 0 0 22px rgba(139, 92, 246, .65); }
 
 /* ---------- scene 5 ---------- */
 .replay-pic { width: 560px; }

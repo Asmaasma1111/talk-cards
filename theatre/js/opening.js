@@ -10,7 +10,7 @@
    The sound she picks becomes the default (DEFAULT below); the test page theatre/_sounds.html plays all five. */
 (function (TH) {
 'use strict';
-const DEFAULT = 'piano';
+const DEFAULT = 'swell';      // her pick, 8 Nov 2026: "5 strings it is"
 let ctx = null, verb = null;
 function ac() {
   if (!ctx) { try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
