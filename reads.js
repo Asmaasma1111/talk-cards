@@ -41,6 +41,18 @@ function clean(o) {
   ['use', 'opened', 'log'].forEach(k => { if (!Array.isArray(r[k])) r[k] = []; });
   r.speed = { ...b.speed, ...(o.speed || {}) }; if (!Array.isArray(r.speed.runs)) r.speed.runs = [];
   r.current = Math.max(1, Math.min(65, Math.round(Number(r.current)) || 1));
+  // once only (her request, 8 Nov 2026): puzzle 1 finished and in the book, puzzle 2 with 6 of its 8 pieces after 8 Nov's
+  // reading, so the next day of use brings the last two pieces. Earlier days of use are added before her first real one,
+  // two days apart so her streak stays as it is; real days after 8 Nov still count on top.
+  if (!r.fixed || typeof r.fixed !== 'object') r.fixed = {};
+  if (!r.fixed.puzzles8nov && r.use.length) {
+    const want = 13 + r.use.filter(d => d > '2026-11-08').length;
+    let first = [...r.use].sort()[0];
+    const add = [];
+    while (r.use.length + add.length < want) { first = addDays(first, -2); add.unshift(first); }
+    if (add.length) { r.use = [...add, ...r.use]; r.opened = [...add, ...r.opened].slice(-60); }
+    r.fixed.puzzles8nov = 1;
+  }
   delete r.sounds;                                  // Mama's recordings in a backup go to IndexedDB, not here
   return r;
 }
@@ -1358,14 +1370,22 @@ function mount(api) {
       runner.classList.remove('hop'); void runner.offsetWidth; runner.classList.add('hop');
       clearTimeout(land); land = setTimeout(() => { pose(happy ? 'yay' : 'sit'); runner.classList.remove('left'); land = setTimeout(() => pose('sit'), 1100); }, 560);
     };
-    for (const id of shuffle([...set, ...set]).slice(0, 6)) {
+    const order = []; while (order.length < 8) order.push(...shuffle(set));   // 8 rounds (her request, 8 Nov 2026: more of it)
+    for (let k = 0; k < 8; k++) {
+      const id = order[k];
       if (!alive(s)) return;
-      cur = id; stage.querySelectorAll('.rd-spot').forEach(b => { b.disabled = true; b.classList.remove('picked', 'right'); });
+      cur = id; stage.querySelectorAll('.rd-spot').forEach(b => { b.disabled = true; b.classList.remove('picked', 'right', 'shake'); });
       await sleep(600); await sayLetter(id); if (!alive(s)) return;
-      const tap = choice('.rd-spot'); stage.querySelectorAll('.rd-spot').forEach(b => { b.disabled = false; });   // taps count once the sound has played
-      const ans = await tap, good = ans.dataset.id === id; hopTo(ans, good);
-      if (good) { ans.classList.add('right'); api.SFX.good(); }
-      else { api.SFX.again(); const want = stage.querySelector(`.rd-spot[data-id="${id}"]`); want.classList.add('right'); await sleep(700); hopTo(want, false); await sayLetter(id); }
+      // the friend hops only to the right letter (her request, 8 Nov 2026): a wrong letter shakes, the sound comes again, and she tries again
+      for (let miss = 0; ; miss++) {
+        const tap = choice('.rd-spot'); stage.querySelectorAll('.rd-spot').forEach(b => { b.disabled = false; });   // taps count once the sound has played
+        const ans = await tap; if (!alive(s)) return;
+        if (ans.dataset.id === id) { hopTo(ans, true); ans.classList.add('right'); api.SFX.good(); break; }
+        api.SFX.again(); ans.classList.remove('shake'); void ans.offsetWidth; ans.classList.add('shake');
+        stage.querySelectorAll('.rd-spot').forEach(b => { b.disabled = true; });
+        if (miss >= 1) stage.querySelector(`.rd-spot[data-id="${id}"]`).classList.add('right');   // after two misses the right letter glows
+        await sleep(500); await sayLetter(id); if (!alive(s)) return;
+      }
       await sleep(1000);
     }
   }
