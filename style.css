@@ -3554,3 +3554,6 @@ span.lab-whole { font-size: 120px; line-height: 1; }
   .dz-pane.step .dz-fb { min-height: 32px; }
   .dz-pane.step .dz-rule { padding: 6px 18px 8px; }
 }
+
+/* the short note while a new version reloads (8 Nov 2026) */
+.upd-note { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; background: rgba(255, 248, 251, .92); font: 800 30px 'Baloo Bhaijaan 2', 'Tajawal', sans-serif; color: #9E2F63; }

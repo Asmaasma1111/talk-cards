@@ -1555,7 +1555,9 @@ function wire() {
 function reloadForUpdate() {
   if (!reloadForUpdate.pending) return;
   if (S || !$('#parent').hidden || !$('#celebrate').hidden || (MATHS && MATHS.busy()) || (SB && SB.busy()) || (LIB && LIB.busy()) || (READS && READS.busy()) || (CBOX && CBOX.busy()) || (DZ && DZ.busy())) return;   // wait until she is back on Home or Done
-  location.reload();
+  const note = document.createElement('div'); note.className = 'upd-note'; note.lang = 'ar'; note.dir = 'rtl'; note.textContent = 'يتمّ التحديث…';
+  document.body.appendChild(note);
+  setTimeout(() => location.reload(), 600);
 }
 
 async function boot() {
@@ -1677,6 +1679,11 @@ async function boot() {
     navigator.serviceWorker.register(APP === 'prepositions' ? 'sw.js?app=prepositions' : 'sw.js').then(reg => {
       document.addEventListener('visibilitychange', () => { if (!document.hidden) reg.update().catch(() => {}); });
     }).catch(() => {});
+    // the big sets (voices, pictures) are fetched after an update has taken over, quietly; asked again on every opening
+    // until they are all in (sw.js fill)
+    const fillNow = () => navigator.serviceWorker.ready.then(reg => { if (reg.active) reg.active.postMessage('fill'); }).catch(() => {});
+    fillNow();
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) fillNow(); });
   }
 }
 boot();

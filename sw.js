@@ -2,7 +2,7 @@
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
 // The same file serves both apps: Talk Cards registers sw.js, Prepositions registers sw.js?app=prepositions.
 const APP = new URL(location.href).searchParams.get('app') === 'prepositions' ? 'prepositions' : 'talk-cards';
-const VERSION = APP + '-v162';
+const VERSION = APP + '-v163';
 const FILES = APP === 'prepositions' ? [
   './',
   'index.html',
@@ -219,18 +219,33 @@ async function cacheCuriosity(cache) {
   } catch (e) { /* the pictures still load when online */ }
 }
 
+/* Quick updates (her request, 8 Nov 2026: updates took minutes to show on the iPad). A new version takes over as soon as
+   the app's own files (FILES) are in; the voices, stickers, story pictures and the other big sets follow quietly
+   afterwards ("fill", started by the page). The old version's cache stays as a fall-back until the fill is complete,
+   so nothing goes missing offline in between, then it is deleted. Her progress is never in these caches. */
+const FILLED = '__filled__';
+async function fill() {
+  const c = await caches.open(VERSION);
+  if (await c.match(FILLED)) return;
+  // a fill cut short (the iPad stops a quiet worker) carries on next time: files already in this version are skipped
+  const once = async r => { const req = typeof r === 'string' ? new Request(r, { cache: 'no-cache' }) : r; if (await c.match(req, { ignoreSearch: true })) return; return c.add(req); };
+  const cc = { add: once, addAll: list => Promise.all(list.map(once)), put: (r, res) => c.put(r, res), match: (r, o) => c.match(r, o) };
+  for (const step of [cacheVoice, cacheStickers, cacheStories, cacheColour, cacheReads, cacheCuriosity, cacheAlgeria, cacheDictation, cacheTheatre]) {
+    try { await step(cc); } catch (e) { return; }   // offline or a file missing: try again on the next opening
+  }
+  await c.put(FILLED, new Response('1'));
+  // several apps share this web address (Talk Cards, Prepositions, the games), so only this app's old caches go
+  const keys = await caches.keys();
+  await Promise.all(keys.filter(k => k.startsWith(APP + '-') && k !== VERSION).map(k => caches.delete(k)));
+}
+
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSION).then(async c => { await c.addAll(FILES); await cacheVoice(c); await cacheStickers(c); await cacheStories(c); await cacheColour(c); await cacheReads(c); await cacheCuriosity(c); await cacheAlgeria(c); await cacheDictation(c); await cacheTheatre(c); }).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
 });
 
-self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys()
-      // several apps share this web address (Talk Cards, Prepositions, the games), so only this app's old caches go
-      .then(keys => Promise.all(keys.filter(k => k.startsWith(APP + '-') && k !== VERSION).map(k => caches.delete(k))))
-      .then(() => self.clients.claim())
-  );
-});
+self.addEventListener('activate', e => { e.waitUntil(self.clients.claim()); });
+
+self.addEventListener('message', e => { if (e.data === 'fill') e.waitUntil(fill()); });
 
 self.addEventListener('fetch', e => {
   const req = e.request;
@@ -247,5 +262,6 @@ self.addEventListener('fetch', e => {
     return;
   }
   // Everywhere else: cache first, so the app opens instantly and works with no signal.
-  e.respondWith(caches.match(req, { ignoreSearch: true }).then(hit => hit || fetch(req).then(put)));
+  // (this version's cache first: until the fill is complete the old cache is still there, and it must never win)
+  e.respondWith(caches.open(VERSION).then(c => c.match(req, { ignoreSearch: true })).then(hit => hit || caches.match(req, { ignoreSearch: true })).then(hit => hit || fetch(req).then(put)));
 });
