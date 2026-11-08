@@ -14,8 +14,9 @@ function chart(n, key, opts) {
   return el('div', { class: 'pv-chart', dir: 'ltr' }, ...cols.map(([v, name]) => {
     const k = Math.floor(n / v) % 10;
     const body = el('div', { class: 'pv-body' });
-    // empty: places kept for the pieces still to come, so nothing jumps when they arrive
-    for (let i = 0; i < k; i++) body.append(opts.empty ? el('span', { class: 'pc-hole', 'data-v': v }, TH.act.pieceEl(v, key, 'blocks')) : TH.act.pieceEl(v, key, 'blocks'));
+    // empty: places kept for the pieces that may come (as many as the pile has, so the column never tells how many), so nothing jumps
+    const holes = opts.holes ? (opts.holes[v] || 0) : k;
+    for (let i = 0; i < (opts.empty ? holes : k); i++) body.append(opts.empty ? el('span', { class: 'pc-hole', 'data-v': v }, TH.act.pieceEl(v, key, 'blocks')) : TH.act.pieceEl(v, key, 'blocks'));
     return el('div', { class: 'pv-col c' + v, 'data-v': v }, el('div', { class: 'pv-name' }, name), body, el('div', { class: 'pv-digit' }, opts.empty ? '' : C.ar(k)));
   }));
 }
@@ -37,32 +38,60 @@ function answerPad(dock, ask, want, done) {
 }
 const askOf = story => story.text.split('.').pop().trim();
 
-/* تكوين عدد: the pieces wait in a pile; she drags each into its column; the digits appear; she writes the number */
+/* تكوين عدد: the pieces wait in a pile, always MORE of each kind than the story needs (her rule, 8 Nov 2026: with exactly
+   the right pieces she would just move them all without thinking). She reads the story, takes the right number of each into
+   its column (a tap on a piece in a column sends it back), then ✔ checks the columns; then she writes the number. */
 function make(S, m, story, done) {
-  const key = story.thing;
+  const key = story.thing, r = C.rng(story.id + ':pile');
+  const need = v => +(story.pieces[v] || 0);
+  const have = {};
+  colsFor(m.ans).forEach(([v]) => { have[v] = Math.min(9, need(v) + (need(v) ? 1 + Math.floor(r() * 3) : 1 + Math.floor(r() * 2))); });
   const pile = el('div', { class: 'pv-pile', 'data-col': 'pile', dir: 'ltr' });
-  Object.entries(story.pieces).sort((a, b) => b[0] - a[0]).forEach(([v, k]) => { for (let i = 0; i < k; i++) pile.append(TH.act.pieceEl(+v, key, 'blocks')); });
-  const ch = chart(m.ans, key, { empty: true });
+  Object.keys(have).map(Number).sort((a, b) => b - a).forEach(v => { for (let i = 0; i < have[v]; i++) pile.append(TH.act.pieceEl(v, key, 'blocks')); });
+  const ch = chart(m.ans, key, { empty: true, holes: have });
   S.board.append(el('div', { class: 'pv make' }, pile, ch)); U.fit(S.board, { max: 1.6 });
   const pad = answerPad(S.dock, askOf(story), m.ans, done); pad.classList.add('wait');
-  const left = () => pile.querySelectorAll('.pc:not(.used)').length;
+  const placed = v => ch.querySelectorAll(`.pv-col[data-v="${v}"] .pc-hole.full`).length;
+  const digit = v => { const k = placed(v); ch.querySelector(`.pv-col[data-v="${v}"] .pv-digit`).textContent = k ? C.ar(k) : ''; };
+  // ✔ under the pile checks what she placed; the number pad wakes only when every column is right
+  const check = el('button', { class: 'btn btn-done btn-place', type: 'button' }, U.icon('tick'));
+  pad.before(check); pad.hidden = true;
+  let tries = 0;
+  check.addEventListener('click', () => {
+    const wrongCols = Object.keys(have).filter(v => placed(v) !== need(v));
+    if (!wrongCols.length) {
+      U.sound('good'); check.remove();
+      ch.querySelectorAll('.pv-digit').forEach(d => { if (!d.textContent) d.textContent = '٠'; });
+      ch.querySelectorAll('.pc-hole:not(.full)').forEach(h => h.remove());
+      pile.classList.add('done');
+      setTimeout(() => { pad.hidden = false; pad.classList.remove('wait'); U.sound('pop'); }, 400);
+      return;
+    }
+    tries++; U.sound('soft');
+    wrongCols.forEach(v => { const c = ch.querySelector(`.pv-col[data-v="${v}"]`); c.classList.remove('nope'); void c.offsetWidth; c.classList.add('nope'); });
+    U.toast(tries >= 2 ? 'اقرئي القصّة: كم من كلّ نوع؟' : 'اسمعي القصّة مرّة أخرى، ثم عُدّي.');
+  });
   TH.bars.drag(S.root, {
     chip: '.pv-pile .pc', target: '.pv-col',
     accept(p, col) {
-      if (+col.dataset.v !== +p.dataset.v) return false;
+      if (!check.isConnected || +col.dataset.v !== +p.dataset.v) return false;
       const spot = col.querySelector('.pc-hole:not(.full)');
       if (!spot) return false;
       // its place in the pile stays (empty), and it fills the next place kept for it in the column: nothing else moves
       p.classList.add('used');
       spot.textContent = ''; spot.append(TH.act.pieceEl(+p.dataset.v, key, 'blocks')); spot.classList.add('full');
-      const k = col.querySelectorAll('.pc-hole.full').length; col.querySelector('.pv-digit').textContent = C.ar(k);
-      U.sound('drop'); U.count(k);
-      if (!left()) {
-        ch.querySelectorAll('.pv-digit').forEach(d => { if (!d.textContent) d.textContent = '٠'; });
-        setTimeout(() => { pad.classList.remove('wait'); U.sound('pop'); }, 400);
-      }
+      digit(+col.dataset.v);
+      U.sound('drop'); U.count(placed(+col.dataset.v));
       return true;
     }
+  });
+  // a tap on a placed piece sends it back to the pile (the last one placed in that column goes)
+  ch.addEventListener('click', e => {
+    const h = e.target.closest('.pc-hole.full'); if (!h || !check.isConnected) return;
+    const v = +h.dataset.v, col = h.closest('.pv-col'), fulls = col.querySelectorAll('.pc-hole.full'), last = fulls[fulls.length - 1];
+    last.classList.remove('full'); last.textContent = ''; last.append(TH.act.pieceEl(v, key, 'blocks'));
+    const back = Array.from(pile.querySelectorAll('.pc.used')).find(x => +x.dataset.v === v); if (back) back.classList.remove('used');
+    digit(v); U.sound('tap');
   });
 }
 

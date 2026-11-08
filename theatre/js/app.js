@@ -36,23 +36,20 @@ function home() {
   const dots = el('div', { class: 'day-dots' }, ...d.ids.map((id, i) => el('i', { class: i < d.i ? 'on' : '' })));
   const go = el('button', { class: 'btn btn-start', type: 'button' }, d.i ? 'أكملي' : 'ابدئي');
   const doneMsg = el('p', { class: 'home-done' }, 'أحسنتِ! انتهت قصص اليوم.');
-  const stage = el('div', { class: 'theatre' },
+  const clay = U.hasPic('stage/stage.webp') && U.hasPic('stage/curtain.webp') && TH.opening;
+  const stage = clay ? TH.opening.stage('مسرح المسائل') : el('div', { class: 'theatre' },
     el('div', { class: 'wall-stars' }), el('div', { class: 'beam l' }), el('div', { class: 'beam r' }), el('div', { class: 'spot' }),
     el('div', { class: 'stage-floor' }), el('div', { class: 'lights' }),
     el('h1', { class: 'home-title' }, 'مسرح المسائل'),
     el('div', { class: 'curtain l' }), el('div', { class: 'curtain r' }), el('div', { class: 'tie l' }), el('div', { class: 'tie r' }),
     el('div', { class: 'valance' }), ...[8, 33, 58, 83].map(x => el('span', { class: 'tassel', style: { left: x + '%', animationDelay: (-x / 30) + 's' } })));
-  // the ChatGPT clay stage and curtain, once their pictures are in assets/stage/
-  if (U.hasPic('stage/stage.webp')) {
-    stage.classList.add('pic'); stage.style.setProperty('--stage', 'url(assets/stage/stage.webp)');
-    if (U.hasPic('stage/curtain.webp')) stage.style.setProperty('--curtain', 'url(assets/stage/curtain.webp)'); else stage.classList.remove('pic');
-  }
+  // the ChatGPT clay stage and curtains (js/opening.js) once their pictures are in assets/stage/; else the painted stage
   const body = total ? (left > 0 ? go : doneMsg) : el('p', { class: 'home-done' }, 'قصص جديدة قريبًا.');
   const screen = el('section', { class: 'screen home', dir: 'rtl' },
     el('header', { class: 'h-top' }, back, el('span', { class: 'stars' }, '⭐ ', C.ar(st.stars || 0)), mute, gear),
     stage, el('div', { class: 'home-foot' }, total ? dots : null, body));
   app().textContent = ''; app().append(screen);
-  setTimeout(() => { stage.classList.add('open'); U.sound('curtain'); }, 450);
+  setTimeout(() => { stage.classList.add('open'); if (!clay) U.sound('curtain'); else if (!st.muted) TH.opening.play(TH.opening.DEFAULT); }, 450);
   go.addEventListener('click', () => { U.sound('curtain'); stage.classList.add('closing'); setTimeout(next, 750); });
   mute.addEventListener('click', () => { st.muted = !st.muted; S.save(); U.stop(); home(); });
   U.holdToOpen(gear, 2000, parent);
@@ -98,18 +95,21 @@ async function parent() {
   const today = el('ol', { class: 'p-today', dir: 'rtl', lang: 'ar' }, ...d.ids.map((id, i) => { const s = C.byId(BANK, id); return el('li', { class: i < d.i ? 'done' : '' }, s.text); }));
   const perDay = el('span', { class: 'p-n' }, String(st.perDay));
   const minus = el('button', { class: 'p-btn', type: 'button' }, '−'), plus = el('button', { class: 'p-btn', type: 'button' }, '+');
+  const reader = el('button', { class: 'p-btn' + (st.reader !== false ? ' on' : ''), type: 'button' }, st.reader !== false ? 'On' : 'Off');
   const pads = el('div', { class: 'p-pads' }, el('p', { class: 'sub' }, 'Loading…'));
   const view = el('section', { class: 'screen parent', dir: 'ltr', lang: 'en' },
     el('header', { class: 'p-head' }, el('h2', {}, 'Maths Theatre: Mama\'s view'), close),
     el('div', { class: 'p-scroll' },
       el('div', { class: 'p-group' }, ...rows),
-      el('div', { class: 'p-group' }, el('div', { class: 'p-row' }, el('span', {}, 'Stories a day', el('span', { class: 'sub' }, 'A mixed day has one twin pair in it. A change starts tomorrow.')), el('span', { class: 'stepper' }, minus, perDay, plus))),
+      el('div', { class: 'p-group' }, el('div', { class: 'p-row' }, el('span', {}, 'Reader', el('span', { class: 'sub' }, 'The voice that reads each story and counts. Off: you read the stories to her yourself; the little sounds stay.')), reader),
+        el('div', { class: 'p-row' }, el('span', {}, 'Stories a day', el('span', { class: 'sub' }, 'A mixed day has one twin pair in it. A change starts tomorrow.')), el('span', { class: 'stepper' }, minus, perDay, plus))),
       el('h3', {}, `Today (${d.i} of ${d.ids.length} done${d.twin ? `, twin pair ${d.twin}` : ''})`), today,
       el('h3', {}, 'Shapes met'), el('p', { class: 'sub' }, st.met.join(', ') || 'none yet'),
       el('h3', {}, 'Her drawings'), pads,
       el('p', { class: 'sub' }, 'Her progress and drawings are in the Back up file of her apps page.')));
   app().textContent = ''; app().append(view);
   close.addEventListener('click', home);
+  reader.addEventListener('click', () => { st.reader = st.reader === false; S.save(); U.stop(); reader.textContent = st.reader ? 'On' : 'Off'; reader.classList.toggle('on', st.reader); });
   minus.addEventListener('click', () => { st.perDay = Math.max(2, st.perDay - 1); S.save(); perDay.textContent = st.perDay; });
   plus.addEventListener('click', () => { st.perDay = Math.min(6, st.perDay + 1); S.save(); perDay.textContent = st.perDay; });
   view.addEventListener('click', e => {

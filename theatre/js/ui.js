@@ -136,7 +136,7 @@ const SOUNDS = {
   good: () => { tone(784, 0, 0.16, 0.05, 'triangle'); tone(1046, 0.09, 0.22, 0.045, 'triangle'); },
   soft: () => tone(330, 0, 0.22, 0.04),
   star: () => [659, 784, 988, 1318].forEach((f, i) => tone(f, i * 0.09, 0.3, 0.045, 'triangle')),
-  curtain: () => { for (let i = 0; i < 6; i++) tone(180 + i * 40, i * 0.05, 0.12, 0.02, 'sawtooth'); }
+  curtain: () => { tone(587, 0, 0.5, 0.04, 'triangle'); tone(440, 0.08, 0.6, 0.035, 'triangle'); }
 };
 function sound(name) { if (store.get().muted) return; try { SOUNDS[name] && SOUNDS[name](); } catch (e) {} }
 window.addEventListener('pointerdown', () => { if (!store.get().muted) ac(); }, { once: true });
@@ -153,9 +153,12 @@ function pickVoice() {
   return arVoice;
 }
 if (window.speechSynthesis) speechSynthesis.onvoiceschanged = () => { arVoice = null; pickVoice(); };
+// the reader is quiet when all sound is off, or when Mama switched the reader off (her request, 8 Nov 2026: "if we want to read
+// that ourselves, we would mute the reader altogether"); the little sounds stay
+const quiet = () => store.get().muted || store.get().reader === false;
 function speakOne(text, n) {
   return new Promise(ok => {
-    if (n !== run || !window.speechSynthesis || store.get().muted) return ok(false);
+    if (n !== run || !window.speechSynthesis || quiet()) return ok(false);
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'ar-SA'; const v = pickVoice(); if (v) u.voice = v;
     u.rate = 0.88; u.onend = () => ok(true); u.onerror = () => ok(false);
@@ -165,7 +168,7 @@ function speakOne(text, n) {
 }
 function playClip(id, n) {
   return new Promise(ok => {
-    if (n !== run || store.get().muted) return ok(false);
+    if (n !== run || quiet()) return ok(false);
     audio.onended = () => ok(true); audio.onerror = () => ok(false);
     audio.src = 'audio/' + clips[id]; audio.play().catch(() => ok(false));
   });
@@ -178,7 +181,7 @@ async function say(text, id) {
 }
 function stop() { run++; try { audio.pause(); } catch (e) {} try { window.speechSynthesis && speechSynthesis.cancel(); } catch (e) {} }
 // counting out loud as she moves things: the newest number wins
-function count(n) { if (store.get().muted) return; stop(); const k = ++run; speakOne(C.ar(n), k); }
+function count(n) { if (quiet()) return; stop(); const k = ++run; speakOne(C.ar(n), k); }
 
 /* ---------- saved progress ---------- */
 const KEY = 'mariaTheatre.v1';
@@ -190,7 +193,7 @@ function today() {
 }
 function clean(s) {
   s = s && typeof s === 'object' ? s : {};
-  return Object.assign({ v: 1, stage: 1, met: [], done: {}, lastKind: null, twinNext: 0, perDay: 4, days: {}, stars: 0, muted: false, seenIntro: false }, s,
+  return Object.assign({ v: 1, stage: 1, met: [], done: {}, lastKind: null, twinNext: 0, perDay: 4, days: {}, stars: 0, muted: false, reader: true, seenIntro: false }, s,
     { met: Array.isArray(s.met) ? s.met : [], done: s.done && typeof s.done === 'object' ? s.done : {}, days: s.days && typeof s.days === 'object' ? s.days : {} });
 }
 const store = {

@@ -8,10 +8,12 @@ const C = TH.core, U = TH.ui, { el } = U;
 
 // iPad on its side: a phone-style block of keys in the answer column. Upright: one row of keys under the stage
 // (CSS reorders them to ١ ٢ ... ٩ ٠ ⌫ with --o).
+// her request (8 Nov 2026): the phone order of جدول الضرب, ١ ٢ ٣ on the top row (written right to left), then ٤ ٥ ٦, ٧ ٨ ٩,
+// and the delete key and ٠ at the bottom. Upright, the keys make one row in the same order.
 function keypad(onKey) {
-  const keys = [7, 8, 9, 4, 5, 6, 1, 2, 3, 'del', 0];
+  const keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'del', 0];
   const row = k => (k === 'del' ? 11 : k === 0 ? 10 : k);
-  return el('div', { class: 'keypad', dir: 'ltr' }, ...keys.map(k => el('button', {
+  return el('div', { class: 'keypad', dir: 'rtl' }, ...keys.map(k => el('button', {
     class: 'key' + (k === 'del' ? ' del' : ''), type: 'button', style: { '--o': row(k) }, onclick: () => { U.sound('tap'); onKey(k); }
   }, k === 'del' ? U.icon('del') : C.ar(k))));
 }

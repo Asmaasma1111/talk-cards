@@ -10,7 +10,7 @@ Until these exist the stage is drawn in CSS (theatre/css/theatre.css, "the stage
 2. `stage/curtain.webp` (1024 x 1536, transparent background): ONE closed red velvet stage curtain panel in the same clay
    style, rich vertical folds, gold fringe along the bottom hem, filling the whole picture top to bottom. The app uses it
    twice (mirrored) and slides the two panels open.
-3. `theatre_tile.png` (her apps page tile, same look as the other tiles): a small clay theatre with red curtains and a gold star.
+3. (still to make) `theatre_tile.png` (her apps page tile, same look as the other tiles): a small clay theatre with red curtains and a gold star.
 
 When 1 and 2 are both in theatre/assets/stage/, the app uses them automatically (run scripts/build_theatre.py so files.json lists them).
 
@@ -43,3 +43,13 @@ a honey-coloured wooden stage floor across the bottom [fifth | eighth]; a narrow
 the far left and right edges, and a slim red velvet valance with a little gold fringe along the very top edge. A thin gold
 frame line ... The whole middle must be completely EMPTY and plain ... soft and light (pastel), low contrast."
 board.webp is 1536 x 1024; board-tall.webp is 1024 x 1536. The app keeps the things between the curtains (story.js, split()).
+
+## Made 8 Nov 2026, later (her words: "change the curtains ... use ChatGPT")
+
+- stage/stage.webp (1536 x 1024): the front of a small magical puppet theatre, rounded gold clay arch with a star, red
+  valance with gold fringe and tassels, honey floor with footlights, plum back wall with a spotlight glow, NO side curtains,
+  middle empty. Its white corners are cleared to transparent when it is saved.
+- stage/curtain.webp (1024 x 1536, transparent): one closed red velvet clay curtain panel, vertical folds, scalloped gold
+  fringe and tassels on the hem, no rod or rope. js/opening.js hangs it twice (one mirrored) inside the arch.
+- Keypad mock-up (content/theatre/sheets/keypad.png, for her approval, not used by the app): plump pastel clay keys on a
+  cream tray with a gold edge, ١ ٢ ٣ on the top row written right to left, ⌫ ٠ ✓ at the bottom.

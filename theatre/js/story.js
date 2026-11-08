@@ -39,7 +39,7 @@ function run(host, story, opts) {
   const dots = el('div', { class: 'scene-dots' }, ...scenes.map(() => el('i')));
   const quit = el('button', { class: 'top-btn', type: 'button', 'aria-label': 'رجوع' }, U.icon('home'));
   const padBtn = el('button', { class: 'top-btn pad-btn', type: 'button', 'aria-label': 'لوحي' }, U.icon('pencil'));
-  const hear = el('button', { class: 'top-btn', type: 'button', 'aria-label': 'اسمعي القصّة' }, U.icon('sound'));
+  const hear = el('button', { class: 'top-btn', type: 'button', 'aria-label': 'اسمعي القصّة', hidden: TH.store.get().reader === false }, U.icon('sound'));
   let stageEl = el('div', { class: 'scene' });
   const screen = el('section', { class: 'screen story-screen', dir: 'rtl' }, el('header', { class: 's-top' }, quit, dots, hear, padBtn), stageEl);
   host.textContent = ''; host.append(screen);
@@ -169,7 +169,7 @@ function run(host, story, opts) {
     S.dock.append(el('div', { class: 'replay-pic' }, pic), sent, next);
     await TH.act.replay(S.board, m, story);
     const q = pic.querySelector(`.slot[data-slot="${m.bar.unknown}"]`); if (q) q.classList.add('answer');
-    U.say(question(story) + ' ' + C.ar(m.ans));
+    U.say(question(story) + ' ' + C.ar(m.ans), story.id + ':a');
     starBurst(stageEl);
     next.hidden = false;
     next.addEventListener('click', () => { U.stop(); opts.onDone(result); });

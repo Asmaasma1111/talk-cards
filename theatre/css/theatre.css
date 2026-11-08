@@ -112,6 +112,39 @@ a { color: inherit; text-decoration: none; }
   text-shadow: 0 4px 0 #7E1426, 0 10px 30px rgba(0,0,0,.55); z-index: 2; opacity: 0; transform: translateY(18px) scale(.94); transition: opacity .8s 1.2s, transform .8s 1.2s; }
 .theatre.open .home-title { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { .curtain, .home-title, .spot, .beam, .tie { transition: none; } .tassel, .lights, .wall-stars { animation: none; } }
+/* ---------- the ChatGPT clay stage and its opening (8 Nov 2026; js/opening.js) ----------
+   The stage keeps the picture's shape (3:2) inside the space Home gives it. The curtains hang inside the arch, behind the
+   frame and the valance (the picture is laid again on top, masked to the frame), part from the middle and gather at the
+   sides with a small bounce; the light comes up, gold sparkles fall and the title rises. */
+.theatre.op { margin: 0 clamp(8px, 3vw, 40px); border: 0; border-radius: 0; box-shadow: none; background: none; overflow: visible; container-type: size; }
+.op-box { position: absolute; inset: 0; margin: auto; width: min(100cqw, 150cqh); height: min(100cqh, 66.667cqw); filter: drop-shadow(0 22px 34px rgba(0,0,0,.5)); }
+.op-back, .op-front { position: absolute; inset: 0; background: url('../assets/stage/stage.webp') center / 100% 100% no-repeat; }
+.op-front { z-index: 4; pointer-events: none;
+  -webkit-mask: linear-gradient(#000, #000) top / 100% 24.5% no-repeat, linear-gradient(#000, #000) left / 7% 100% no-repeat, linear-gradient(#000, #000) right / 7% 100% no-repeat;
+          mask: linear-gradient(#000, #000) top / 100% 24.5% no-repeat, linear-gradient(#000, #000) left / 7% 100% no-repeat, linear-gradient(#000, #000) right / 7% 100% no-repeat; }
+.op-spot { position: absolute; inset: 14% 7% 22%; z-index: 1; background: radial-gradient(42% 60% at 50% 55%, rgba(255, 228, 160, .55), transparent 75%); opacity: 0; transition: opacity 1.4s .8s; }
+.op .home-title { inset: 40% 0 auto; z-index: 2; font-size: clamp(40px, 9cqh, 84px); transition: opacity .9s 1.3s, transform .9s 1.3s cubic-bezier(.3, 1.6, .5, 1); }
+.op-curtain { position: absolute; top: 15%; bottom: 21%; width: 43.6%; z-index: 3; filter: drop-shadow(0 6px 10px rgba(0,0,0,.35)); }
+.op-curtain::before { content: ''; position: absolute; inset: 0; background: url('../assets/stage/curtain.webp') center / 100% 100% no-repeat; }
+.op-curtain.r::before { transform: scaleX(-1); }      /* the right panel is the same velvet, mirrored */
+.op-curtain.l { left: 6.4%; transform-origin: 0 50%; }
+.op-curtain.r { right: 6.4%; transform-origin: 100% 50%; }
+.op.open .op-curtain.l { animation: op-part 2.2s cubic-bezier(.7, 0, .2, 1) forwards, op-sway 4s ease-in-out 2.2s infinite alternate; }
+.op.open .op-curtain.r { animation: op-part-r 2.2s cubic-bezier(.7, 0, .2, 1) forwards, op-sway-r 4s ease-in-out 2.2s infinite alternate; }
+@keyframes op-part { 0% { transform: scaleX(1); } 10% { transform: scaleX(1.02) skewY(.4deg); } 70% { transform: scaleX(.17) skewY(-1deg); } 85% { transform: scaleX(.23); } 100% { transform: scaleX(.2); } }
+@keyframes op-part-r { 0% { transform: scaleX(1); } 10% { transform: scaleX(1.02) skewY(-.4deg); } 70% { transform: scaleX(.17) skewY(1deg); } 85% { transform: scaleX(.23); } 100% { transform: scaleX(.2); } }
+@keyframes op-sway { from { transform: scaleX(.2) skewY(0); } to { transform: scaleX(.205) skewY(.6deg); } }
+@keyframes op-sway-r { from { transform: scaleX(.2) skewY(0); } to { transform: scaleX(.205) skewY(-.6deg); } }
+.op.open .op-curtain { transform: scaleX(.2); }      /* the resting place once open, so closing can glide back from it */
+.op.open .op-spot { opacity: 1; }
+.op.closing .op-curtain { animation: none; transition: transform .9s cubic-bezier(.5, 0, .3, 1); }
+.op.closing .op-curtain { transform: scaleX(1); }
+.op-sparks { position: absolute; inset: 15% 8% 22%; z-index: 2; pointer-events: none; overflow: hidden; }
+.op-sparks i { position: absolute; top: -4%; left: var(--x); width: 9px; height: 9px; border-radius: 50%; opacity: 0;
+  background: radial-gradient(circle, #FFF7C8 0 30%, #FFD34D 45%, transparent 70%); }
+.op.open .op-sparks i { animation: op-spark 2.4s ease-in var(--d) 1 both; animation-delay: calc(.7s + var(--d)); }
+@keyframes op-spark { 0% { opacity: 0; transform: translateY(0) scale(.6); } 15% { opacity: 1; } 100% { opacity: 0; transform: translateY(260px) scale(1.1); } }
+@media (prefers-reduced-motion: reduce) { .op.open .op-curtain.l, .op.open .op-curtain.r { animation: none; } .op.open .op-curtain { transform: scaleX(.2); } .op-sparks { display: none; } }
 .home-foot { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 18px 16px 26px; }
 .day-dots { display: flex; gap: 12px; }
 .day-dots i { width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,.22); }
@@ -352,6 +385,8 @@ a { color: inherit; text-decoration: none; }
 .pv-col .pc-hole.full .pc { animation: popin .35s ease both; }
 .pv-pile { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: flex-end; padding: 14px 18px; background: rgba(255,243,196,.95); border-radius: 22px; max-width: 760px; box-shadow: inset 0 0 0 3px #F3DF97; }
 .pv .pc.used { visibility: hidden; }
+.pv-col .pc-hole.full { cursor: pointer; }
+.btn-place { min-width: 140px; }
 /* stage 1 things are bigger: the stage is hers to fill */
 .pv .pc.one.blocks { font-size: 46px; }
 .pv .pc.pack { width: 92px; }
