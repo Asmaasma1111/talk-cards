@@ -298,7 +298,7 @@ const L = {
   whatKind: 'ما نوعُ الكلمة؟', swapDami: 'أيُّ ضميرٍ يأخذُ مكانَ الكلمةِ الملوّنة؟', pickVerb: 'اختاري الفعلَ المناسبَ للضمير.', whatSent: 'ما نوعُ هذه الجملة؟', tripDone: 'أكملتِ رحلةَ الجزائر! 🎉', tripAll: 'عشرُ مدنٍ وعشرةُ أختام', tripOn: 'كلَّ يومٍ صورةٌ جديدةٌ وبطاقاتٌ نتذكّرُها', pickSifa: 'اختاري الصفةَ المناسبة.', pickDual: 'اختاري المثنّى.', pickHal: 'اختاري الحالَ المناسبة.', pickKhabar: 'اختاري الخبرَ الصحيح.', addKana: 'ضعي «كانَ» قبلَ الجملة: أيُّ جملةٍ صحيحة؟', findKana: 'أيُّ كلمةٍ هي «كانَ» أو إحدى أخواتِها؟', findHal: 'أيُّ كلمةٍ هي الحال؟ (تخبرُنا: كيف؟)', pickPlural: 'اختاري الجمع.', whatNum: 'هل الكلمةُ مفردٌ أم مثنّى أم جمع؟', findSifa: 'أيُّ كلمةٍ هي الصفة؟', writeWord: 'اكتبي الكلمةَ بقلمِكِ.', toNoun: 'اختاري الجملةَ الاسميّةَ التي لها المعنى نفسُه.', writeVerb: 'اكتبي الفعلَ بقلمِكِ.', showAns: 'انظري إلى الجواب', wroteOk: '✓ كتبتُها صحيحة', wroteNo: '✗ أخطأتُ', clearPad: '🧽 امسحي', theAns: 'الجواب:', tableW: 'اكتبي جدولَ الفعل بقلمِكِ', explain: '📖 الشرح', whatMeans: 'ما معنى هذا؟', gotIt: 'فهمتُ ✓', moreAr: 'تدرّبي أكثر ✏️', table: 'املئي جدولَ الفعل', tableQ: 'اختاري الفعلَ المناسبَ لكلِّ ضمير.', fillDami: 'اختاري الضميرَ المناسب.', onceMore: 'مرّةً أخرى 🔁', findJar: 'اضغطي على حرفِ الجرّ.', fillJar: 'اختاري حرفَ الجرّ المناسب.', pickEnd: 'اختاري الكلمةَ الصحيحة.',
   pickWords: 'اختاري الكتابةَ الصحيحة.', pickNum: 'اختاري العدد الصحيح.', pickDigit: 'اختاري الرقم الصحيح.', more: 'تدرّبي أكثر ✏️',
   okToday: 'أحسنتِ! نجحتِ اليوم في هذه الخطوة.', okDone: 'أتقنتِ هذه الخطوة! 🌟', notYet: 'سنتدرّب عليها مرّةً أخرى، وستصيرُ سهلة.',
-  pic: 'صورة اليوم', talkAbout: 'تكلّمي عن:', writeAbout: 'اكتبي عن:', startWith: 'ابدئي بكلمة: أرى…', mic: 'اضغطي وتكلّمي', micStop: 'انتهيتُ من الكلام',
+  pic: 'صورة اليوم', talkAbout: 'تكلّمي عن:', writeAbout: 'اكتبي عن:', startWith: 'ابدئي بكلمة: أرى…', mic: 'اضغطي وتكلّمي', micStop: 'انتهيتُ من الكلام', micDone: 'سجّلتُ ✓',
   mine: 'صوتي', done: 'انتهيتُ ✓', model: 'اسمعي هذا الوصف.', w1: 'اكتبي في كرّاستِكِ', w2: 'صوّري صفحتَكِ', w3: 'اقرئي ما كتبتِ (إن شئتِ)',
   photoIt: 'صوّري الصفحة', photoAgain: 'صورة أخرى', read: 'اضغطي واقرئي', myPage: 'صفحتي',
   easy: 'وهذا سؤالٌ سهل!', stamp: 'ختمٌ جديد في جوازِ سفرِكِ!', stampSub: 'أنهيتِ مدينة', nextCity: 'المدينة التالية:',
@@ -436,7 +436,7 @@ function mount(api) {
     if (AC && AC.state !== 'running') { try { AC.resume(); } catch (e) {} }
     return AC;
   }
-  async function record(maxMs, onLevel) {
+  async function record(maxMs, onLevel, onStart) {
     stopAudio();
     const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
     const type = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm'].find(x => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(x)) || '';
@@ -450,7 +450,7 @@ function mount(api) {
       const loop = () => { an.getByteTimeDomainData(buf); let pk = 0; for (const v of buf) pk = Math.max(pk, Math.abs(v - 128)); if (onLevel) onLevel(Math.min(1, pk / 60)); raf = requestAnimationFrame(loop); };
       loop();
     } catch (e) {}
-    mr.start(); REC = { mr, t0: performance.now() };
+    mr.start(); REC = { mr, t0: performance.now() }; if (onStart) onStart();
     const auto = setTimeout(() => { try { mr.stop(); } catch (e) {} }, maxMs);
     await stopped;
     clearTimeout(auto); cancelAnimationFrame(raf); if (meter) { try { meter.srcN.disconnect(); } catch (e) {} }
@@ -488,17 +488,29 @@ function mount(api) {
       return await new Promise(ok => { pending = ok; s.onended = () => { if (pending === ok) { pending = null; ok(); } }; s.start(); });
     } catch (e) { return play(URL.createObjectURL(row.blob)); }
   }
-  // the big round microphone button: tap to start, tap again to stop; the recording is kept under `id`
+  // the big round microphone button: one tap starts (the whole button turns green: recording), one tap stops (the whole
+  // button turns red: stopped, kept). Mama, 8 Nov 2026: Maria tapped several times to be sure and lost her talk, so
+  // taps are ignored while the microphone is starting, for 1.5 s after a start and for 3 s after a stop, and a new
+  // recording shorter than 2 s never replaces the one she already made.
   function micButton(el, id, kind, extra, onDone) {
+    let busy = false, quietTill = 0;
+    const label = t => { el.querySelector('b').textContent = t; };
+    getRow('clips', id).then(row => { if (row && !REC && !el.classList.contains('rec')) { el.classList.add('stopped'); label(L.micDone); } });   // made already today: red, kept
     el.addEventListener('click', async () => {
       api.SFX.init(); ac();
-      if (REC) { stopRec(); return; }
+      const now = performance.now();
+      if (busy || now < quietTill) return;
+      if (REC) { if (now - REC.t0 < 1500) return; quietTill = now + 3000; stopRec(); return; }
       if (!canRecord()) { api.toast(L.noMic); return; }
-      el.classList.add('rec'); el.querySelector('b').textContent = L.micStop;
+      busy = true; el.classList.remove('stopped'); el.classList.add('rec'); label(L.micStop);
       let rec = null;
-      try { rec = await record(120000, v => el.style.setProperty('--lv', v.toFixed(2))); } catch (e) { api.toast(L.noMic); }
-      el.classList.remove('rec'); el.style.removeProperty('--lv'); el.querySelector('b').textContent = el.dataset.label;
-      if (rec) { BUF.delete(id); await keepClip(id, rec, kind, extra); if (onDone) onDone(); }
+      try { rec = await record(120000, v => el.style.setProperty('--lv', v.toFixed(2)), () => { busy = false; }); } catch (e) { api.toast(L.noMic); }
+      busy = false;
+      el.classList.remove('rec'); el.style.removeProperty('--lv');
+      const had = !!(await getRow('clips', id).catch(() => null));
+      if (rec && (rec.ms >= 2000 || !had)) { BUF.delete(id); await keepClip(id, rec, kind, extra); }
+      if (rec || had) { el.classList.add('stopped'); label(L.micDone); if (onDone && rec) onDone(); }
+      else label(el.dataset.label);
     });
   }
 

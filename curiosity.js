@@ -739,7 +739,7 @@ function mount(api) {
     await phaseIntro(s, 3); if (!live(s)) return;
     const qs = dayQs(s).filter(q => !q.flipOf);
     if (!qs.length) return;
-    let sel = null, praised = { short: false, long: false };
+    let sel = null;
     const t0 = performance.now();
     const P = pane(`<p class="cb-ask">${L.sort}</p>
       <div class="cb-bubs big" id="cbSortBubs"></div>
@@ -763,7 +763,7 @@ function mount(api) {
       q.kind = k; sel = null; save(); draw();
       api.SFX.good();
       const p = $('#cbPraise'); p.textContent = k === 'long' ? L.praiseLong : L.praiseShort; p.classList.remove('pop'); void p.offsetWidth; p.classList.add('pop');
-      if (!praised[k]) { praised[k] = true; say(k === 'long' ? 'praiseLong' : 'praiseShort'); }
+      // no voice here: Mama, 8 Nov 2026, Maria does not like hearing «جوابه طويل / قصير» each time (the words stay on screen)
     };
     // after a minute "next" appears even if a few are left (only the button changes, so a drag in progress is never broken)
     const late = setInterval(() => { if (!live(s) || !P.isConnected) { clearInterval(late); return; } if (performance.now() - t0 > 60000 && qs.some(q => q.kind)) $('#cbNext').hidden = false; }, 5000);

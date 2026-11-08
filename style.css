@@ -3506,3 +3506,51 @@ span.lab-whole { font-size: 120px; line-height: 1; }
 
 /* Mama's gear on the apps page: the top right corner, as in Talk Cards (7 Nov 2026) */
 .ap .ap-gear { z-index: 3; }
+
+/* ---------- Maria Reads, Peekaboo Holes (8 Nov 2026): a letter in front of each hole, her friend pops up out of it ---------- */
+.rd-pop { gap: 20px; }
+.rd-holes { display: flex; justify-content: center; align-items: flex-end; gap: clamp(18px, 4vw, 54px); }
+.rd-hole { position: relative; width: clamp(170px, 24vw, 240px); padding: 0; border: 0; background: none; display: flex; flex-direction: column; align-items: center; transition: transform .15s; }
+/* the hole is a dark oval; her friend is cut off at its middle line, so it climbs out of the hole */
+.rd-den { position: relative; display: block; width: 100%; height: clamp(205px, 29vh, 265px); }
+.rd-den::before { content: ''; position: absolute; left: 4%; right: 4%; bottom: 0; height: 56px; border-radius: 50%; z-index: 0;
+  background: radial-gradient(ellipse at 50% 35%, #4A3328 0%, #6B4A3A 45%, #9C7358 78%, #C9A07F 100%); box-shadow: 0 6px 0 rgba(156, 115, 88, .35); }
+.rd-pit { position: absolute; left: 0; right: 0; top: 0; bottom: 28px; overflow: hidden; z-index: 1; }
+.rd-popper { position: absolute; left: 0; right: 0; bottom: -4px; display: flex; justify-content: center; transform: translateY(105%); transition: transform .32s cubic-bezier(.3, 1.5, .5, 1); }
+.rd-popper img { height: clamp(150px, 21vh, 200px); width: auto; filter: drop-shadow(0 4px 6px rgba(43, 35, 64, .15)); }
+.rd-popemo { font-size: 90px; font-style: normal; line-height: 1; }
+.rd-hole.up .rd-popper { transform: translateY(0); }
+.rd-hole b { position: relative; z-index: 3; margin-top: 12px; min-width: 120px; padding: 6px 18px 10px; border-radius: 30px; border: 6px solid #fff; background: #fff;
+  box-shadow: 0 8px 0 #E6D3DC, 0 14px 22px rgba(158, 47, 99, .1); font: 700 clamp(70px, 9vw, 96px)/1 var(--read); color: var(--ink); }
+.rd-hole.right b { background: #DDF7EA; box-shadow: 0 8px 0 #7FD3A8; }
+.rd-hole.hint b { animation: rdWiggle .5s ease 3; }
+@keyframes rdWiggle { 0%, 100% { rotate: 0deg; } 25% { rotate: -6deg; } 75% { rotate: 6deg; } }
+.rd-hole:active { transform: scale(.96); }
+
+/* the teacher steps back from the first letter (her request, 8 Nov 2026) */
+@media (orientation: landscape) { .rd-lrow .rd-teach { translate: clamp(-110px, -8vw, -60px) 0; } }   /* in landscape she stood against the first letter */
+
+/* the microphone in the Algeria trip (8 Nov 2026): the whole button is green while recording, red once stopped */
+.dz .dz-mic.rec { background: var(--g5); color: #fff; box-shadow: 0 6px 0 var(--g7), 0 10px 20px rgba(0, 98, 51, .18); }
+.dz .dz-mic.rec .dz-micdot { background: #fff; border-radius: 50%; box-shadow: 0 0 0 calc(var(--lv, 0) * 16px) rgba(255, 255, 255, .35); animation: dzRecPulse 1.2s ease-in-out infinite; }
+@keyframes dzRecPulse { 50% { transform: scale(.8); } }
+.dz .dz-mic.stopped { background: var(--dzred); color: #fff; box-shadow: 0 6px 0 #A00C28, 0 10px 20px rgba(210, 16, 52, .18); }
+.dz .dz-mic.stopped .dz-micdot { background: #fff; border-radius: 7px; }
+
+/* the trip's Arabic questions in landscape (her request, 8 Nov 2026): everything on one screen with no scrolling and the
+   same letter size; the step title sits on one line and the answers sit side by side instead of one under the other */
+@media (orientation: landscape) {
+  .dz-sess .dz-top { min-height: 60px; }
+  .dz-pane.step { gap: clamp(6px, 1.2vh, 14px); }
+  .dz-pane.step .dz-stephead { flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px 14px; }
+  .dz-pane.step .dz-stephead h2 { font-size: clamp(24px, 2.8vw, 32px); }
+  .dz-pane.step .dz-w { padding: 4px 14px; }
+  .dz-pane.step .dz-w b { line-height: 1.35; }
+  .dz-pane.step .dz-w small { min-height: 22px; }
+  .dz-pane.step .dz-words { line-height: 1.5; }
+  .dz-pane.step .dz-opts:not(.two):not(.three) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: min(94vw, 1000px); }
+  .dz-pane.step .dz-opt { min-height: 66px; }
+  .dz-pane.step .dz-cat { min-height: 80px; }
+  .dz-pane.step .dz-fb { min-height: 32px; }
+  .dz-pane.step .dz-rule { padding: 6px 18px 8px; }
+}

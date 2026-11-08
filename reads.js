@@ -186,7 +186,7 @@ const CUE = {
   story: 'قصة! اقرئي كل صفحة',
   pair: 'أي صوت تسمعين؟',
   stretch: 'اسمعي الكلمة الممطوطة، ثم قوليها',
-  action: 'اسمعي الصوت، ثم اعملي حركته',
+  action: 'اسمعي الصوت، ثم المسي حرفه ليخرج صديقكِ',
   run: 'اسمعي الصوت، ثم المسي حرفه',
   shop: 'اشتري بقول الأصوات',
   hoops: 'قفزة لكل صوت',
@@ -1304,24 +1304,36 @@ function mount(api) {
     }
   }
 
-  /* ---------- Hear a Sound and Perform an Action: two sounds, two actions; she hears one and does its action ---------- */
-  const ACTIONS = [['🦘', 'اقفزي'], ['👏', 'صفّقي'], ['🙆‍♀️', 'المسي رأسكِ'], ['💃', 'دوري']];
-  async function beatAction(s, ids) {
-    const two = ids.filter(id => SOUND[id] && hasSound(id)).slice(0, 2); if (two.length < 2) return;
-    const acts = pick(ACTIONS, 2);
-    stage.innerHTML = `<div class="rd-game rd-action"><div class="rd-acts">${two.map((id, i) => `<button class="rd-act" data-i="${i}"><b>${esc(grapheme(id))}</b><span class="rd-actic">${acts[i][0]}</span><span lang="ar">${acts[i][1]}</span></button>`).join('')}</div>
-      <p class="rd-sayit" id="rdSay" lang="ar" dir="rtl">لكل صوت حركة: اسمعي، ثم اعملي الحركة والمسيها</p></div>`;
-    const cards = [...stage.querySelectorAll('.rd-act')];
-    for (let i = 0; i < 2; i++) { cards[i].classList.add('lit'); await sayLetter(two[i]); await sleep(800); cards[i].classList.remove('lit'); if (!alive(s)) return; }
-    for (const k of shuffle([0, 1, 0, 1, 0, 1])) {
+  /* ---------- Peekaboo Holes (in place of the actions game, her request 8 Nov 2026: the actions game got stuck and she did
+     not like it). A letter in front of each hole; her friend pops up here and there, then she hears a sound and taps its
+     letter, and the friend pops up out of that hole. After 8 seconds with no tap, the right hole wiggles and the sound comes again. ---------- */
+  async function beatPop(s, ids) {
+    const set = ids.filter(id => SOUND[id] && hasSound(id)).slice(0, 3); if (set.length < 2) return;
+    stage.innerHTML = `<div class="rd-game rd-pop"><div class="rd-holes" dir="ltr">${shuffle(set).map(id => `<button class="rd-hole" data-id="${id}"><span class="rd-den"><span class="rd-pit"><span class="rd-popper"><img alt="" draggable="false"></span></span></span><b>${esc(grapheme(id))}</b></button>`).join('')}</div>
+      <button class="rd-replay" id="rdAgain" aria-label="اسمعي مرة أخرى">${ic('i-speaker')}</button></div>`;
+    let cur = null; $('#rdAgain').addEventListener('click', () => { if (cur) sayLetter(cur); });
+    const holes = [...stage.querySelectorAll('.rd-hole')];
+    const pool = HOPPERS.filter(a => a !== lastHopper); let who = pool[Math.floor(Math.random() * pool.length)]; lastHopper = who;
+    holes.forEach(h => { const im = h.querySelector('img'); im.onerror = () => { if (who !== 'bunny') { who = 'bunny'; im.src = `assets/reads/hop/bunny-sit.webp`; } else im.replaceWith(Object.assign(document.createElement('i'), { className: 'rd-popemo', textContent: '🐰' })); }; });
+    const pop = (h, pose, ms) => {
+      const im = h.querySelector('img'); if (im) im.src = `assets/reads/hop/${who}-${pose}.webp`;
+      h.classList.remove('up'); void h.offsetWidth; h.classList.add('up');
+      if (ms) setTimeout(() => h.classList.remove('up'), ms);
+    };
+    for (const id of shuffle([...set, ...set]).slice(0, 6)) {
       if (!alive(s)) return;
-      cards.forEach(b => { b.disabled = false; b.classList.remove('picked', 'right', 'shake'); });
-      await sleep(600); await sayLetter(two[k], SOUND[two[k]].kind === 'hold');
-      const ans = await choice('.rd-act');
-      if (Number(ans.dataset.i) === k) { ans.classList.add('right'); api.SFX.good(); }
-      else { ans.classList.add('shake'); api.SFX.again(); cards[k].classList.add('right'); await sleep(400); await sayLetter(two[k]); }
-      await sleep(1100);
+      holes.forEach(h => { h.disabled = true; h.classList.remove('picked', 'right', 'hint', 'up'); });   // taps count only once the sound has played
+      for (const h of shuffle(holes).slice(0, 2)) { pop(h, 'sit', 450); await sleep(650); if (!alive(s)) return; }   // peekaboo, here and there
+      cur = id; await sleep(250); await sayLetter(id); if (!alive(s)) return;
+      const want = stage.querySelector(`.rd-hole[data-id="${id}"]`);
+      const nudge = setTimeout(() => { if (alive(s) && want.isConnected) { want.classList.add('hint'); sayLetter(id); } }, 8000);
+      const tap = choice('.rd-hole'); holes.forEach(h => { h.disabled = false; });
+      const ans = await tap; clearTimeout(nudge); want.classList.remove('hint');
+      if (ans === want) { ans.classList.add('right'); pop(ans, 'yay'); api.SFX.good(); }
+      else { api.SFX.again(); want.classList.add('right'); await sleep(350); pop(want, 'yay'); await sayLetter(id); }
+      await sleep(1300);
     }
+    holes.forEach(h => h.classList.remove('up'));
   }
 
   /* ---------- Hop to that Sound: letters around the room; she hears a sound and her friend hops to its letter ----------
@@ -1348,9 +1360,10 @@ function mount(api) {
     };
     for (const id of shuffle([...set, ...set]).slice(0, 6)) {
       if (!alive(s)) return;
-      cur = id; stage.querySelectorAll('.rd-spot').forEach(b => { b.disabled = false; b.classList.remove('picked', 'right'); });
-      await sleep(600); await sayLetter(id);
-      const ans = await choice('.rd-spot'), good = ans.dataset.id === id; hopTo(ans, good);
+      cur = id; stage.querySelectorAll('.rd-spot').forEach(b => { b.disabled = true; b.classList.remove('picked', 'right'); });
+      await sleep(600); await sayLetter(id); if (!alive(s)) return;
+      const tap = choice('.rd-spot'); stage.querySelectorAll('.rd-spot').forEach(b => { b.disabled = false; });   // taps count once the sound has played
+      const ans = await tap, good = ans.dataset.id === id; hopTo(ans, good);
       if (good) { ans.classList.add('right'); api.SFX.good(); }
       else { api.SFX.again(); const want = stage.querySelector(`.rd-spot[data-id="${id}"]`); want.classList.add('right'); await sleep(700); hopTo(want, false); await sayLetter(id); }
       await sleep(1000);
@@ -1485,7 +1498,7 @@ function mount(api) {
 
   const BEAT = { flash: beatFlash, newsound: beatNewSound, hear: beatHear, where: beatWhere, read: beatRead, swap: beatSwap, me: beatMe,
                  sight: beatSight, diff: beatDiff, spell: beatSpell, sent: beatSent, story: beatStory, pair: beatPair,
-                 stretch: beatStretch, action: beatAction, run: beatRun, shop: beatShop, hoops: beatHoops, teach: beatTeach, basket: beatBasket };
+                 stretch: beatStretch, action: beatPop, run: beatRun, shop: beatShop, hoops: beatHoops, teach: beatTeach, basket: beatBasket };
 
   /* =====================================================================================================
      The end of a session: Mama's tap, the stars, and on the first session of the day a puzzle piece
