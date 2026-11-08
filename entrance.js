@@ -112,13 +112,14 @@ function mount(api) {
   }
   // مسرح المسائل is its own page in theatre/ (progress under mariaTheatre.v1); locked until Mama opens it in the parent area
   const theatreOpen = () => { try { return localStorage.getItem('tc:maria:theatreOpen') === '1'; } catch (e) { return false; } };
-  function theatreText() {
-    if (!theatreOpen()) return 'قريبًا 🔒';
+  function theatreDone() {
+    if (!theatreOpen()) return false;
     let d = null;
     try { d = JSON.parse(localStorage.getItem('mariaTheatre.v1') || 'null'); } catch (e) {}
     const t = d && d.days && d.days[api.today()];
-    return t && t.ids && t.i >= t.ids.length ? 'أنجزتِ قصص اليوم' : 'قصص اليوم تنتظركِ';
+    return !!(t && t.ids && t.i >= t.ids.length);
   }
+  const theatreText = () => (!theatreOpen() ? 'قريبًا 🔒' : theatreDone() ? 'أنجزتِ قصص اليوم' : 'قصص اليوم تنتظركِ');
   function home() {
     api.leaveAll();
     $('#apHello').textContent = hello();
@@ -129,6 +130,7 @@ function mount(api) {
     state($('#apMath'), s.math.done, s.math.done ? 'أنجزتِ هدف اليوم' : s.math.min ? `${AR(s.math.min)} من ${AR(s.math.goal)} دقائق` : 'تنتظركِ اليوم');
     state($('#apLib'), s.lib.done, s.lib.done ? 'قرأتِ قصّة اليوم' : s.lib.open ? 'قصّة اليوم مفتوحة' : 'قصّة اليوم تنتظركِ');
     const keys = ['talk', 'math', 'lib'].concat(s.reads ? ['reads'] : [], s.cbox ? ['cbox'] : [], s.dz ? ['dz'] : []);
+    if (theatreOpen()) { s.theatre = { done: theatreDone() }; keys.push('theatre'); }   // green when today's stories are done, and one of the day's dots (her request, 8 Nov 2026)
     $('#apps .t-reads').hidden = !s.reads; $('#apps .t-cbox').hidden = !s.cbox; $('#apps .t-dz').hidden = !s.dz;
     // the studio, dictation and theatre tiles (not in the day's dots): open ones stay on the page, locked ones go into the «تطبيقات مقفلة» tile
     const later = [['.t-studio', studioOpen()], ['.t-dict', dictOpen()], ['.t-theatre', theatreOpen()]];
@@ -139,19 +141,19 @@ function mount(api) {
     $('#apLockArt').dataset.n = shut.length;
     $('#apLockN').textContent = shut.length === 1 ? 'تطبيق واحد' : shut.length === 2 ? 'تطبيقان' : `${AR(shut.length)} تطبيقات`;
     if (!shut.length) $('#apLockBox').hidden = true;
-    const tiles = keys.length + (3 - shut.length) + (shut.length ? 1 : 0);   // 8 tiles use the 4-a-row layout of 7
+    const tiles = keys.filter(k => k !== 'theatre').length + (3 - shut.length) + (shut.length ? 1 : 0);   // 8 tiles use the 4-a-row layout of 7
     $('#apps .ap-tiles').classList.toggle('four', tiles === 4); $('#apps .ap-tiles').classList.toggle('five', tiles === 5); $('#apps .ap-tiles').classList.toggle('six', tiles === 6); $('#apps .ap-tiles').classList.toggle('seven', tiles >= 7); $('#apps .ap-tiles').classList.toggle('nine', tiles >= 9);
     state($('#apStudio'), false, studioText());
     $('#apps .t-studio').classList.toggle('locked', !studioOpen());
     state($('#apDict'), false, dictText());
     $('#apps .t-dict').classList.toggle('locked', !dictOpen());
-    state($('#apTheatre'), false, theatreText());
+    state($('#apTheatre'), theatreDone(), theatreText());
     $('#apps .t-theatre').classList.toggle('locked', !theatreOpen());
     if (s.reads) state($('#apReads'), s.reads.done, s.reads.done ? 'قرأتِ اليوم' : `الدرس ${AR(s.reads.lesson)} ينتظركِ`);
     if (s.cbox) state($('#apCbox'), s.cbox.done, s.cbox.done ? 'فتحتِ علبة اليوم' : 'علبة اليوم تنتظركِ');
     if (s.dz) state($('#apDz'), s.dz.done, s.dz.done ? 'أنجزتِ رحلة اليوم' : s.dz.city ? `${s.dz.city} تنتظركِ` : 'رحلة اليوم تنتظركِ');
     const n = keys.filter(k => s[k].done).length, all = keys.length;
-    const WORD = { 3: 'ثلاثة', 4: 'أربعة', 5: 'خمسة', 6: 'ستّة' }, ofAll = WORD[all] || AR(all);
+    const WORD = { 3: 'ثلاثة', 4: 'أربعة', 5: 'خمسة', 6: 'ستّة', 7: 'سبعة' }, ofAll = WORD[all] || AR(all);
     const some = n === 1 ? 'تطبيقاً واحداً' : n === 2 ? 'تطبيقين' : `${WORD[n] || AR(n)} تطبيقات`;
     $('#apToday').innerHTML = `<span class="ap-dots">${keys.map(k => `<i class="d-${k}${s[k].done ? ' on' : ''}"></i>`).join('')}</span>`
       + `<span>${n === all ? `أنجزتِ تطبيقاتكِ ال${ofAll} اليوم! 🌸` : n ? `أنجزتِ ${some} من ${ofAll} اليوم` : `${ofAll} تطبيقات تنتظركِ اليوم`}</span>`;
