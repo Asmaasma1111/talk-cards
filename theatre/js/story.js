@@ -62,10 +62,20 @@ function run(host, story, opts) {
     const S = { script: el('div', { class: 'script-in' }), board: el('div', { class: 'sc-board' }), dock: el('div', { class: 'dock-in' }), root: stageEl };
     const script = el('div', { class: 'sc-script' }, S.script), dock = el('div', { class: 'sc-dock' }, S.dock);
     stageEl.classList.add('split'); if (cls) stageEl.classList.add(cls);
-    // the ChatGPT stage picture behind the things, when it exists (assets/stage/board.webp; board-tall.webp for the upright iPad)
+    // the ChatGPT stage picture behind the things, when it exists (assets/stage/board.webp; board-tall.webp for a board taller than wide)
     if (U.hasPic('stage/board.webp')) {
-      S.board.classList.add('pic'); S.board.style.setProperty('--board', 'url(assets/stage/board.webp)');
-      S.board.style.setProperty('--board-tall', `url(assets/stage/${U.hasPic('stage/board-tall.webp') ? 'board-tall' : 'board'}.webp)`);
+      // full addresses: a url() inside a CSS variable is read from the stylesheet's folder in some browsers, the page's in others
+      const at = f => `url("${new URL('assets/stage/' + f, location.href).href}")`;
+      const tall = U.hasPic('stage/board-tall.webp');
+      S.board.classList.add('pic'); S.board.style.setProperty('--board', at('board.webp'));
+      // the picture is stretched to the board: the wide stage unless the board is clearly taller than wide.
+      // The margins keep the things between the curtains and follow the board's own size.
+      let seen = '';
+      const pad = () => { const w = S.board.offsetWidth, h = S.board.offsetHeight; if (!w || !h || seen === w + 'x' + h) return; seen = w + 'x' + h;
+        S.board.style.setProperty('--board', at(tall && h > w * 1.15 ? 'board-tall.webp' : 'board.webp'));
+        S.board.style.setProperty('--pt', Math.round(h * 0.11) + 'px'); S.board.style.setProperty('--px', Math.round(w * 0.1) + 'px'); S.board.style.setProperty('--pb', Math.round(h * 0.03) + 'px'); };
+      new ResizeObserver(() => requestAnimationFrame(pad)).observe(S.board);
+      requestAnimationFrame(pad);
     }
     stageEl.append(script, S.board, dock);
     U.fit(script, { max: 1.25 }); U.fit(dock, { max: 1.15 });

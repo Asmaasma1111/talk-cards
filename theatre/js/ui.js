@@ -84,7 +84,7 @@ const PACKS = {
   visitor: { 10: 'minibus', 100: 'bus', 1000: 'stadium' }, passenger: { 10: 'minibus', 100: 'bus', 1000: 'stadium' },
   student: { 10: 'minibus', 100: 'bus' }, student2: { 10: 'minibus', 100: 'bus' }, girl: { 10: 'minibus', 100: 'bus' },
   boy: { 10: 'minibus', 100: 'bus' }, mother: { 10: 'minibus', 100: 'bus' }, glasses: { 10: 'filebox', 100: 'box' },
-  water: { 10: 'bucket', 100: 'bath' }, palm: { 10: 'island', 100: 'park' }, tree: { 10: 'island', 100: 'park' },
+  water: { 10: 'bucket', 100: 'bath', 1000: 'tank' }, palm: { 10: 'island', 100: 'park' }, tree: { 10: 'island', 100: 'park' },
   sheep: { 10: 'hut', 100: 'houses' }, goat: { 10: 'hut', 100: 'houses' }, crate: { 10: 'pickup', 100: 'truck' },
   pencil: { 10: 'filebox', 100: 'box' }, crayon: { 10: 'filebox', 100: 'box' }, step: { 10: 'steps', 100: 'steps' },
   cube: { 10: 'bags', 100: 'box', 1000: 'truck' }
@@ -239,12 +239,15 @@ function fit(box, opts) {
   const later = () => { if (!raf) raf = requestAnimationFrame(apply); };
   function apply() {
     raf = 0;
-    const bw = box.clientWidth, bh = box.clientHeight; if (!bw || !bh || !inner.isConnected) return;
+    // the box's padding is kept clear (the curtains of the stage picture)
+    const cs = getComputedStyle(box), pl = parseFloat(cs.paddingLeft) || 0, pt = parseFloat(cs.paddingTop) || 0;
+    const bw = box.clientWidth - pl - (parseFloat(cs.paddingRight) || 0), bh = box.clientHeight - pt - (parseFloat(cs.paddingBottom) || 0);
+    if (bw <= 0 || bh <= 0 || !inner.isConnected) return;
     const fits = s => { inner.style.width = (bw / s) + 'px'; return inner.scrollWidth * s <= bw + 0.5 && inner.scrollHeight * s <= bh + 0.5; };
     let s = max;
     if (!fits(max)) { let lo = min, hi = max; for (let i = 0; i < 8; i++) { const mid = (lo + hi) / 2; if (fits(mid)) lo = mid; else hi = mid; } s = lo; fits(s); }
-    const dy = opts.top ? 0 : Math.max(0, (bh - inner.scrollHeight * s) / 2);
-    inner.style.transform = `translate(0, ${dy}px) scale(${s})`;
+    const dy = pt + (opts.top ? 0 : Math.max(0, (bh - inner.scrollHeight * s) / 2));
+    inner.style.transform = `translate(${pl}px, ${dy}px) scale(${s})`;
     box.style.setProperty('--s', s);
   }
   new ResizeObserver(later).observe(box);
