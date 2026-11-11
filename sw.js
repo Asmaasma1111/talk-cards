@@ -2,7 +2,7 @@
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
 // The same file serves both apps: Talk Cards registers sw.js, Prepositions registers sw.js?app=prepositions.
 const APP = new URL(location.href).searchParams.get('app') === 'prepositions' ? 'prepositions' : 'talk-cards';
-const VERSION = APP + '-v166';
+const VERSION = APP + '-v167';
 const FILES = APP === 'prepositions' ? [
   './',
   'index.html',
@@ -147,7 +147,8 @@ const COLOUR = ['glitter-balls', 'mega-dumpling', 'squishy-stickers', 'butter-st
   'm3-panda', 'm3-frog', 'm3-watermelon', 'm3-camel', 'm3-paint-box', 'm3-balloon', 'm3-gift', 'm3-garden',
   'p3-sock-puppet', 'p3-blanket-fort', 'p3-bracelet', 'p3-potato-comic', 'p3-bench-sign', 'p3-lantern'];
 // the studio's growing pieces and the lab room (Months 4-6)
-const ROOMS = ['grow/lights', 'lab/room'].map(n => `assets/library/${n}.webp`);
+const LABS = 'lamp music-box car sailboat windmill squishy-machine kite telescope robot balloon cuckoo rocket lighthouse puppet-theatre marble-run carousel camera birdhouse'.split(' ');
+const ROOMS = ['grow/lights', 'lab/room', ...LABS.flatMap(b => ['', '-1', '-2', '-3', '-4', '-5'].map(k => `lab/${b}${k}`))].map(n => `assets/library/${n}.webp`);
 async function cacheColour(cache) {
   if (APP !== 'talk-cards') return;
   await Promise.all([...COLOUR.map(id => `assets/library/color/${id}.webp`), ...SQUISHY, ...ROOMS].map(u => cache.add(u).catch(() => {})));
