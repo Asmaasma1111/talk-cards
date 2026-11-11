@@ -2,7 +2,7 @@
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
 // The same file serves both apps: Talk Cards registers sw.js, Prepositions registers sw.js?app=prepositions.
 const APP = new URL(location.href).searchParams.get('app') === 'prepositions' ? 'prepositions' : 'talk-cards';
-const VERSION = APP + '-v165';
+const VERSION = APP + '-v166';
 const FILES = APP === 'prepositions' ? [
   './',
   'index.html',
@@ -141,10 +141,16 @@ async function cacheVoice(cache) {
 const SQUISHY = ['ball', 'butter', 'cat', 'peanut', 'cloud', 'cheese', 'banana', 'strawberry', 'noodles', 'star',
   'top-bow', 'top-cherry', 'top-crown', 'top-flower', 'top-leaf', 'top-shades', 'jar'].map(n => `assets/library/squishy/${n}.webp`);
 const COLOUR = ['glitter-balls', 'mega-dumpling', 'squishy-stickers', 'butter-stick', 'peanut', 'cheese', 'banana', 'noodles', 'paper-squishy',
-  'butter-toast', 'bunny', 'cat', 'rainbow', 'treasure', 'bracelet', 'bookmark'];
+  'butter-toast', 'bunny', 'cat', 'rainbow', 'treasure', 'bracelet', 'bookmark',
+  // Month 3 colouring pictures and projects (M3PICS / PROJ3 in library.js)
+  'm3-strawberry-milk', 'm3-mochi', 'm3-icecream', 'm3-avocado', 'm3-cupcake', 'm3-donut', 'm3-bubble-tea', 'm3-cloud',
+  'm3-panda', 'm3-frog', 'm3-watermelon', 'm3-camel', 'm3-paint-box', 'm3-balloon', 'm3-gift', 'm3-garden',
+  'p3-sock-puppet', 'p3-blanket-fort', 'p3-bracelet', 'p3-potato-comic', 'p3-bench-sign', 'p3-lantern'];
+// the studio's growing pieces and the lab room (Months 4-6)
+const ROOMS = ['grow/lights', 'lab/room'].map(n => `assets/library/${n}.webp`);
 async function cacheColour(cache) {
   if (APP !== 'talk-cards') return;
-  await Promise.all([...COLOUR.map(id => `assets/library/color/${id}.webp`), ...SQUISHY].map(u => cache.add(u).catch(() => {})));
+  await Promise.all([...COLOUR.map(id => `assets/library/color/${id}.webp`), ...SQUISHY, ...ROOMS].map(u => cache.add(u).catch(() => {})));
 }
 
 async function cacheStickers(cache) {
