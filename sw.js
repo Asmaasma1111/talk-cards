@@ -149,9 +149,10 @@ const COLOUR = ['glitter-balls', 'mega-dumpling', 'squishy-stickers', 'butter-st
 // the studio's growing pieces and the lab room (Months 4-6)
 const LABS = 'lamp music-box car sailboat windmill squishy-machine kite telescope robot balloon cuckoo rocket lighthouse puppet-theatre marble-run carousel camera birdhouse'.split(' ');
 const ROOMS = ['grow/lights', 'lab/room', ...LABS.flatMap(b => ['', '-1', '-2', '-3', '-4', '-5'].map(k => `lab/${b}${k}`))].map(n => `assets/library/${n}.webp`);
+const TOOLS = Array.from({ length: 120 }, (_, i) => `assets/library/tools/d${i + 61}.webp`);   // Months 3-6 shelf tools (d61-d180)
 async function cacheColour(cache) {
   if (APP !== 'talk-cards') return;
-  await Promise.all([...COLOUR.map(id => `assets/library/color/${id}.webp`), ...SQUISHY, ...ROOMS].map(u => cache.add(u).catch(() => {})));
+  await Promise.all([...COLOUR.map(id => `assets/library/color/${id}.webp`), ...SQUISHY, ...ROOMS, ...TOOLS].map(u => cache.add(u).catch(() => {})));
 }
 
 async function cacheStickers(cache) {
