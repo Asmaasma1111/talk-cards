@@ -50,7 +50,7 @@ function mount(api) {
   <!-- the apps Mama has not opened yet wait in one tile, so the page does not look like a long list of waiting apps (her request, 7 Nov 2026) -->
   <div class="ap-lockbox" id="apLockBox" hidden><div class="ap-lockcard"><button class="ap-lockclose" id="apLockClose" aria-label="إغلاق">✕</button><h2 class="ap-locktitle">🔒 تطبيقات مقفلة</h2><div class="ap-lockgrid" id="apLockGrid"></div></div></div>
   <!-- backup and restore: one small grey line in English at the foot, for Mama (her request, 23 Oct 2026: Maria was tapping the big buttons) -->
-  <div class="ap-foot" lang="en" dir="ltr">Designed by Dr Asma Khattala<span class="ap-sep">·</span><button class="ap-footlink" id="apBackup">Back up</button><span class="ap-sep">·</span><label class="ap-footlink">Restore<input type="file" id="apRestore" accept="application/json,.json" hidden></label></div>
+  <div class="ap-foot" lang="en" dir="ltr">Designed by Dr Asma Khattala<span class="ap-sep">·</span><button class="ap-footlink" id="apBackup">Back up</button><span class="ap-sep">·</span><label class="ap-footlink">Restore<input type="file" id="apRestore" accept="application/json,.json" hidden></label><span class="ap-sep ap-autosep" hidden>·</span><button class="ap-footlink" id="apAuto" hidden>Online copies</button></div>
   <input type="file" id="apFile" accept="image/*" hidden>
 </section>`);
 
@@ -122,6 +122,7 @@ function mount(api) {
   const theatreText = () => (!theatreOpen() ? 'قريبًا 🔒' : theatreDone() ? 'أنجزتِ قصص اليوم' : 'قصص اليوم تنتظركِ');
   function home() {
     api.leaveAll();
+    if (api.autoBackup) setTimeout(api.autoBackup, 800);   // a copy of her progress goes online when it is due
     $('#apHello').textContent = hello();
     $('#apDate').textContent = dateText();
     photo();
@@ -259,6 +260,7 @@ function mount(api) {
   // one backup for all her apps (Talk Cards, times tables, her library, Maria Reads, the Curiosity Box, the trip to Algeria, her recordings): one file, one tap
   $('#apBackup').addEventListener('click', () => { api.SFX.init(); if (api.backup) api.backup(); });
   $('#apRestore').addEventListener('change', e => { const f = e.target.files[0]; if (f && api.restore) api.restore(f); e.target.value = ''; });
+  $('#apAuto').addEventListener('click', () => { api.SFX.init(); if (api.online) api.online(); });   // the automatic online copies (her request, 12 Nov 2026)
   return { home, isOn: () => !$('#apps').hidden };
 }
 

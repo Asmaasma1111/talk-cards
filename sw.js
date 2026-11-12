@@ -2,7 +2,7 @@
    Bump VERSION on every deploy so the iPad picks up new files (sets.json, audio/). */
 // The same file serves both apps: Talk Cards registers sw.js, Prepositions registers sw.js?app=prepositions.
 const APP = new URL(location.href).searchParams.get('app') === 'prepositions' ? 'prepositions' : 'talk-cards';
-const VERSION = APP + '-v169';
+const VERSION = APP + '-v170';
 const FILES = APP === 'prepositions' ? [
   './',
   'index.html',
@@ -261,6 +261,7 @@ self.addEventListener('fetch', e => {
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;
   if (url.pathname.startsWith('/signin')) return;     // the sign-in page (Cloudflare) is never cached
+  if (url.pathname.startsWith('/api/')) return;       // the online copies of her progress are never cached
   // only a real file is kept: never an error, and never the sign-in page a request was sent to when signed out
   const put = res => { if (res.ok && !res.redirected) { const copy = res.clone(); caches.open(VERSION).then(c => c.put(req, copy)); } return res; };
   // On a local test server, fetch fresh files first so edits show up; fall back to the cache offline.

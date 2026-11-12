@@ -1397,10 +1397,10 @@ function openStoreDB(name, stores) {
 }
 const blobB64 = blob => new Promise((ok, bad) => { const f = new FileReader(); f.onload = () => ok(String(f.result).split(',')[1] || ''); f.onerror = () => bad(f.error); f.readAsDataURL(blob); });
 function b64Blob(s, type) { const bin = atob(s), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return new Blob([u], { type }); }
-async function deviceExtras() {
+async function deviceExtras(recordings = true) {
   const out = { ls: {}, idb: {} };
   try { Object.keys(localStorage).filter(DEVICE_KEYS).forEach(k => { out.ls[k] = localStorage.getItem(k); }); } catch (e) {}
-  for (const [name, stores, all] of DEVICE_DBS) {
+  for (const [name, stores, all] of (recordings ? DEVICE_DBS : [])) {
     let db = null;
     try { db = await openStoreDB(name, all); } catch (e) { continue; }
     for (const st of stores) {
@@ -1444,7 +1444,8 @@ function offerSave(file) {
   box.querySelector('button').addEventListener('click', () => { box.remove(); navigator.share({ files: [file] }).catch(() => {}); }, { once: true });
   box.addEventListener('click', e => { if (e.target === box) box.remove(); });
 }
-async function backup() {
+// everything a backup holds (the file of the Back up button, and the automatic online copy, which leaves the recordings out)
+async function backupObject(recordings = true) {
   save();
   const profiles = {};
   Object.keys(PROFILE_KEY).forEach(p => {
@@ -1452,8 +1453,11 @@ async function backup() {
     else if ((APP === 'talk-cards' || PROFILES.includes(p)) && lsGet(PROFILE_KEY[p])) profiles[p] = readProfile(p);
   });
   let device = null;
-  if (APP === 'talk-cards') { try { device = await deviceExtras(); } catch (e) { console.warn('device extras', e); } }
-  const data = JSON.stringify({ app: 'maria-talk-cards', v: 3, saved: new Date().toISOString(), profiles, ...(MATHS ? { math: MATHS.snapshot() } : {}), ...(LIB ? { lib: LIB.snapshot() } : {}), ...(READS ? { reads: READS.snapshot() } : {}), ...(CBOX ? { cbox: CBOX.snapshot() } : {}), ...(DZ ? { dz: DZ.snapshot() } : {}), ...(device ? { device } : {}) });
+  if (APP === 'talk-cards') { try { device = await deviceExtras(recordings); } catch (e) { console.warn('device extras', e); } }
+  return { app: 'maria-talk-cards', v: 3, saved: new Date().toISOString(), profiles, ...(MATHS ? { math: MATHS.snapshot() } : {}), ...(LIB ? { lib: LIB.snapshot() } : {}), ...(READS ? { reads: READS.snapshot() } : {}), ...(CBOX ? { cbox: CBOX.snapshot() } : {}), ...(DZ ? { dz: DZ.snapshot() } : {}), ...(device ? { device } : {}) };
+}
+async function backup() {
+  const data = JSON.stringify(await backupObject());
   const name = `${APP === 'talk-cards' ? 'maria-apps' : APP}-backup-${today()}.json`;   // one file: every app of hers
   let file = null;
   try { file = new File([data], name, { type: 'application/json' }); } catch (e) {}
@@ -1468,8 +1472,13 @@ async function backup() {
   toast('Backup saved.');
 }
 async function restore(file, after = renderParent) {
+  let obj = null;
+  try { obj = JSON.parse(await file.text()); } catch (e) {}
+  return restoreData(obj, after);
+}
+// ask: false when Mama has already said yes (the online copies ask in their own words)
+async function restoreData(obj, after = renderParent, ask = true) {
   try {
-    const obj = JSON.parse(await file.text());
     if (!obj || obj.app !== 'maria-talk-cards') throw new Error('bad');
     const profiles = obj.profiles || (obj.state ? { maria: obj.state } : null);   // v1 files held Maria only
     const ok = profiles ? Object.keys(profiles).filter(p => PROFILES.includes(p) && profiles[p] && typeof profiles[p].cards === 'object') : [];
@@ -1481,8 +1490,8 @@ async function restore(file, after = renderParent) {
     const dev = APP === 'talk-cards' && obj.device && typeof obj.device === 'object' ? obj.device : null;   // recordings etc. (from 20 October 2026)
     if (!ok.length && !math && !libr && !rds && !cbx && !dzx && !dev) throw new Error('bad');
     const what = [...ok.map(p => (p === 'mama' ? 'Mama' : 'Maria')), ...(math ? ['times tables'] : []), ...(libr ? ['library'] : []), ...(rds ? ['Maria Reads'] : []), ...(cbx ? ['Curiosity Box'] : []), ...(dzx ? ['the trip to Algeria'] : []), ...(dev ? ['recordings'] : [])];
-    if (!confirm(APP === 'prepositions' ? 'Replace your progress on this device with this backup?'
-      : `Replace the progress on this device with this backup (${what.join(' and ')})?`)) return;
+    if (ask && !confirm(APP === 'prepositions' ? 'Replace your progress on this device with this backup?'
+      : `Replace the progress on this device with this backup (${what.join(' and ')})?`)) return false;
     ok.forEach(p => lsSet(PROFILE_KEY[p], JSON.stringify(merge(profiles[p], p))));
     if (math) MATHS.replace(math);
     if (libr) LIB.replace(libr);
@@ -1492,7 +1501,128 @@ async function restore(file, after = renderParent) {
     if (dev) await restoreExtras(dev);
     load(prof); after(); toast('Progress restored.');
     if (dev) setTimeout(() => location.reload(), 1200);   // the library and Maria Reads read their recordings when they start
-  } catch (e) { toast(APP === 'prepositions' ? 'That file has no Prepositions progress.' : 'That file is not a Talk Cards backup.'); }
+    return true;
+  } catch (e) { toast(APP === 'prepositions' ? 'That file has no Prepositions progress.' : 'That file is not a Talk Cards backup.'); return false; }
+}
+
+/* ---------- automatic online copies (her request, 12 Nov 2026: "an automatic backup twice a day") ----------
+   Her progress lives only in this iPad's copy of the app, so a deleted icon or cleared website data loses it. On the
+   locked site (maria-apps.pages.dev) the app also sends a copy to Mama's own Cloudflare storage (functions/api/backup.js):
+   once in each half of the day (before and after 2 pm) when something has changed, and again two hours after the last
+   copy while she is still practising. Recordings go once a day, when there is a new one. A device with far less
+   progress than the newest online copy never overwrites it: it offers to bring that copy back instead. */
+const AUTO_KEY = 'tc:auto', AUTO_API = '/api/backup', AUTO_GAP = 2 * 3600 * 1000;
+const AUTO = { busy: false, off: false, asked: false, list: null };
+const autoState = () => { try { return JSON.parse(lsGet(AUTO_KEY) || '{}') || {}; } catch (e) { return {}; } };
+const autoSave = x => lsSet(AUTO_KEY, JSON.stringify({ ...autoState(), ...x }));
+const strHash = s => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36) + '.' + s.length; };
+// how much practice a backup holds: the days of every app added up (it only ever grows on a healthy device)
+function practiceDays(o) {
+  const n = x => (Array.isArray(x) ? x.length : x && typeof x === 'object' ? Object.keys(x).length : 0);
+  const m = (o.profiles || {}).maria || {};
+  return n(m.days) + n((o.math || {}).days) + n((o.lib || {}).order) + n((o.reads || {}).use) + n((o.cbox || {}).days) + n((o.dz || {}).days);
+}
+const autoWhen = iso => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); };
+async function autoList() {
+  const r = await fetch(AUTO_API, { cache: 'no-store', credentials: 'same-origin' });
+  if (!r.ok || !(r.headers.get('Content-Type') || '').includes('json')) throw new Error('none');
+  const j = await r.json(); if (!j || !j.ok) throw new Error('none');
+  AUTO.list = j; autoNote();
+  return j;
+}
+async function autoBackup() {
+  if (APP !== 'talk-cards' || prof !== 'maria' || DEV || AUTO.busy || AUTO.off || !navigator.onLine || (location.protocol !== 'https:' && location.hostname !== 'localhost')) return;
+  if (S || (MATHS && MATHS.busy && MATHS.busy())) return;              // never in the middle of a session
+  const s = autoState(), now = Date.now(), d = new Date(), slot = today() + (d.getHours() < 14 ? 'a' : 'b');
+  if (s.slot === slot && now - (s.at || 0) < AUTO_GAP) return;
+  AUTO.busy = true;
+  try {
+    const obj = await backupObject(false), days = practiceDays(obj);
+    const { saved, ...rest } = obj, hash = strHash(JSON.stringify(rest));
+    let list = null;
+    try { list = await autoList(); } catch (e) { AUTO.off = true; return; }    // not the locked site (or signed out): nothing to do
+    const top = list.copies[0];
+    if (top && days < (top.days || 0) - 3 && s.declined !== top.key) {    // this iPad lost progress: do not overwrite, offer it back
+      if (!AUTO.asked) { AUTO.asked = true; autoOffer(top, days); }
+      return;
+    }
+    if (days < 3) return;                                                  // an empty app is never saved
+    if (hash !== s.hash) {
+      const r = await fetch(`${AUTO_API}?days=${days}`, { method: 'PUT', body: JSON.stringify(obj), headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin' });
+      const j = r.ok ? await r.json() : null;
+      if (!j || !j.ok) return;
+      autoSave({ at: now, slot, hash, saved: j.saved });
+    } else autoSave({ slot, at: now, saved: s.saved || (top && top.saved) || '' });
+    autoNote();
+    // her recordings: once a day, when one was added
+    const fresh = autoState();
+    if (fresh.recDay !== today()) {
+      const dev = await deviceExtras(true), idb = dev.idb || {};
+      const mark = strHash(Object.entries(idb).map(([db, st]) => db + ':' + Object.entries(st).map(([k, rows]) => k + rows.map(x => x.id).join(',')).join(';')).join('|'));
+      if (mark !== fresh.rec && Object.keys(idb).length) {
+        const body = JSON.stringify(idb);
+        if (body.length < 24 * 1024 * 1024) {
+          const r = await fetch(`${AUTO_API}?kind=rec`, { method: 'PUT', body, headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin' });
+          if (r.ok) autoSave({ rec: mark, recDay: today() });
+        }
+      } else autoSave({ recDay: today() });
+    }
+  } catch (e) { console.warn('auto backup', e); }
+  finally { AUTO.busy = false; }
+}
+// bring one online copy back (with her recordings); Mama has already said yes
+async function autoRestore(key) {
+  toast('Bringing her progress back…');
+  try {
+    const r = await fetch(`${AUTO_API}?key=${encodeURIComponent(key)}`, { cache: 'no-store', credentials: 'same-origin' });
+    if (!r.ok) throw new Error('copy');
+    const obj = await r.json();
+    try {
+      const q = await fetch(`${AUTO_API}?key=r:latest`, { cache: 'no-store', credentials: 'same-origin' });
+      if (q.ok) { obj.device = obj.device || { ls: {}, idb: {} }; obj.device.idb = await q.json(); }
+    } catch (e) {}
+    const ok = await restoreData(obj, () => { load(prof); if (APPS) APPS.home(); }, false);
+    if (ok) { const { saved, ...rest } = await backupObject(false); autoSave({ hash: strHash(JSON.stringify(rest)), at: Date.now(), declined: '' }); }
+  } catch (e) { toast('The online copy could not be read. Try again with the internet on.'); }
+}
+// a small English panel for Mama (never Arabic: Maria should not act on it)
+function autoPanel(html, wire) {
+  document.querySelectorAll('.auto-box').forEach(x => x.remove());
+  const box = document.createElement('div');
+  box.className = 'save-offer auto-box'; box.lang = 'en'; box.dir = 'ltr';
+  box.innerHTML = `<div>${html}</div>`;
+  document.body.append(box);
+  box.addEventListener('click', e => { if (e.target === box) box.remove(); });
+  wire(box);
+  return box;
+}
+function autoOffer(top, days) {
+  autoPanel(`<p><b>For Mama</b><br>This iPad has ${days ? 'less progress than' : 'no progress yet, but there is'} the online copy saved on ${esc(autoWhen(top.saved))}.</p>
+    <button type="button" data-a="yes">Bring her progress back</button><button type="button" class="quiet" data-a="no">Keep this iPad as it is</button>`, box => {
+    box.querySelector('[data-a=yes]').addEventListener('click', () => { box.remove(); autoRestore(top.key); });
+    box.querySelector('[data-a=no]').addEventListener('click', () => { box.remove(); autoSave({ declined: top.key }); });
+  });
+}
+// the list of online copies (the "Online copies" line at the foot of her apps page)
+async function autoCopies() {
+  let list = null;
+  try { list = await autoList(); } catch (e) { toast('Online copies work on the locked site, with the internet on.'); return; }
+  const rows = list.copies.slice(0, 14).map(c => `<button type="button" class="quiet" data-k="${esc(c.key)}">${esc(autoWhen(c.saved))}</button>`).join('');
+  autoPanel(`<p><b>Online copies of her progress</b><br>${list.copies.length ? 'Saved by the app, newest first. Tap one to bring it back to this iPad.' : 'None yet. The first one is saved after she practises with the internet on.'}</p><div class="auto-list">${rows}</div>
+    <button type="button" data-a="close">Close</button>`, box => {
+    box.querySelector('[data-a=close]').addEventListener('click', () => box.remove());
+    box.querySelectorAll('[data-k]').forEach(b => b.addEventListener('click', () => {
+      if (!confirm(`Replace the progress on this iPad with the copy of ${b.textContent}?`)) return;
+      box.remove(); autoRestore(b.dataset.k);
+    }));
+  });
+}
+// the foot of her apps page says when the last online copy was made
+function autoNote() {
+  const el = document.querySelector('#apAuto'); if (!el) return;
+  const s = autoState(), on = !!s.saved || !!AUTO.list;
+  el.hidden = !on; const sep = document.querySelector('.ap-autosep'); if (sep) sep.hidden = !on;
+  el.textContent = s.saved ? `Online copy: ${autoWhen(s.saved)}` : 'Online copies';
 }
 
 /* ---------- developer mode (?dev=1) ---------- */
@@ -1656,8 +1786,11 @@ async function boot() {
       leaveTalk: () => { Speech.stop(); S = null; },
       leaveMath: () => {},
       leaveAll: () => { Speech.stop(); S = null; if (READS) READS.leave(); if (CBOX) CBOX.leave(); if (DZ) DZ.leave(); },
-      backup, restore: file => restore(file, () => { load(prof); if (APPS) APPS.home(); })
+      backup, restore: file => restore(file, () => { load(prof); if (APPS) APPS.home(); }),
+      autoBackup, online: autoCopies
     });
+    autoNote();
+    document.addEventListener('visibilitychange', () => { if (!document.hidden && APPS && APPS.isOn()) autoBackup(); });
   }
   if (DEV) {
     renderDev();

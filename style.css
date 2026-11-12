@@ -369,6 +369,10 @@ button.badge:active { transform: scale(.9); }
 .save-offer > div { max-width: 340px; margin: 16px; padding: 22px 22px 18px; text-align: center; background: var(--white); border-radius: 22px; box-shadow: 0 18px 40px rgba(27, 36, 51, .25); }
 .save-offer p { margin: 0 0 14px; font-size: 18px; line-height: 1.5; color: var(--ink); }
 .save-offer button { min-height: 52px; padding: 0 22px; font: 700 18px/1 var(--en, sans-serif); color: var(--white); background: #2D5BD3; border: 0; border-radius: 99px; }
+.auto-box > div { max-width: 420px; }
+.auto-box button { display: block; width: 100%; margin-top: 10px; }
+.auto-box button.quiet { color: var(--ink); background: #EEF1F7; }
+.auto-box .auto-list { max-height: 44vh; overflow-y: auto; -webkit-overflow-scrolling: touch; margin-bottom: 4px; }
 
 .devbar { position: fixed; left: calc(var(--safe-l) + 8px); bottom: calc(var(--safe-b) + 8px); z-index: 95; display: flex; gap: 6px; align-items: center; font: 13px ui-monospace, monospace; background: rgba(255, 255, 255, .92); border: 1.5px dashed var(--ink); border-radius: 10px; padding: 6px 8px; }
 .devbar button { font: inherit; padding: 4px 8px; border: 1.5px solid var(--ink); border-radius: 6px; background: var(--white); }
