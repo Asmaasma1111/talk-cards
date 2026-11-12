@@ -1114,6 +1114,15 @@ img.gd-pic { object-fit: contain; object-position: 50% 100%; -webkit-user-drag: 
 @keyframes gdwiggle { 0%, 100% { transform: translateX(0) scaleY(1); } 50% { transform: translateX(-8%) scaleY(.92); } }
 .gd-sway { animation: gdsway 3s ease-in-out infinite; transform-origin: 50% 0; }
 .gd-walk { left: 34%; bottom: 1.5%; width: 11vmin; height: 11vmin; animation: gdwalk 14s ease-in-out infinite; }
+/* the second garden (garden.js, 12 Nov 2026): the gate button under «دورات الحياة», the hive where the tree stood, the
+   scarecrow on the grass, the ladybird on her leaf, the turtle and the snail in front */
+.gd-cyc-btn.gd-gate { top: calc(var(--safe-t) + 146px); background: #FFF6D6; }
+.gd-cyc-btn.gd-gate.gd-new-pop { animation: gdpop .9s cubic-bezier(.3, 1.6, .5, 1) both; }
+.gd-hive { right: 1.5%; bottom: calc(44% - 6px); width: 18vmin; height: 18vmin; }
+.gd-scare { left: 3%; bottom: 33%; width: 19vmin; height: 19vmin; transform-origin: 50% 100%; animation: gdsway 4s ease-in-out infinite; }
+.gd-lady { left: 24%; bottom: 33%; width: 10vmin; height: 10vmin; }
+.gd-turtle { left: 5%; bottom: 4%; width: 16vmin; height: 16vmin; animation: gdbob 3.4s ease-in-out infinite; }
+.gd-snail { width: 10vmin; height: 10vmin; animation-duration: 30s; }
 @keyframes gdwalk { 0%, 100% { transform: translateX(0) scaleX(1); } 40% { transform: translateX(9vw) scaleX(1); } 50% { transform: translateX(9vw) scaleX(-1); } 90% { transform: translateX(0) scaleX(-1); } }
 .gd-new-pop > .gd-ic, .gd-new-pop > .gd-plant { animation: gdpop .9s cubic-bezier(.3, 1.6, .5, 1) both; }
 @keyframes gdpop { 0% { transform: scale(.2); opacity: 0; } 60% { transform: scale(1.12); opacity: 1; } 100% { transform: scale(1); } }

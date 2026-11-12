@@ -37,5 +37,22 @@ for (let n = 0; n <= 3 * L; n++) {
   const a = G.stateAt(n), b = G.stateAt(n + 1);
   ['plants', 'insects', 'frogs', 'birds'].forEach(k => { if (b.counts[k] < a.counts[k]) { fails++; console.log('FAIL count went down', k, n); } });
 }
+// the second garden (12 Nov 2026): 3 plants x 6, the scarecrow after the first fruit, the ladybird x 4, the hive, the snail, the turtle
+eq(G.L2, 26, 'second garden: 18 + 1 + 4 + 3 steps'); eq(G.TOTAL, 60, 'both gardens');
+eq(G.JOURNEY2.map(s => s.kind).join(' '), 'plant plant plant plant plant plant scare plant plant plant plant plant plant lady lady lady lady plant plant plant plant plant plant hive snail turtle', 'order of the second garden');
+let h = G.state2(0); eq(h.plants, [-1, -1, -1], 'second garden empty'); eq(h.counts, { plants: 0, insects: 0, visitors: 0 }, 'nothing counted');
+h = G.state2(1); eq(h.plants, [0, -1, -1], 'tomato seed');
+h = G.state2(5); eq(h.bee, true, 'the bee comes with the tomato flowers');
+h = G.state2(6); eq([h.plants[0], h.scare, h.counts.plants], [5, false, 1], 'tomatoes ripe, no scarecrow yet');
+h = G.state2(7); eq(h.scare, true, 'the scarecrow guards the first fruit');
+h = G.state2(13); eq(h.plants, [5, 5, -1], 'lemons');
+h = G.state2(14); eq(h.lady, { stage: 0, adults: 0 }, 'ladybird eggs');
+h = G.state2(17); eq(h.lady, { stage: 3, adults: 1 }, 'ladybird out'); eq(h.counts.insects, 2, 'bee + ladybird');
+h = G.state2(23); eq(h.plants, [5, 5, 5], 'dates ripe');
+h = G.state2(24); eq([h.hive, h.counts.insects], [true, 3], 'the hive');
+h = G.state2(25); eq([h.snail, h.turtle, h.complete], [true, false, false], 'the snail');
+h = G.state2(26); eq([h.turtle, h.complete, h.counts.visitors], [true, true, 2], 'the turtle: complete');
+eq(G.state2(99).complete, true, 'never past the end'); eq(G.state2(-3).n, 0, 'never before the start');
+for (let n = 0; n < G.L2; n++) { const a = G.state2(n), b = G.state2(n + 1); ['plants', 'insects', 'visitors'].forEach(k => { if (b.counts[k] < a.counts[k]) { fails++; console.log('FAIL second garden count went down', k, n); } }); }
 console.log(fails ? `${fails} failed` : 'garden core: all passed');
 process.exit(fails ? 1 : 0);

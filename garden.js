@@ -9,7 +9,7 @@
 
 const PER = 50;   // stars for one step
 // the drawings that have their ChatGPT picture (assets/garden/<id>.webp); sw.js caches the same list
-const PICS = new Set('p0 p1 p3 p4 pp p5 rumF rumP rum strF strP straw b0 b1 b2 b3 f0 f1 f3 f4 nest0 nest1 nest2 sparrow hog hopper worm leaves humus bee can sun cloud tree mag'.split(' '));
+const PICS = new Set('p0 p1 p3 p4 pp p5 rumF rumP rum strF strP straw b0 b1 b2 b3 f0 f1 f3 f4 nest0 nest1 nest2 sparrow hog hopper worm leaves humus bee can sun cloud tree mag tomF tomP tom lemF lemP lem palF palP pal scare snail turtle lb0 lb1 lb2 lb3 hive bed2'.split(' '));
 const SPRITE = `<svg id="gdSprite" width="0" height="0" style="position:absolute" aria-hidden="true">
 <defs>
   <radialGradient id="g-gSoil" cx="50%" cy="30%" r="70%"><stop offset="0" stop-color="#B07A52"/><stop offset="1" stop-color="#6E4127"/></radialGradient>
@@ -149,7 +149,44 @@ function stateAt(n) {
     counts: { plants: r * PLANTS.length + grownNow, insects: (bee ? 1 : 0) + butterfly.adults + (hopper ? 1 : 0), frogs: frog.adults, birds: bird.adults }
   };
 }
-const core = { PER, PLANTS, PLANT_STAGES, PLANT_FACT, CREATURES, EXTRAS, JOURNEY, START, stepsFor, stateAt };
+/* ---------- the second garden (Mama, 12 Nov 2026: "she finished all the steps, what can she water now?") ----------
+   When the first garden is complete a gate opens to a second one: three new plants (tomato, lemon tree, date palm), the
+   ladybird's life cycle, and four visitors: the scarecrow (her idea) guarding the first fruit, the beehive, the snail and
+   the turtle. The first garden stays as it is, finished and full. Steps L .. L + L2 - 1 belong to the second garden. */
+const PLANTS2 = [
+  { name: 'الطماطم', icons: ['p0', 'p1', 'p3', 'tomF', 'tomP', 'tom'] },
+  { name: 'الليمون', icons: ['p0', 'p1', 'p3', 'lemF', 'lemP', 'lem'] },
+  { name: 'النخلة', icons: ['p0', 'p1', 'p3', 'palF', 'palP', 'pal'] },
+];
+const LADY = { name: 'الدعسوقة', icons: ['lb0', 'lb1', 'lb2', 'lb3'], stages: ['بيض', 'يرقة', 'عذراء', 'دعسوقة'],
+  say: ['بيضٌ أصفر على ورقة النبات!', 'فقس البيض: يرقة!', 'صارت اليرقة عذراء!', 'خرجت الدعسوقة: تحوّل!'],
+  fact: ['تضع الدعسوقة بيضها على أوراق النبات.', 'تأكل يرقة الدعسوقة الحشرات الصغيرة التي تضرّ النبات.',
+         'تثبت اليرقة على الورقة وتصير عذراء.', 'الدعسوقة حشرة تمرّ بالتحوّل مثل الفراشة: بيضة، يرقة، عذراء، حشرة مكتملة.'] };
+const EXTRAS2 = {
+  scare: { icon: 'scare', say: 'جاءت الفزّاعة تحرس الثمار!', fact: 'تُبعد الفزّاعة الطيور عن الثمار، فالطيور مُستهلِكات تأكل الثمار والبذور.' },
+  hive: { icon: 'hive', say: 'بنى النحل خليّته!', fact: 'يجمع النحل الرحيق من الأزهار ويصنع منه العسل، وينقل حبوب اللقاح بين الأزهار.' },
+  snail: { icon: 'snail', say: 'زائرٌ جديد: الحلزون!', fact: 'صدفة الحلزون تحميه من أعدائه: هذا تكيّف.' },
+  turtle: { icon: 'turtle', say: 'زائرةٌ جديدة: السلحفاة!', fact: 'درع السلحفاة القوي يحميها من أعدائها: هذا تكيّف.' },
+};
+const plant2 = pi => PLANTS2[pi].icons.map((_, k) => ({ kind: 'plant', p: pi, k }));
+const JOURNEY2 = [...plant2(0), { kind: 'scare' }, ...plant2(1), ...LADY.icons.map((_, k) => ({ kind: 'lady', k })), ...plant2(2), { kind: 'hive' }, { kind: 'snail' }, { kind: 'turtle' }];
+const L2 = JOURNEY2.length, TOTAL = L + L2;
+const START2 = {};
+JOURNEY2.forEach((s, i) => { const key = s.kind === 'plant' ? 'q' + s.p : s.kind; if (!(key in START2)) START2[key] = i; });
+// Everything in the second garden after m of its steps (m = all her steps minus the first garden's L).
+function state2(m) {
+  m = Math.max(0, Math.min(L2, m));
+  const did = key => m > START2[key];
+  const doneIn = (start, len) => Math.max(0, Math.min(len, m - start));
+  const plants = PLANTS2.map((_, pi) => doneIn(START2['q' + pi], 6) - 1);
+  const ld = doneIn(START2.lady, 4), lady = { stage: ld - 1, adults: ld === 4 ? 1 : 0 };
+  const grown = plants.filter(x => x === 5).length;
+  const bee = m > START2.q0 + 4, scare = did('scare'), hive = did('hive'), snail = did('snail'), turtle = did('turtle');
+  return { n: m, plants, lady, bee, scare, hive, snail, turtle, complete: m >= L2,
+    counts: { plants: grown, insects: (bee ? 1 : 0) + lady.adults + (hive ? 1 : 0), visitors: (snail ? 1 : 0) + (turtle ? 1 : 0) } };
+}
+const core = { PER, PLANTS, PLANT_STAGES, PLANT_FACT, CREATURES, EXTRAS, JOURNEY, START, stepsFor, stateAt,
+  PLANTS2, LADY, EXTRAS2, JOURNEY2, START2, L2, TOTAL, state2 };
 
 /* =====================================================================================================
    The screens. api from maths.js: m (the times-tables state), save, today, show, SFX, confetti, stopConfetti,
@@ -159,8 +196,12 @@ function mount(api) {
   const $ = (s, r = document) => r.querySelector(s);
   const AR = api.toAr;
   const M = () => { const m = api.m(); if (!m.garden || typeof m.garden !== 'object') m.garden = { done: 0 }; if (!(m.garden.done >= 0)) m.garden.done = 0; return m; };
-  const earned = () => stepsFor(M().stars.total);
+  const earned = () => Math.min(TOTAL, stepsFor(M().stars.total));        // the two gardens: nothing more to earn after them
   const done = () => Math.min(M().garden.done, earned());
+  const done1 = () => Math.min(L, done());                                 // her steps in the first garden (complete at L)
+  const done2 = () => Math.max(0, done() - L);                             // and in the second
+  let view = 0;                                                            // the garden on screen: 1 or 2 (0: where her next step is)
+  const viewNow = () => view || (done() >= L ? 2 : 1);
   const pending = () => Math.max(0, earned() - done());
   // a drawing: the ChatGPT clay picture when it exists (assets/garden, scripts/garden_pics.py; her request 23 Oct 2026),
   // else the SVG drawing of the sprite
@@ -176,11 +217,12 @@ function mount(api) {
   <div class="gd-scene" id="gdScene"></div>
   <div class="gd-top">
     <button class="gd-x" id="gdClose" aria-label="الرئيسية"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
-    <div class="gd-title">حديقة العالِمة ماريا</div>
+    <div class="gd-title" id="gdTitle">حديقة العالِمة ماريا</div>
     <div class="gd-counts" id="gdCounts"></div>
   </div>
   <button class="gd-act" id="gdAct"><span class="gd-act-ic" id="gdActIc"></span><span class="gd-act-t"><b id="gdActTitle"></b><span id="gdActSub"></span><span class="gd-bar"><i id="gdActBar"></i></span></span></button>
   <button class="gd-cyc-btn" id="gdCycBtn">${ic('mag')}<span>دورات الحياة</span></button>
+  <button class="gd-cyc-btn gd-gate" id="gdGate" hidden></button>
   <div class="gd-bubble" id="gdBubble" hidden></div>
 </section>
 <section id="gdStep" class="overlay mx gd-step" dir="rtl" lang="ar" hidden>
@@ -253,8 +295,17 @@ function mount(api) {
   }
 
   /* ---------- the garden scene ---------- */
-    function scene(changed) {
-    const g = stateAt(done()), sc = $('#gdScene');
+  function gate() {
+    const b = $('#gdGate'), open_ = done() >= L, v = viewNow();
+    b.hidden = !open_;
+    if (open_) b.innerHTML = v === 1 ? `${ic('bed2')}<span>الحديقة الثانية</span>` : `${ic('tree')}<span>الحديقة الأولى</span>`;
+    $('#mgarden').classList.toggle('gd-two', v === 2);
+    $('#gdTitle').textContent = v === 2 ? 'حديقة ماريا الثانية' : 'حديقة العالِمة ماريا';
+  }
+  function scene(changed) {
+    gate();
+    if (viewNow() === 2) return scene2(changed);
+    const g = stateAt(done1()), sc = $('#gdScene');
     const put = (html, css, cls, fact, key) =>
       `<div class="gd-it ${cls || ''}${changed && changed === key ? ' gd-new-pop' : ''}" style="${css}"${fact ? ` data-fact="${fact}"` : ''}${key ? ` data-key="${key}"` : ''}>${html}</div>`;
     // the bird: a nest in the tree (inside the tree, so it stays on its branches at every screen size), then sparrows on the fence
@@ -302,10 +353,46 @@ function mount(api) {
       .map(([e, t, n]) => `<div class="gd-cnt">${ic(e)}<span>${t}</span><b>${AR(n)}</b></div>`).join('');
     actionPanel();
   }
-  function nextStep() { return JOURNEY[done() % L]; }
+  /* ---------- the second garden's scene ---------- */
+  function scene2(changed) {
+    const g = state2(done2()), sc = $('#gdScene');
+    const put = (html, css, cls, fact, key) =>
+      `<div class="gd-it ${cls || ''}${changed && changed === key ? ' gd-new-pop' : ''}" style="${css}"${fact ? ` data-fact="${fact}"` : ''}${key ? ` data-key="${key}"` : ''}>${html}</div>`;
+    let h = `${put(ic('sun'), '', 'gd-sun', 'يحتاج النبات إلى الضوء والماء والهواء والتربة لينمو.', 'sun')}
+      <div class="gd-cloud" style="top:12%; animation-delay:-8s">${ic('cloud')}</div><div class="gd-cloud" style="top:22%; animation-delay:-30s; transform: scale(.7)">${ic('cloud')}</div>
+      <div class="gd-ground rich"></div>`;
+    if (g.hive) h += put(ic('hive'), '', 'gd-hive', EXTRAS2.hive.fact, 'hive');
+    if (g.scare) h += put(ic('scare'), '', 'gd-scare', EXTRAS2.scare.fact, 'scare');
+    PLANTS2.forEach((p, pi) => {
+      const st = g.plants[pi];
+      const art = st >= 0 ? ic(p.icons[st], 'gd-plant') : '<div class="gd-empty"></div>';
+      const tag = st >= 0 ? `${p.name}: ${PLANT_STAGES[st]}` : `${p.name}: قريبًا`;
+      h += put(`${art}${st >= 0 ? '' : '<div class="gd-soil"></div>'}<div class="gd-tag">${tag}</div>`, `--i:${pi}; animation-delay:-${pi}s`, `gd-bed${st >= 0 ? '' : ' waiting'}`,
+        st >= 0 ? PLANT_FACT[st] : `هنا ستزرعين بذرة ${p.name}.`, 'q' + pi);
+    });
+    if (g.bee) h += put(ic('bee'), 'right:30%; bottom:47%', 'gd-bee', 'النحلة حشرة تنقل حبوب اللقاح بين الأزهار: التلقيح.', 'bee');
+    if (g.lady.stage >= 0) h += put(ic(LADY.icons[g.lady.stage]), '', 'gd-lady' + (g.lady.stage === 1 ? ' gd-wiggle' : ''), LADY.fact[g.lady.stage], 'lady');
+    if (g.turtle) h += put(ic('turtle'), '', 'gd-turtle', EXTRAS2.turtle.fact, 'turtle');
+    if (g.snail) h += put(ic('snail'), '', 'gd-walk gd-snail', EXTRAS2.snail.fact, 'snail');
+    sc.innerHTML = h;
+    if (changed) setTimeout(() => sc.querySelectorAll('.gd-new-pop').forEach(x => x.classList.remove('gd-new-pop')), 1600);
+    const c = g.counts;
+    $('#gdCounts').innerHTML = [['tom', 'النباتات', c.plants], ['lb3', 'الحشرات', c.insects], ['turtle', 'الزوّار', c.visitors]]
+      .map(([e, t, n]) => `<div class="gd-cnt">${ic(e)}<span>${t}</span><b>${AR(n)}</b></div>`).join('');
+    actionPanel();
+  }
+  const inTwo = () => done() >= L;                       // her next step is in the second garden
+  const allDone = () => done() >= TOTAL;
+  function nextStep() { return inTwo() ? JOURNEY2[Math.min(L2 - 1, done2())] : JOURNEY[done()]; }
+  const plantsNow = () => (inTwo() ? PLANTS2 : PLANTS);
   function actionPanel() {
     const p = pending(), s = nextStep(), have = M().stars.total % PER;
-    const isPlant = s.kind === 'plant';
+    const isPlant = s.kind === 'plant', PLANTS = plantsNow();
+    if (allDone()) {                                     // both gardens are complete
+      $('#gdActIc').innerHTML = ic('lem'); $('#gdAct').classList.remove('ready');
+      $('#gdActTitle').textContent = 'اكتملت الحديقتان!'; $('#gdActSub').textContent = ''; $('#gdActBar').style.width = '100%';
+      return;
+    }
     $('#gdActIc').innerHTML = ic(isPlant ? 'can' : 'mag');
     $('#gdAct').classList.toggle('ready', p > 0);
     if (p > 0) {
@@ -324,15 +411,15 @@ function mount(api) {
   function tapGarden(e) {
     const it = e.target.closest('.gd-it'); if (!it || !it.dataset.fact) return;
     const key = it.dataset.key || '';
-    const kind = key[0] === 'p' && key !== 'pond' ? 'plant' : key;
+    const kind = (key[0] === 'p' && key !== 'pond') || /^q\d$/.test(key) ? 'plant' : key;
     const anim = { plant: 'gd-t-wiggle', sun: 'gd-t-spin', bee: 'gd-t-zoom', butterfly: 'gd-t-twirl', frog: 'gd-t-hop', bird: 'gd-t-hop', hog: 'gd-t-roll', chain: 'gd-t-hop', pond: 'gd-t-ripple', humus: 'gd-t-wiggle', leaves: 'gd-t-wiggle', tree: 'gd-t-wiggle' }[kind] || 'gd-t-wiggle';
     const target = kind === 'pond' || kind === 'tree' ? it : it.querySelector('.gd-ic') || it;
     target.classList.remove(anim); void target.offsetWidth; target.classList.add(anim);
     setTimeout(() => target.classList.remove(anim), 1100);
-    snd({ bee: 'buzz', frog: 'ribbit', bird: 'chirp', butterfly: 'flutter', leaves: 'rustle', humus: 'rustle', pond: 'water' }[kind] || 'pop');
+    snd({ bee: 'buzz', hive: 'buzz', frog: 'ribbit', bird: 'chirp', butterfly: 'flutter', lady: 'flutter', leaves: 'rustle', humus: 'rustle', scare: 'rustle', pond: 'water' }[kind] || 'pop');
     let fact = it.dataset.fact;
     if (kind === 'plant') {                      // the plant's parts and what they do (chapter 1)
-      const s = stateAt(done()).plants[Number(key.slice(1))];
+      const s = key[0] === 'q' ? state2(done2()).plants[Number(key.slice(1))] : stateAt(done1()).plants[Number(key.slice(1))];
       if (s >= 2) { showParts(it, s); fact = s >= 3 ? 'الجذور تثبّت النبات وتمتص الماء، والساق تنقله، والأوراق تصنع الغذاء، والزهرة للتكاثر.' : 'الجذور تثبّت النبات وتمتص الماء، والساق تنقله، والأوراق تصنع الغذاء.'; }
     }
     bubble(it, fact);
@@ -360,8 +447,63 @@ function mount(api) {
   function strip(icons, labels, now, chain) {
     return icons.map((id, k) => `${k ? '<span class="gd-arrow">←</span>' : ''}<div class="gd-st ${k < now ? 'done' : k === now ? 'now' : 'next'}"><div class="gd-st-ic">${ic(id)}</div><small>${labels[k]}</small>${chain && chain[k] ? `<em>${chain[k]}</em>` : ''}</div>`).join('');
   }
+  function doStep2() {
+    const n = done(), m = n - L, s = JOURNEY2[m], before = state2(m);
+    view = 2;
+    M().garden.done = n + 1; M().garden.last = api.today(); api.save();   // saved before the show, so nothing is lost
+    const after = state2(m + 1), c = after.counts;
+    let kick = '٥٠ نجمة: مفاجأة في الحديقة!', say = '', fact = '', stripHTML = '', tally = '', stage = '', complete = false, sound = 'hatch', changed = s.kind;
+    if (s.kind === 'plant') {
+      const p = PLANTS2[s.p];
+      kick = s.k === 0 ? '٥٠ نجمة: بذرة جديدة!' : '٥٠ نجمة: سقية جديدة!';
+      say = s.k === 0 ? `زرعتِ بذرة ${p.name}!` : PLANT_SAY[s.k];
+      fact = PLANT_FACT[s.k];
+      stripHTML = strip(p.icons, PLANT_STAGES, s.k);
+      complete = s.k === 5;
+      tally = complete ? `اكتملت دورة حياة ${p.name}! عدد النباتات في حديقتكِ الثانية: <em>${AR(c.plants)}</em>` : `${p.name}: المرحلة <em>${AR(s.k + 1)}</em> من ${AR(6)}`;
+      if (s.k === 4 && !before.bee) tally += '<br>وجاءت النحلة إلى حديقتكِ الثانية! عدد الحشرات: <em>' + AR(c.insects) + '</em>';
+      const prev = s.k > 0 ? ic(p.icons[s.k - 1], 'gd-prev') : '';
+      stage = `<div class="gd-can">${ic('can')}</div><div class="gd-drops">${'<i></i>'.repeat(8)}</div>${prev}${ic(p.icons[s.k], 'gd-now')}`;
+      sound = 'water'; changed = 'q' + s.p;
+    } else if (s.kind === 'lady') {
+      say = LADY.say[s.k]; fact = LADY.fact[s.k];
+      stripHTML = strip(LADY.icons, LADY.stages, s.k);
+      complete = s.k === 3;
+      tally = complete ? `اكتملت دورة حياة ${LADY.name}! عدد الحشرات في حديقتكِ الثانية: <em>${AR(c.insects)}</em>` : `${LADY.name}: المرحلة <em>${AR(s.k + 1)}</em> من ${AR(4)}`;
+      stage = ic(LADY.icons[s.k], 'gd-now gd-hatch');
+    } else {
+      const x = EXTRAS2[s.kind];
+      say = x.say; fact = x.fact;
+      if (s.kind === 'scare') { tally = 'الفزّاعة تحرس ثمار حديقتكِ الآن!'; stripHTML = strip(['tom', 'sparrow', 'scare'], ['الثمار', 'العصفور', 'الفزّاعة'], 3, ['', 'مُستهلِك', '']); }
+      if (s.kind === 'hive') { tally = `عدد الحشرات في حديقتكِ الثانية: <em>${AR(c.insects)}</em>`; stripHTML = strip(['lemF', 'bee', 'hive'], ['الزهرة', 'النحلة', 'الخليّة'], 3, ['الرحيق', 'التلقيح', 'العسل']); }
+      if (s.kind === 'snail') { tally = 'الحلزون يعيش في حديقتكِ الآن!'; stripHTML = `<div class="gd-badge">التكيّف</div>`; }
+      if (s.kind === 'turtle') { tally = 'اكتملت حديقتكِ الثانية! أنتِ عالِمة حقيقية.'; stripHTML = `<div class="gd-badge">التكيّف</div>`; complete = true; }
+      stage = ic(x.icon, 'gd-now gd-hatch');
+    }
+    showStep({ kick, say, fact, stripHTML, tally, stage, complete, sound, changed, watering: s.kind === 'plant', after: s.kind === 'plant' ? 'grow' : s.kind === 'hive' ? 'buzz' : s.kind === 'lady' ? 'flutter' : 'pop' });
+  }
+  // the step's show (the same for both gardens): the stage, the line, the fact, the cycle, the count
+  function showStep(o) {
+    $('#gdKick').textContent = o.kick;
+    $('#gdStage').className = 'gd-stage' + (o.watering ? ' watering' : '');
+    $('#gdStage').innerHTML = o.stage;
+    $('#gdSay').textContent = o.say;
+    $('#gdFact').textContent = '🔬 ' + o.fact;
+    $('#gdStrip').innerHTML = o.stripHTML;
+    $('#gdTally').innerHTML = o.tally;
+    const ov = $('#gdStep'); ov.hidden = false;
+    ov.classList.remove('play'); void ov.offsetWidth; ov.classList.add('play');
+    snd(o.sound);
+    setTimeout(() => snd(o.after), o.watering ? 1300 : 700);
+    if (o.complete) setTimeout(() => { snd('done'); api.confetti($('#gdConfetti')); }, 1700);
+    const btn = $('#gdOk');
+    btn.disabled = true; setTimeout(() => { btn.disabled = false; }, 1500);
+    btn.onclick = () => { ov.hidden = true; api.stopConfetti($('#gdConfetti')); scene(o.changed); if (pending() > 0) setTimeout(() => $('#gdAct').classList.add('ready'), 300); };
+  }
   function doStep() {
     if (pending() <= 0 || !$('#gdStep').hidden) return;
+    if (inTwo()) return doStep2();
+    view = 1;
     const n = done(), s = JOURNEY[n % L], before = stateAt(n);
     M().garden.done = n + 1; M().garden.last = api.today(); api.save();   // saved before the show, so nothing is lost
     const after = stateAt(n + 1), c = after.counts;
@@ -397,7 +539,7 @@ function mount(api) {
       if (s.kind === 'leaves' || s.kind === 'humus') {
         const k = s.kind === 'leaves' ? 1 : 3;
         stripHTML = strip(['leaves', 'worm', 'humus', 'p1'], ['أوراق متساقطة', 'دودة الأرض', 'الدبال', 'نباتات جديدة'], k, ['', 'مُحلِّل', 'تربة خصبة', '']);
-        tally = s.kind === 'humus' ? 'اكتملت دورة الحديقة! البذور الجديدة ستنبت في التربة الخصبة.' : 'دودة الأرض تعيش في تربة حديقتكِ.';
+        tally = s.kind === 'humus' ? 'اكتملت حديقتكِ الأولى! انفتح باب حديقةٍ ثانية.' : 'دودة الأرض تعيش في تربة حديقتكِ.';
         complete = s.kind === 'humus';
       }
       stage = s.kind === 'leaves' ? ic('leaves', 'gd-now gd-hatch gd-leafpile') + ic('worm', 'gd-now gd-hatch gd-worm')   // the leaves fall, the worm comes
@@ -417,7 +559,8 @@ function mount(api) {
     if (complete) setTimeout(() => { snd('done'); api.confetti($('#gdConfetti')); }, 1700);
     const btn = $('#gdOk');
     btn.disabled = true; setTimeout(() => { btn.disabled = false; }, 1500);
-    btn.onclick = () => { ov.hidden = true; api.stopConfetti($('#gdConfetti')); scene(changed); if (pending() > 0) setTimeout(() => $('#gdAct').classList.add('ready'), 300); };
+    btn.onclick = () => { ov.hidden = true; api.stopConfetti($('#gdConfetti')); scene(changed); if (pending() > 0) setTimeout(() => $('#gdAct').classList.add('ready'), 300);
+      if (s.kind === 'humus') { const gt = $('#gdGate'); gt.classList.add('gd-new-pop'); setTimeout(() => gt.classList.remove('gd-new-pop'), 1800); } };
   }
 
   /* ---------- circles of life, and the book's other ideas the garden has shown her ---------- */
@@ -436,8 +579,23 @@ function mount(api) {
   function idea(title, on, icons, labels, chain, note) {
     return `<div class="gd-idea${on ? '' : ' locked'}"><h2>${title}</h2><div class="gd-strip">${strip(icons, labels, on ? icons.length : -1, chain)}</div><p>${on ? note : 'قريبًا في حديقتكِ'}</p></div>`;
   }
+  function cycles2() {
+    const g = state2(done2());
+    const growing = g.plants.findIndex(x => x >= 0 && x < 5);
+    const cur = growing >= 0 ? growing : Math.max(0, g.plants.lastIndexOf(5));
+    const ps = g.plants[cur], P = PLANTS2[cur];
+    $('#gdWheels').innerHTML =
+      wheel('دورة حياة النبات الزهري', P.icons, PLANT_STAGES, ps >= 5 ? 6 : ps, P.name) +
+      wheel('دورة حياة الدعسوقة', LADY.icons, LADY.stages, g.lady.adults ? 4 : g.lady.stage);
+    $('#gdIdeas').innerHTML =
+      idea('حماية الثمار', g.scare, ['tom', 'sparrow', 'scare'], ['الثمار', 'العصفور', 'الفزّاعة'], ['', 'مُستهلِك', ''], 'الفزّاعة تُبعد الطيور عن الثمار.') +
+      idea('النحل والعسل', g.hive, ['lemF', 'bee', 'hive'], ['الزهرة', 'النحلة', 'الخليّة'], ['الرحيق', 'التلقيح', 'العسل'], 'يجمع النحل الرحيق ويصنع منه العسل.') +
+      idea('التكيّف', g.snail || g.turtle, ['snail', 'turtle'], ['الحلزون', 'السلحفاة'], ['صدفة', 'درع'], 'الصدفة والدرع يحميان الحلزون والسلحفاة.');
+    api.show('mgcycles'); $('#mgcycles').scrollTop = 0;
+  }
   function cycles() {
-    const g = stateAt(done());
+    if (viewNow() === 2) return cycles2();
+    const g = stateAt(done1());
     const growing = g.plants.findIndex(s => s >= 0 && s < 5);
     const cur = growing >= 0 ? growing : g.plants.lastIndexOf(5) >= 0 ? g.plants.lastIndexOf(5) : 0;
     const ps = g.plants[cur], P = PLANTS[cur];
@@ -456,14 +614,16 @@ function mount(api) {
 
   /* ---------- Home card, Done screen, the moment a new step is earned ---------- */
   function homeCard() {
-    const p = pending(), g = stateAt(done()), have = M().stars.total % PER;
+    const two = inTwo(), PL = two ? PLANTS2 : PLANTS;
+    const p = pending(), g = two ? state2(done2()) : stateAt(done1()), have = M().stars.total % PER;
     const pi = g.plants.findIndex(s => s >= 0 && s < 5), s = pi >= 0 ? g.plants[pi] : -1;
-    $('#gdCardIc').innerHTML = s >= 0 ? ic(PLANTS[pi].icons[s]) : ic(g.plants[0] >= 0 ? PLANTS[0].icons[5] : 'can');
+    $('#gdCardIc').innerHTML = s >= 0 ? ic(PL[pi].icons[s]) : ic(g.plants[0] >= 0 ? PL[Math.max(0, g.plants.lastIndexOf(5))].icons[5] : two ? 'bed2' : 'can');
+    if (allDone()) { card.classList.remove('ready'); $('#gdCardBar').style.width = '100%'; $('#gdCardSub').textContent = 'اكتملت الحديقتان!'; return; }
     card.classList.toggle('ready', p > 0);
     $('#gdCardBar').style.width = (p > 0 ? 100 : have / PER * 100) + '%';
     $('#gdCardSub').textContent = p > 0 ? `${stepsTxt(p)} في انتظاركِ!` : `${AR(have)} من ${AR(PER)} نجمة للخطوة القادمة`;
   }
-  function open() { scene(); api.show('mgarden'); if (pending() > 0) setTimeout(() => snd('pop'), 300); }
+  function open() { view = 0; scene(); api.show('mgarden'); if (pending() > 0) setTimeout(() => snd('pop'), 300); }
   // after a times-tables round: did she pass a 50?
   function afterRound(starsAtStart) {
     const p = pending();
@@ -478,8 +638,8 @@ function mount(api) {
     }
   }
   function parentRows() {
-    const n = done(), g = stateAt(n), have = M().stars.total % PER, p = pending();
-    const where = n ? `step ${(n - 1) % L + 1} of ${L}${n > L ? ` (round ${Math.floor((n - 1) / L) + 1})` : ''}` : 'not started';
+    const n = done(), g = stateAt(Math.min(n, L)), g2 = state2(n - L), have = M().stars.total % PER, p = pending();
+    const where = !n ? 'not started' : n >= TOTAL ? `both gardens complete (${TOTAL} steps)` : n > L ? `second garden, step ${n - L} of ${L2} (first garden complete; plants ${g2.counts.plants}, insects ${g2.counts.insects}, visitors ${g2.counts.visitors})` : `step ${n} of ${L}${n === L ? ' (complete: the gate to the second garden is open)' : ''}`;
     return `<div class="p-row"><span>Science garden: ${where}<span class="sub">One step for every ${PER} stars · ${p ? `${p} step${p === 1 ? '' : 's'} waiting for her` : `next step in ${PER - have} stars`} · plants ${g.counts.plants}, insects ${g.counts.insects}, frogs ${g.counts.frogs}, birds ${g.counts.birds} · from her term-1 science book: plant needs and parts, life cycles, food chain, decomposers</span></span><button class="p-btn" data-act="garden">Open the garden</button></div>`;
   }
 
@@ -487,9 +647,10 @@ function mount(api) {
   card.addEventListener('click', () => { api.SFX.init(); open(); });
   doneBtn.addEventListener('click', () => { api.SFX.init(); open(); });
   $('#gdClose').addEventListener('click', () => api.home());
-  $('#gdAct').addEventListener('click', () => { api.SFX.init(); if (pending() > 0) doStep(); else bubble($('#gdAct'), `اجمعي ${starsTxt(PER - M().stars.total % PER)} في جدول الضرب للخطوة القادمة!`); });
+  $('#gdAct').addEventListener('click', () => { api.SFX.init(); if (allDone()) return; if (pending() > 0) doStep(); else bubble($('#gdAct'), `اجمعي ${starsTxt(PER - M().stars.total % PER)} في جدول الضرب للخطوة القادمة!`); });
   $('#gdScene').addEventListener('click', tapGarden);
   $('#gdCycBtn').addEventListener('click', () => { api.SFX.init(); snd('pop'); cycles(); });
+  $('#gdGate').addEventListener('click', () => { api.SFX.init(); snd('pop'); view = viewNow() === 1 ? 2 : 1; scene(); });
   $('#gdCycClose').addEventListener('click', () => { scene(); api.show('mgarden'); });
   $('#gdNewGo').addEventListener('click', () => { $('#gdNew').hidden = true; open(); });
   $('#gdNewLater').addEventListener('click', () => { $('#gdNew').hidden = true; });
