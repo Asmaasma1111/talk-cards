@@ -1,7 +1,7 @@
 /* مسرح المسائل: her progress and her prizes (Mama's requests, 12 Nov 2026: "something to enable tracking progress",
    "she takes no prize after finishing the questions").
    Progress: a row of six stage lamps on Home, one per level; a finished level is lit, her level glows with its count.
-   Prizes: «صندوق الأزياء», a costume and prop trunk. Every finished day gives one piece (42 of them, in order); finishing a
+   Prizes: «صندوق الأزياء», a costume and prop trunk. Every finished day gives one piece (54 of them, in order: props and clothes); finishing a
    level gives a big prize (6). Nothing new is saved for the pieces: they are counted from the finished days and the
    finished levels in mariaTheatre.v1, so a backup always brings them back. Only what she has already been shown is kept
    (st.seenProps, st.seenBig), so each prize is celebrated once.
@@ -17,11 +17,23 @@ const PROPS = [
   'الفانوس', 'الهلال', 'الغيمة', 'الشمس', 'الشجرة', 'النجوم المعلّقة',
   'باقة الأزهار', 'مكبّر الصوت', 'لوحة التصوير', 'كشّاف المسرح', 'التذاكر الذهبية', 'الفشار'
 ].map((name, i) => ({ id: 'p' + String(i + 1).padStart(2, '0'), name }));
+// clothes and decorations for the dressing room (js/dress.js; Mama's idea, 12 Nov 2026)
+const WEAR = ['النظّارة الحمراء', 'نظّارة النجوم', 'نظّارة القلوب', 'نظّارة السباحة', 'عقد اللؤلؤ', 'عقد الأزهار',
+  'تنّورة الباليه', 'السترة', 'الوشاح', 'الفستان', 'المعطف الأصفر', 'الحذاء الأحمر',
+  'الفيونكة', 'تاج الأزهار', 'الحقيبة', 'قناع البطل', 'الشارب', 'وشاح الريش'
+].map((name, i) => ({ id: 'w' + String(i + 1).padStart(2, '0'), name }));
+const FREE = ['w01', 'w13', 'w09', 'w07', 'w15', 'w03'].map(id => WEAR.find(w => w.id === id));   // in the wardrobe from the first day
+// a finished day gives the next piece of this list: her first three stay as they were, then clothes and props take turns
+const DAILY = (() => {
+  const w = WEAR.filter(x => !FREE.includes(x)), out = PROPS.slice(0, 3);
+  PROPS.slice(3).forEach((p, i) => { if (w[i]) out.push(w[i]); out.push(p); });
+  return out;
+})();
 const BIG = ['كأس المسرح', 'قناعا المسرح', 'وسام النجمة', 'الميكروفون الذهبي', 'كرسي المخرجة', 'جائزة النجمة'].map((name, i) => ({ id: 'big' + (i + 1), name, stage: i + 1 }));
 
 // the days she finished (every story of the day done), oldest first
 const doneDays = st => Object.keys(st.days || {}).filter(k => { const d = st.days[k]; return d && Array.isArray(d.ids) && d.ids.length && d.i >= d.ids.length; }).sort();
-const propCount = st => Math.min(PROPS.length, doneDays(st).length);
+const propCount = st => Math.min(DAILY.length, doneDays(st).length);
 const inStage = (bank, s) => bank.stories.filter(x => x.stage === s);
 const doneIn = (bank, st, s) => inStage(bank, s).filter(x => st.done[x.id] && st.done[x.id].n).length;
 const stageDone = (bank, st, s) => { const all = inStage(bank, s); return all.length > 0 && doneIn(bank, st, s) === all.length; };
@@ -39,7 +51,7 @@ function sync(bank, st) {
 // what is new since she last looked: { props: [...], big: [...] }, and marks it as shown
 function claim(bank, st) {
   sync(bank, st);
-  const n = propCount(st), props = PROPS.slice(Math.min(st.seenProps, n), n);
+  const n = propCount(st), props = DAILY.slice(Math.min(st.seenProps, n), n);
   const big = bigWon(bank, st).filter(b => !st.seenBig.includes(b.stage));
   st.seenProps = n; big.forEach(b => st.seenBig.push(b.stage));
   return { props, big };
@@ -63,7 +75,7 @@ function path(bank, st) {
 function trunkBtn(bank, st, onBack) {
   const { el } = TH.ui;
   const b = el('button', { class: 'top-btn trunk-btn', type: 'button', 'aria-label': 'صندوق الأزياء' }, el('img', { src: src('trunk'), alt: '', draggable: 'false' }));
-  b.addEventListener('click', () => { TH.ui.sound('pick'); trunk(bank, st, onBack); });
+  b.addEventListener('click', () => { TH.ui.sound('pick'); if (TH.dress) TH.dress.room(bank, st, onBack); else trunk(bank, st, onBack); });
   return b;
 }
 // «صندوق الأزياء»: everything she has won, and grey shapes for what is still to come
@@ -78,7 +90,7 @@ function trunk(bank, st, onBack) {
     el('header', { class: 'tk-top' }, el('img', { class: 'tk-box', src: src('trunk-open'), alt: '', draggable: 'false' }), el('h2', {}, 'صندوق الأزياء'), close),
     el('div', { class: 'tk-scroll' },
       el('div', { class: 'tk-big' }, ...BIG.map(b => cell(b, won.includes(b.stage), 'big'))),
-      el('div', { class: 'tk-grid' }, ...PROPS.map((p, i) => cell(p, i < n, 'prop'))))));
+      el('div', { class: 'tk-grid' }, ...FREE.map(p => cell(p, true, 'prop')), ...DAILY.map((p, i) => cell(p, i < n, 'prop'))))));
   close.addEventListener('click', onBack);
 }
 // one prize shown big, with its name: resolves when she taps the button
@@ -105,8 +117,11 @@ async function celebrate(bank, st, save) {
   for (const p of got.props.slice(-1)) await reveal('هديّة اليوم', p, false);     // one a day (older unseen ones are in the trunk)
 }
 // her newest piece stands on Home's stage
-function newest(st) { const n = propCount(st); return n ? PROPS[n - 1] : null; }
+function newest(st) { const n = propCount(st); return n ? DAILY[n - 1] : null; }
+// everything in her wardrobe now, newest first; and what is still to come
+const owned = st => [...DAILY.slice(0, propCount(st)).reverse(), ...FREE];
+const toCome = st => DAILY.slice(propCount(st));
 
-TH.prizes = { PROPS, BIG, doneDays, propCount, bigWon, current, doneIn, sync, claim, path, trunkBtn, trunk, celebrate, newest, src };
+TH.prizes = { PROPS, WEAR, FREE, DAILY, owned, toCome, stageDone, BIG, doneDays, propCount, bigWon, current, doneIn, sync, claim, path, trunkBtn, trunk, celebrate, newest, src };
 if (typeof module !== 'undefined') module.exports = TH.prizes;
 })(typeof window !== 'undefined' ? (window.TH = window.TH || {}) : {});

@@ -571,3 +571,39 @@ a { color: inherit; text-decoration: none; }
 @keyframes gift-up { from { opacity: 0; transform: translate(-50%, 46%) scale(.3); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
 .gift-name { font-size: 34px; margin: 0; }
 @media (prefers-reduced-motion: reduce) { .gift-pic { animation: none; } .stage-prop { transition: none; } }
+
+/* =================== the dressing room (js/dress.js; Mama's idea, 12 Nov 2026) =================== */
+.dress { background: radial-gradient(120% 90% at 50% 10%, #4A2752 0%, var(--night) 70%); color: #fff; }
+.dr-top { display: flex; align-items: center; gap: 14px; padding: 12px 18px; flex: none; }
+.dr-top .top-btn { background: rgba(255,255,255,.14); color: #fff; box-shadow: none; }
+.dr-heads { display: flex; gap: 10px; margin-inline: auto; }
+.dr-head { width: 68px; height: 68px; border-radius: 50%; overflow: hidden; background: rgba(255,255,255,.12); padding: 0; position: relative; flex: none; }
+.dr-head img { position: absolute; left: 50%; top: 6%; height: 190%; transform: translateX(-50%); }      /* the actor's head */
+.dr-head.on { background: var(--yellow); box-shadow: 0 0 0 4px #fff; }
+.dr-head.shut { opacity: .35; } .dr-head.shut img { filter: brightness(0) invert(1); opacity: .5; }
+.dr-go { font-size: 26px; min-height: 60px; padding: 0 26px; border-radius: 22px; }
+.dr-main { flex: 1; min-height: 0; display: grid; grid-template-columns: 46% 1fr; gap: 14px; padding: 0 18px 18px; direction: ltr; }
+.dr-stage { position: relative; display: grid; place-items: end center; border-radius: 28px; padding: 5% 4% 3%; min-height: 0; min-width: 0;
+  background: radial-gradient(60% 30% at 50% 96%, rgba(0,0,0,.35), transparent 70%), radial-gradient(90% 70% at 50% 40%, rgba(255, 228, 160, .28), transparent 75%); }
+.dr-spot { position: absolute; inset: 11% 4% 3%; display: flex; align-items: flex-end; justify-content: center; container-type: size; }
+.dr-actor { height: min(100cqh, calc(100cqw / var(--ar, .64))); flex: none; }
+.actor { position: relative; touch-action: none; }
+.actor-pic { width: 100%; height: 100%; display: block; filter: drop-shadow(0 12px 10px rgba(0,0,0,.4)); pointer-events: none; }
+.actor .worn { position: absolute; transform: translate(-50%, -50%); filter: drop-shadow(0 4px 4px rgba(0,0,0,.3)); touch-action: none; }
+.dr-rack { overflow-y: auto; -webkit-overflow-scrolling: touch; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; align-content: start;
+  padding: 12px; border-radius: 28px; background: rgba(255,255,255,.08); }
+.dr-piece { position: relative; aspect-ratio: 1; min-width: 0; padding: 0; border-radius: 20px; background: rgba(255,255,255,.1); touch-action: none; }
+.dr-piece img { position: absolute; inset: 8%; width: 84%; height: 84%; object-fit: contain; pointer-events: none; filter: drop-shadow(0 4px 4px rgba(0,0,0,.35)); }
+.dr-piece.later { background: none; } .dr-piece.later img { filter: brightness(0) invert(1); opacity: .12; }
+.dr-ghost { position: fixed; z-index: 50; transform: translate(-50%, -50%); pointer-events: none; filter: drop-shadow(0 10px 10px rgba(0,0,0,.45)); }
+@media (orientation: portrait) { .dr-main { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 52%) minmax(0, 1fr); } .dr-rack { grid-template-columns: repeat(5, minmax(0, 1fr)); } .dr-head { width: 54px; height: 54px; } }
+/* her dressed actor on Home's stage: hops in from the wing when the curtains open, bows, then sways */
+.op.with-actor.open .home-title { inset: 26.5% 0 auto; font-size: clamp(30px, 7cqh, 62px); }
+.stage-actor { position: absolute; left: 50%; bottom: 22%; height: 38%; z-index: 2; opacity: 0; transform: translateX(-50%); transform-origin: 50% 100%; }
+.op.open .stage-actor { animation: actor-in 2.6s cubic-bezier(.3, .8, .4, 1) 1.5s both, actor-sway 3s ease-in-out 4.2s infinite alternate; }
+@keyframes actor-in { 0% { opacity: 0; transform: translateX(-260%) translateY(0); } 8% { opacity: 1; }
+  20% { transform: translateX(-200%) translateY(-14%); } 32% { transform: translateX(-150%) translateY(0); } 44% { transform: translateX(-100%) translateY(-12%); } 56% { transform: translateX(-50%) translateY(0); }
+  70% { transform: translateX(-50%) scaleY(.86) rotate(0); } 82% { transform: translateX(-50%) scaleY(1.04); } 100% { opacity: 1; transform: translateX(-50%) scaleY(1); } }
+@keyframes actor-sway { from { transform: translateX(-50%) rotate(-2.5deg); } to { transform: translateX(-50%) rotate(2.5deg); } }
+.op.closing .stage-actor { animation: none; opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .op.open .stage-actor { animation: none; opacity: 1; } }

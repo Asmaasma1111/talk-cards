@@ -50,8 +50,10 @@ function home() {
     el('header', { class: 'h-top' }, back, P.path(BANK, st), el('span', { class: 'stars' }, '⭐ ', C.ar(st.stars || 0)), P.trunkBtn(BANK, st, home), mute, gear),
     stage, el('div', { class: 'home-foot' }, total ? dots : null, body));
   // her newest piece from the costume trunk stands on the stage
-  const piece = P.newest(st), boards = stage.querySelector('.op-box');
-  if (piece && boards) boards.append(el('img', { class: 'stage-prop', src: P.src(piece.id), alt: '', draggable: 'false' }));
+  // (once she has dressed an actor in the dressing room, the actor comes on stage instead: js/dress.js)
+  const piece = P.newest(st), boards = stage.querySelector('.op-box'), actor = TH.dress ? TH.dress.onStage(st) : null;
+  if (actor && boards) { boards.append(actor); stage.classList.add('with-actor'); }
+  else if (piece && boards) boards.append(el('img', { class: 'stage-prop', src: P.src(piece.id), alt: '', draggable: 'false' }));
   app().textContent = ''; app().append(screen);
   setTimeout(() => { stage.classList.add('open'); if (!clay) U.sound('curtain'); else if (!st.muted) TH.opening.play(TH.opening.DEFAULT); }, 450);
   go.addEventListener('click', () => { U.sound('curtain'); stage.classList.add('closing'); setTimeout(next, 750); });
@@ -109,7 +111,7 @@ async function parent() {
       el('div', { class: 'p-group' }, el('div', { class: 'p-row' }, el('span', {}, 'Reader', el('span', { class: 'sub' }, 'The voice that reads each story and counts. Off: you read the stories to her yourself; the little sounds stay.')), reader),
         el('div', { class: 'p-row' }, el('span', {}, 'Stories a day', el('span', { class: 'sub' }, 'A mixed day has one twin pair in it. A change starts tomorrow.')), el('span', { class: 'stepper' }, minus, perDay, plus))),
       el('h3', {}, `Today (${d.i} of ${d.ids.length} done${d.twin ? `, twin pair ${d.twin}` : ''})`), today,
-      el('h3', {}, 'Prizes'), el('p', { class: 'sub' }, `Costume trunk: ${TH.prizes.propCount(st)} of ${TH.prizes.PROPS.length} pieces (one for every finished day). Level prizes: ${TH.prizes.bigWon(BANK, st).length} of 6.`),
+      el('h3', {}, 'Prizes'), el('p', { class: 'sub' }, `Dressing room: ${TH.prizes.propCount(st)} of ${TH.prizes.DAILY.length} pieces won (one for every finished day), plus ${TH.prizes.FREE.length} she has from the start. Level prizes: ${TH.prizes.bigWon(BANK, st).length} of 6. A new actor joins after levels 1, 2 and 3.`),
       el('h3', {}, 'Shapes met'), el('p', { class: 'sub' }, st.met.join(', ') || 'none yet'),
       el('h3', {}, 'Her drawings'), pads,
       el('p', { class: 'sub' }, 'Her progress and drawings are in the Back up file of her apps page.')));
