@@ -529,3 +529,45 @@ a { color: inherit; text-decoration: none; }
 @media (max-height: 700px) and (orientation: landscape) {
   .btn { min-height: 54px; } .btn-start { min-height: 66px; }
 }
+
+/* =================== progress and prizes (js/prizes.js; Mama's requests, 12 Nov 2026) =================== */
+/* the six level lamps in Home's top bar: lit when the level is finished, glowing with its count on her level */
+.lv-path { display: flex; align-items: flex-start; gap: clamp(4px, 1.2vw, 14px); margin-inline: auto; direction: rtl; }
+.lv { position: relative; width: clamp(34px, 5vw, 48px); display: grid; place-items: center; opacity: .5; }
+.lv img { width: 100%; display: block; }
+.lv b { position: absolute; top: 20%; left: 0; right: 0; text-align: center; font-size: clamp(15px, 2.1vw, 20px); line-height: 1; color: #5B3A12; }
+.lv.done, .lv.cur { opacity: 1; }
+.lv.done b { color: #1F7A46; }
+.lv.cur { transform: scale(1.22); transform-origin: 50% 20%; filter: drop-shadow(0 0 10px rgba(255, 211, 77, .9)); }
+.lv.cur small { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); white-space: nowrap; margin-top: 2px; padding: 2px 9px; font-size: 14px; line-height: 1.3;
+  color: #3B2A4A; background: var(--yellow); border-radius: 999px; }
+.h-top .stars { margin-inline-start: 0; }
+.trunk-btn { padding: 6px; } .trunk-btn img { width: 100%; height: 100%; object-fit: contain; }
+.stage-prop { position: absolute; left: 50%; bottom: 22.5%; height: 24%; transform: translateX(-50%) scale(.2); z-index: 2; opacity: 0; filter: drop-shadow(0 8px 8px rgba(0,0,0,.45));
+  transition: opacity .6s 1.9s, transform .7s 1.9s cubic-bezier(.3, 1.6, .5, 1); }
+.op.open .stage-prop { opacity: 1; transform: translateX(-50%) scale(1); }
+.op.open .home-title { inset: 30% 0 auto; }
+/* «صندوق الأزياء» */
+.trunk { background: radial-gradient(120% 90% at 50% 10%, #4A2752 0%, var(--night) 70%); color: #fff; }
+.tk-top { display: flex; align-items: center; gap: 14px; padding: 14px 18px; flex: none; }
+.tk-top h2 { margin: 0; font-size: 34px; flex: 1; }
+.tk-top .tk-box { height: 64px; }
+.tk-top .top-btn { background: rgba(255,255,255,.14); color: #fff; box-shadow: none; }
+.tk-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 4px 22px 28px; }
+.tk-big { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; padding: 10px 14px; margin-bottom: 16px; border-radius: 24px; background: rgba(255, 211, 77, .12); }
+.tk-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 12px; }
+.pz { aspect-ratio: 1; min-width: 0; position: relative; }
+.pz img { position: absolute; inset: 6%; width: 88%; height: 88%; object-fit: contain; filter: brightness(0) invert(1); opacity: .12; }
+.pz.has img { filter: drop-shadow(0 6px 6px rgba(0,0,0,.4)); opacity: 1; }
+@media (orientation: portrait) { .tk-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+/* a new prize */
+.gift { align-items: center; justify-content: center; gap: 12px; text-align: center; background: radial-gradient(90% 70% at 50% 40%, #FFF3C4, var(--paper)); }
+.gift h2 { font-size: 44px; margin: 0; }
+.gift-stage { position: relative; width: min(60vw, 46vh); aspect-ratio: 1; display: grid; place-items: end center; }
+.gift-box, .gift-cushion { width: 78%; filter: drop-shadow(0 12px 12px rgba(59, 42, 74, .25)); }
+.gift-pic { position: absolute; left: 50%; bottom: 34%; width: 62%; max-height: 66%; object-fit: contain; transform: translateX(-50%); filter: drop-shadow(0 10px 10px rgba(59, 42, 74, .3));
+  animation: gift-up 1s cubic-bezier(.3, 1.5, .5, 1) both .25s; }
+.gift.big .gift-pic { bottom: 26%; width: 70%; }
+@keyframes gift-up { from { opacity: 0; transform: translate(-50%, 46%) scale(.3); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
+.gift-name { font-size: 34px; margin: 0; }
+@media (prefers-reduced-motion: reduce) { .gift-pic { animation: none; } .stage-prop { transition: none; } }
